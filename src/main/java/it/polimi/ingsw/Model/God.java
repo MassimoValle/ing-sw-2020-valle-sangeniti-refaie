@@ -7,5 +7,15 @@ public class God {
     private Power godPower;
 
 
-    public void usePower() { };
+    public God(String godName, String godDescription, Power godPower){
+        this.godName = godName;
+        this.godDescription = godDescription;
+        this.godPower = godPower;
+    }
+
+    public void usePower() {};
+
+    public String getGodName() { return godName; }
+
+
 }
