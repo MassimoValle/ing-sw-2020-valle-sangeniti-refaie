@@ -15,13 +15,13 @@ public class Game {
     }
 
 
-    public God choseGods() { return new God(); };
+    public /*God*/ void choseGods() { /*return new God();*/ };
 
     public Game newGame() { return new Game(); };
 
-    public Player addPlayer(String name) {
+    /*public Player addPlayer(String name) {
         return new Player(name, choseGods());
-    };
+    };*/
 
     public void checkWin() { };
 
