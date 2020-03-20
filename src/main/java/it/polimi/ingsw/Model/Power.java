@@ -6,7 +6,8 @@ public class Power {
     private PowerType powerType;
 
 
-    public Power(String powerDescription) {
+    public Power(String powerType, String powerDescription) {
+        this.powerType  = Enum.valueOf(PowerType.class, powerType);
         this.powerDescription = powerDescription;
     }
 }
