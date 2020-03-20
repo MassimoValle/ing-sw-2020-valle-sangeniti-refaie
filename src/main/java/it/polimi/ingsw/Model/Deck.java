@@ -16,7 +16,7 @@ public class Deck {
     private static Deck istance=null;
     private List<God> gods;
 
-    public Deck() {
+    private Deck() {
         gods = new ArrayList<>();
         loadXML();
     }
