@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<class>
+    <god>
+        <id>1</id>
+        <name>Apollo</name>
+        <description>God Of Music</description>
+        <powerType>Your Move</powerType>
+        <powerDescription>Your Worker may move into an opponent Worker’s space by forcing their Worker to the space yours just vacated.</powerDescription>
+    </god>
+
+    <god>
+        <id>2</id>
+        <name>Artemis</name>
+        <description>Goddess of the Hunt</description>
+        <powerType>Your Move</powerType>
+        <powerDescription>Your Worker may move one additional time, but not back to its initial space.</powerDescription>
+    </god>
+
+    <god>
+        <id>3</id>
+        <name>Athena</name>
+        <description>Goddess of Wisdom</description>
+        <powerType>Opponent’s Turn</powerType>
+        <powerDescription>If one of your Workers moved up on your last turn, opponent Workers cannot move up this turn.</powerDescription>
+    </god>
+
+    <god>
+        <id>4</id>
+        <name>Atlas</name>
+        <description>Titan Shouldering the Heavens</description>
+        <powerType>Your Build</powerType>
+        <powerDescription>Your Worker may build a dome at any level.</powerDescription>
+    </god>
+
+    <god>
+        <id>5</id>
+        <name>Demeter</name>
+        <description>Goddess of the Harvest</description>
+        <powerType>Your Build</powerType>
+        <powerDescription>Your Worker may build one additional time, but not on the same space.</powerDescription>
+    </god>
+
+    <god>
+        <id>6</id>
+        <name>Hephaestus</name>
+        <description>God of Blacksmiths</description>
+        <powerType>Your Build</powerType>
+        <powerDescription>Your Worker may build one additional block (not dome) on top of your first block.</powerDescription>
+    </god>
+
+    <god>
+        <id>7</id>
+        <name>Minotaur</name>
+        <description>Bull-headed Monster</description>
+        <powerType>Your Move</powerType>
+        <powerDescription>Your Worker may move into an opponent Worker’s space, if their Worker can be forced one space straight backwards to an unoccupied space at any level.</powerDescription>
+    </god>
+
+    <god>
+        <id>8</id>
+        <name>Pan</name>
+        <description>God of the Wild</description>
+        <powerType>Win Condition</powerType>
+        <powerDescription>You also win if your Worker moves down two or more levels.</powerDescription>
+    </god>
+
+    <god>
+        <id>9</id>
+        <name>Prometheus</name>
+        <description>Titan Benefactor of Mankind</description>
+        <powerType>Your Turn</powerType>
+        <powerDescription>If your Worker does not move up, it may build both before and after moving.</powerDescription>
+    </god>
+    
+</class>
