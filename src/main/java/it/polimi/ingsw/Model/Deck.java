@@ -11,13 +11,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Deck {
+public class Deck extends ArrayList<God>{
 
     private static Deck istance=null;
-    private List<God> gods;
+    //private List<God> gods;
 
     private Deck() {
-        gods = new ArrayList<>();
         loadXML();
     }
 
@@ -48,7 +47,7 @@ public class Deck {
 
                 God tmp = new God(godName, godDescription, new Power(godPowerType, godPowerDescription));
 
-                gods.add(tmp);
+                this.add(tmp);
             }
             return true;
         } catch (Exception e) {
@@ -58,10 +57,9 @@ public class Deck {
     }
 
     public void removeGod(God selectedGod) {
-        gods.remove(selectedGod);
+        
+        this.remove(selectedGod);
     }
-
-    // public void initDeck() { };  // -> default constructor is the new initDeck()
 
 
 }
