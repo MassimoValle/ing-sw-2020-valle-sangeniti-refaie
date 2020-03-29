@@ -11,6 +11,14 @@ public class Power {
         this.powerDescription = powerDescription;
     }
 
+    public String getPowerDescription() {
+        return powerDescription;
+    }
+
+    public PowerType getPowerType() {
+        return powerType;
+    }
+
     public PowerType matchFromXml(String powerType) {
         switch (powerType) {
             case "Your Move":

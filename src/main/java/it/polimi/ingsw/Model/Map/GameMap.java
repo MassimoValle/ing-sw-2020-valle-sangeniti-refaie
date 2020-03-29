@@ -51,7 +51,7 @@ public class GameMap {
     public String toString() {
        for (int i=0; i<RAWS; i++) {
            for ( int j=0; j<COLUMNS; j++) {
-               System.out.println("Riga:" + i + "Colonna:" + j);
+               System.out.println("Square" + i + " , " + j + " Lvl :" + board[i][j].getHeight());
            }
        }
         return null;

@@ -16,7 +16,7 @@ public class Game {
     private GameMap gameMap;
 
     public Game() {
-        this.players = new ArrayList<Player>();
+        this.players = new ArrayList<>();
         this.playerActive = null;
         this.deck = assignNewDeck();
         this.numberOfPlayers = 0;
@@ -24,18 +24,16 @@ public class Game {
     }
 
 
-    public /*God*/ void choseGods() { /*return new God();*/ };
-
-    public GameMap assignNewMap() {
+    private GameMap assignNewMap() {
         return new GameMap();
+    }
+
+    private Deck assignNewDeck() {
+        return new Deck();
     }
 
     public GameMap getGameMap() {
         return this.gameMap;
-    }
-
-    public Deck assignNewDeck() {
-        return new Deck();
     }
 
     public Deck getDeck() {
@@ -67,6 +65,8 @@ public class Game {
 
     @Override
     public String toString() {
-        return null;
+        return players.toString() +
+                gameMap.toString() +
+                deck.toString();
     }
 }

@@ -15,13 +15,12 @@ public class Deck extends ArrayList<God>{
 
     private static Deck instance=null;
     //private List<God> gods;
-    public static String Codice = "Deck creato con successo";
 
     public Deck() {
         loadXML();
     }
 
-    public static Deck getIstance() {
+    public static Deck getInstance() {
         if(instance==null)
             instance = new Deck();
         return instance;
@@ -57,16 +56,23 @@ public class Deck extends ArrayList<God>{
         }
     }
 
-    public void removeGod(God selectedGod) {
-        
+    private void removeGod(God selectedGod) {
         this.remove(selectedGod);
+    }
+
+    public God getGod(int choice) {
+        God selectedGod = Deck.getInstance().get(choice-1);
+        removeGod(Deck.getInstance().get(choice-1));
+        return selectedGod;
     }
 
 
     @Override
     public String toString() {
         for (God god : instance) {
-            System.out.println(god.getGodName());
+            System.out.println( (this.indexOf(god) + 1) + ") \nName: " + god.getGodName());
+            System.out.println("Description: " + god.getGodDescription());
+            System.out.println("Power description: " + god.getGodPower().getPowerDescription());
         }
         return null;
         }
