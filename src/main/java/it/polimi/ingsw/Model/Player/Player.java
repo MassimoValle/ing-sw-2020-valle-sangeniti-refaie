@@ -1,4 +1,6 @@
-package it.polimi.ingsw.Model;
+package it.polimi.ingsw.Model.Player;
+
+import it.polimi.ingsw.Model.God;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +10,7 @@ public class Player {
     private String playerName;
     private God playerGod;
     private List<Worker> playerWorkers;
-    private final int numWorker = 2;
+    private int numWorker = 2;
 
     private boolean moved;
     private boolean built;
@@ -50,6 +52,10 @@ public class Player {
     public String toString() {
         return "Player Name: " + this.playerName.toUpperCase() +
                 "\nGod: " + this.playerGod.getGodName().toUpperCase();
+    }
+
+    public String getPlayerName() {
+        return this.playerName;
     }
 }
 
