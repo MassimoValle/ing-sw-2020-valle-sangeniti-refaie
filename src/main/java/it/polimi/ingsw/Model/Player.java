@@ -10,21 +10,15 @@ public class Player {
     private List<Worker> playerWorkers;
     private final int numWorker = 2;
 
-    private boolean moved;
-    private boolean built;
-
     public Player(String playerName) {
         this.playerName = playerName;
-        this.moved = false;
-        this.built = false;
 
         this.playerWorkers = new ArrayList<>();
         for (int i = 0; i < numWorker; i++) { this.playerWorkers.add(new Worker()); }   // 2 workers
     }
 
 
-    public boolean hasMoved() { return moved; }
-    public boolean hasBuilt() { return built; }
+
 
 
     public void choseGodsFromDeck() { };
