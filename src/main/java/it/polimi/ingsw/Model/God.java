@@ -16,6 +16,7 @@ public class God {
     public void usePower() {};
 
     public String getGodName() { return godName; }
+    public String getGodDescription() {return godDescription; }
 
 
 }

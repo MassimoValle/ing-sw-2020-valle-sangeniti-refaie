@@ -18,7 +18,9 @@ public class Player {
     }
 
 
+    public String getPlayerName() {return playerName; }
 
+    public List<Worker> getPlayerWorkers() { return playerWorkers; }
 
 
     public void choseGodsFromDeck() { };
