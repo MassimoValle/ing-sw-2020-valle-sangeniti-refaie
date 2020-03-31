@@ -13,21 +13,21 @@ import java.util.List;
 
 public class Deck extends ArrayList<God>{
 
-    private static Deck istance=null;
+    private static Deck instance=null;
     //private List<God> gods;
 
-    private Deck() {
+    public Deck() {
         loadXML();
     }
 
-    public static Deck getIstance() {
-        if(istance==null)
-            istance = new Deck();
-        return istance;
+    public static Deck getInstance() {
+        if(instance==null)
+            instance = new Deck();
+        return instance;
     }
 
     private boolean loadXML(){
-        File file = new File("src/main/java/it/polimi/ingsw/Model/Source/gods.xml");
+        File file = new File("src/main/Resources/XMLs/gods.xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
         try {
@@ -56,10 +56,27 @@ public class Deck extends ArrayList<God>{
         }
     }
 
-    public void removeGod(God selectedGod) {
-        
+    private void removeGod(God selectedGod) {
         this.remove(selectedGod);
     }
+
+    public God getGod(int choice) {
+        God selectedGod = Deck.getInstance().get(choice-1);
+        removeGod(Deck.getInstance().get(choice-1));
+        return selectedGod;
+    }
+
+
+    @Override
+    public String toString() {
+        for (God god : instance) {
+            System.out.println( (this.indexOf(god) + 1) + ") \nName: " + god.getGodName());
+            System.out.println("Description: " + god.getGodDescription());
+            System.out.println("Power description: " + god.getGodPower().getPowerDescription());
+        }
+        return null;
+        }
+
 
 
 }
