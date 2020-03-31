@@ -1,7 +1,7 @@
 package it.polimi.ingsw.View;
 
-import it.polimi.ingsw.Model.Model;
-import it.polimi.ingsw.Model.Player;
+import it.polimi.ingsw.Model.Game;
+import it.polimi.ingsw.Model.Player.Player;
 
 public class RemoteView extends View {
 
@@ -30,7 +30,7 @@ public class RemoteView extends View {
     }
 
     @Override
-    protected void showModel(Model model) {
+    protected void showGame(Game game1) {
         System.out.println("something");
         //connection.send(model.getOutcome(getPlayer()).printOutcome() + "\tMake your move");
     }

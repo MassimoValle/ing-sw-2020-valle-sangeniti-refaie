@@ -1,10 +1,10 @@
 package it.polimi.ingsw.View;
 
-import it.polimi.ingsw.Model.Model;
+import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.PlayerTurn;
-import it.polimi.ingsw.Model.Player;
+import it.polimi.ingsw.Model.Player.Player;
 
-public abstract class View extends Observable<PlayerTurn> implements Observer<Model> {
+public abstract class View extends Observable<PlayerTurn> implements Observer<Game> {
 
     private Player player;
 
@@ -16,12 +16,12 @@ public abstract class View extends Observable<PlayerTurn> implements Observer<Mo
         return player;
     }
 
-    protected abstract void showModel(Model model);
+    protected abstract void showGame(Game game1);
 
 
     @Override
-    public void update(Model message) {
-        showModel(message);
+    public void update(Game message) {
+        showGame(message);
     }
 }
 

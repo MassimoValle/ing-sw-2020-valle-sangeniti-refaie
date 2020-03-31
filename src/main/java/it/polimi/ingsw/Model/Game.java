@@ -2,17 +2,17 @@ package it.polimi.ingsw.Model;
 
 import it.polimi.ingsw.Model.Map.GameMap;
 import it.polimi.ingsw.Model.Player.Player;
+import it.polimi.ingsw.View.Observable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game {
+public class Game extends Observable<Game> implements Cloneable{
 
     private List<Player> players;
     private Player playerActive;
     private Deck deck;
     private int numberOfPlayers;
-
     private GameMap gameMap;
 
     public Game() {
@@ -69,4 +69,19 @@ public class Game {
                 gameMap.toString() +
                 deck.toString();
     }
+
+    @Override
+    public Game clone(){
+        Game game1 = new Game();
+        game1.players = players;
+        game1.gameMap = gameMap;
+        game1.playerActive = playerActive;
+        game1.deck = deck;
+        game1.numberOfPlayers = numberOfPlayers;
+        return game1;
+    }
+
+
 }
+
+

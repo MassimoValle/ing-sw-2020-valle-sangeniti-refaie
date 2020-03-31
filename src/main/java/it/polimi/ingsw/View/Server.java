@@ -1,7 +1,7 @@
 package it.polimi.ingsw.View;
 
-import it.polimi.ingsw.Model.Model;
-import it.polimi.ingsw.Model.Player;
+import it.polimi.ingsw.Model.Game;
+import it.polimi.ingsw.Model.Player.Player;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -51,10 +51,10 @@ public class Server {
             Connection c2 = waitingConnection.get(keys.get(1));
             RemoteView player1 = new RemoteView(new Player(keys.get(0)), keys.get(1), c1);
             RemoteView player2 = new RemoteView(new Player(keys.get(1)), keys.get(0), c2);
-            Model model = new Model();
+            Game game1 = new Game();
             //Controller controller = new Controller(model);
-            model.addObserver(player1);
-            model.addObserver(player2);
+            game1.addObserver(player1);
+            game1.addObserver(player2);
             //player1.addObserver(controller);
             //player2.addObserver(controller);
             playingConnection.put(c1, c2);

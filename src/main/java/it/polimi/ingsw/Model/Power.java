@@ -10,4 +10,8 @@ public class Power {
         this.powerType = PowerType.matchFromXml(powerType);
         this.powerDescription = powerDescription;
     }
+
+    public String getPowerDescription() {
+        return powerDescription;
+    }
 }
