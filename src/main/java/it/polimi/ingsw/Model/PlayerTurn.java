@@ -1,5 +1,7 @@
 package it.polimi.ingsw.Model;
 
+import it.polimi.ingsw.Model.Player.Player;
+
 public class PlayerTurn {
 
     private final Player player;

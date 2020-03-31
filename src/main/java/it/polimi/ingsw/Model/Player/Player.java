@@ -71,8 +71,5 @@ public class Player {
                 "\nGod: " + this.playerGod.getGodName().toUpperCase();
     }
 
-    public String getPlayerName() {
-        return this.playerName;
-    }
 }
 

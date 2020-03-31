@@ -19,9 +19,6 @@ public class God {
     public String getGodName() { return godName; }
     public String getGodDescription() {return godDescription; }
 
-    public String getGodDescription() {
-        return godDescription;
-    }
 
     public Power getGodPower() {
         return godPower;
