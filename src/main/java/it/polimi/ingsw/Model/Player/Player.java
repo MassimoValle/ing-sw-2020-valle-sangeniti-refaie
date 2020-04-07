@@ -14,6 +14,11 @@ public class Player {
     private List<Worker> playerWorkers;
     private int numWorker = 2;
 
+
+    //ATTRIBUTI PROPRI DEL WORKER (PUR VOLENDO ANCHE DEL PLAYER CHE VENGONO CONTROLLATI NEL CONTROLLER
+    private boolean moved;
+    private boolean built;
+
     public Player(String playerName) {
         this.playerName = playerName;
 
@@ -55,11 +60,29 @@ public class Player {
 
     }
 
+    //TODO metodo che permette al player di decidere quale worker selezionare
+    // (con controllo interno nel caso in cui 1 dei worker risulti bloccato)
+    public Worker choseWorkerToUse(Worker selectedWorker) {
 
-    public void choseWorkerToUse(Worker selectedWorker) {
-        Worker currentWorker = this.playerWorkers.get(this.playerWorkers.indexOf(selectedWorker));
-        // do something
+
+
+        return null;
+        //Worker currentWorker = this.playerWorkers.get(this.playerWorkers.indexOf(selectedWorker));
     }
+
+
+    public boolean hasMoved() { return moved; }
+    public boolean hasBuilt() { return built; }
+
+    public void moveWorker(){
+        // do something
+        moved = true;
+    }
+    public void buildWithWorker(){
+        // do something
+        built = true;
+    }
+
 
 
 

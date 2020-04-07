@@ -56,12 +56,6 @@ public class Game extends Observable<Game> implements Cloneable{
         return this.players;
     }
 
-    public void checkWin() { };
-
-
-
-
-
 
     @Override
     public String toString() {

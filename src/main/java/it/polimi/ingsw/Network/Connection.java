@@ -1,4 +1,7 @@
-package it.polimi.ingsw.View;
+package it.polimi.ingsw.Network;
+
+import it.polimi.ingsw.Network.Server;
+import it.polimi.ingsw.View.Observable;
 
 import java.io.IOException;
 import java.io.PrintWriter;

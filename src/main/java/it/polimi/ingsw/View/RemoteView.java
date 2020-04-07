@@ -2,6 +2,7 @@ package it.polimi.ingsw.View;
 
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
+import it.polimi.ingsw.Network.Connection;
 
 public class RemoteView extends View {
 

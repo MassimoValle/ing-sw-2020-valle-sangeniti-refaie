@@ -1,7 +1,8 @@
-package it.polimi.ingsw.View;
+package it.polimi.ingsw.Network;
 
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
+import it.polimi.ingsw.View.RemoteView;
 
 import java.io.IOException;
 import java.net.ServerSocket;
