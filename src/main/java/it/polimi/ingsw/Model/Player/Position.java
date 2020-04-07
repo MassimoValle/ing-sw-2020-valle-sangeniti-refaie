@@ -35,16 +35,16 @@ public class Position {
     // METHODS TO GET ADJACENT SQUARES
     //TODO da modificare il tipo di ritorno per gestire la dimensione dell'array
     // altrimenti è sempre 8 anche se avrò solo 2 posizioni disponibili
-    public ArrayList<Position> getAdjacentPlaces(Position position) {
+    public ArrayList<Position> getAdjacentPlaces() {
         ArrayList<Position> adjacentPlaces = new ArrayList<>();
-        adjacentPlaces.add(getNorth(position));
-        adjacentPlaces.add(getNorthEast(position));
-        adjacentPlaces.add(getEast(position));
-        adjacentPlaces.add(getSouthEast(position));
-        adjacentPlaces.add(getSouth(position));
-        adjacentPlaces.add(getSouthWest(position));
-        adjacentPlaces.add(getWest(position));
-        adjacentPlaces.add(getNorthWest(position));
+        adjacentPlaces.add(getNorth(this));
+        adjacentPlaces.add(getNorthEast(this));
+        adjacentPlaces.add(getEast(this));
+        adjacentPlaces.add(getSouthEast(this));
+        adjacentPlaces.add(getSouth(this));
+        adjacentPlaces.add(getSouthWest(this));
+        adjacentPlaces.add(getWest(this));
+        adjacentPlaces.add(getNorthWest(this));
         return adjacentPlaces;
     }
 
@@ -127,8 +127,7 @@ public class Position {
 
     @Override
     public String toString() {
-        System.out.println("Position: " + this.getRaw() + " , " + this.getColumn());
-        return null;
+        return "Position: " + this.getRaw() + " , " + this.getColumn();
         }
 
 }

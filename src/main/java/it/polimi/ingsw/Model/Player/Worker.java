@@ -12,7 +12,7 @@ public class Worker {
     //Numero del worker
     private int workersNumber;
 
-
+    private boolean isBlocked;
     private int height;
     private Position workerPosition;
 
@@ -29,6 +29,7 @@ public class Worker {
         this.height = 0;
         this.workerPosition = null;
         this.workersNumber = numberOfWorkers;
+        this.isBlocked = false;
         numberOfWorkersPlusOne();
     }
 
@@ -37,11 +38,11 @@ public class Worker {
         Worker.numberOfWorkers++;
     }
 
-    private Worker placeNewWorker(Worker newWorker, Position position) {
-        newWorker.setWorkerPosition(position);
+    private Worker placeNewWorker(Position position) {
+        this.setWorkerPosition(position);
         //[position.getColumn()][position.getRaw()]
         //this.height = position;
-        return newWorker;
+        return this;
     }
 
     public void setWorkerPosition(Position newPosition) {
@@ -60,8 +61,6 @@ public class Worker {
 
     @Override
     public String toString() {
-        System.out.println("Worker ");
-
-        return null;
+        return "Worker " + workersNumber + "si trova in " + workerPosition;
     }
 }

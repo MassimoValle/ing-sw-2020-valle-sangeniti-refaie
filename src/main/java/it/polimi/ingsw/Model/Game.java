@@ -12,6 +12,9 @@ public class Game extends Observable<Game> implements Cloneable{
     private List<Player> players;
     private Player playerActive;
     private Deck deck;
+
+    //Chosen Gods from the FIRST_PLAYER (GODLIKE PLAYER)
+    private List<God> chosenGodsFromDeck;
     private int numberOfPlayers;
     private GameMap gameMap;
 
@@ -19,6 +22,7 @@ public class Game extends Observable<Game> implements Cloneable{
         this.players = new ArrayList<>();
         this.playerActive = null;
         this.deck = assignNewDeck();
+        this.chosenGodsFromDeck = new ArrayList<>();
         this.numberOfPlayers = 0;
         this.gameMap = assignNewMap();
     }
