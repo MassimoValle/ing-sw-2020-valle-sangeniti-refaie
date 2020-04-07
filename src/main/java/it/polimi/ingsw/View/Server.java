@@ -49,8 +49,8 @@ public class Server {
             List<String> keys = new ArrayList<>(waitingConnection.keySet());
             Connection c1 = waitingConnection.get(keys.get(0));
             Connection c2 = waitingConnection.get(keys.get(1));
-            RemoteView player1 = new RemoteView(new Player(keys.get(0)), keys.get(1), c1);
-            RemoteView player2 = new RemoteView(new Player(keys.get(1)), keys.get(0), c2);
+            RemoteView player1 = new RemoteView(new Player(keys.get(0)), keys.get(1), c1, true);
+            RemoteView player2 = new RemoteView(new Player(keys.get(1)), keys.get(0), c2, false);
             Game game1 = new Game();
             //Controller controller = new Controller(model);
             game1.addObserver(player1);

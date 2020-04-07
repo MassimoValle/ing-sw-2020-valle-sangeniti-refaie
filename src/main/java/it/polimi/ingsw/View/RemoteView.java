@@ -2,6 +2,7 @@ package it.polimi.ingsw.View;
 
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
+import it.polimi.ingsw.Model.PlayerTurn;
 
 public class RemoteView extends View {
 
@@ -11,8 +12,12 @@ public class RemoteView extends View {
         public void update(String message) {
             System.out.println("Received: " + message);
             try{
-                //Choice choice = Choice.parseInput(message);
-                //processChoice(choice);
+                // è il mio turno
+                PlayerTurn turn = new PlayerTurn(RemoteView.this.getPlayer());
+                // do something
+
+                // fine turno
+                RemoteView.this.connection.send("Is your turn!");
             } catch (IllegalArgumentException e) {
                 connection.send("Error! Make your move");
             }
@@ -20,13 +25,23 @@ public class RemoteView extends View {
     }
 
     private Connection connection;
+    private boolean fistPlayer;
 
-    public RemoteView(Player player, String opponent, Connection c){
+    public RemoteView(Player player, String opponent, Connection c, boolean firstPlayer){
         super(player);
+        this.fistPlayer = firstPlayer;
         this.connection = c;
         c.addObserver(new MessageReceiver());
         //c.asyncSend("Your opponent is: " + opponent + "\tMake your move");
-        c.send("Your opponent is: " + opponent + "\tMake your move");
+        c.send("Your opponent is: " + opponent);
+        if(this.fistPlayer){
+            // sei il primo, fai il tuo turno
+            PlayerTurn turn = new PlayerTurn(this.getPlayer());
+            // do something
+
+            // fine turno
+            c.send("Is your turn!");
+        }
     }
 
     @Override
