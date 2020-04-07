@@ -26,7 +26,7 @@ public class God {
 
     @Override
     public String toString() {
-        System.out.println( ("Name: " + this.getGodName()));
+        System.out.println("Name: " + this.getGodName());
         System.out.println("Description: " + this.getGodDescription());
         System.out.println("Power description: " + this.getGodPower().getPowerDescription());
         return null;

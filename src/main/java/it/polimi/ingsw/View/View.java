@@ -1,10 +1,10 @@
 package it.polimi.ingsw.View;
 
+import it.polimi.ingsw.Controller.TurnManager;
 import it.polimi.ingsw.Model.Game;
-import it.polimi.ingsw.Model.PlayerTurn;
 import it.polimi.ingsw.Model.Player.Player;
 
-public abstract class View extends Observable<PlayerTurn> implements Observer<Game> {
+public abstract class View extends Observable<TurnManager> implements Observer<Game> {
 
     private Player player;
 
