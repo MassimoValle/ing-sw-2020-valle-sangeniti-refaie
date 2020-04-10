@@ -1,7 +1,11 @@
 package it.polimi.ingsw.Network;
 
+import it.polimi.ingsw.Controller.GameManager;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
+import it.polimi.ingsw.Network.Message.Message;
+import it.polimi.ingsw.Network.Message.MessageStatus;
+import it.polimi.ingsw.Network.Message.Response;
 import it.polimi.ingsw.View.RemoteView;
 
 import java.io.IOException;
@@ -19,8 +23,12 @@ public class Server {
     private ExecutorService executor = Executors.newFixedThreadPool(128);
 
     private List<Connection> connections = new ArrayList<Connection>();
-    private Map<String, Connection> waitingConnection = new HashMap<>();
+    private Map<String, Connection> clientsConnected = new HashMap<>();
     private Map<Connection, Connection> playingConnection = new HashMap<>();
+    private Map<String, Connection> playersInLobby = new HashMap<>();
+
+    private GameManager gameManager;
+
 
     //Register connection
     private synchronized void registerConnection(Connection c){
@@ -45,11 +53,11 @@ public class Server {
     }
 
     public synchronized void lobby(Connection c, String name){
-        waitingConnection.put(name, c);
-        if(waitingConnection.size() == 2){
-            List<String> keys = new ArrayList<>(waitingConnection.keySet());
-            Connection c1 = waitingConnection.get(keys.get(0));
-            Connection c2 = waitingConnection.get(keys.get(1));
+        clientsConnected.put(name, c);
+        if(clientsConnected.size() == 2){
+            List<String> keys = new ArrayList<>(clientsConnected.keySet());
+            Connection c1 = clientsConnected.get(keys.get(0));
+            Connection c2 = clientsConnected.get(keys.get(1));
             RemoteView player1 = new RemoteView(new Player(keys.get(0)), keys.get(1), c1, true);
             RemoteView player2 = new RemoteView(new Player(keys.get(1)), keys.get(0), c2, false);
             Game game1 = new Game();
@@ -60,7 +68,7 @@ public class Server {
             //player2.addObserver(controller);
             playingConnection.put(c1, c2);
             playingConnection.put(c2, c1);
-            waitingConnection.clear();
+            clientsConnected.clear();
         }
 
     }
@@ -82,4 +90,31 @@ public class Server {
             }
         }
     }
+
+
+
+    //Methods that has to call the GameManager to handle the request by the client
+    //(the message can be whatever)
+    //For exemple: the Username asked at the beginning, a place where to move, ecc
+    public void handleMessage(Message message) {
+        gameManager.handleMessage(message);
+    }
+
+    //Metodo che controlla se il nome immesso dal player è valido/già in uso ecc
+    public void login(String username, Connection connection) {
+        //UserName taken
+        if( playersInLobby.containsKey(username) ) {
+            connection.sendMessage(
+                    new Response("Username preso da un altro giocatore", MessageStatus.ERROR)
+            );
+        } else {
+            playersInLobby.put(username, connection);
+
+            connection.sendMessage(
+                    new Response("Connected! Ready to play!", MessageStatus.OK)
+            );
+        }
+    }
+
+
 }
