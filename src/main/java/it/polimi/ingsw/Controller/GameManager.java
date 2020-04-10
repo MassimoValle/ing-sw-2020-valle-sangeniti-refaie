@@ -21,9 +21,12 @@ public class GameManager {
         this.turnManager = null;
     }
 
+    /*
 
+    //E mo so cazzi, facciamo girare sto controller
+    //TUTTO DEVE PASSARE PER DI QUA! OGNI SINGOLA COSA!
+    public void handleMessage(Message message) {
+    }
 
-
-
-
+     */
 }

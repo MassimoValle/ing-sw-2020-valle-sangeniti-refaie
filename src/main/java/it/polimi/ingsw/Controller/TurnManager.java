@@ -21,12 +21,19 @@ public class TurnManager {
 
 
 
-    public TurnManager(ArrayList<Player> playersInGame){
-     //TODO
+    public TurnManager(Player player) {
+        initTurnManager();
     }
 
-    public void choseWorker() {
+    private void initTurnManager() {
+        //TODO
+    }
 
+    public Player getPlayerActive() {
+        return playerActive;
+    }
+    public void choseWorker() {
+        //TODO
     }
 
 }

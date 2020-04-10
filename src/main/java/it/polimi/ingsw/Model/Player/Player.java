@@ -22,8 +22,9 @@ public class Player {
     public Player(String playerName) {
         this.playerName = playerName;
 
+
         this.playerWorkers = new ArrayList<>();
-        for (int i = 0; i < numWorker; i++) { this.playerWorkers.add(new Worker()); }   // 2 workers
+        for (int i = 0; i < numWorker; i++) { this.playerWorkers.add(new Worker(i + 1)); }   // 2 workers
     }
 
     public God getPlayerGod() {
@@ -34,6 +35,12 @@ public class Player {
     public String getPlayerName() {return playerName; }
 
     public List<Worker> getPlayerWorkers() { return playerWorkers; }
+
+    public Worker addNewWorker() {
+        Worker newWorker = new Worker(getPlayerWorkers().size() + 1);
+        getPlayerWorkers().add(newWorker);
+        return newWorker;
+    }
 
 
     public void choseGodsFromDeck() {

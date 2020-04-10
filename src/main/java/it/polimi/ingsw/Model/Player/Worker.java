@@ -5,10 +5,7 @@ import it.polimi.ingsw.Model.Game;
 import java.util.List;
 
 public class Worker {
-
-    //Quanti worker ha il giocatore
-    private static int numberOfWorkers = 1;
-
+    
     //Numero del worker
     private int workersNumber;
 
@@ -25,18 +22,13 @@ public class Worker {
     public void hasBuilt() { };
 
 
-    public Worker() {
+    public Worker(int workersNumber) {
         this.height = 0;
         this.workerPosition = null;
-        this.workersNumber = numberOfWorkers;
+        this.workersNumber = workersNumber;
         this.isBlocked = false;
-        numberOfWorkersPlusOne();
     }
 
-    //Metodo per tener conto di quanti worker ho in gioco
-    private static void numberOfWorkersPlusOne() {
-        Worker.numberOfWorkers++;
-    }
 
     private Worker placeNewWorker(Position position) {
         this.setWorkerPosition(position);

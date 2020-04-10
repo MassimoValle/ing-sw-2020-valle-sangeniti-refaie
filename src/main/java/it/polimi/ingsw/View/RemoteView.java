@@ -2,7 +2,8 @@ package it.polimi.ingsw.View;
 
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
-import it.polimi.ingsw.Model.PlayerTurn;
+import it.polimi.ingsw.Network.Connection;
+import it.polimi.ingsw.Controller.TurnManager;
 
 public class RemoteView extends View {
 
@@ -13,7 +14,7 @@ public class RemoteView extends View {
             System.out.println("Received: " + message);
             try{
                 // è il mio turno
-                PlayerTurn turn = new PlayerTurn(RemoteView.this.getPlayer());
+                TurnManager turnManager = new TurnManager(RemoteView.this.getPlayer());
                 // do something
 
                 // fine turno
@@ -36,7 +37,7 @@ public class RemoteView extends View {
         c.send("Your opponent is: " + opponent);
         if(this.fistPlayer){
             // sei il primo, fai il tuo turno
-            PlayerTurn turn = new PlayerTurn(this.getPlayer());
+            TurnManager turnManager = new TurnManager(this.getPlayer());
             // do something
 
             // fine turno

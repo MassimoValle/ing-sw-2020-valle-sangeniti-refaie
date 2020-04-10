@@ -1,11 +1,11 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.Model;
 
 import it.polimi.ingsw.Model.Deck;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class testDeck {
+public class DeckTest {
 
     Deck deck;
 

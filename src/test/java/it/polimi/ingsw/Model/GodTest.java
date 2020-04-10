@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.Model;
 
 import it.polimi.ingsw.Model.God;
 import it.polimi.ingsw.Model.Power;
@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class testGod {
+public class GodTest {
 
     God god;
 

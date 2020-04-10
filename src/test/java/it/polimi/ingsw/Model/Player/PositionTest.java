@@ -15,7 +15,7 @@ public class PositionTest {
     public void checkList() {
         Position position = new Position(0,0);
         ArrayList<Position> list = new ArrayList<>();
-        list = position.getAdjacentPlaces(position);
+        list = position.getAdjacentPlaces();
         list.toString();
         System.out.println(list.size());
     }

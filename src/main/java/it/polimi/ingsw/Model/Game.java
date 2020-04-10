@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Model;
 
+import it.polimi.ingsw.Exceptions.Game.PlayerNotFoundException;
 import it.polimi.ingsw.Model.Map.GameMap;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.View.Observable;
@@ -50,6 +51,20 @@ public class Game extends Observable<Game> implements Cloneable{
         players.add(newPlayer);
         numberOfPlayersPlusOne();
         return newPlayer;
+    }
+
+    public Player searchPlayerByName(String player) throws PlayerNotFoundException {
+        Player result = null;
+        for (Player playerInGame : getPlayers()) {
+            if (playerInGame.getPlayerName().equals(player)) {
+                result = playerInGame;
+                break;
+            }
+        }
+        if (result == null) {
+            throw new PlayerNotFoundException("Giocatore non trovato");
+        }
+        return result;
     }
 
     private void numberOfPlayersPlusOne() {
