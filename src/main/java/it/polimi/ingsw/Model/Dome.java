@@ -4,7 +4,7 @@ public class Dome {
 
 
 
-    public void initDome() { };
+    public void initDome() {};
 
     public void placeDome() { };
 }

@@ -1,6 +1,8 @@
 package it.polimi.ingsw.Controller;
 
 import it.polimi.ingsw.Model.Game;
+import it.polimi.ingsw.Network.Message.Message;
+import it.polimi.ingsw.Network.Message.MessageContent;
 import it.polimi.ingsw.Network.Server;
 
 public class GameManager {
@@ -25,8 +27,15 @@ public class GameManager {
 
     //E mo so cazzi, facciamo girare sto controller
     //TUTTO DEVE PASSARE PER DI QUA! OGNI SINGOLA COSA!
+     */
     public void handleMessage(Message message) {
+        switch(message.getMessageContent()) {
+            case YOUR_TURN: //
+            case END_OF_TURN: //
+            case WORKER_MOVED: //
+            case WORKER_CHOSEN: //
+            case PLAYERS_HAS_BUILT: //
+        }
     }
 
-     */
 }

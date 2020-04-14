@@ -18,7 +18,6 @@ public class Worker {
     private List<Position> adjacentPosition;
 
     public void hasMoved() { };
-
     public void hasBuilt() { };
 
 
@@ -29,12 +28,29 @@ public class Worker {
         this.isBlocked = false;
     }
 
+    public Position getWorkerPosition() {
+        return workerPosition;
+    }
+
+    public int getWorkersNumber() {
+        return workersNumber;
+    }
+
+    //TODO da correggere
 
     private Worker placeNewWorker(Position position) {
         this.setWorkerPosition(position);
-        //[position.getColumn()][position.getRaw()]
-        //this.height = position;
         return this;
+    }
+
+    //Controls whether it can move or if it's stuck
+    //It also check if after moving it is still able to build
+    public boolean isWorkerStuck(Position from) {
+
+        //TODO: How to call a method from inside GameMap?
+        //Method requested: public ArrayList<Position> getReachableAdjacentPlaces(Position from)
+
+        return false;
     }
 
     public void setWorkerPosition(Position newPosition) {
@@ -43,13 +59,7 @@ public class Worker {
         }
     }
 
-    public Position getWorkerPosition() {
-        return workerPosition;
-    }
 
-    public int getWorkersNumber() {
-        return workersNumber;
-    }
 
     @Override
     public String toString() {

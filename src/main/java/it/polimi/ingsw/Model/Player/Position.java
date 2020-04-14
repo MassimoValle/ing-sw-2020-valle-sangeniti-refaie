@@ -1,7 +1,6 @@
 package it.polimi.ingsw.Model.Player;
 
 import java.util.ArrayList;
-import java.util.List;
 
 //Posizione relativa alla board
 
@@ -10,12 +9,13 @@ public class Position {
     private int raw;
     private int column;
 
-
+    //CONSTRUCTOR
     public Position(int raw, int column) {
         this.raw = raw;
         this.column = column;
     }
 
+    //SETTER & GETTER
     public void setColumn(int column) {
         this.column = column;
     }
@@ -32,19 +32,23 @@ public class Position {
         return this.raw;
     }
 
+
+
+
     // METHODS TO GET ADJACENT SQUARES
-    //TODO da modificare il tipo di ritorno per gestire la dimensione dell'array
-    // altrimenti è sempre 8 anche se avrò solo 2 posizioni disponibili
+
     public ArrayList<Position> getAdjacentPlaces() {
         ArrayList<Position> adjacentPlaces = new ArrayList<>();
-        adjacentPlaces.add(getNorth(this));
-        adjacentPlaces.add(getNorthEast(this));
-        adjacentPlaces.add(getEast(this));
-        adjacentPlaces.add(getSouthEast(this));
-        adjacentPlaces.add(getSouth(this));
-        adjacentPlaces.add(getSouthWest(this));
-        adjacentPlaces.add(getWest(this));
-        adjacentPlaces.add(getNorthWest(this));
+
+        if (getNorth(this) != null ) adjacentPlaces.add(getNorth(this));
+        if (getNorthEast(this) != null ) adjacentPlaces.add(getNorthEast(this));
+        if (getEast(this) != null ) adjacentPlaces.add(getEast(this));
+        if (getSouthEast(this) != null ) adjacentPlaces.add(getSouthEast(this));
+        if (getSouth(this) != null ) adjacentPlaces.add(getSouth(this));
+        if (getSouthWest(this) != null ) adjacentPlaces.add(getSouthWest(this));
+        if (getWest(this) != null ) adjacentPlaces.add(getWest(this));
+        if (getNorthWest(this) != null ) adjacentPlaces.add(getNorthWest(this));
+
         return adjacentPlaces;
     }
 
@@ -111,7 +115,7 @@ public class Position {
     }
 
 
-    //Method to check if a square is taken by another player's worker
+    //Check if a square is taken by another player's worker
     boolean isFree() {
         //TODO
         return true;

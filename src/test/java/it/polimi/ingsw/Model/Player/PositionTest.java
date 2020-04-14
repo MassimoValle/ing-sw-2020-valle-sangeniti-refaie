@@ -11,12 +11,13 @@ public class PositionTest {
 
     GameMap gameMap = new GameMap();
 
+
     @Test
     public void checkList() {
-        Position position = new Position(0,0);
+        Position position = new Position(1,1);
         ArrayList<Position> list = new ArrayList<>();
         list = position.getAdjacentPlaces();
-        list.toString();
+        System.out.println(list.toString());
         System.out.println(list.size());
     }
 

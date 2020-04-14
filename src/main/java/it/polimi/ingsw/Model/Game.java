@@ -28,6 +28,9 @@ public class Game extends Observable<Game> implements Cloneable{
         this.gameMap = assignNewMap();
     }
 
+    public Game getGame() {
+        return this.clone();
+    }
 
     private GameMap assignNewMap() {
         return new GameMap();

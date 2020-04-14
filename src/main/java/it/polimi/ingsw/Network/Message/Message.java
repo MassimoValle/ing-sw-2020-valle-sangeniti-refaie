@@ -2,24 +2,24 @@ package it.polimi.ingsw.Network.Message;
 
 public abstract class Message {
     private String messageSender;
-    private MessageType messageType;
+    private MessageContent messageContent;
 
 
-    public Message(String messageSender, MessageType messageType) {
+    public Message(String messageSender, MessageContent messageContent) {
         this.messageSender = messageSender;
-        this.messageType = messageType;
+        this.messageContent = messageContent;
     }
 
-    public Message(MessageType messageType) {
-        this.messageType = messageType;
+    public Message(MessageContent messageContent) {
+        this.messageContent = messageContent;
     }
 
     public String getMessageSender() {
         return messageSender;
     }
 
-    public MessageType getMessageType() {
-        return messageType;
+    public MessageContent getMessageContent() {
+        return messageContent;
     }
 
 
