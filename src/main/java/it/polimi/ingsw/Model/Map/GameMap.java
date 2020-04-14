@@ -90,16 +90,34 @@ public class GameMap {
     public void squareHeightPlusOne(Square square) {
        square.heightPlusOne();
     }
+    public boolean isPositionValid(Position position){
+       if (isPositionOnMapReal(position) && isPositionFree(position))
+           return true;
+       return false;
+    }
 
-    //TODO
+    private boolean isPositionOnMapReal(Position position){  //verifica se la posizione è valida sulla mappa
+       if ( position.getColumn() < 0 || position.getColumn() >= COLUMNS ||
+            position.getRaw() < 0 || position.getRaw() >= RAWS)
+           return false;
+       return true;
+   }
+
+   private boolean isPositionFree(Position position){
+       if (board[position.getRaw()][position.getColumn()].hasWorkerOn())
+           return false;
+       return true;
+   }
+
     @Override
     public String toString() {
+       String string = "";
        for (int i=0; i<RAWS; i++) {
            for ( int j=0; j<COLUMNS; j++) {
-               System.out.println("Square" + i + " , " + j + " Lvl :" + board[i][j].getHeight());
+               string = string.concat("Square " + i + " , " + j + " Lvl :" + board[i][j].getHeight() + "\n");
            }
        }
-        return null;
+        return string;
     }
 
 }
