@@ -1,25 +1,20 @@
 package it.polimi.ingsw.Network;
 
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.MessageType;
-import it.polimi.ingsw.Network.Server;
 import it.polimi.ingsw.View.Observable;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.sql.SQLOutput;
-import java.util.Scanner;
 
 public class Connection extends Observable<String> implements Runnable {
 
     private Server server;
     private Socket socket;
 
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
+    private ObjectInputStream socketIn;
+    private ObjectOutputStream socketOut;
 
     private String name;
 
@@ -34,13 +29,15 @@ public class Connection extends Observable<String> implements Runnable {
         this.server = server;
         this.active = true;
 
+        System.out.println("Connessione stabilita con un client");
+
         try {
             synchronized (inLock) {
-                this.in = new ObjectInputStream(socket.getInputStream());
+                this.socketIn = new ObjectInputStream(socket.getInputStream());
             }
 
             synchronized (outLock) {
-                this.out = new ObjectOutputStream(socket.getOutputStream());
+                this.socketOut = new ObjectOutputStream(socket.getOutputStream());
             }
         } catch (IOException e) {
             System.out.println(e.toString());
@@ -56,8 +53,8 @@ public class Connection extends Observable<String> implements Runnable {
         if (isActive()) {
             try {
                 synchronized (outLock) {
-                    out.writeObject(message);
-                    out.flush();
+                    socketOut.writeObject(message);
+                    socketOut.flush();
                 }
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
@@ -100,12 +97,10 @@ public class Connection extends Observable<String> implements Runnable {
         while (isActive()) {
             try {
                 synchronized (inLock) {
-                    Message message = (Message) in.readObject();
-                    if (message.getMessageType() == MessageType.FIRST_CONNECTION) {
-                        server.login(message.getMessageSender(), this);
-                    } else {
-                        server.handleMessage(message);
-                    }
+                    Message message = (Message) socketIn.readObject();
+                    server.handleMessage(message);
+
+
                 }
 
                 /*

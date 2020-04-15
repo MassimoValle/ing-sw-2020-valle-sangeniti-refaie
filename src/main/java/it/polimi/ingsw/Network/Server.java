@@ -27,6 +27,8 @@ public class Server {
     private Map<Connection, Connection> playingConnection = new HashMap<>();
     private Map<String, Connection> playersInLobby = new HashMap<>();
 
+    private int clientsNum;
+
     private GameManager gameManager;
 
 
@@ -75,20 +77,30 @@ public class Server {
 
     public Server() throws IOException {
         this.serverSocket = new ServerSocket(PORT);
+
+        this.clientsNum = 0;
     }
 
     public void run(){
         System.out.println("Server listening on port: " + PORT);
+
         while(true){
             try {
                 Socket socket = serverSocket.accept();
-                Connection connection = new Connection(socket, this);
-                registerConnection(connection);
-                executor.submit(connection);
+                newConnection(socket);//Blocking call --server code will stop here and waiting for connection
+
+
             } catch (IOException e){
                 System.err.println("Connection error!");
             }
         }
+    }
+
+    private void newConnection(Socket socket) {
+        clientsNum++;
+        Connection connection = new Connection(socket, this);
+        registerConnection(connection);
+        executor.submit(connection);
     }
 
 
@@ -98,6 +110,19 @@ public class Server {
     //For exemple: the Username asked at the beginning, a place where to move, ecc
     public void handleMessage(Message message) {
         gameManager.handleMessage(message);
+        switch (message.getMessageContent()) {
+            case LOGIN:
+                System.out.println("Il client " + message.getMessageSender() + "ha inviato lo username");
+                System.out.println("Username scelto: " + message.getMessageSender());
+
+
+            case CHECK:
+                System.out.println(message.toString());
+                //Invio sulla connessione aperta il messaggio di risposta
+                connections.get(0).sendMessage(
+                        new Response("Hai inviato un messaggio di tipo CHECK", MessageStatus.ERROR)
+                );
+        }
     }
 
     //Metodo che controlla se il nome immesso dal player è valido/già in uso ecc
@@ -105,7 +130,7 @@ public class Server {
         //UserName taken
         if( playersInLobby.containsKey(username) ) {
             connection.sendMessage(
-                    new Response("Username preso da un altro giocatore", MessageStatus.ERROR)
+                    new Response("Username taken", MessageStatus.ERROR)
             );
         } else {
             playersInLobby.put(username, connection);

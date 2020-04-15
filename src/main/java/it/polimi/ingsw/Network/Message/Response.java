@@ -6,10 +6,10 @@ public class Response extends Message {
     private final MessageStatus status;
 
 
-    public Response(String message, MessageStatus status) {
-        super("---", MessageType.CONNECTION_RESPONSE);
+    public Response(String message, MessageStatus messageStatus) {
+        super("[SERVER]", MessageContent.CONNECTION_RESPONSE);
         this.message = message;
-        this.status = status;
+        this.status = messageStatus;
     }
 
     public String getMessage() {

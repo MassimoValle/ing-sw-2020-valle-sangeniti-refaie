@@ -10,7 +10,7 @@ public class ClientMain {
         try {
             client1.run();
         } catch (IOException ex) {
-            System.out.println("Erroreeeeee");
+            ex.printStackTrace();
         }
 
     }

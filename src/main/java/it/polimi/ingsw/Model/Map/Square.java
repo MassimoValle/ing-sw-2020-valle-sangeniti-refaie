@@ -30,14 +30,6 @@ public class Square {
 
     public boolean hasBeenBuiltOver() {
         return builtOver;
-    public void setWorkerOn(boolean bool){
-        this.workerOn = bool;
-    }
-
-    }
-
-    public void setBuiltOver(boolean bool){
-        this.builtOver = bool;
     }
 
     public void heightPlusOne() {
