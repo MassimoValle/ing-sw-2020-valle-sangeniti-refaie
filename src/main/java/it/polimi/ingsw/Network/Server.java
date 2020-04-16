@@ -56,7 +56,7 @@ public class Server {
 
     public synchronized void lobby(Connection c, String name){
         clientsConnected.put(name, c);
-        if(clientsConnected.size() == 2){
+        /*if(clientsConnected.size() == 2){
             List<String> keys = new ArrayList<>(clientsConnected.keySet());
             Connection c1 = clientsConnected.get(keys.get(0));
             Connection c2 = clientsConnected.get(keys.get(1));
@@ -71,7 +71,7 @@ public class Server {
             playingConnection.put(c1, c2);
             playingConnection.put(c2, c1);
             clientsConnected.clear();
-        }
+        }*/
 
     }
 
@@ -108,37 +108,47 @@ public class Server {
     //Methods that has to call the GameManager to handle the request by the client
     //(the message can be whatever)
     //For exemple: the Username asked at the beginning, a place where to move, ecc
-    public void handleMessage(Message message) {
-        gameManager.handleMessage(message);
+    public void handleMessage(Message message, Connection connection) {
+        //gameManager.handleMessage(message);
         switch (message.getMessageContent()) {
             case LOGIN:
-                System.out.println("Il client " + message.getMessageSender() + "ha inviato lo username");
-                System.out.println("Username scelto: " + message.getMessageSender());
 
+                if(connections.size() == 1) {
+                    registerClient(message.getMessageSender(), connection);
+                } else {
+                    login(message.getMessageSender(), connection);
+                }
+                break;
 
             case CHECK:
                 System.out.println(message.toString());
                 //Invio sulla connessione aperta il messaggio di risposta
-                connections.get(0).sendMessage(
+                clientsConnected.get(message.getMessageSender()).sendMessage(
                         new Response("Hai inviato un messaggio di tipo CHECK", MessageStatus.ERROR)
                 );
+                break;
         }
     }
 
     //Metodo che controlla se il nome immesso dal player è valido/già in uso ecc
     public void login(String username, Connection connection) {
         //UserName taken
-        if( playersInLobby.containsKey(username) ) {
+        if( clientsConnected.containsKey(username) ) {
             connection.sendMessage(
                     new Response("Username taken", MessageStatus.ERROR)
             );
         } else {
-            playersInLobby.put(username, connection);
-
-            connection.sendMessage(
-                    new Response("Connected! Ready to play!", MessageStatus.OK)
-            );
+            registerClient(username, connection);
         }
+    }
+
+    public void registerClient(String username, Connection connection){
+        clientsConnected.put(username, connection);
+        System.out.println("CLIENT REGISTRATO: " + username);
+
+        connection.sendMessage(
+                new Response("Connected! Ready to play!", MessageStatus.OK)
+        );
     }
 
 

@@ -57,7 +57,7 @@ public class Connection extends Observable<String> implements Runnable {
                     socketOut.flush();
                 }
             } catch (IOException ex) {
-                System.out.println(ex.getMessage());
+                ex.printStackTrace();
                 closeConnection();
             }
         }
@@ -77,7 +77,7 @@ public class Connection extends Observable<String> implements Runnable {
             try {
                 socket.close();
             } catch (IOException e){
-                System.err.println(e.getMessage());
+                e.printStackTrace();
             }
 
             active = false;
@@ -98,7 +98,13 @@ public class Connection extends Observable<String> implements Runnable {
             try {
                 synchronized (inLock) {
                     Message message = (Message) socketIn.readObject();
-                    server.handleMessage(message);
+
+                    server.handleMessage(message, this);
+
+                    if(name == null){
+                        name = message.getMessageSender();
+                        server.lobby(this, name);
+                    }
 
 
                 }
