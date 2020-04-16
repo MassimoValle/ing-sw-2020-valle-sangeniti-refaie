@@ -1,9 +1,6 @@
 package it.polimi.ingsw.Network;
 
-import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.MessageContent;
-import it.polimi.ingsw.Network.Message.PlayerLoginRequest;
-import it.polimi.ingsw.Network.Message.Request;
+import it.polimi.ingsw.Network.Message.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -19,8 +16,8 @@ public class Client {
     private int port;
 
 
-    private Scanner in;
-    private PrintStream out;
+    private Scanner consoleIn;
+    private PrintStream consoleOut;
 
     private ObjectInputStream socketIn;
     private ObjectOutputStream socketOut;
@@ -29,8 +26,8 @@ public class Client {
         this.ip = ip;
         this.port = port;
 
-        in = new Scanner(System.in);
-        out = new PrintStream(System.out, true);
+        consoleIn = new Scanner(System.in);
+        consoleOut = new PrintStream(System.out, true);
     }
 
     private String getUsername() {
@@ -38,7 +35,7 @@ public class Client {
     }
 
     public void sendMessage(Message message) throws IOException {
-        if (out != null) {
+        if (consoleOut != null) {
 
             // System.out.println(message.toString()); //printo sul client
 
@@ -46,6 +43,17 @@ public class Client {
             socketOut.reset();
 
         }
+    }
+
+    public boolean receiveMessage() throws IOException{
+        Message received;
+        try {
+            received = (Message) socketIn.readObject();
+            return handleMessage((Response) received);
+        } catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void startConnection() throws IOException {
@@ -66,23 +74,46 @@ public class Client {
 
     //Ask the user to insert a username
     private void askUsername() {
-        out.println("Enter your username:");
+        consoleOut.print("Enter your username: ");
 
         //Setto il nome utente
         do {
-            out.print(">>> ");
-
-
-            if (in.hasNextLine()) {
+            if (consoleIn.hasNextLine()) {
                 String currentUsername;
-                currentUsername = in.nextLine();
+                currentUsername = consoleIn.nextLine();
 
                 username = currentUsername;
             }
         } while (username == null);
 
-        out.printf("Hi %s!%n", username);
-        out.println("Have a nice day");
+        consoleOut.println("YOUR USERNAME: " + username);
+        //consoleOut.println("Have a nice day");
+
+    }
+
+    private void doTurn() throws IOException{
+        String inputLine = consoleIn.nextLine();
+        sendMessage(
+                new Request(getUsername(), MessageContent.CHECK, inputLine)
+        );
+
+        receiveMessage();
+
+
+    }
+
+    private boolean handleMessage(Response message){
+
+        String out = "SERVER: ";
+
+        switch (message.getMessageStatus()){
+            case OK:
+                consoleOut.println(out + message.getMessage());
+                return true;
+            default: ERROR:
+                consoleOut.println(out + "error");
+                return false;
+        }
 
     }
 
@@ -91,27 +122,30 @@ public class Client {
     public void run() throws IOException {
 
         startConnection();
-        askUsername();
 
-        sendMessage(
-                new PlayerLoginRequest(username)
-        );
+        do{
+            askUsername();
 
-        String socketLine;
+            sendMessage(
+                    new PlayerLoginRequest(username)
+            );
+        }while (!receiveMessage());
+
+
+
+
+        //String socketLine;
          
         while(!Thread.currentThread().isInterrupted()) {
             try{
-                out.print(">>> ");
-                socketLine = in.nextLine();
+                /*consoleOut.print(">>> ");
+                socketLine = consoleIn.nextLine();
                 sendMessage(
                         new Request(getUsername(), MessageContent.CHECK, socketLine)
-                );
+                );*/
 
                 while (true){
-                    String inputLine = in.nextLine();
-                    sendMessage(
-                            new Request(getUsername(), MessageContent.CHECK, inputLine)
-                    );
+                    doTurn();
                 }
             } catch(NoSuchElementException e){
                 System.out.println("Connection closed from the client side");
