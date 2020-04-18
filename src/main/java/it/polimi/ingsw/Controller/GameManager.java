@@ -28,7 +28,7 @@ public class GameManager {
     //E mo so cazzi, facciamo girare sto controller
     //TUTTO DEVE PASSARE PER DI QUA! OGNI SINGOLA COSA!
      */
-    public void handleMessage(Message message) {
+    public static void handleMessage(Message message) {
         switch(message.getMessageContent()) {
             case YOUR_TURN: //
             case END_OF_TURN: //

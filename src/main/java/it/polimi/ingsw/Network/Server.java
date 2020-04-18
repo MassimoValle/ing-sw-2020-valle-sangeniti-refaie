@@ -4,8 +4,8 @@ import it.polimi.ingsw.Controller.GameManager;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Network.Message.Message;
+import it.polimi.ingsw.Network.Message.MessageContent;
 import it.polimi.ingsw.Network.Message.MessageStatus;
-import it.polimi.ingsw.Network.Message.Response;
 import it.polimi.ingsw.View.RemoteView;
 
 import java.io.IOException;
@@ -121,10 +121,10 @@ public class Server {
                 break;
 
             case CHECK:
-                System.out.println(message.toString());
+                System.out.println(message.getMessageSender() + ": " + message.getMessage());
                 //Invio sulla connessione aperta il messaggio di risposta
                 clientsConnected.get(message.getMessageSender()).sendMessage(
-                        new Response("Hai inviato un messaggio di tipo CHECK", MessageStatus.ERROR)
+                        new Message("[SERVER]", MessageContent.CHECK, MessageStatus.ERROR, "Hai inviato un messaggio di tipo CHECK")
                 );
                 break;
         }
@@ -135,7 +135,7 @@ public class Server {
         //UserName taken
         if( clientsConnected.containsKey(username) ) {
             connection.sendMessage(
-                    new Response("Username taken", MessageStatus.ERROR)
+                    new Message("[SERVER]", MessageContent.LOGIN, MessageStatus.ERROR, "Username taken")
             );
         } else {
             registerClient(username, connection);
@@ -147,7 +147,7 @@ public class Server {
         System.out.println("CLIENT REGISTRATO: " + username);
 
         connection.sendMessage(
-                new Response("Connected! Ready to play!", MessageStatus.OK)
+                new Message("[SERVER]", MessageContent.LOGIN, MessageStatus.OK, "Connected! Ready to play!")
         );
     }
 

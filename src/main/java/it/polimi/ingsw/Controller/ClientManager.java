@@ -37,28 +37,32 @@ public class ClientManager {
 
     public void handleMessageFromServer(Message message){
 
+        debug();
+
         String out = "SERVER: ";
         consoleOut.println(out + message.getMessageContent());
 
-        switch (message.getMessageContent()){
-            case FIRST_CONNECTION:
-                break;
-            case CONNECTION_RESPONSE:
-                break;
-            case LOGIN:
-                break;
-            case YOUR_TURN:
-                break;
-            case WORKER_CHOSEN:
-                break;
-            case WORKER_MOVED:
-                break;
-            case PLAYERS_HAS_BUILT:
-                break;
-            case END_OF_TURN:
-                break;
-            default: CHECK:
-                break;
+        if(message.getMessageContent() != null) {
+            switch (message.getMessageContent()){
+                case FIRST_CONNECTION:
+                    break;
+                case CONNECTION_RESPONSE:
+                    break;
+                case LOGIN:
+                    break;
+                case YOUR_TURN:
+                    break;
+                case WORKER_CHOSEN:
+                    break;
+                case WORKER_MOVED:
+                    break;
+                case PLAYERS_HAS_BUILT:
+                    break;
+                case END_OF_TURN:
+                    break;
+                default: CHECK:
+                    break;
+            }
         }
 
     }
@@ -84,47 +88,19 @@ public class ClientManager {
 
     }
 
-    public void doTurn() throws IOException {
-
-        // #YOUR_TURN
-        beginPhase();
-        // #WORKER_CHOSEN
-        chooseWorker();
-        // #WORKER_MOVED
-        moveWorker();
-        // #PLAYERS_HAS_BUILT
-        buildWithWorker();
-        // #END_OF_TURN
-        endPhase();
-
-
-
+    public void debug() {
         // #DEBUG
-        debug();
-    }
+        try {
+            consoleOut.print("DEBUG: ");
+            String inputLine = consoleIn.nextLine();
+            Client.sendMessage(
+                    new Message(getUsername(), MessageContent.CHECK, inputLine)
+            );
 
-    private void debug() throws IOException {
-        consoleOut.print("DEBUG: ");
-        String inputLine = consoleIn.nextLine();
-        Client.sendMessage(
-                new Message(getUsername(), MessageContent.CHECK, inputLine)
-        );
+            Client.receiveMessage();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        Client.receiveMessage();
-    }
-
-    private void endPhase() {
-    }
-
-    private void buildWithWorker() {
-    }
-
-    private void moveWorker() {
-    }
-
-    private void chooseWorker() {
-    }
-
-    private void beginPhase() {
     }
 }

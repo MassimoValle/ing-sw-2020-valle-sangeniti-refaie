@@ -39,7 +39,10 @@ public class Client {
         try {
             received = (Message) socketIn.readObject();
 
-            if(!checkStatus(received)) return false;
+            if(!checkStatus(received)){
+                System.out.println("SERVER: " + received.getMessageContent() + " ERROR");
+                return false;
+            }
 
             clientManager.handleMessageFromServer(received);
         } catch (ClassNotFoundException e){
@@ -72,12 +75,6 @@ public class Client {
     }
 
 
-    private void doTurn() throws IOException{
-
-        clientManager.doTurn();
-
-    }
-
     public void run() throws IOException {
 
         startConnection();
@@ -96,7 +93,7 @@ public class Client {
             try{
 
                 while (true){
-                    doTurn();
+                    receiveMessage();
                 }
 
             } catch(NoSuchElementException e){
