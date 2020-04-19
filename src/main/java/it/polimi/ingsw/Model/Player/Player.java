@@ -63,15 +63,20 @@ public class Player {
     }
 
 
-    public void placeWorker(Position position) {
-
+    /**
+     * Place the {@link Worker workerSelected} in the {@link Position position}
+     *
+     * @param workerSelected the worker selected by the player
+     * @param position       the position chosen by the placer where to place the Worker
+     */
+    public void placeWorker(Worker workerSelected, Position position) {
+        workerSelected.setPosition(position);
+        workerSelected.isPlaced();
     }
 
     //TODO metodo che permette al player di decidere quale worker selezionare
     // (con controllo interno nel caso in cui 1 dei worker risulti bloccato)
     public Worker choseWorkerToUse(Worker selectedWorker) {
-
-
 
         return null;
         //Worker currentWorker = this.playerWorkers.get(this.playerWorkers.indexOf(selectedWorker));
@@ -97,8 +102,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player Name: " + this.playerName.toUpperCase() +
-                "\nGod: " + this.playerGod.getGodName().toUpperCase();
+        return "Player Name: " + this.playerName.toUpperCase();
     }
 
 }

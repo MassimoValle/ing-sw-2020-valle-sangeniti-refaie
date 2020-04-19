@@ -1,17 +1,19 @@
 package it.polimi.ingsw.Model.Player;
 
+import it.polimi.ingsw.Model.Game;
+
 import java.util.ArrayList;
 
 //Posizione relativa alla board
 
 public class Position {
 
-    private int raw;
+    private int row;
     private int column;
 
     //CONSTRUCTOR
-    public Position(int raw, int column) {
-        this.raw = raw;
+    public Position(int row, int column) {
+        this.row = row;
         this.column = column;
     }
 
@@ -20,16 +22,16 @@ public class Position {
         this.column = column;
     }
 
-    public void setRaw(int raw) {
-        this.raw = raw;
+    public void setRow(int row) {
+        this.row = row;
     }
 
     public int getColumn(){
         return this.column;
     }
 
-    public int getRaw() {
-        return this.raw;
+    public int getRow() {
+        return this.row;
     }
 
 
@@ -37,6 +39,12 @@ public class Position {
 
     // METHODS TO GET ADJACENT SQUARES
 
+    /**
+     * This check the {@link it.polimi.ingsw.Model.Map.GameMap gameMap } boundaries and
+     * return the position between [0,0] and [4,4]
+     *
+     * @return the adjacent places
+     */
     public ArrayList<Position> getAdjacentPlaces() {
         ArrayList<Position> adjacentPlaces = new ArrayList<>();
 
@@ -53,18 +61,18 @@ public class Position {
     }
 
     private Position getNorth(Position position) {
-        if(position.getRaw() == 0) {
+        if(position.getRow() == 0) {
             return null;
         } else {
-            return new Position(position.getRaw() - 1, position.getColumn());
+            return new Position(position.getRow() - 1, position.getColumn());
         }
     }
 
     private Position getNorthEast(Position position) {
-        if (position.getRaw() == 0 || position.getColumn() == 4 ) {
+        if (position.getRow() == 0 || position.getColumn() == 4 ) {
             return null;
         } else {
-            return new Position(position.getRaw() - 1 , position.getColumn() + 1);
+            return new Position(position.getRow() - 1 , position.getColumn() + 1);
         }
     }
 
@@ -72,29 +80,29 @@ public class Position {
         if (position.getColumn() == 4 ) {
             return null;
         } else {
-            return new Position(position.getRaw(), position.getColumn() +1);
+            return new Position(position.getRow(), position.getColumn() +1);
         }
     }
 
     private Position getSouthEast(Position position) {
-        if (position.getColumn() == 4 || position.getRaw() == 4 ) {
+        if (position.getColumn() == 4 || position.getRow() == 4 ) {
             return null;
         } else {
-            return new Position(position.getRaw() + 1, position.getColumn() + 1);
+            return new Position(position.getRow() + 1, position.getColumn() + 1);
         }
     }
 
     private Position getSouth(Position position) {
-        if (position.getRaw() == 4) {
+        if (position.getRow() == 4) {
             return null;
-        } else return new Position(position.getRaw() + 1, position.getColumn());
+        } else return new Position(position.getRow() + 1, position.getColumn());
     }
 
     private Position getSouthWest(Position position) {
-        if (position.getRaw() == 4 || position.getColumn() == 0) {
+        if (position.getRow() == 4 || position.getColumn() == 0) {
             return null;
         } else {
-            return new Position(position.getRaw() + 1, position.getColumn() - 1);
+            return new Position(position.getRow() + 1, position.getColumn() - 1);
         }
     }
 
@@ -102,36 +110,42 @@ public class Position {
         if (position.getColumn() == 0) {
             return null;
         } else {
-            return new Position(position.getRaw(), position.getColumn() - 1);
+            return new Position(position.getRow(), position.getColumn() - 1);
         }
     }
 
     private Position getNorthWest(Position position) {
-        if (position.getRaw() == 0 || position.getColumn() == 0) {
+        if (position.getRow() == 0 || position.getColumn() == 0) {
             return null;
         } else {
-            return new Position(position.getRaw() - 1, position.getColumn() - 1 );
+            return new Position(position.getRow() - 1, position.getColumn() - 1 );
         }
     }
 
 
-    //Check if a square is taken by another player's worker
+    /**
+     * Check if a {@link it.polimi.ingsw.Model.Map.Square square} has someone else's worker on.
+     *
+     * @return boolean
+     */
+//
     boolean isFree() {
-        //TODO
-        return true;
+        if ( Game.getInstance().getGameMap().getBoard()[this.row][this.column].hasWorkerOn() ) {
+            return false;
+        } else return true;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Position) {
-            return ((Position) obj).getColumn() == this.getColumn() && ((Position) obj).getRaw() == this.getRaw();
+            return ((Position) obj).getColumn() == this.getColumn() && ((Position) obj).getRow() == this.getRow();
         }
         return false;
     }
 
     @Override
     public String toString() {
-        return "Position: " + this.getRaw() + " , " + this.getColumn();
+        return "Position: " + this.getRow() + " , " + this.getColumn();
         }
 
 }

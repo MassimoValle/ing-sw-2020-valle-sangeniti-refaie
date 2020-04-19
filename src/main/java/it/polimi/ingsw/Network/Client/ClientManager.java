@@ -1,6 +1,5 @@
-package it.polimi.ingsw.Controller;
+package it.polimi.ingsw.Network.Client;
 
-import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.Network.Message.MessageContent;
 
@@ -39,7 +38,7 @@ public class ClientManager {
 
         debug();
 
-        String out = "SERVER: ";
+        String out = "[SERVER] : ";
         consoleOut.println(out + message.getMessageContent());
 
         if(message.getMessageContent() != null) {
@@ -103,4 +102,5 @@ public class ClientManager {
         }
 
     }
+
 }

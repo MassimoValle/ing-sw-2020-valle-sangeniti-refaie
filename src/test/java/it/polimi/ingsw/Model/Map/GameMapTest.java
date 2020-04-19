@@ -11,6 +11,7 @@ public class GameMapTest {
     GameMap gameMap;
     Position pos1 = new Position(0,0);
     Position pos2 = new Position(0,1);
+    Position pos3 = new Position(1,0);
 
     @Before
     public void setUp() throws Exception {
@@ -42,16 +43,12 @@ public class GameMapTest {
         //Ma che non sia raggiungibile
         System.out.println(gameMap.getReachableAdjacentPlaces(pos2).toString());
 
-    }
 
+    }
 
     @Test
     public void printBoard() {
-        for (int i=0; i<5; i++) {
-            for (int j = 0; j < 5; j++) {
-                System.out.println(gameMap.getBoard()[i][j].toString());
-            }
-        }
+        System.out.println(gameMap.printBoard());
     }
 
 }

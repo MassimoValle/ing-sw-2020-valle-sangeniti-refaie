@@ -16,8 +16,19 @@ public class Game extends Observable<Game> implements Cloneable{
 
     //Chosen Gods from the FIRST_PLAYER (GODLIKE PLAYER)
     private List<God> chosenGodsFromDeck;
+    private boolean godsChosen;
     private int numberOfPlayers;
     private GameMap gameMap;
+
+    private static Game instance=null;
+    //private List<God> gods;
+
+
+    public static Game getInstance() {
+        if(instance==null)
+            instance = new Game();
+        return instance;
+    }
 
     public Game() {
         this.players = new ArrayList<>();
@@ -26,6 +37,7 @@ public class Game extends Observable<Game> implements Cloneable{
         this.chosenGodsFromDeck = new ArrayList<>();
         this.numberOfPlayers = 0;
         this.gameMap = assignNewMap();
+        this.godsChosen = false;
     }
 
     public Game getGame() {
@@ -52,7 +64,7 @@ public class Game extends Observable<Game> implements Cloneable{
     public Player addPlayer(String name) {
         Player newPlayer = new Player(name);
         players.add(newPlayer);
-        numberOfPlayersPlusOne();
+        numberOfPlayers++;
         return newPlayer;
     }
 
@@ -70,9 +82,6 @@ public class Game extends Observable<Game> implements Cloneable{
         return result;
     }
 
-    private void numberOfPlayersPlusOne() {
-        this.numberOfPlayers++;
-    }
 
     public List<Player> getPlayers() {
         return this.players;

@@ -37,4 +37,12 @@ public class Message implements Serializable {
     public MessageStatus getMessageStatus() { return messageStatus; }
 
     public String getMessage() { return message; }
+
+    @Override
+    public String toString() {
+        return "\nMessageSender: " + messageSender +
+                "\nMessageContent: " + messageContent +
+                "\nMessageStatus: " + messageStatus +
+                "\nmessage:" + message;
+    }
 }

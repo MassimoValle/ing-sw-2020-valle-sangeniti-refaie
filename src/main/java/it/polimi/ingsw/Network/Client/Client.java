@@ -1,6 +1,5 @@
-package it.polimi.ingsw.Network;
+package it.polimi.ingsw.Network.Client;
 
-import it.polimi.ingsw.Controller.ClientManager;
 import it.polimi.ingsw.Network.Message.*;
 
 import java.io.*;
@@ -40,7 +39,7 @@ public class Client {
             received = (Message) socketIn.readObject();
 
             if(!checkStatus(received)){
-                System.out.println("SERVER: " + received.getMessageContent() + " ERROR");
+                System.out.println("[SERVER] : " + received.getMessageContent() + " ERROR");
                 return false;
             }
 
