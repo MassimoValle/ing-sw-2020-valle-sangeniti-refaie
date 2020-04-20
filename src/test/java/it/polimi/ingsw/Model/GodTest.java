@@ -2,22 +2,21 @@ package it.polimi.ingsw.Model;
 
 import it.polimi.ingsw.Model.God;
 import it.polimi.ingsw.Model.Power;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class GodTest {
 
-    God god;
+    static God god;
+
+    @BeforeClass
+    public static void initClass() {
+        god = new God("testGod", "godDescr", new Power("powerType", "powerDescr"));
+    }
 
     @Test
     public void check() {
-        String name = "god";
-        String description = "desc";
-
-        god = new God(name, description, new Power("type", "desc"));
-
-        assertEquals(name, god.getGodName());
-        assertEquals(description, god.getGodDescription());
     }
 }

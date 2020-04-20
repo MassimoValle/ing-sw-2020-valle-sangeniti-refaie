@@ -28,8 +28,9 @@ public class GodPower {
     public void DemeterPower(Square cell){
         Square build;
         //build = chooseSquare();
-        if(build != cell){
+        //if(build != cell){
             //build
-        }
+        //}
+        
     }
 }

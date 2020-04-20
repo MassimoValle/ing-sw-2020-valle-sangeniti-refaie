@@ -32,14 +32,6 @@ public class Game extends Observable<Game> implements Cloneable{
         return this.clone();
     }
 
-    private GameMap assignNewMap() {
-        return new GameMap();
-    }
-
-    private Deck assignNewDeck() {
-        return new Deck();
-    }
-
     public GameMap getGameMap() {
         return this.gameMap;
     }
@@ -48,6 +40,23 @@ public class Game extends Observable<Game> implements Cloneable{
         return this.deck;
     }
 
+    public List<Player> getPlayers() {
+        return this.players;
+    }
+
+    public Player getPlayerActive() { return playerActive; }
+
+    public int getNumberOfPlayers() { return numberOfPlayers; }
+
+
+
+    private GameMap assignNewMap() {
+        return new GameMap();
+    }
+
+    private Deck assignNewDeck() {
+        return new Deck();
+    }
 
     public Player addPlayer(String name) {
         Player newPlayer = new Player(name);
@@ -55,6 +64,8 @@ public class Game extends Observable<Game> implements Cloneable{
         numberOfPlayersPlusOne();
         return newPlayer;
     }
+
+
 
     public Player searchPlayerByName(String player) throws PlayerNotFoundException {
         Player result = null;
@@ -71,12 +82,10 @@ public class Game extends Observable<Game> implements Cloneable{
     }
 
     private void numberOfPlayersPlusOne() {
-        this.numberOfPlayers++;
+        this.numberOfPlayers = this.getNumberOfPlayers() + 1;
     }
 
-    public List<Player> getPlayers() {
-        return this.players;
-    }
+
 
 
     @Override
@@ -89,15 +98,13 @@ public class Game extends Observable<Game> implements Cloneable{
     @Override
     public Game clone(){
         Game game1 = new Game();
-        game1.players = players;
-        game1.gameMap = gameMap;
-        game1.playerActive = playerActive;
-        game1.deck = deck;
-        game1.numberOfPlayers = numberOfPlayers;
+        game1.players = getPlayers();
+        game1.gameMap = getGameMap();
+        game1.playerActive = getPlayerActive();
+        game1.deck = getDeck();
+        game1.numberOfPlayers = getNumberOfPlayers();
         return game1;
     }
-
-
 }
 
 
