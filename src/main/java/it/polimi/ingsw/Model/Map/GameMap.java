@@ -1,21 +1,23 @@
 package it.polimi.ingsw.Model.Map;
 
 
+import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Position;
+import it.polimi.ingsw.Model.Player.Worker;
 
 import java.util.ArrayList;
 
 public class GameMap {
 
     public final int COLUMNS = 5;
-    public final int RAWS = 5;
+    public final int ROWS = 5;
 
     private Square[][] board;
 
    public GameMap() {
        this.board = buildBoard();
-       for (int i=0; i<COLUMNS; i++) {
-           for ( int j=0; j<RAWS; j++) {
+       for (int i=0; i<ROWS; i++) {
+           for ( int j=0; j<COLUMNS; j++) {
                this.board[i][j] = new Square(i, j);
            }
        }
@@ -25,33 +27,64 @@ public class GameMap {
         return this.board;
     }
 
+    public Square getSquare(Position pos) {
+       return getBoard()[pos.getRow()][pos.getColumn()];
+    }
+
     private Square[][] buildBoard() {
-       return new Square[COLUMNS][RAWS];
+       return new Square[COLUMNS][ROWS];
     }
 
-    //METODI DA ELIMINARE
+    /**
+     * Gets worker on square.
+     *
+     * @param position the position
+     * @return the worker on square or NULL if  !{@link Square#hasWorkerOn()}
+     */
+    public Worker getWorkerOnSquare(Position position) {
+       return getSquare(position).getWorkerOnSquare();
+    }
+
+    /**
+     * Gets square height.
+     *
+     * @param position the position we want to know the height
+     * @return the square height
+     */
     public int getSquareHeight(Position position) {
-        return board[position.getColumn()][position.getRaw()].getHeight();
-    }
-    public void setSquareHeight(Position position) {
-        board[position.getColumn()][position.getRaw()].heightPlusOne();
+        return board[position.getRow()][position.getColumn()].getHeight();
     }
 
+    //SHOULD NEVER BE USED -- ONLY TESTING
+    public void setSquareHeight(Position position, int lvl) {
+       board[position.getRow()][position.getColumn()].setHeight(lvl);
+    }
 
 
-    //Returns the difference in altitude between two position inside the board
+    /**
+     * Gets the difference in altitude between the squares in {@link Position from} and {@link Position to} inside the board
+     *
+     * @param from  starting position
+     * @param to    arrival position
+     * @return the difference in altitude
+     */
     public int getDifferenceInAltitude(Position from, Position to) {
-        return getBoard()[from.getRaw()][from.getColumn()].getHeight() - getBoard()[to.getRaw()][to.getColumn()].getHeight();
+        return getBoard()[from.getRow()][from.getColumn()].getHeight() - getBoard()[to.getRow()][to.getColumn()].getHeight();
     }
 
-    //Return the adjacent places with a difference in altitude less than 1 going up
+    /**
+     * Return the adjacent places with a difference in altitude less than 1 going up
+     *
+     * @param from where you are right now
+     * @return the reachable adjacent places
+     */
     public ArrayList<Position> getReachableAdjacentPlaces(Position from) {
        ArrayList<Position> adjacentPlaces = from.getAdjacentPlaces();
 
        ArrayList<Position> reachablePlaces = new ArrayList<>();
 
        for(Position pos : adjacentPlaces) {
-           if(getDifferenceInAltitude(from, pos) >= -1 && !( getBoard()[pos.getRaw()][pos.getColumn()].hasWorkerOn() ) ) {
+           if(getDifferenceInAltitude(from, pos) >= -1 && !( getBoard()[pos.getRow()][pos.getColumn()].hasWorkerOn() ) ) {
                reachablePlaces.add(pos);
            }
        }
@@ -59,7 +92,12 @@ public class GameMap {
        return reachablePlaces;
     }
 
-    //Return adjacent places whereit is possible to build on
+    /**
+     * Return adjacent places where it is possible to build on
+     *
+     * @param whereToMove the square where you would like to move
+     * @return the places where you can build on
+     */
     public ArrayList<Position> getPlacesWhereYouCanBuildOn(Position whereToMove) {
         ArrayList<Position> whereToMoveAdjacentPlaces = whereToMove.getAdjacentPlaces();
 
@@ -67,7 +105,7 @@ public class GameMap {
         ArrayList<Position> placesWhereYouCanBuildOn = new ArrayList<>();
 
         for (Position pos : whereToMoveAdjacentPlaces) {
-            if (getSquareHeight(pos) < 4 && getSquareHeight(pos) >= 0 && !(getBoard()[pos.getRaw()][pos.getColumn()].hasWorkerOn())) {
+            if (getSquareHeight(pos) < 4 && getSquareHeight(pos) >= 0 && !(getBoard()[pos.getRow()][pos.getColumn()].hasWorkerOn())) {
                 placesWhereYouCanBuildOn.add(pos);
             }
         }
@@ -75,49 +113,99 @@ public class GameMap {
     }
 
 
-
-
+    /**
+     * Build a block onto the given {@link Position position}
+     *
+     * @param position the position where we want to build on
+     */
     public void addBlock(Position position) {
-        if (getSquareHeight(position) < 4 ) {
-            setSquareHeight(position);
+        if (getSquareHeight(position) >= 0 && getSquareHeight(position) <= 2) {
+            //build a block
+            getBoard()[position.getRow()][position.getColumn()].heightPlusOne();
+        } else if (getSquareHeight(position) == 3 ) {
+            //build a dome
+            getBoard()[position.getRow()][position.getColumn()].heightPlusOne();
         } else {
-            //TODO: GESTIRE CON ECCEZZIONE!!!
+            //
             System.out.println("There is already a Dome!");
         }
     }
 
-    //TODO
-    public void squareHeightPlusOne(Square square) {
-       square.heightPlusOne();
-    }
-    public boolean isPositionValid(Position position){
+    /**
+     * Check if a {@link Position position} on the {@link GameMap gameMao} is real and free.
+     *
+     * @param position - the position we want to know if exists and free.
+     *
+     * @return boolean
+     */
+    private boolean isPositionValid(Position position){
        if (isPositionOnMapReal(position) && isPositionFree(position))
            return true;
        return false;
     }
 
-    private boolean isPositionOnMapReal(Position position){  //verifica se la posizione è valida sulla mappa
+    /**
+     * Check if a {@link Position position} on the {@link GameMap gameMao} is real.
+     *
+     * @param position - the position we want to know if exists.
+     *
+     * @return boolean
+     */
+    private boolean isPositionOnMapReal(Position position){
        if ( position.getColumn() < 0 || position.getColumn() >= COLUMNS ||
-            position.getRaw() < 0 || position.getRaw() >= RAWS)
+            position.getRow() < 0 || position.getRow() >= ROWS)
            return false;
        return true;
    }
 
+    /**
+     * Check if a {@link Square square} in {@link Position position} has someone else's worker on.
+     *
+     * @param position - the position we want to know if it is free
+     *
+     * @return boolean
+     */
    private boolean isPositionFree(Position position){
-       if (board[position.getRaw()][position.getColumn()].hasWorkerOn())
+       if (board[position.getRow()][position.getColumn()].hasWorkerOn())
            return false;
        return true;
    }
 
-    @Override
-    public String toString() {
-       String string = "";
-       for (int i=0; i<RAWS; i++) {
-           for ( int j=0; j<COLUMNS; j++) {
-               string = string.concat("Square " + i + " , " + j + " Lvl :" + board[i][j].getHeight() + "\n");
+
+    /**
+     * Update the {@link Worker worker} position and the {@link GameMap} too;
+     *
+     * @param worker   the worker
+     * @param position the position
+     */
+    public void setWorkerPosition(Worker worker, Position position){
+       if ( isPositionValid(position)) {
+           //Libero la posizione precedentemente occupata dal worker
+           if ( worker.isPlaced() ) {
+               this.getSquare(worker.getWorkerPosition()).freeSquare();
            }
+           worker.setPosition(position);
+           //devo liberare la vecchia posizione
+
+           board[position.getRow()][position.getColumn()].setWorkerOn(worker);
+
        }
-        return string;
+   }
+
+
+    /**
+     * Print board.
+     */
+    public void printBoard() {
+       String string = "";
+       for (int i=0; i<ROWS; i++) {
+           for ( int j=0; j<COLUMNS; j++) {
+               string = string.concat("|"+ board[i][j].toString() + "\t");
+           }
+           string = string.concat("|\n");
+
+       }
+        System.out.println(string);
     }
 
 }

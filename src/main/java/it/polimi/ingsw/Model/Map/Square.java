@@ -1,11 +1,15 @@
 package it.polimi.ingsw.Model.Map;
 
-import it.polimi.ingsw.Model.Player.Position;
+import it.polimi.ingsw.Model.Player.Worker;
 
 public class Square {
 
-    private int x;
-    private int y;
+    private int row;
+    private int column;
+
+    //To keep trace of whose worker is on the square
+    private Worker workerOnSquare;
+
 
     private int height;
 
@@ -13,15 +17,31 @@ public class Square {
     private boolean builtOver;
 
 
-    public Square(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Square(int row, int column) {
+        this.row = row;
+        this.column = column;
         this.height = 0;
+        this.workerOnSquare = null;
     }
 
+    public Worker getWorkerOnSquare() {
+        if (hasWorkerOn()) {
+            return this.workerOnSquare;
+        } else {
+            return null;
+        }
+    }
 
     public int getHeight() {
         return this.height;
+    }
+
+    public  void freeSquare() {
+        this.workerOn = false;
+        this.workerOnSquare = null;
+    }
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public boolean hasWorkerOn() {
@@ -36,10 +56,36 @@ public class Square {
         this.height++;
     }
 
+    public void setWorkerOn(Worker worker) {
+        this.workerOn = true;
+        this.workerOnSquare = worker;
+    }
+
     @Override
     public String toString() {
-        return "position " + this.x + "," + this.y +
-                "; Height: " + this.height;
+        switch (getHeight()) {
+            case 0:
+                if (workerOn) {
+                    return "0X";
+                } else return "0";
+            case 1:
+                if (workerOn) {
+                    return "1X";
+                } else return "1";
+            case 2:
+                if (workerOn) {
+                    return "2X";
+                } else return "2";
+            case 3:
+                if (workerOn) {
+                    return "3X";
+                } else return "3";
+            case 4:
+                if (workerOn) {
+                    return "DX";
+                } else return "D";
+        }
+        return null;
     }
 }
 

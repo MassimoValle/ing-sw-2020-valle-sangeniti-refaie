@@ -2,6 +2,7 @@ package it.polimi.ingsw.Model.Player;
 
 import it.polimi.ingsw.Model.Game;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Worker {
@@ -12,6 +13,7 @@ public class Worker {
     private boolean isBlocked;
     private int height;
     private Position workerPosition;
+    private boolean placed;
 
 
     //ArayList contenente le posizioni in cui il worker selezionato può muoversi
@@ -26,6 +28,7 @@ public class Worker {
         this.workerPosition = null;
         this.workersNumber = workersNumber;
         this.isBlocked = false;
+        this.placed = false;
     }
 
     public Position getWorkerPosition() {
@@ -36,33 +39,39 @@ public class Worker {
         return workersNumber;
     }
 
-    //TODO da correggere
-
     private Worker placeNewWorker(Position position) {
-        this.setWorkerPosition(position);
+        this.setPosition(position);
         return this;
     }
 
-    //Controls whether it can move or if it's stuck
-    //It also check if after moving it is still able to build
-    public boolean isWorkerStuck(Position from) {
 
-        //TODO: How to call a method from inside GameMap?
-        //Method requested: public ArrayList<Position> getReachableAdjacentPlaces(Position from)
 
-        return false;
+    /**
+     * Sets position check if the {@link Position newPosition} is free and if so it update the {@link Worker#workerPosition}
+     * ps: branch else should never be reached because the {@link Position newPosition} will not be available to the player to chose
+     *
+     * @param position will be the new Worker Position
+     */
+    public void setPosition(Position position) {
+        this.workerPosition = position;
+
     }
-
-    public void setWorkerPosition(Position newPosition) {
-        if (newPosition.isFree()) {
-            this.workerPosition = newPosition;
-        }
-    }
-
 
 
     @Override
     public String toString() {
         return "Worker " + workersNumber + "si trova in " + workerPosition;
     }
+
+    /**
+     * Set {@link Worker#placed} true.
+     */
+    public void setPlaced(boolean placed) {
+        this.placed = placed;
+    }
+
+    public boolean isPlaced() {
+        return placed;
+    }
+
 }

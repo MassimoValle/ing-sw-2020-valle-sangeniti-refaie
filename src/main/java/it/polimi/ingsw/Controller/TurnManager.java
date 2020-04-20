@@ -4,6 +4,7 @@ import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.PlayerState;
+import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Model.Power;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class TurnManager {
     public Player getPlayerActive() {
         return playerActive;
     }
+
     public void choseWorker() {
         //TODO
     }

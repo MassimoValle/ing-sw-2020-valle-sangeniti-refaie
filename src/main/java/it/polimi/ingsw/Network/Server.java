@@ -54,6 +54,12 @@ public class Server {
         }
     }
 
+    private List<String> getClientsUsername() {
+        List<String> clientsUsername = new ArrayList<>();
+        clientsConnected.forEach((String, Connection) -> clientsUsername.add(String));
+        return clientsUsername;
+    }
+
     public synchronized void lobby(Connection c, String name){
         clientsConnected.put(name, c);
         /*if(clientsConnected.size() == 2){
@@ -77,6 +83,8 @@ public class Server {
 
     public Server() throws IOException {
         this.serverSocket = new ServerSocket(PORT);
+
+        this.gameManager = new GameManager(this);
 
         this.clientsNum = 0;
     }
@@ -107,39 +115,30 @@ public class Server {
 
     //Methods that has to call the GameManager to handle the request by the client
     //(the message can be whatever)
-    //For exemple: the Username asked at the beginning, a place where to move, ecc
+    //For example: the Username asked at the beginning, a place where to move, ecc
     public void handleMessage(Message message, Connection connection) {
-        //gameManager.handleMessage(message);
-        switch (message.getMessageContent()) {
-            case LOGIN:
 
-                if(connections.size() == 1) {
-                    registerClient(message.getMessageSender(), connection);
-                } else {
-                    login(message.getMessageSender(), connection);
-                }
-                break;
-
-            case GOD_SELECTION:
-                int[] indices;
-                String[] splittedString = message.getMessage().split(" ");
-                indices = new int[splittedString.length];
-
-                for (int i = 0; i < splittedString.length; i++) {
-                    indices[i] = Integer.parseInt(splittedString[i]);
-                }
-
-                gameManager.choseGodsFromDeck(indices);
-                break;
-
-            case CHECK:
-                System.out.println(message.getMessageSender() + ": " + message.getMessage());
-                //Invio sulla connessione aperta il messaggio di risposta
-                clientsConnected.get(message.getMessageSender()).sendMessage(
-                        new Message("[SERVER]", MessageContent.CHECK, MessageStatus.ERROR, "Hai inviato un messaggio di tipo CHECK")
-                );
-                break;
+        //Do something if MessageStatus.ERROR
+        if (message.getMessageStatus() == MessageStatus.ERROR) {
+            connection.sendMessage(
+                    new Message("[SERVER]", MessageStatus.CLIENT_ERROR, "Errore nel server")
+            );
         }
+
+        //Register Client if MessageContent.LOGIN
+        if ( message.getMessageContent() == MessageContent.LOGIN) {
+
+            if(connections.size() == 1) {
+                registerClient(message.getMessageSender(), connection);
+            } else {
+                login(message.getMessageSender(), connection);
+            }
+
+        }
+
+        //Everything else is handled by the GameManager
+        GameManager.handleMessage(message);
+
     }
 
     //Metodo che controlla se il nome immesso dal player è valido/già in uso ecc
@@ -154,6 +153,7 @@ public class Server {
         }
     }
 
+
     public void registerClient(String username, Connection connection){
         clientsConnected.put(username, connection);
         System.out.println("CLIENT REGISTRATO: " + username);
@@ -161,7 +161,32 @@ public class Server {
         connection.sendMessage(
                 new Message("[SERVER]", MessageContent.LOGIN, MessageStatus.OK, "Connected! Ready to play!")
         );
+
+        //we are ready to start the game
+        if(clientsConnected.size() == 3) {
+            gameManager.startGame(getClientsUsername());
+        }
     }
+
+
+    /**
+     * TODO: not working
+     *
+     * Method to send {@param message} message to every client inside the {@param clients} clients
+     *
+     * @param clients message
+     * @param message clients
+     */
+    public void sendMessageTo(Map<String, Connection> clients, String message) {
+        clients.forEach((clientName, connection) -> connection.sendMessage(
+                new Message("[SERVER]", MessageContent.ASYNC, MessageStatus.OK, message)
+        ));
+    }
+
+    public Map<String, Connection> getClientsConnected() {
+        return clientsConnected;
+    }
+
 
 
 }
