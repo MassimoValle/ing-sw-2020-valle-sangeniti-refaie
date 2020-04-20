@@ -2,6 +2,7 @@ package it.polimi.ingsw.Model.Player;
 
 import it.polimi.ingsw.Model.Deck;
 import it.polimi.ingsw.Model.God;
+import it.polimi.ingsw.Model.Map.GameMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,15 +15,13 @@ public class Player {
     private List<Worker> playerWorkers;
     private int numWorker = 2;
 
-
     //ATTRIBUTI PROPRI DEL WORKER (PUR VOLENDO ANCHE DEL PLAYER CHE VENGONO CONTROLLATI NEL CONTROLLER
     private boolean moved;
     private boolean built;
 
+
     public Player(String playerName) {
         this.playerName = playerName;
-
-
         this.playerWorkers = new ArrayList<>();
         for (int i = 0; i < numWorker; i++) { this.playerWorkers.add(new Worker(i + 1)); }   // 2 workers
     }
@@ -30,7 +29,6 @@ public class Player {
     public God getPlayerGod() {
         return this.playerGod;
     }
-
 
     public String getPlayerName() {return playerName; }
 
@@ -42,9 +40,7 @@ public class Player {
         return newWorker;
     }
 
-
     public void choseGodsFromDeck() {
-
         //Mostro a video gli dei disponibili per la scelta
         System.out.println(Deck.getInstance().toString());
 
@@ -54,9 +50,7 @@ public class Player {
 
         //Setto il playerGod preso dalla posizione 'choice' nel Deck
         playerGod = Deck.getInstance().getGod(choice);
-
     }
-
 
     public void assignGodToPlayer(God selectedGod) {
         this.playerGod = selectedGod;
@@ -69,9 +63,10 @@ public class Player {
      * @param workerSelected the worker selected by the player
      * @param position       the position chosen by the placer where to place the Worker
      */
-    public void placeWorker(Worker workerSelected, Position position) {
-        workerSelected.setPosition(position);
-        workerSelected.isPlaced();
+    //serve una classe che abbia come attributi sia la mappa che la lista dei giocatori, nel controller
+    public void placeWorker(GameMap map, Worker workerSelected, Position position) {
+        //verificare se il worker appartiene a quel giocatore
+        map.setWorkerPosition(workerSelected, position);
     }
 
     //TODO metodo che permette al player di decidere quale worker selezionare

@@ -1,6 +1,8 @@
 package it.polimi.ingsw.Model.Map;
 
+import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Position;
+import it.polimi.ingsw.Model.Player.Worker;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,8 +45,21 @@ public class GameMapTest {
         //Ma che non sia raggiungibile
         System.out.println(gameMap.getReachableAdjacentPlaces(pos2).toString());
 
+    }
+
+
+    @Test
+
+    public void setWorkerPosition(){
+        Worker worker1 = new Worker(0);
+        gameMap.setWorkerPosition (worker1, pos1);
+
+        assertTrue(gameMap.getSquare(pos1).hasWorkerOn());
 
     }
+
+
+
 
     @Test
     public void printBoard() {

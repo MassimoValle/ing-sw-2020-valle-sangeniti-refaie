@@ -70,21 +70,13 @@ public class Worker {
      * Sets position check if the {@link Position newPosition} is free and if so it update the {@link Worker#workerPosition}
      * ps: branch else should never be reached because the {@link Position newPosition} will not be available to the player to chose
      *
-     * @param newPosition will be the new Worker Position
+     * @param position will be the new Worker Position
      */
-    public void setPosition(Position newPosition) {
-        if (newPosition.isFree()) {
 
-            System.out.println("Posizione libera, aggiorno la posizione del worker");
-            this.workerPosition = newPosition;
+    public void setPosition(Position position) {
+        this.workerPosition = position;
 
-            System.out.println("Imposto che su quel determinato Square ci sta un worker");
-            Game.getInstance().getGameMap().getSquare(newPosition).setWorkerOn();
-        } else {
-            System.out.println("Posizione già occupata");
-        }
     }
-
 
 
     @Override
@@ -95,7 +87,7 @@ public class Worker {
     /**
      * Set {@link Worker#placed} true.
      */
-    public void isPlaced() {
+    public void setPlaced() {
         this.placed = true;
     }
 }

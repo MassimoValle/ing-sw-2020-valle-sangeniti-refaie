@@ -23,7 +23,7 @@ public class WorkerTest {
     @Test
     public void placeWorkerInPosition() throws PlayerNotFoundException {
         Position pos1 = new Position(0,0);
-        Game.getInstance().searchPlayerByName("simone").placeWorker(Game.getInstance().searchPlayerByName("simone").getPlayerWorkers().get(0), pos1);
+        //Game.getInstance().searchPlayerByName("simone").placeWorker(Game.getInstance().searchPlayerByName("simone").getPlayerWorkers().get(0), pos1);
 
         assertTrue(Game.getInstance().getGameMap().getSquare(pos1).hasWorkerOn());
 
@@ -38,7 +38,7 @@ public class WorkerTest {
         Position pos2 = new Position(0,1);
         Position pos3 = new Position(1,1);
         Position pos4 = new Position(1,0);
-        Game.getInstance().searchPlayerByName("simone").placeWorker(Game.getInstance().searchPlayerByName("simone").getPlayerWorkers().get(0), pos1);
+        //Game.getInstance().searchPlayerByName("simone").placeWorker(Game.getInstance().searchPlayerByName("simone").getPlayerWorkers().get(0), pos1);
         Game.getInstance().getGameMap().getSquare(pos2).heightPlusOne();
         Game.getInstance().getGameMap().getSquare(pos2).heightPlusOne();
         Game.getInstance().getGameMap().getSquare(pos3).heightPlusOne();
@@ -52,7 +52,7 @@ public class WorkerTest {
 
         System.out.println(Game.getInstance().getGameMap().printBoard());
 
-        Game.getInstance().searchPlayerByName("simone").placeWorker(Game.getInstance().searchPlayerByName("simone").getPlayerWorkers().get(1), pos2);
+        //Game.getInstance().searchPlayerByName("simone").placeWorker(Game.getInstance().searchPlayerByName("simone").getPlayerWorkers().get(1), pos2);
         System.out.println(Game.getInstance().getGameMap().printBoard());
 
     }

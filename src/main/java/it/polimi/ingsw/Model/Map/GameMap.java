@@ -2,6 +2,7 @@ package it.polimi.ingsw.Model.Map;
 
 
 import it.polimi.ingsw.Model.Player.Position;
+import it.polimi.ingsw.Model.Player.Worker;
 
 import java.util.ArrayList;
 
@@ -95,7 +96,7 @@ public class GameMap {
        square.heightPlusOne();
     }
 
-    public boolean isPositionValid(Position position){
+    private boolean isPositionValid(Position position){
        if (isPositionOnMapReal(position) && isPositionFree(position))
            return true;
        return false;
@@ -113,6 +114,18 @@ public class GameMap {
            return false;
        return true;
    }
+
+   public void setWorkerPosition(Worker worker, Position position){
+       if ( isPositionValid(position)) {
+           worker.setPosition(position);
+           worker.setPlaced();
+           board[position.getRow()][position.getColumn()].setWorkerOn();
+
+       }
+   }
+
+
+
 
     public String printBoard() {
        String string = "";
