@@ -30,15 +30,31 @@ public class Player {
         return this.playerGod;
     }
 
+    public void setPlayerGod(God selectedGod) {
+        this.playerGod = selectedGod;
+    }
+
     public String getPlayerName() {return playerName; }
 
+
+    /**
+     * Gets player workers.
+     *
+     * @return the player workers
+     */
     public List<Worker> getPlayerWorkers() { return playerWorkers; }
 
+    /**
+     * Add new {@link Worker} to {@link Player this player}
+     *
+     * @return the worker
+     */
     public Worker addNewWorker() {
         Worker newWorker = new Worker(getPlayerWorkers().size() + 1);
         getPlayerWorkers().add(newWorker);
         return newWorker;
     }
+
 
     public void choseGodsFromDeck() {
         //Mostro a video gli dei disponibili per la scelta
@@ -52,22 +68,10 @@ public class Player {
         playerGod = Deck.getInstance().getGod(choice);
     }
 
-    public void assignGodToPlayer(God selectedGod) {
-        this.playerGod = selectedGod;
-    }
 
 
-    /**
-     * Place the {@link Worker workerSelected} in the {@link Position position}
-     *
-     * @param workerSelected the worker selected by the player
-     * @param position       the position chosen by the placer where to place the Worker
-     */
-    //serve una classe che abbia come attributi sia la mappa che la lista dei giocatori, nel controller
-    public void placeWorker(GameMap map, Worker workerSelected, Position position) {
-        //verificare se il worker appartiene a quel giocatore
-        map.setWorkerPosition(workerSelected, position);
-    }
+
+
 
     //TODO metodo che permette al player di decidere quale worker selezionare
     // (con controllo interno nel caso in cui 1 dei worker risulti bloccato)
@@ -81,13 +85,19 @@ public class Player {
     public boolean hasMoved() { return moved; }
     public boolean hasBuilt() { return built; }
 
-    public void moveWorker(){
-        // do something
-        moved = true;
+
+    public void setHasBuilt() {
+        this.built = true;
     }
-    public void buildWithWorker(){
-        // do something
-        built = true;
+
+    public void setHasMoved() {
+        this.built = true;
+    }
+
+
+    public void startRound() {
+        this.built = false;
+        this.moved = false;
     }
 
 

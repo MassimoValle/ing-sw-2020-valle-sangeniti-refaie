@@ -60,21 +60,28 @@ public class Deck extends ArrayList<God>{
         this.remove(selectedGod);
     }
 
+
+    /**
+     * Return the selected {@link God god} e remove it from the Deck
+     *
+     * @param choice index
+     * @return selectedGod god
+     */
     public God getGod(int choice) {
         God selectedGod = Deck.getInstance().get(choice-1);
-        removeGod(Deck.getInstance().get(choice-1));
         return selectedGod;
     }
 
 
+
+    //Print to screen all the gods inside the Deck
     @Override
     public String toString() {
-        for (God god : instance) {
-            System.out.println( (this.indexOf(god) + 1) + ") \nName: " + god.getGodName());
-            System.out.println("Description: " + god.getGodDescription());
-            System.out.println("Power description: " + god.getGodPower().getPowerDescription());
+        String string = "Vuota";
+        for ( int i = 0; i < getInstance().size(); i++) {
+            string = string.concat(getInstance().getGod(i+1).toString() + "\n");
         }
-        return null;
+        return string;
         }
 
 

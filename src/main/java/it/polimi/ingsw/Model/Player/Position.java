@@ -128,12 +128,6 @@ public class Position {
      *
      * @return boolean
      */
-//
-    boolean isFree() {
-        if ( Game.getInstance().getGameMap().getBoard()[this.row][this.column].hasWorkerOn() ) {
-            return false;
-        } else return true;
-    }
 
     @Override
     public boolean equals(Object obj) {

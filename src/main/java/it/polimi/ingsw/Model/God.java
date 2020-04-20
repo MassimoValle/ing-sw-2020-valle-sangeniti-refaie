@@ -3,18 +3,28 @@ package it.polimi.ingsw.Model;
 public class God {
 
     private String godName;
-
     private String godDescription;
     private Power godPower;
+    private boolean taken;
 
 
     public God(String godName, String godDescription, Power godPower){
         this.godName = godName;
         this.godDescription = godDescription;
         this.godPower = godPower;
+        this.taken = false;
+
     }
 
-    public void usePower() {};
+
+    public boolean isTaken() {
+        return taken;
+    }
+
+    public void setTaken(boolean taken) {
+        this.taken = taken;
+    }
+
 
     public String getGodName() { return godName; }
     public String getGodDescription() {return godDescription; }
@@ -26,10 +36,11 @@ public class God {
 
     @Override
     public String toString() {
-        System.out.println("Name: " + this.getGodName());
-        System.out.println("Description: " + this.getGodDescription());
-        System.out.println("Power description: " + this.getGodPower().getPowerDescription());
-        return null;
+        String string = "";
+        string = string.concat("\nName: " + this.getGodName());
+        string = string.concat("\nDescription: " + this.getGodDescription());
+        string = string.concat("\nPower description: " + this.getGodPower().getPowerDescription());
+        return string;
     }
 
 

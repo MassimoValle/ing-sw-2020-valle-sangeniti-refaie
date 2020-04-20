@@ -1,9 +1,14 @@
 package it.polimi.ingsw.Model.Map;
 
+import it.polimi.ingsw.Model.Player.Worker;
+
 public class Square {
 
     private int row;
     private int column;
+
+    //To keep trace of whose worker is on the square
+    private Worker workerOnSquare;
 
 
     private int height;
@@ -16,11 +21,16 @@ public class Square {
         this.row = row;
         this.column = column;
         this.height = 0;
+        this.workerOnSquare = null;
     }
 
 
     public int getHeight() {
         return this.height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public boolean hasWorkerOn() {
@@ -35,8 +45,9 @@ public class Square {
         this.height++;
     }
 
-    public void setWorkerOn() {
+    public void setWorkerOn(Worker worker) {
         this.workerOn = true;
+        this.workerOnSquare = worker;
     }
 
     @Override

@@ -3,8 +3,11 @@ package it.polimi.ingsw.Model;
 import it.polimi.ingsw.Exceptions.Game.PlayerNotFoundException;
 import it.polimi.ingsw.Model.Map.GameMap;
 import it.polimi.ingsw.Model.Player.Player;
+import it.polimi.ingsw.Model.Player.Position;
+import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.View.Observable;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +23,21 @@ public class Game extends Observable<Game> implements Cloneable{
     private int numberOfPlayers;
     private GameMap gameMap;
 
-    private static Game instance=null;
-    //private List<God> gods;
 
+    public Player getPlayerActive() {
+        return playerActive;
+    }
 
-    public static Game getInstance() {
-        if(instance==null)
-            instance = new Game();
-        return instance;
+    public List<God> getChosenGodsFromDeck() {
+        return chosenGodsFromDeck;
+    }
+
+    public boolean areGodsChosen() {
+        return godsChosen;
+    }
+
+    public int getNumberOfPlayers() {
+        return numberOfPlayers;
     }
 
     public Game() {
@@ -61,6 +71,22 @@ public class Game extends Observable<Game> implements Cloneable{
     }
 
 
+    /**
+     * Pick god from {@link Deck#getInstance()} and set the selected {@link God#taken} true;
+     *
+     * @param i it references to the index that is shown to the player referred to the god
+     */
+    public void pickGodFromDeck(int i) {
+        Deck.getInstance().getGod(i).setTaken(true);
+        chosenGodsFromDeck.add(Deck.getInstance().getGod(i));
+    }
+
+    /**
+     * Add a new {@link Player player} to the current {@link Game game}.
+     *
+     * @param name the name given to the new Player
+     * @return the newly created player
+     */
     public Player addPlayer(String name) {
         Player newPlayer = new Player(name);
         players.add(newPlayer);
@@ -68,10 +94,17 @@ public class Game extends Observable<Game> implements Cloneable{
         return newPlayer;
     }
 
-    public Player searchPlayerByName(String player) throws PlayerNotFoundException {
+    /**
+     * Search {@link Player player} by name player.
+     *
+     * @param name
+     * @return the player with that username
+     * @throws PlayerNotFoundException There's no player with that username
+     */
+    public Player searchPlayerByName(String name) throws PlayerNotFoundException {
         Player result = null;
         for (Player playerInGame : getPlayers()) {
-            if (playerInGame.getPlayerName().equals(player)) {
+            if (playerInGame.getPlayerName().equals(name)) {
                 result = playerInGame;
                 break;
             }
@@ -80,6 +113,93 @@ public class Game extends Observable<Game> implements Cloneable{
             throw new PlayerNotFoundException("Giocatore non trovato");
         }
         return result;
+    }
+
+
+    /**
+     * Start round.
+     * Set to false {@link Player#moved } and {@link Player#built}
+     *
+     * @param player the player
+     */
+    public void initPlayerState(Player player) {
+        player.startRound();
+    }
+
+    /**
+     * Assign the {@link God god} chosen by the {@link Player player}
+     *
+     * @param player player
+     * @param god    god
+     */
+    public void assignGodToPlayer(Player player, God god) {
+        player.setPlayerGod(god);
+    }
+
+    /**
+     * It checks if the {@link Worker worker} has no reachable places or in case he has than if he has adjacent places to build on
+     *
+     *
+     * @return boolean
+     */
+    public boolean isWorkerStuck(Worker worker) {
+        ArrayList<Position> placesWhereToMove;
+        placesWhereToMove = getGameMap().getReachableAdjacentPlaces(worker.getWorkerPosition());
+
+        if (placesWhereToMove.size() == 0) return true;
+
+
+        for (Position position: placesWhereToMove ) {
+            ArrayList<Position> placesWhereYouCanBuildOn = getGameMap().getPlacesWhereYouCanBuildOn(position);
+            if (placesWhereYouCanBuildOn.size() != 0) return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Build any kind of block (lvl1, lvl2, lv3 or a dome) with the selected {@link Worker worker}
+     * by {@link Player player} after he has moved in {@link Position position} chose by the player
+     *
+     *
+     * @param player   the worker's owner
+     * @param worker   worker selected by the player
+     * @param position position where we want to build
+     */
+    public void buildBlock(Player player, Worker worker, Position position) {
+        //ALWAYS CHECK THE PLAYER AND THE WORKER'S PROPERTY
+        getGameMap().addBlock(position);
+
+        //Worker has built so update its state
+        player.setHasBuilt();
+    }
+
+    /**
+     * Move the selected {@link Worker worker}  by {@link Player player} into the {@link Position position} chose by the player
+     *
+     * @param player   the worker's owner
+     * @param worker   worker selected by the player
+     * @param position position where we want to move
+     */
+    public void moveWorker(Player player, Worker worker, Position position) {
+        getGameMap().setWorkerPosition(worker, position);
+        player.hasMoved();
+    }
+
+
+
+    /**
+     * Place the {@link Worker workerSelected} in the {@link Position position}
+     * IT IS CALLED ONLY IN THE SETUP PHASE OF THE GAME
+     *
+     * @param player         the player that owns the worker
+     * @param workerSelected the worker selected by the player
+     * @param position       the position chosen by the placer where to place the Worker
+     */
+    public void placeWorker(Player player, Worker workerSelected, Position position) {
+        //TODO: verificare se il worker appartiene a quel giocatore
+        getGameMap().setWorkerPosition(workerSelected, position);
+        workerSelected.setPlaced();
     }
 
 

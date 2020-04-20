@@ -48,22 +48,26 @@ public class GameMapTest {
     }
 
 
-    @Test
 
+
+    @Test
     public void setWorkerPosition(){
         Worker worker1 = new Worker(0);
+        Worker worker2 = new Worker(1);
         gameMap.setWorkerPosition (worker1, pos1);
+        gameMap.setWorkerPosition(worker2, pos2);
 
         assertTrue(gameMap.getSquare(pos1).hasWorkerOn());
+        assertTrue(gameMap.getSquare(pos2).hasWorkerOn());
+
+
+        gameMap.printBoard();
 
     }
 
 
 
 
-    @Test
-    public void printBoard() {
-        System.out.println(gameMap.printBoard());
-    }
+
 
 }

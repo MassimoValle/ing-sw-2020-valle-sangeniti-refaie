@@ -41,6 +41,7 @@ public class GameManager {
     }
 
     public void startGame(List<String> players) {
+        //UPDATE THE GAME STATE
         gameState = PossibleGameState.READY_TO_PLAY;
 
         //Init players in game
@@ -50,9 +51,7 @@ public class GameManager {
 
         gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
 
-        //the get() can be whatever
         Player playerToChoseGods = gameInstance.getPlayers().get(1);
-        playerToChoseGods.choseGodsFromDeck();
 
 
 

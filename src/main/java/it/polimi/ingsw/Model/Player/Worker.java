@@ -45,26 +45,6 @@ public class Worker {
     }
 
 
-    /**
-     * It checks if the {@link Worker worker} has no reachable places or in case he has than if he has adjacent places to build on
-     *
-     *
-     * @return boolean
-     */
-    public boolean isStuck() {
-        ArrayList<Position> placesWhereToMove;
-        placesWhereToMove = Game.getInstance().getGameMap().getReachableAdjacentPlaces(workerPosition);
-
-        if (placesWhereToMove.size() == 0) return true;
-
-
-        for (Position position: placesWhereToMove ) {
-            ArrayList<Position> placesWhereYouCanBuildOn = Game.getInstance().getGameMap().getPlacesWhereYouCanBuildOn(position);
-            if (placesWhereYouCanBuildOn.size() != 0) return false;
-        }
-
-        return true;
-    }
 
     /**
      * Sets position check if the {@link Position newPosition} is free and if so it update the {@link Worker#workerPosition}
@@ -72,7 +52,6 @@ public class Worker {
      *
      * @param position will be the new Worker Position
      */
-
     public void setPosition(Position position) {
         this.workerPosition = position;
 
