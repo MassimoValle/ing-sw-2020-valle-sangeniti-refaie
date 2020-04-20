@@ -7,7 +7,6 @@ import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.View.Observable;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +15,9 @@ public class Game extends Observable<Game> implements Cloneable{
     private List<Player> players;
     private Player playerActive;
     private Deck deck;
+    private Player lastPlayerActive;
+
+    private Worker workerActive;
 
     //Chosen Gods from the FIRST_PLAYER (GODLIKE PLAYER)
     private List<God> chosenGodsFromDeck;
@@ -48,11 +50,17 @@ public class Game extends Observable<Game> implements Cloneable{
         this.numberOfPlayers = 0;
         this.gameMap = assignNewMap();
         this.godsChosen = false;
+        this.workerActive = null;
     }
 
     public Game getGame() {
         return this.clone();
     }
+
+    public List<Player> getPlayers() {
+        return this.players;
+    }
+
 
     private GameMap assignNewMap() {
         return new GameMap();
@@ -70,14 +78,25 @@ public class Game extends Observable<Game> implements Cloneable{
         return this.deck;
     }
 
+    public void setGodsChosen(boolean godsChosen) {
+        this.godsChosen = godsChosen;
+    }
+
+    public void setPlayerActive(Player playerActive) {
+        this.playerActive = playerActive;
+    }
+
+    public void setLastPlayerActive(Player lastPlayerActive) {
+        this.lastPlayerActive = lastPlayerActive;
+    }
 
     /**
-     * Pick god from {@link Deck#getInstance()} and set the selected {@link God#taken} true;
+     * Pick god from {@link Deck#getInstance()} and set the selected {@link God#takenFromDeck} true;
      *
      * @param i it references to the index that is shown to the player referred to the god
      */
     public void pickGodFromDeck(int i) {
-        Deck.getInstance().getGod(i).setTaken(true);
+        getDeck().getGod(i).setTakenFromDeck(true);
         chosenGodsFromDeck.add(Deck.getInstance().getGod(i));
     }
 
@@ -133,6 +152,7 @@ public class Game extends Observable<Game> implements Cloneable{
      * @param god    god
      */
     public void assignGodToPlayer(Player player, God god) {
+        god.setAssigned(true);
         player.setPlayerGod(god);
     }
 
@@ -168,14 +188,21 @@ public class Game extends Observable<Game> implements Cloneable{
      */
     public void buildBlock(Player player, Worker worker, Position position) {
         //ALWAYS CHECK THE PLAYER AND THE WORKER'S PROPERTY
+
+        //Controllo che il worker con il quale si vuole costruire sia lo stesso che si è mosso precedentemente
+        if (this.workerActive != worker) {
+            System.out.println("Devi costruire con lo stesso worker con il quale hai mosso!");
+            return;
+        }
         getGameMap().addBlock(position);
 
         //Worker has built so update its state
-        player.setHasBuilt();
+        player.setBuilt(true);
     }
 
     /**
-     * Move the selected {@link Worker worker}  by {@link Player player} into the {@link Position position} chose by the player
+     * Move the selected {@link Worker worker}  by {@link Player player} into the {@link Position position} chose by the player;
+     * Also set the worker passed as parameter to {@link Game#workerActive}
      *
      * @param player   the worker's owner
      * @param worker   worker selected by the player
@@ -183,7 +210,8 @@ public class Game extends Observable<Game> implements Cloneable{
      */
     public void moveWorker(Player player, Worker worker, Position position) {
         getGameMap().setWorkerPosition(worker, position);
-        player.hasMoved();
+        this.workerActive = worker;
+        player.setMoved(true);
     }
 
 
@@ -199,13 +227,10 @@ public class Game extends Observable<Game> implements Cloneable{
     public void placeWorker(Player player, Worker workerSelected, Position position) {
         //TODO: verificare se il worker appartiene a quel giocatore
         getGameMap().setWorkerPosition(workerSelected, position);
-        workerSelected.setPlaced();
+        workerSelected.setPlaced(true);
     }
 
 
-    public List<Player> getPlayers() {
-        return this.players;
-    }
 
 
     @Override

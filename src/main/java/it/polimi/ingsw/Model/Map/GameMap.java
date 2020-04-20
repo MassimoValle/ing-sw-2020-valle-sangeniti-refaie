@@ -35,6 +35,15 @@ public class GameMap {
        return new Square[COLUMNS][ROWS];
     }
 
+    /**
+     * Gets worker on square.
+     *
+     * @param position the position
+     * @return the worker on square or NULL if  !{@link Square#hasWorkerOn()}
+     */
+    public Worker getWorkerOnSquare(Position position) {
+       return getSquare(position).getWorkerOnSquare();
+    }
 
     /**
      * Gets square height.
@@ -171,7 +180,13 @@ public class GameMap {
      */
     public void setWorkerPosition(Worker worker, Position position){
        if ( isPositionValid(position)) {
+           //Libero la posizione precedentemente occupata dal worker
+           if ( worker.isPlaced() ) {
+               this.getSquare(worker.getWorkerPosition()).freeSquare();
+           }
            worker.setPosition(position);
+           //devo liberare la vecchia posizione
+
            board[position.getRow()][position.getColumn()].setWorkerOn(worker);
 
        }

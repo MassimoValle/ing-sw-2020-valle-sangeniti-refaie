@@ -66,7 +66,12 @@ public class Worker {
     /**
      * Set {@link Worker#placed} true.
      */
-    public void setPlaced() {
-        this.placed = true;
+    public void setPlaced(boolean placed) {
+        this.placed = placed;
     }
+
+    public boolean isPlaced() {
+        return placed;
+    }
+
 }

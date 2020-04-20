@@ -24,11 +24,22 @@ public class Square {
         this.workerOnSquare = null;
     }
 
+    public Worker getWorkerOnSquare() {
+        if (hasWorkerOn()) {
+            return this.workerOnSquare;
+        } else {
+            return null;
+        }
+    }
 
     public int getHeight() {
         return this.height;
     }
 
+    public  void freeSquare() {
+        this.workerOn = false;
+        this.workerOnSquare = null;
+    }
     public void setHeight(int height) {
         this.height = height;
     }
