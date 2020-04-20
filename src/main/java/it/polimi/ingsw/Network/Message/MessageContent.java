@@ -5,6 +5,7 @@ public enum MessageContent {
     FIRST_CONNECTION,
     CONNECTION_RESPONSE,
     LOGIN,
+    GOD_SELECTION,
     YOUR_TURN,
     WORKER_CHOSEN,
     WORKER_MOVED,

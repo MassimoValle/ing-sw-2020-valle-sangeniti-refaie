@@ -120,6 +120,18 @@ public class Server {
                 }
                 break;
 
+            case GOD_SELECTION:
+                int[] indices;
+                String[] splittedString = message.getMessage().split(" ");
+                indices = new int[splittedString.length];
+
+                for (int i = 0; i < splittedString.length; i++) {
+                    indices[i] = Integer.parseInt(splittedString[i]);
+                }
+
+                gameManager.choseGodsFromDeck(indices);
+                break;
+
             case CHECK:
                 System.out.println(message.getMessageSender() + ": " + message.getMessage());
                 //Invio sulla connessione aperta il messaggio di risposta

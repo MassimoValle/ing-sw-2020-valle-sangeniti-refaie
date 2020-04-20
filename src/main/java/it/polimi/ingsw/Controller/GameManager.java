@@ -1,9 +1,14 @@
 package it.polimi.ingsw.Controller;
 
+import it.polimi.ingsw.Model.Deck;
 import it.polimi.ingsw.Model.Game;
+import it.polimi.ingsw.Model.God;
 import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.Network.Message.MessageContent;
 import it.polimi.ingsw.Network.Server;
+
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class GameManager {
 
@@ -36,6 +41,23 @@ public class GameManager {
             case WORKER_CHOSEN: //
             case PLAYERS_HAS_BUILT: //
         }
+    }
+
+
+    public ArrayList<God> choseGodsFromDeck(int[] indices) {
+        ArrayList<God> selectedGods = new ArrayList<>();
+
+        for (int i = 0; i < lobby.getPlayersInLobby().size(); i++) {
+            //Mostro a video gli dei disponibili per la scelta
+            System.out.println(Deck.getInstance().toString());
+
+            for (int j = 0; j < indices.length; j++) {
+                selectedGods.add(Deck.getInstance().getGod(j));
+            }
+        }
+
+        return selectedGods;
+
     }
 
 }

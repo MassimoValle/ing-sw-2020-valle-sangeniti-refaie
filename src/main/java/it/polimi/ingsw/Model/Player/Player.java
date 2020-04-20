@@ -43,21 +43,6 @@ public class Player {
     }
 
 
-    public void choseGodsFromDeck() {
-
-        //Mostro a video gli dei disponibili per la scelta
-        System.out.println(Deck.getInstance().toString());
-
-        //Prendo da tastiera la scelta del Dio
-        Scanner scanner = new Scanner(System.in);
-        int choice = scanner.nextInt();
-
-        //Setto il playerGod preso dalla posizione 'choice' nel Deck
-        playerGod = Deck.getInstance().getGod(choice);
-
-    }
-
-
     public void assignGodToPlayer(God selectedGod) {
         this.playerGod = selectedGod;
     }

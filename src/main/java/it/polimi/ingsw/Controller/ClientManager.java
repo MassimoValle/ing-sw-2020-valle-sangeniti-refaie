@@ -50,6 +50,11 @@ public class ClientManager {
                     break;
                 case LOGIN:
                     break;
+                case GOD_SELECTION:
+                    // printo la lista di gods
+                    // scelgo che gods voglio
+                    // invio gli indici dei god scelti al server
+                    break;
                 case YOUR_TURN:
                     break;
                 case WORKER_CHOSEN:
