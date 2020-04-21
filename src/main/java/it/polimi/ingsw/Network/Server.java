@@ -139,17 +139,6 @@ public class Server {
         //Everything else is handled by the GameManager
         GameManager.handleMessage(message);
 
-        /*
-        switch (message.getMessageContent()) {
-            case CHECK:
-                System.out.println(message.getMessageSender() + ": " + message.getMessage());
-                //Invio sulla connessione aperta il messaggio di risposta
-                clientsConnected.get(message.getMessageSender()).sendMessage(
-                        new Message("[SERVER]", MessageContent.CHECK, MessageStatus.OK, "Hai inviato un messaggio di tipo CHECK")
-                );
-                break;
-        }
-         */
     }
 
     //Metodo che controlla se il nome immesso dal player è valido/già in uso ecc

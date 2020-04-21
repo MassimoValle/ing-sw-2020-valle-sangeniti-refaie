@@ -1,13 +1,10 @@
 package it.polimi.ingsw.Controller;
 
-import it.polimi.ingsw.Model.Game;
-import it.polimi.ingsw.Model.God;
+import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.PlayerState;
-import it.polimi.ingsw.Model.Player.Worker;
-import it.polimi.ingsw.Model.Power;
+import it.polimi.ingsw.Model.God.Power;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

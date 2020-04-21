@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Model;
+package it.polimi.ingsw.Model.God;
 
 public class Power {
 
@@ -9,6 +9,10 @@ public class Power {
     public Power(String powerType, String powerDescription) {
         this.powerType = PowerType.matchFromXml(powerType);
         this.powerDescription = powerDescription;
+    }
+
+    public PowerType getPowerType() {
+        return powerType;
     }
 
     public String getPowerDescription() {

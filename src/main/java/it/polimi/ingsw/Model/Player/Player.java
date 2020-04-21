@@ -1,12 +1,9 @@
 package it.polimi.ingsw.Model.Player;
 
-import it.polimi.ingsw.Model.Deck;
-import it.polimi.ingsw.Model.God;
-import it.polimi.ingsw.Model.Map.GameMap;
+import it.polimi.ingsw.Model.God.God;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Player {
 
@@ -15,14 +12,18 @@ public class Player {
     private List<Worker> playerWorkers;         /** List of workers assigned to the player */
     private int numWorker = 2;                  /** Number of workers per player */
 
+
     private boolean moved;
     private boolean built;
 
 
     /**
-     * Create a player with the name specified by input user
-     * <p></p>
-     * The for loop is used to assign a distinctive number to workers
+     *
+     *      Create a player with the name specified by input user
+     *      <p></p>
+     *      The for loop is used to assign a distinctive number to workers
+     *
+     * @param playerName the player name
      */
     public Player(String playerName) {
         this.playerName = playerName;
@@ -31,23 +32,30 @@ public class Player {
     }
 
     /**
-     * Gets player name.
-     * @return the name chosen by the player at game start
-     */
-    public String getPlayerName() {return playerName; }
-    /**
      * Gets player god.
+     * <p></p>
      * @return the god card chosen by the player among those available
      */
     public God getPlayerGod() {
         return this.playerGod;
     }
+
     public void setPlayerGod(God selectedGod) {
         this.playerGod = selectedGod;
     }
 
     /**
-     * If the player perform a move on his turn the method will return true
+     * Gets player name.
+     * <p></p>
+     * @return the name chosen by the player at game start
+     */
+    public String getPlayerName() {return playerName; }
+
+
+    /**
+     * If the player did move on his turn the method will return true.
+     * <p></p>
+     * @return the boolean
      */
     public boolean hasMoved() {
         return moved;
@@ -55,6 +63,8 @@ public class Player {
 
     /**
      * If the player has built on his turn the method will return true
+     * <p></p>
+     * @return the boolean
      */
     public boolean hasBuilt() {
         return built;
@@ -63,39 +73,48 @@ public class Player {
     public void setMoved(boolean moved) {
         this.moved = moved;
     }
+
     public void setBuilt(boolean built) {
         this.built = built;
     }
 
+
     /**
      * Gets player workers.
-     * @return list of workers assigned to the player.
-     * this list contains 2 elements as 2 is the number of workers per player.
+     * <p></p>
+     * This list contains 2 elements as 2 is the number of workers per player.
+     * <p></p>
+     * @return the list of workers assigned to the player.
      */
     public List<Worker> getPlayerWorkers() { return playerWorkers; }
 
     /**
      * Add new {@link Worker} to {@link Player this player}
-     *
+     * <p></p>
+     * Probably this method will never be used but just in case just leave it here
+     * <p></p>
      * @return the worker
      */
-    public Worker addNewWorker() {      //TODO a che serve? il gioco senza espansioni non aggiunge worker
+    public Worker addNewWorker() {
         Worker newWorker = new Worker(getPlayerWorkers().size() + 1);
         getPlayerWorkers().add(newWorker);
         return newWorker;
     }
 
 
+    public void assignGodToPlayer(God selectedGod) {
+        this.playerGod = selectedGod;
+    }
 
 
 
 
-    /**
-     *  At the beginning of each turn this method must be called to reset the moved and built values.
-     */
+
+
+
     public void startRound() {
-        this.moved = false;
         this.built = false;
+        this.moved = false;
     }
 
     @Override

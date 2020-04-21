@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Model;
+package it.polimi.ingsw.Model.Building;
 
 public class Dome {
 

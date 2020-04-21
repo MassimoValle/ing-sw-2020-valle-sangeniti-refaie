@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Model;
+package it.polimi.ingsw.Model.God;
 
 public enum PowerType {
     YOUR_TURN ,YOUR_MOVE, YOUR_BUILD, OPPONENTS_TURN, WIN_CONDITION, END_OF_YOUR_TURN;

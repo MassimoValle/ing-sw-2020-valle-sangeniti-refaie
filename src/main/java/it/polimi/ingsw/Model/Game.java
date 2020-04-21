@@ -1,6 +1,8 @@
 package it.polimi.ingsw.Model;
 
 import it.polimi.ingsw.Exceptions.Game.PlayerNotFoundException;
+import it.polimi.ingsw.Model.God.Deck;
+import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Map.GameMap;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
@@ -13,11 +15,13 @@ import java.util.List;
 public class Game extends Observable<Game> implements Cloneable{
 
     private List<Player> players;
-    private Player activePlayer;
     private Deck deck;
-    private Player lastPlayerActive;
 
+    //Round info
+    private Player activePlayer;
     private Worker activeWorker;
+    private Player lastActivePlayer;
+
 
     //Chosen Gods from the FIRST_PLAYER (GODLIKE PLAYER)
     private List<God> chosenGodsFromDeck;
@@ -26,9 +30,7 @@ public class Game extends Observable<Game> implements Cloneable{
     private GameMap gameMap;
 
 
-    public Player getActivePlayer() {
-        return activePlayer;
-    }
+
 
     public List<God> getChosenGodsFromDeck() {
         return chosenGodsFromDeck;
@@ -38,9 +40,7 @@ public class Game extends Observable<Game> implements Cloneable{
         return godsChosen;
     }
 
-    public int getNumberOfPlayers() {
-        return numberOfPlayers;
-    }
+
 
     public Game() {
         this.players = new ArrayList<>();
@@ -57,9 +57,22 @@ public class Game extends Observable<Game> implements Cloneable{
         return this.clone();
     }
 
+    public GameMap getGameMap() {
+        return this.gameMap;
+    }
+
+    public Deck getDeck() {
+        return this.deck;
+    }
+
     public List<Player> getPlayers() {
         return this.players;
     }
+
+    public Player getActivePlayer() { return activePlayer; }
+
+    public int getNumberOfPlayers() { return numberOfPlayers; }
+
 
 
     private GameMap assignNewMap() {
@@ -69,15 +82,7 @@ public class Game extends Observable<Game> implements Cloneable{
     private Deck assignNewDeck() {
         return new Deck();
     }
-
-    public GameMap getGameMap() {
-        return this.gameMap;
-    }
-
-    public Deck getDeck() {
-        return this.deck;
-    }
-
+    
     public void setGodsChosen(boolean godsChosen) {
         this.godsChosen = godsChosen;
     }
@@ -86,8 +91,8 @@ public class Game extends Observable<Game> implements Cloneable{
         this.activePlayer = activePlayer;
     }
 
-    public void setLastPlayerActive(Player lastPlayerActive) {
-        this.lastPlayerActive = lastPlayerActive;
+    public void setLastActivePlayer(Player lastActivePlayer) {
+        this.lastActivePlayer = lastActivePlayer;
     }
 
     /**
@@ -133,6 +138,11 @@ public class Game extends Observable<Game> implements Cloneable{
         }
         return result;
     }
+
+    private void numberOfPlayersPlusOne() {
+        this.numberOfPlayers = this.getNumberOfPlayers() + 1;
+    }
+
 
 
     /**
@@ -231,6 +241,15 @@ public class Game extends Observable<Game> implements Cloneable{
     }
 
 
+    /**
+     * it allow the {@link Player } to move again.
+     *
+     * @param player
+     */
+    public void setMovedFalse(Player player) {
+        player.setMoved(false);
+    }
+
 
 
     @Override
@@ -243,15 +262,13 @@ public class Game extends Observable<Game> implements Cloneable{
     @Override
     public Game clone(){
         Game game1 = new Game();
-        game1.players = players;
-        game1.gameMap = gameMap;
-        game1.activePlayer = activePlayer;
-        game1.deck = deck;
-        game1.numberOfPlayers = numberOfPlayers;
+        game1.players = getPlayers();
+        game1.gameMap = getGameMap();
+        game1.activePlayer = getActivePlayer();
+        game1.deck = getDeck();
+        game1.numberOfPlayers = getNumberOfPlayers();
         return game1;
     }
-
-
 }
 
 

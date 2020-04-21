@@ -31,4 +31,7 @@ public class LobbyManager {
         //TODO start new game
     }
 
+    public ArrayList<Player> getPlayersInLobby() {
+        return (ArrayList<Player>) playersInLobby.clone();
+    }
 }

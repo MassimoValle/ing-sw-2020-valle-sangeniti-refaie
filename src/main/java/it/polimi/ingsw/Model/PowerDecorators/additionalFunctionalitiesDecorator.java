@@ -7,6 +7,7 @@ package it.polimi.ingsw.Model.PowerDecorators;
 
  */
 
-public interface AdditionalFunctionalitiesToPlayer {
+public interface additionalFunctionalitiesDecorator {
+
 
 }

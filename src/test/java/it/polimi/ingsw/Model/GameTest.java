@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 
 public class GameTest {
 
-    Game gameTest;
+    Game game;
 
     //Sono un deficiente ma non mi è venuto altro in mente
     Position pos00 = new Position(0,0);
@@ -41,121 +41,149 @@ public class GameTest {
 
 
     @Before
-    public void setUp() throws Exception {
-        gameTest = new Game();
+    public void initClass() {
+        game = new Game();
     }
 
     @Test
     public void gameNotNull(){
-        assertNotNull(gameTest);
+        assertNotNull(game);
     }
 
     @Test
+    public void playersListIsEmpty() {
+        assertEquals(game.getPlayers().size(), 0);
+    }
+
+    @Test
+    public void addPlayer() throws PlayerNotFoundException {
+        String name = "player";
+        game.addPlayer(name);
+
+        assertNotNull(game.searchPlayerByName(name));
+    }
+
+    
     public void ensureEverythingIsInitialized() {
-        assertNotNull("Game deck", gameTest.getDeck());
-        assertNotNull("Game Map", gameTest.getGameMap());
-        assertEquals(0, gameTest.getPlayers().size());
-        assertNull("No one is active", gameTest.getActivePlayer());
-        assertEquals(0, gameTest.getChosenGodsFromDeck().size());
-        assertEquals(0, gameTest.getNumberOfPlayers());
-        assertFalse(gameTest.areGodsChosen());
+        assertNotNull("Game deck", game.getDeck());
+        assertNotNull("Game Map", game.getGameMap());
+        assertEquals(0, game.getPlayers().size());
+        assertNull("No one is active", game.getActivePlayer());
+        assertEquals(0, game.getChosenGodsFromDeck().size());
+        assertEquals(0, game.getNumberOfPlayers());
+        assertFalse(game.areGodsChosen());
     }
 
     @Test
     public void checkIfWorkerIsStuck() {
         //Aggiungo un nuovo giocatore
-        Player player1 = gameTest.addPlayer("Simone");
+        Player player1 = game.addPlayer("Simone");
         //posiziono il primo dei suoi worker
-        gameTest.placeWorker(player1, player1.getPlayerWorkers().get(0), pos00);
+        game.placeWorker(player1, player1.getPlayerWorkers().get(0), pos00);
 
         //Blocking the worker
-        gameTest.getGameMap().setSquareHeight(pos01, 3);
-        gameTest.getGameMap().setSquareHeight(pos11, 3);
-        gameTest.getGameMap().setSquareHeight(pos10, 3);
+        game.getGameMap().setSquareHeight(pos01, 3);
+        game.getGameMap().setSquareHeight(pos11, 3);
+        game.getGameMap().setSquareHeight(pos10, 3);
 
         //Check if it's stuck
-        assertTrue(gameTest.isWorkerStuck(player1.getPlayerWorkers().get(0)));
+        assertTrue(game.isWorkerStuck(player1.getPlayerWorkers().get(0)));
 
 
     }
 
     @Test
-    public void startGame() throws PlayerNotFoundException {
-        Player simone = gameTest.addPlayer("Simone");
-        Player max  = gameTest.addPlayer("Max");
-        Player magdy = gameTest.addPlayer("Magdy");
+    public void checkClone(){
+        assertEquals(game.getPlayers(), game.clone().getPlayers());
+        assertEquals(game.getGameMap(), game.clone().getGameMap());
+        assertEquals(game.getActivePlayer(), game.clone().getActivePlayer());
+        assertEquals(game.getDeck(), game.clone().getDeck());
+        assertEquals(game.getNumberOfPlayers(), game.clone().getNumberOfPlayers());
+    }
 
-        assertEquals(3, gameTest.getNumberOfPlayers());
+    @Test
+    public void startGame() throws PlayerNotFoundException {
+        Player simone = game.addPlayer("Simone");
+        Player max  = game.addPlayer("Max");
+        Player magdy = game.addPlayer("Magdy");
+
+        assertEquals(3, game.getNumberOfPlayers());
 
         //Il giocatore più GODLIKE prende le carte dal mazzo
-        for (int i = 1; i < gameTest.getNumberOfPlayers() + 1; i++) {
-            gameTest.pickGodFromDeck(i);
+        for (int i = 1; i < game.getNumberOfPlayers() + 1; i++) {
+            game.pickGodFromDeck(i);
         }
 
-        assertEquals(3, gameTest.getChosenGodsFromDeck().size());
+        assertEquals(3, game.getChosenGodsFromDeck().size());
 
         //Assegno i god scelti ai player
-        gameTest.assignGodToPlayer(simone, gameTest.getChosenGodsFromDeck().get(2));
-        gameTest.assignGodToPlayer(max, gameTest.getChosenGodsFromDeck().get(1));
-        gameTest.assignGodToPlayer(magdy, gameTest.getChosenGodsFromDeck().get(0));
+        game.assignGodToPlayer(simone, game.getChosenGodsFromDeck().get(2));
+        game.assignGodToPlayer(max, game.getChosenGodsFromDeck().get(2));
+        game.assignGodToPlayer(magdy, game.getChosenGodsFromDeck().get(2));
 
-        gameTest.setGodsChosen(true);
+        game.setGodsChosen(true);
 
         //Piazzo i worker
-        gameTest.placeWorker(simone, simone.getPlayerWorkers().get(0), pos00);
-        gameTest.placeWorker(simone, simone.getPlayerWorkers().get(1), pos01);
-        gameTest.placeWorker(max, max.getPlayerWorkers().get(0), pos11);
-        gameTest.placeWorker(max, max.getPlayerWorkers().get(1), pos10);
-        gameTest.placeWorker(magdy, magdy.getPlayerWorkers().get(0), pos43);
-        gameTest.placeWorker(magdy, magdy.getPlayerWorkers().get(1), pos44);
+        game.placeWorker(simone, simone.getPlayerWorkers().get(0), pos00);
+        game.placeWorker(simone, simone.getPlayerWorkers().get(1), pos01);
+        game.placeWorker(max, max.getPlayerWorkers().get(0), pos11);
+        game.placeWorker(max, max.getPlayerWorkers().get(1), pos10);
+        game.placeWorker(magdy, magdy.getPlayerWorkers().get(0), pos43);
+        game.placeWorker(magdy, magdy.getPlayerWorkers().get(1), pos44);
 
         //Controllo che effettivamente il worker in pos1 che leggo sulla mappa è il worker #1 di simone
-        assertSame(simone.getPlayerWorkers().get(0), gameTest.getGameMap().getWorkerOnSquare(pos00));
-        assertSame(simone.getPlayerWorkers().get(1), gameTest.getGameMap().getWorkerOnSquare(pos01));
-        assertSame(max.getPlayerWorkers().get(0), gameTest.getGameMap().getWorkerOnSquare(pos11));
-        assertSame(max.getPlayerWorkers().get(1), gameTest.getGameMap().getWorkerOnSquare(pos10));
-        assertSame(magdy.getPlayerWorkers().get(0), gameTest.getGameMap().getWorkerOnSquare(pos43));
-        assertSame(magdy.getPlayerWorkers().get(1), gameTest.getGameMap().getWorkerOnSquare(pos44));
+        assertSame(simone.getPlayerWorkers().get(0), game.getGameMap().getWorkerOnSquare(pos00));
+        assertSame(simone.getPlayerWorkers().get(1), game.getGameMap().getWorkerOnSquare(pos01));
+        assertSame(max.getPlayerWorkers().get(0), game.getGameMap().getWorkerOnSquare(pos11));
+        assertSame(max.getPlayerWorkers().get(1), game.getGameMap().getWorkerOnSquare(pos10));
+        assertSame(magdy.getPlayerWorkers().get(0), game.getGameMap().getWorkerOnSquare(pos43));
+        assertSame(magdy.getPlayerWorkers().get(1), game.getGameMap().getWorkerOnSquare(pos44));
 
 
-        gameTest.getGameMap().printBoard();
+        game.getGameMap().printBoard();
 
         //Tocca al giocatore 1
 
         System.out.println("Inizio partita\nTurno di Simone");
-        gameTest.setActivePlayer(simone);
-        gameTest.initPlayerState(simone);
+        game.setActivePlayer(simone);
+        game.initPlayerState(simone);
 
         //mi aspetto che il worker #1 sia bloccato
-        assertTrue(gameTest.isWorkerStuck(simone.getPlayerWorkers().get(0)));
+        assertTrue(game.isWorkerStuck(simone.getPlayerWorkers().get(0)));
         //ma non il #2
-        assertFalse(gameTest.isWorkerStuck(simone.getPlayerWorkers().get(1)));
+        assertFalse(game.isWorkerStuck(simone.getPlayerWorkers().get(1)));
 
-        gameTest.moveWorker(simone, simone.getPlayerWorkers().get(1), pos02);
-        gameTest.buildBlock(simone, simone.getPlayerWorkers().get(0), pos12);
+        game.moveWorker(simone, simone.getPlayerWorkers().get(1), pos02);
+        game.buildBlock(simone, simone.getPlayerWorkers().get(1), pos12);
 
-        gameTest.getGameMap().printBoard();
-        gameTest.setLastPlayerActive(gameTest.getActivePlayer());
+        game.getGameMap().printBoard();
+        game.setLastActivePlayer(game.getActivePlayer());
 
 
         //Turno giocatore 2
 
         System.out.println("Turno di Max");
-        gameTest.setActivePlayer(max);
-        gameTest.initPlayerState(max);
+        game.setActivePlayer(max);
+        game.initPlayerState(max);
 
-        gameTest.moveWorker(max, max.getPlayerWorkers().get(0), pos12);
-        gameTest.buildBlock(max, max.getPlayerWorkers().get(0), pos23);
-        gameTest.setLastPlayerActive(gameTest.getActivePlayer());
+        game.moveWorker(max, max.getPlayerWorkers().get(0), pos12);
+        game.buildBlock(max, max.getPlayerWorkers().get(0), pos23);
+        game.setLastActivePlayer(game.getActivePlayer());
 
-        gameTest.getGameMap().printBoard();
-
-
+        game.getGameMap().printBoard();
 
 
+        //Turno giocatore 3
 
-        //gameTest.moveWorker(magdy, magdy.getPlayerWorkers().get(0), pos12);
-        //gameTest.buildBlock(magdy, magdy.getPlayerWorkers().get(0), pos23);
+        System.out.println("Turno di Magdy");
+        game.setActivePlayer(magdy);
+        game.initPlayerState(magdy);
+
+        game.moveWorker(magdy, magdy.getPlayerWorkers().get(0), pos42);
+        game.buildBlock(magdy, magdy.getPlayerWorkers().get(0), pos41);
+        game.setLastActivePlayer(game.getActivePlayer());
+
+        game.getGameMap().printBoard();
 
 
 
