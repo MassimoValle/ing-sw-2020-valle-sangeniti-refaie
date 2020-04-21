@@ -68,7 +68,7 @@ public class GameTest {
         assertNotNull("Game deck", game.getDeck());
         assertNotNull("Game Map", game.getGameMap());
         assertEquals(0, game.getPlayers().size());
-        assertNull("No one is active", game.getPlayerActive());
+        assertNull("No one is active", game.getActivePlayer());
         assertEquals(0, game.getChosenGodsFromDeck().size());
         assertEquals(0, game.getNumberOfPlayers());
         assertFalse(game.areGodsChosen());
@@ -89,14 +89,13 @@ public class GameTest {
         //Check if it's stuck
         assertTrue(game.isWorkerStuck(player1.getPlayerWorkers().get(0)));
 
-
     }
 
     @Test
     public void checkClone(){
         assertEquals(game.getPlayers(), game.clone().getPlayers());
         assertEquals(game.getGameMap(), game.clone().getGameMap());
-        assertEquals(game.getPlayerActive(), game.clone().getPlayerActive());
+        assertEquals(game.getActivePlayer(), game.clone().getActivePlayer());
         assertEquals(game.getDeck(), game.clone().getDeck());
         assertEquals(game.getNumberOfPlayers(), game.clone().getNumberOfPlayers());
     }
@@ -144,7 +143,7 @@ public class GameTest {
         //Tocca al giocatore 1
 
         System.out.println("Inizio partita\nTurno di Simone");
-        game.setPlayerActive(simone);
+        game.setActivePlayer(simone);
         game.initPlayerState(simone);
 
         //mi aspetto che il worker #1 sia bloccato
@@ -153,30 +152,36 @@ public class GameTest {
         assertFalse(game.isWorkerStuck(simone.getPlayerWorkers().get(1)));
 
         game.moveWorker(simone, simone.getPlayerWorkers().get(1), pos02);
-        game.buildBlock(simone, simone.getPlayerWorkers().get(0), pos12);
+        game.buildBlock(simone, simone.getPlayerWorkers().get(1), pos12);
 
         game.getGameMap().printBoard();
-        game.setLastPlayerActive(game.getPlayerActive());
+        game.setLastActivePlayer(game.getActivePlayer());
 
 
         //Turno giocatore 2
 
         System.out.println("Turno di Max");
-        game.setPlayerActive(max);
+        game.setActivePlayer(max);
         game.initPlayerState(max);
 
         game.moveWorker(max, max.getPlayerWorkers().get(0), pos12);
         game.buildBlock(max, max.getPlayerWorkers().get(0), pos23);
-        game.setLastPlayerActive(game.getPlayerActive());
+        game.setLastActivePlayer(game.getActivePlayer());
 
         game.getGameMap().printBoard();
 
 
+        //Turno giocatore 3
 
+        System.out.println("Turno di Magdy");
+        game.setActivePlayer(magdy);
+        game.initPlayerState(magdy);
 
+        game.moveWorker(magdy, magdy.getPlayerWorkers().get(0), pos42);
+        game.buildBlock(magdy, magdy.getPlayerWorkers().get(0), pos41);
+        game.setLastActivePlayer(game.getActivePlayer());
 
-        //gameTest.moveWorker(magdy, magdy.getPlayerWorkers().get(0), pos12);
-        //gameTest.buildBlock(magdy, magdy.getPlayerWorkers().get(0), pos23);
+        game.getGameMap().printBoard();
 
 
 

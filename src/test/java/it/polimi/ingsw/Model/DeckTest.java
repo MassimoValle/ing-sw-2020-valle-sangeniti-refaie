@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Model;
 
-import it.polimi.ingsw.Model.Deck;
+import it.polimi.ingsw.Model.God.Deck;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -22,8 +22,8 @@ public class DeckTest {
     }
 
     @Test
-    public void deckHave9Gods() {
-        assertEquals(deck.size(), 9);
+    public void deckHave14Gods() {
+        assertEquals(deck.size(), 14);
     }
 
     @Test
@@ -39,6 +39,7 @@ public class DeckTest {
 
     @Test
     public void getGod() {
+        //deck.getGod(i) DOESN'T REMOVE A CARD FROM THE DECK
         assertTrue(deck.contains(deck.getGod(1)));
 
     }

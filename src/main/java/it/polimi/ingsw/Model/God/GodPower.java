@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Model;
+package it.polimi.ingsw.Model.God;
 
 import it.polimi.ingsw.Model.Building.Dome;
 import it.polimi.ingsw.Model.Map.Square;

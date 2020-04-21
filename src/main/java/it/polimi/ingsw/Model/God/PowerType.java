@@ -1,7 +1,7 @@
-package it.polimi.ingsw.Model;
+package it.polimi.ingsw.Model.God;
 
 public enum PowerType {
-    YOUR_TURN ,YOUR_MOVE, YOUR_BUILD, OPPONENTS_TURN, WIN_CONDITION;
+    YOUR_TURN ,YOUR_MOVE, YOUR_BUILD, OPPONENTS_TURN, WIN_CONDITION, END_OF_YOUR_TURN;
 
     public static PowerType matchFromXml(String powerType) {
         switch (powerType) {
@@ -13,6 +13,8 @@ public enum PowerType {
                 return YOUR_BUILD;
             case "Win Condition":
                 return WIN_CONDITION;
+            case "End of Your Turn":
+                return END_OF_YOUR_TURN;
 
             default:
                 return YOUR_TURN;    //Prometheus's powertype

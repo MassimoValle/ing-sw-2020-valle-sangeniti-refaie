@@ -1,15 +1,13 @@
 package it.polimi.ingsw.Controller;
 
-import it.polimi.ingsw.Model.Deck;
+import it.polimi.ingsw.Model.God.Deck;
 import it.polimi.ingsw.Model.Game;
-import it.polimi.ingsw.Model.God;
+import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.MessageContent;
 import it.polimi.ingsw.Network.Server;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.List;
 
 public class GameManager {

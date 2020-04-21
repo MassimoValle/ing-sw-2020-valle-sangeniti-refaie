@@ -71,5 +71,45 @@
         <powerType>Your Turn</powerType>
         <powerDescription>If your Worker does not move up, it may build both before and after moving.</powerDescription>
     </god>
-    
+
+    <god>
+        <id>10</id>
+        <name>Chronus</name>
+        <description>God of Time</description>
+        <powerType>Win Condition</powerType>
+        <powerDescription>You also win when there are at least five Complete Towers on the board.</powerDescription>
+    </god>
+
+    <god>
+        <id>11</id>
+        <name>Hera</name>
+        <description>Goddess of Marriage</description>
+        <powerType>Opponent’s Turn</powerType>
+        <powerDescription>An opponent cannot win by moving into a perimeter space.</powerDescription>
+    </god>
+
+    <god>
+        <id>12</id>
+        <name>Hestia</name>
+        <description>Goddess of Hearth and Home</description>
+        <powerType>Your Build</powerType>
+        <powerDescription>Your Worker may build one additional time, but this cannot be on a perimeter space.</powerDescription>
+    </god>
+
+    <god>
+        <id>13</id>
+        <name>Poseidon</name>
+        <description>God of the Sea</description>
+        <powerType>End of Your Turn</powerType>
+        <powerDescription>If your unmoved Worker is on the ground level, it may build up to three times.</powerDescription>
+    </god>
+
+    <god>
+        <id>14</id>
+        <name>Triton</name>
+        <description>God of the Waves</description>
+        <powerType>Win Condition</powerType>
+        <powerDescription>Each time your Worker moves into a perimeter space, it may immediately move again.</powerDescription>
+    </god>
+
 </class>

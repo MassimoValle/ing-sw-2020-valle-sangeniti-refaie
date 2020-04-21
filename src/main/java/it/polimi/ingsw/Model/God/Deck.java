@@ -1,15 +1,13 @@
-package it.polimi.ingsw.Model;
+package it.polimi.ingsw.Model.God;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Deck extends ArrayList<God>{
 
@@ -62,7 +60,7 @@ public class Deck extends ArrayList<God>{
 
 
     /**
-     * Return the selected {@link God god} e remove it from the Deck
+     * Return the selected {@link God god}.
      *
      * @param choice index
      * @return selectedGod god
