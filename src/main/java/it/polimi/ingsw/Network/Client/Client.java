@@ -92,6 +92,7 @@ public class Client {
             try{
 
                 while (true){
+                    //clientManager.debug();
                     receiveMessage();
                 }
 

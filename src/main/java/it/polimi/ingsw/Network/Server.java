@@ -111,6 +111,19 @@ public class Server {
         executor.submit(connection);
     }
 
+    public synchronized void broadcast(Message message){
+
+        System.out.println(message.getMessage());
+
+        for (Map.Entry<String, Connection> entry : clientsConnected.entrySet())
+        {
+            String playerName = entry.getKey();
+            if(!message.getMessageSender().equals(playerName)){
+                entry.getValue().sendMessage(message);
+            }
+        }
+    }
+
 
 
     //Methods that has to call the GameManager to handle the request by the client

@@ -15,7 +15,7 @@ public class GameManager {
     final int MIN_CONNECTION_IN = 2;
     final int MAX_CONNECTION_IN = 3;
 
-    private final transient Server server;
+    private static transient Server server;
     private final Game gameInstance;
     private final LobbyManager lobby;
     private transient TurnManager turnManager;
@@ -35,10 +35,19 @@ public class GameManager {
 
         switch(message.getMessageContent()) {
             case YOUR_TURN: //
+                break;
             case END_OF_TURN: //
+                break;
             case WORKER_MOVED: //
+                break;
             case WORKER_CHOSEN: //
+                break;
             case PLAYERS_HAS_BUILT: //
+                break;
+            case CHECK:
+                // broadcast
+                server.broadcast(message);
+                break;
         }
     }
 

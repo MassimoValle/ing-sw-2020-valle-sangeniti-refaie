@@ -36,11 +36,6 @@ public class ClientManager {
 
     public void handleMessageFromServer(Message message){
 
-        debug();
-
-        String out = "[SERVER] : ";
-        consoleOut.println(out + message.getMessageContent());
-
         if(message.getMessageContent() != null) {
             switch (message.getMessageContent()){
                 case FIRST_CONNECTION:
@@ -48,6 +43,8 @@ public class ClientManager {
                 case CONNECTION_RESPONSE:
                     break;
                 case LOGIN:
+                    String out = "[SERVER] : ";
+                    consoleOut.println(out + message.getMessageContent());
                     break;
                 case GOD_SELECTION:
                     // printo la lista di gods
@@ -65,6 +62,7 @@ public class ClientManager {
                 case END_OF_TURN:
                     break;
                 default: CHECK:
+                System.out.println(message.getMessageSender() + ": " + message.getMessage());
                     break;
             }
         }
@@ -100,8 +98,6 @@ public class ClientManager {
             Client.sendMessage(
                     new Message(getUsername(), MessageContent.CHECK, inputLine)
             );
-
-            Client.receiveMessage();
         } catch (IOException e) {
             e.printStackTrace();
         }
