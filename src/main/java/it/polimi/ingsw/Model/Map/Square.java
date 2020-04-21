@@ -40,6 +40,7 @@ public class Square {
         this.workerOn = false;
         this.workerOnSquare = null;
     }
+
     public void setHeight(int height) {
         this.height = height;
     }

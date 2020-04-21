@@ -66,6 +66,29 @@ public class GameMapTest {
     }
 
 
+    @Test
+    public void workerOnSquare(){
+        Worker worker1 = new Worker(0);
+        gameMap.setWorkerPosition (worker1, pos1);
+
+        assertEquals(worker1, gameMap.getWorkerOnSquare(pos1));
+    }
+
+    @Test
+    public void squareHeight(){
+        /*gameMap.getBoard()[0][0].heightPlusOne();
+        gameMap.getBoard()[0][0].heightPlusOne();
+        gameMap.getBoard()[0][0].heightPlusOne();
+        gameMap.getBoard()[0][0].heightPlusOne();*/
+
+        gameMap.setSquareHeight(pos1, 4);
+
+
+        assertEquals(4, gameMap.getSquareHeight(pos1));
+
+    }
+
+
 
 
 

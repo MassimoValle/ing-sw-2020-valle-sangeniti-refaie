@@ -39,7 +39,7 @@ public class DeckTest {
 
     @Test
     public void getGod() {
-        assertFalse(deck.contains(deck.getGod(1)));
+        assertTrue(deck.contains(deck.getGod(1)));
 
     }
 }
