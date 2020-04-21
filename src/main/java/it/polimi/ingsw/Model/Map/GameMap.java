@@ -17,7 +17,7 @@ public class GameMap {
    public GameMap() {
        this.board = buildBoard();
        for (int i=0; i<ROWS; i++) {
-           for ( int j=0; j<COLUMNS; j++) {
+           for ( int j=0; j<COLUMNS; j++)  {
                this.board[i][j] = new Square(i, j);
            }
        }
