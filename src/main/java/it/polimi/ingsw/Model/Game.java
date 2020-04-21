@@ -13,11 +13,11 @@ import java.util.List;
 public class Game extends Observable<Game> implements Cloneable{
 
     private List<Player> players;
-    private Player playerActive;
+    private Player activePlayer;
     private Deck deck;
     private Player lastPlayerActive;
 
-    private Worker workerActive;
+    private Worker activeWorker;
 
     //Chosen Gods from the FIRST_PLAYER (GODLIKE PLAYER)
     private List<God> chosenGodsFromDeck;
@@ -26,8 +26,8 @@ public class Game extends Observable<Game> implements Cloneable{
     private GameMap gameMap;
 
 
-    public Player getPlayerActive() {
-        return playerActive;
+    public Player getActivePlayer() {
+        return activePlayer;
     }
 
     public List<God> getChosenGodsFromDeck() {
@@ -44,13 +44,13 @@ public class Game extends Observable<Game> implements Cloneable{
 
     public Game() {
         this.players = new ArrayList<>();
-        this.playerActive = null;
+        this.activePlayer = null;
         this.deck = assignNewDeck();
         this.chosenGodsFromDeck = new ArrayList<>();
         this.numberOfPlayers = 0;
         this.gameMap = assignNewMap();
         this.godsChosen = false;
-        this.workerActive = null;
+        this.activeWorker = null;
     }
 
     public Game getGame() {
@@ -82,8 +82,8 @@ public class Game extends Observable<Game> implements Cloneable{
         this.godsChosen = godsChosen;
     }
 
-    public void setPlayerActive(Player playerActive) {
-        this.playerActive = playerActive;
+    public void setActivePlayer(Player activePlayer) {
+        this.activePlayer = activePlayer;
     }
 
     public void setLastPlayerActive(Player lastPlayerActive) {
@@ -190,7 +190,7 @@ public class Game extends Observable<Game> implements Cloneable{
         //ALWAYS CHECK THE PLAYER AND THE WORKER'S PROPERTY
 
         //Controllo che il worker con il quale si vuole costruire sia lo stesso che si è mosso precedentemente
-        if (this.workerActive != worker) {
+        if (this.activeWorker != worker) {
             System.out.println("Devi costruire con lo stesso worker con il quale hai mosso!");
             return;
         }
@@ -202,7 +202,7 @@ public class Game extends Observable<Game> implements Cloneable{
 
     /**
      * Move the selected {@link Worker worker}  by {@link Player player} into the {@link Position position} chose by the player;
-     * Also set the worker passed as parameter to {@link Game#workerActive}
+     * Also set the worker passed as parameter to {@link Game#activeWorker}
      *
      * @param player   the worker's owner
      * @param worker   worker selected by the player
@@ -210,7 +210,7 @@ public class Game extends Observable<Game> implements Cloneable{
      */
     public void moveWorker(Player player, Worker worker, Position position) {
         getGameMap().setWorkerPosition(worker, position);
-        this.workerActive = worker;
+        this.activeWorker = worker;
         player.setMoved(true);
     }
 
@@ -245,7 +245,7 @@ public class Game extends Observable<Game> implements Cloneable{
         Game game1 = new Game();
         game1.players = players;
         game1.gameMap = gameMap;
-        game1.playerActive = playerActive;
+        game1.activePlayer = activePlayer;
         game1.deck = deck;
         game1.numberOfPlayers = numberOfPlayers;
         return game1;

@@ -55,7 +55,7 @@ public class GameTest {
         assertNotNull("Game deck", gameTest.getDeck());
         assertNotNull("Game Map", gameTest.getGameMap());
         assertEquals(0, gameTest.getPlayers().size());
-        assertNull("No one is active", gameTest.getPlayerActive());
+        assertNull("No one is active", gameTest.getActivePlayer());
         assertEquals(0, gameTest.getChosenGodsFromDeck().size());
         assertEquals(0, gameTest.getNumberOfPlayers());
         assertFalse(gameTest.areGodsChosen());
@@ -96,8 +96,8 @@ public class GameTest {
 
         //Assegno i god scelti ai player
         gameTest.assignGodToPlayer(simone, gameTest.getChosenGodsFromDeck().get(2));
-        gameTest.assignGodToPlayer(max, gameTest.getChosenGodsFromDeck().get(2));
-        gameTest.assignGodToPlayer(magdy, gameTest.getChosenGodsFromDeck().get(2));
+        gameTest.assignGodToPlayer(max, gameTest.getChosenGodsFromDeck().get(1));
+        gameTest.assignGodToPlayer(magdy, gameTest.getChosenGodsFromDeck().get(0));
 
         gameTest.setGodsChosen(true);
 
@@ -123,7 +123,7 @@ public class GameTest {
         //Tocca al giocatore 1
 
         System.out.println("Inizio partita\nTurno di Simone");
-        gameTest.setPlayerActive(simone);
+        gameTest.setActivePlayer(simone);
         gameTest.initPlayerState(simone);
 
         //mi aspetto che il worker #1 sia bloccato
@@ -135,18 +135,18 @@ public class GameTest {
         gameTest.buildBlock(simone, simone.getPlayerWorkers().get(0), pos12);
 
         gameTest.getGameMap().printBoard();
-        gameTest.setLastPlayerActive(gameTest.getPlayerActive());
+        gameTest.setLastPlayerActive(gameTest.getActivePlayer());
 
 
         //Turno giocatore 2
 
         System.out.println("Turno di Max");
-        gameTest.setPlayerActive(max);
+        gameTest.setActivePlayer(max);
         gameTest.initPlayerState(max);
 
         gameTest.moveWorker(max, max.getPlayerWorkers().get(0), pos12);
         gameTest.buildBlock(max, max.getPlayerWorkers().get(0), pos23);
-        gameTest.setLastPlayerActive(gameTest.getPlayerActive());
+        gameTest.setLastPlayerActive(gameTest.getActivePlayer());
 
         gameTest.getGameMap().printBoard();
 
