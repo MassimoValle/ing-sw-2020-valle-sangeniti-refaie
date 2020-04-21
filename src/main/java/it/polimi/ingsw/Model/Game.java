@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Model;
 
 import it.polimi.ingsw.Exceptions.Game.PlayerNotFoundException;
+import it.polimi.ingsw.Model.Action.*;
 import it.polimi.ingsw.Model.God.Deck;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Map.GameMap;
@@ -251,6 +252,20 @@ public class Game extends Observable<Game> implements Cloneable{
     }
 
 
+    //QUESTI MEDOTI DOVRANNO ESSERE SPOSTATI NEL CONTROLLER [TurnManager]
+    //Startegy pattern implementation
+    private ActionStrategy actionStrategy;
+
+    public void doBuildAction(Player player, Worker workerSelected, Position newPosition) {
+        actionStrategy = new BuildActionStrategy(player, workerSelected, newPosition);
+        actionStrategy.doAction();
+    }
+
+    public void doMoveAction(Player player, Worker workerSelected, Position newPosition) {
+        actionStrategy = new MoveActionStrategy(player, workerSelected, newPosition);
+        actionStrategy.doAction();
+
+    }
 
     @Override
     public String toString() {
