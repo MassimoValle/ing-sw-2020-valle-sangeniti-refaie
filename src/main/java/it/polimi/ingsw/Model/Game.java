@@ -101,7 +101,7 @@ public class Game extends Observable<Game> implements Cloneable{
      *
      * @param i it references to the index that is shown to the player referred to the god
      */
-    public void pickGodFromDeck(int i) {
+    public void chooseGodFromDeck(int i) {
         getDeck().getGod(i).setTakenFromDeck(true);
         chosenGodsFromDeck.add(Deck.getInstance().getGod(i));
     }

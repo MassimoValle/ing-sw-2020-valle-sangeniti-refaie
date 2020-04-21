@@ -6,6 +6,8 @@ import it.polimi.ingsw.Model.Player.Worker;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class GameMapTest {
@@ -88,6 +90,24 @@ public class GameMapTest {
 
     }
 
+    @Test
+    public void placesWhereYouCanBuildOn(){
+        assertNotNull(gameMap.getPlacesWhereYouCanBuildOn(pos1));
+
+        List<Position> positions = gameMap.getPlacesWhereYouCanBuildOn(pos1);
+
+        assertEquals(new Position(0, 1), positions.get(0));
+        assertEquals(new Position(1, 0), positions.get(2));
+        assertEquals(new Position(1, 1), positions.get(1));
+
+    }
+
+    @Test
+    public void addBlock(){
+        Position pos = new Position(0, 0);
+        gameMap.addBlock(pos);
+        assertEquals(1, gameMap.getSquareHeight(pos));
+    }
 
 
 

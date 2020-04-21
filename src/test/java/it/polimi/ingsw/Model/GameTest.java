@@ -100,6 +100,17 @@ public class GameTest {
         assertEquals(game.getNumberOfPlayers(), game.clone().getNumberOfPlayers());
     }
 
+    @Test
+    public void pickGodFromDeck(){
+
+        assertEquals(0, game.getChosenGodsFromDeck().size());
+
+        game.chooseGodFromDeck(1);
+        assertNotNull(game.getChosenGodsFromDeck());
+
+    }
+
+
     public void startGame() throws PlayerNotFoundException {
         Player simone = game.addPlayer("Simone");
         Player max  = game.addPlayer("Max");
@@ -109,7 +120,7 @@ public class GameTest {
 
         //Il giocatore più GODLIKE prende le carte dal mazzo
         for (int i = 1; i < game.getNumberOfPlayers() + 1; i++) {
-            game.pickGodFromDeck(i);
+            game.chooseGodFromDeck(i);
         }
 
         assertEquals(3, game.getChosenGodsFromDeck().size());
