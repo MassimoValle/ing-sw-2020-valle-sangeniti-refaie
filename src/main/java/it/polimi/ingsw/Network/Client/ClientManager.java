@@ -2,6 +2,7 @@ package it.polimi.ingsw.Network.Client;
 
 import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.Network.Message.MessageContent;
+import it.polimi.ingsw.Network.Message.MessageStatus;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -43,8 +44,13 @@ public class ClientManager {
                 case CONNECTION_RESPONSE:
                     break;
                 case LOGIN:
-                    String out = "[SERVER] : ";
-                    consoleOut.println(out + message.getMessageContent());
+                    printMessageFromServer(message);
+                    if(message.getMessageStatus() == MessageStatus.ERROR){
+                        login();
+                    }
+
+                    // do something
+
                     break;
                 case GOD_SELECTION:
                     // printo la lista di gods
@@ -62,11 +68,21 @@ public class ClientManager {
                 case END_OF_TURN:
                     break;
                 default: CHECK:
-                System.out.println(message.getMessageSender() + ": " + message.getMessage());
+                    printMessageFromServer(message);
                     break;
             }
         }
 
+    }
+
+    private void printMessageFromServer(Message message){
+        String out = "#### [SERVER] ####\n";
+        out += "Message content: " + message.getMessageContent() + "\n";
+        out += "Message status: " + message.getMessageStatus() + "\n";
+        out += "Message value: " + message.getMessage() + "\n";
+        out += "________________\n";
+
+        consoleOut.println(out);
     }
 
     //Ask the user to insert a username
@@ -87,6 +103,19 @@ public class ClientManager {
         //consoleOut.println("Have a nice day");
 
         return username;
+
+    }
+
+    public void login(){
+            String username = askUsername();
+
+            try {
+                Client.sendMessage(
+                        new Message(username, MessageContent.LOGIN, username)
+                );
+            }catch (IOException e){
+                e.printStackTrace();
+            }
 
     }
 

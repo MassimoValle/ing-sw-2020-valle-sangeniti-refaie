@@ -33,28 +33,15 @@ public class Client {
 
     }
 
-    public static boolean receiveMessage() throws IOException{
+    public static void receiveMessage() throws IOException{
         Message received;
         try {
             received = (Message) socketIn.readObject();
-
-            if(!checkStatus(received)){
-                System.out.println("[SERVER] : " + received.getMessageContent() + " ERROR");
-                return false;
-            }
 
             clientManager.handleMessageFromServer(received);
         } catch (ClassNotFoundException e){
             e.printStackTrace();
         }
-        return true;
-    }
-
-    private static boolean checkStatus(Message message){
-        if(message.getMessageStatus() == MessageStatus.ERROR)
-            return false;
-
-        return true;
     }
 
     public void startConnection() {
@@ -78,14 +65,7 @@ public class Client {
 
         startConnection();
 
-        do{
-            String username = clientManager.askUsername();
-
-            sendMessage(
-                    new Message(username, MessageContent.LOGIN, username)
-            );
-        }while (!receiveMessage());
-
+        clientManager.login();
 
          
         while(!Thread.currentThread().isInterrupted()) {
