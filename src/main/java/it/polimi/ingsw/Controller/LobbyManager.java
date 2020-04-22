@@ -3,6 +3,7 @@ package it.polimi.ingsw.Controller;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Network.Connection;
+import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.View.RemoteView;
 
 import java.util.ArrayList;
@@ -33,5 +34,13 @@ public class LobbyManager {
 
     public ArrayList<Player> getPlayersInLobby() {
         return (ArrayList<Player>) playersInLobby.clone();
+    }
+
+    public void createLobby() {
+    }
+
+    //CONTROLLO LA LOBBY, AGGIUNGO PLAYER, NOME NON VALIDO, ECC
+    public void handleMessage(Message message) {
+
     }
 }

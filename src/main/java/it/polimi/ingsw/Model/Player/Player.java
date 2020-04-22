@@ -13,6 +13,10 @@ public class Player {
     private int numWorker = 2;                  /** Number of workers per player */
 
 
+    private LastTurnAction lastTurnAction;
+
+    private UserPlayerState userPlayerState;
+
     private boolean moved;
     private boolean built;
 

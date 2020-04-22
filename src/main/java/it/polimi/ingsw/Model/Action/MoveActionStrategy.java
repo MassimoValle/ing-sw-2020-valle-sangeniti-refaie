@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Model.Action;
 
+import it.polimi.ingsw.Model.God.Power;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
@@ -19,6 +20,8 @@ public class MoveActionStrategy implements ActionStrategy {
     @Override
     public void doAction() {
 
+        //TEST
+        Power apolloPower = new Power.ApolloPower();
         //Do something
 
     }

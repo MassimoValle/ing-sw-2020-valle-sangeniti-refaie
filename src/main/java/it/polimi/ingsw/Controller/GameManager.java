@@ -5,6 +5,7 @@ import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Network.Message.Message;
+import it.polimi.ingsw.Network.Message.MessageContent;
 import it.polimi.ingsw.Network.Server;
 
 import java.util.ArrayList;
@@ -19,19 +20,62 @@ public class GameManager {
     private final Game gameInstance;
     private final LobbyManager lobby;
     private transient TurnManager turnManager;
-    private static PossibleGameState gameState;
+
+    private PossibleGameState gameState;
 
 
     public GameManager(Server server){
         this.server = server;
-        this.lobby = new LobbyManager();
+        this.lobby = null;
         this.gameInstance = new Game();
         this.turnManager = null;
-        this.gameState = PossibleGameState.IN_LOBBY;
+        this.gameState = PossibleGameState.GAME_INIT;
     }
 
+    private void setGameState(PossibleGameState gameState) {
+        this.gameState = gameState;
+    }
 
-    public static void handleMessage(Message message) {
+    public void handleMessage(Message message) {
+
+        //SI PUO' GESTIRE LA COSA COME UNA SORTA DI FAR "HOSTARE" UNA PARTITA AL PLAYER (SOLO SULLA CARTA, NON EFFETTIVAMENTE)
+
+        //FASE INIZIALE CREO LA LOBBY
+        //DA DECEIDERE SE: -1)CREARLA SUBITO COL COSTRUTTORE DEL GAME MANAGER OPPURE
+        //                 -2)UNA VOLTA RICEVUTO IL PRIMO MESSAGGIO DI RICHIESTA DA UN CLIENT
+
+
+        //CASO 1: CREO LA LOBBY E AGGIORNO LO STATO DEL GIOCO PossibleGameState.IN_LOBBY
+
+        if (gameState == PossibleGameState.GAME_INIT) {
+
+            //GESTISCO IL PRIMO MESSAGGIO TI TIPO LOGIN DA UN CLIENT E CREO LA LOBBY
+            if (message.getMessageContent() == MessageContent.LOGIN) {
+                lobby.handleMessage(message);
+
+                setGameState(PossibleGameState.IN_LOBBY);
+
+            }
+
+        }
+
+
+        //QUI GESTISCO I FUTURI LOGIN DAI PROSSIMI PLAYER
+
+        //!!!IMPORTANTE SARA' LA LOBBY A DIRMI QUANDO LA PARTITA POTRAÌ INIZIARE
+        //Quindi ad esempio nel momento in cui una volta raggiunto il numero di player nella lobby
+        //che assumiamo venga settato nel momento in cui venga lancaito il server da riga di comando
+        //allora nella lobby partirà un COUNTDOWN (gameState settato a READY_TO_PLAY) ad es 5 secondi
+        //successivamente gameState verrà settato a GODLIKE_PLAYER_MOMENT e inizia il setup di gioco
+
+        if (gameState == PossibleGameState.IN_LOBBY ) {
+
+            if (message.getMessageContent() == MessageContent.LOGIN) {
+                lobby.handleMessage(message);
+
+            }
+
+        }
 
         switch(message.getMessageContent()) {
             case YOUR_TURN: //
@@ -68,6 +112,7 @@ public class GameManager {
     }
     
     public void startGame(List<String> players) {
+
         //UPDATE THE GAME STATE
         gameState = PossibleGameState.READY_TO_PLAY;
 
@@ -76,9 +121,9 @@ public class GameManager {
             gameInstance.addPlayer(playerToAdd);
         }
 
-        gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
 
-        Player playerToChoseGods = gameInstance.getPlayers().get(1);
+
+
 
 
 
