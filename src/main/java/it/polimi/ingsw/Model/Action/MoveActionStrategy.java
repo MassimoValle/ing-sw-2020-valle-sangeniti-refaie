@@ -20,8 +20,6 @@ public class MoveActionStrategy implements ActionStrategy {
     @Override
     public void doAction() {
 
-        //TEST
-        Power apolloPower = new Power.ApolloPower();
         //Do something
 
     }

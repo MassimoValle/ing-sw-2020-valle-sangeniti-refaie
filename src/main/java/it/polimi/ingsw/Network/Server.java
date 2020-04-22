@@ -150,7 +150,7 @@ public class Server {
         }
 
         //Everything else is handled by the GameManager
-        GameManager.handleMessage(message);
+        gameManager.handleMessage(message);
 
     }
 
