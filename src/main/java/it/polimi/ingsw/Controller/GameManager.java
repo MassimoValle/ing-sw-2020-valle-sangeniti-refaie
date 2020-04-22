@@ -1,11 +1,13 @@
 package it.polimi.ingsw.Controller;
 
+import it.polimi.ingsw.Model.Action.Action;
+import it.polimi.ingsw.Model.Action.BuildAction;
 import it.polimi.ingsw.Model.God.Deck;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Player.Player;
-import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.MessageContent;
+import it.polimi.ingsw.Model.Player.Worker;
+import it.polimi.ingsw.Network.Message.*;
 import it.polimi.ingsw.Network.Server;
 
 import java.util.ArrayList;
@@ -36,6 +38,9 @@ public class GameManager {
         this.gameState = gameState;
     }
 
+
+    //NOI VOGLIAMO CHE LA HANDLE MESSAGE RITORNI UNA RISPOSTA IN SEGUITO AD UNA RICHIESTA
+    //UNA SORTA DI TUNNEL SEMPRE APERTO
     public void handleMessage(Message message) {
 
         //SI PUO' GESTIRE LA COSA COME UNA SORTA DI FAR "HOSTARE" UNA PARTITA AL PLAYER (SOLO SULLA CARTA, NON EFFETTIVAMENTE)
@@ -49,7 +54,7 @@ public class GameManager {
 
         if (gameState == PossibleGameState.GAME_INIT) {
 
-            //GESTISCO IL PRIMO MESSAGGIO TI TIPO LOGIN DA UN CLIENT E CREO LA LOBBY
+            //GESTISCO IL !!PRIMO MESSAGGIO!! TI TIPO LOGIN DA UN CLIENT E CREO LA LOBBY
             if (message.getMessageContent() == MessageContent.LOGIN) {
                 lobby.handleMessage(message);
 
@@ -78,7 +83,17 @@ public class GameManager {
         }
 
         switch(message.getMessageContent()) {
-            case YOUR_TURN: //
+
+            //CONTROLLO IL PROSEGUO DELLA PARTITA
+
+            case MOVE:
+                //FACCIO MUOVERE IL GIOCATORE
+                if (gameState == PossibleGameState.READY_TO_PLAY || gameState == PossibleGameState.FIRST_MOVE) {
+
+                    //da cambiare il tipo di ritorno da handle message in Message
+                    //return handleMoveAction((MoveRequest) message);
+                }
+
                 break;
             case END_OF_TURN: //
                 break;
@@ -110,6 +125,8 @@ public class GameManager {
 
         return selectedGods;
     }
+
+
     
     public void startGame(List<String> players) {
 
@@ -117,21 +134,45 @@ public class GameManager {
         gameState = PossibleGameState.READY_TO_PLAY;
 
         //Init players in game
-        for (String playerToAdd: players) {
+        for (String playerToAdd : players) {
             gameInstance.addPlayer(playerToAdd);
         }
 
 
+    }
+
+
+    private Response handleMoveAction(MoveRequest request) {
+        Player activePlayer = turnManager.getActivePlayer();
+        Worker activeWorker = turnManager.getActiveWorker();
+
+        Action buildAction = new BuildAction(activePlayer, activeWorker, request.getSenderMovePosition());
+
+
+        if (buildAction.isValid()) {
+            buildAction.doAction();
+        } else {
+            return buildNegativeResponse("Action not allowed!");
+        }
+
+
+        setGameState(PossibleGameState.ACTION_DONE);
+        return buildPositiveResponse("Action done!");
+    }
 
 
 
+    private Response buildNegativeResponse(String gameManagerSays) {
 
+        String activePlayerUsername = turnManager.getActivePlayer().getPlayerName();
+        return new Response(activePlayerUsername, gameManagerSays, MessageStatus.ERROR);
 
+    }
 
+    private Response buildPositiveResponse(String gameManagaerSays) {
 
-
-
-
+        String activePlayerUsername = turnManager.getActivePlayer().getPlayerName();
+        return new Response(activePlayerUsername, gameManagaerSays , MessageStatus.OK);
     }
 
 }

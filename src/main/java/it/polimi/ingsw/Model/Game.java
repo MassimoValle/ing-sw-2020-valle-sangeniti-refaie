@@ -254,16 +254,16 @@ public class Game extends Observable<Game> implements Cloneable{
 
     //QUESTI MEDOTI DOVRANNO ESSERE SPOSTATI NEL CONTROLLER [TurnManager]
     //Startegy pattern implementation
-    private ActionStrategy actionStrategy;
+    private Action action;
 
     public void doBuildAction(Player player, Worker workerSelected, Position newPosition) {
-        actionStrategy = new BuildActionStrategy(player, workerSelected, newPosition);
-        actionStrategy.doAction();
+        action = new BuildAction(player, workerSelected, newPosition);
+        action.doAction();
     }
 
     public void doMoveAction(Player player, Worker workerSelected, Position newPosition) {
-        actionStrategy = new MoveActionStrategy(player, workerSelected, newPosition);
-        actionStrategy.doAction();
+        action = new MoveAction(player, workerSelected, newPosition);
+        action.doAction();
 
     }
 
