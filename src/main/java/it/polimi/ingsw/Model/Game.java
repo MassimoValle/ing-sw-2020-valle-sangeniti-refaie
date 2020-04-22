@@ -15,6 +15,9 @@ import java.util.List;
 
 public class Game extends Observable<Game> implements Cloneable{
 
+    //GAME MUST BE SINGLETON
+    private static Game instance;
+
     private List<Player> players;
     private Deck deck;
 
@@ -41,7 +44,11 @@ public class Game extends Observable<Game> implements Cloneable{
         return godsChosen;
     }
 
-
+    public static Game getInstance() {
+        if (instance == null)
+            instance = new Game();
+        return instance;
+    }
 
     public Game() {
         this.players = new ArrayList<>();
@@ -220,9 +227,7 @@ public class Game extends Observable<Game> implements Cloneable{
      * @param position position where we want to move
      */
     public void moveWorker(Player player, Worker worker, Position position) {
-        getGameMap().setWorkerPosition(worker, position);
-        this.activeWorker = worker;
-        player.setMoved(true);
+
     }
 
 

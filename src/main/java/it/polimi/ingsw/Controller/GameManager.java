@@ -24,7 +24,11 @@ public class GameManager {
     private transient TurnManager turnManager;
 
     private PossibleGameState gameState;
+    private boolean veryFirstRound;
 
+    public PossibleGameState getGameState() {
+        return gameState;
+    }
 
     public GameManager(Server server){
         this.server = server;
@@ -82,21 +86,32 @@ public class GameManager {
 
         }
 
+        //SONO PRONTO A PARTIRE ==> INIZIALIZZO IL TURN MANAGER
+        if (gameState == PossibleGameState.READY_TO_PLAY && veryFirstRound ) {
+            this.turnManager = new TurnManager(gameInstance);
+        }
+
         switch(message.getMessageContent()) {
 
             //CONTROLLO IL PROSEGUO DELLA PARTITA
+
+            case PLACE_WORKER:
+                break;
 
             case MOVE:
                 //FACCIO MUOVERE IL GIOCATORE
                 if (gameState == PossibleGameState.READY_TO_PLAY || gameState == PossibleGameState.FIRST_MOVE) {
 
                     //da cambiare il tipo di ritorno da handle message in Message
-                    //return handleMoveAction((MoveRequest) message);
+                    /*
+                    return handleMoveAction((MoveRequest) message);
+                    */
                 }
 
                 break;
-            case END_OF_TURN: //
+            case BUILD: //
                 break;
+
             case WORKER_MOVED: //
                 break;
             case WORKER_CHOSEN: //
@@ -127,8 +142,8 @@ public class GameManager {
     }
 
 
-    
-    public void startGame(List<String> players) {
+    //Metodo invocato dalla lobby una volta raggiunti i player necessari
+    public void addPLayersToGame(List<String> players) {
 
         //UPDATE THE GAME STATE
         gameState = PossibleGameState.READY_TO_PLAY;
@@ -159,6 +174,8 @@ public class GameManager {
         setGameState(PossibleGameState.ACTION_DONE);
         return buildPositiveResponse("Action done!");
     }
+
+
 
 
 

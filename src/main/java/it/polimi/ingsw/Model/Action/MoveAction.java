@@ -22,9 +22,15 @@ public class MoveAction implements Action {
         return true;
     }
 
+
+    /**
+     * Move the selected {@link Worker worker}  by {@link Player player} into the {@link Position position} chose by the player;
+     *
+     */
     @Override
     public void doAction() {
 
+        Game.getInstance().getGameMap().setWorkerPosition(this.playerWorker, this.newPosition);
 
 
     }

@@ -41,8 +41,9 @@ public class LobbyManager {
 
     //CONTROLLO LA LOBBY, AGGIUNGO PLAYER, NOME NON VALIDO, ECC
 
-
     public void handleMessage(Message message) {
+
+        //Controllo che ho raggiunto i player necessari ==> Faccio partire un countdown
 
 
 

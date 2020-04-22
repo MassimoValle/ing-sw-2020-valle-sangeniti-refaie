@@ -1,11 +1,13 @@
 package it.polimi.ingsw.Controller;
 
+import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.UserPlayerState;
 import it.polimi.ingsw.Model.God.Power;
 import it.polimi.ingsw.Model.Player.Worker;
 
+import java.awt.font.GlyphMetrics;
 import java.util.List;
 
 
@@ -22,12 +24,19 @@ public class TurnManager {
 
 
 
-    public TurnManager(Player player) {
-        initTurnManager();
+    public TurnManager(Game game) {
+        initTurnManager(game);
     }
 
-    private void initTurnManager() {
-        //TODO
+    private void initTurnManager(Game game) {
+        this.lastActivePlayer = null;
+        this.activePlayer = null;
+        this.activeWorker = null;
+
+        this.godInGame = game.getChosenGodsFromDeck();
+        this.playersInGame = game.getPlayers();
+
+
     }
 
     public Player getActivePlayer() {

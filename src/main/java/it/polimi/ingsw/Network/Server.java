@@ -175,10 +175,6 @@ public class Server {
                 new Message("[SERVER]", MessageContent.LOGIN, MessageStatus.OK, "Connected! Ready to play!")
         );
 
-        //we are ready to start the game
-        if(clientsConnected.size() == 3) {
-            gameManager.startGame(getClientsUsername());
-        }
     }
 
 
