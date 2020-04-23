@@ -4,11 +4,12 @@ import it.polimi.ingsw.Model.Player.Position;
 
 public class LevelOneBlock extends Block {
 
-    @Override
-    void initBlock() { };
 
+    public LevelOneBlock(){
+        // png
+    }
     @Override
-    void placeBlock(Position pos) {
+    void build(Position pos) {
         //TODO
 
     };

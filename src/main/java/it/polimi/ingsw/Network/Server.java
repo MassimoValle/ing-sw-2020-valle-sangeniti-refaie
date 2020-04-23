@@ -62,7 +62,7 @@ public class Server {
 
     public synchronized void lobby(Connection c, String name){
         clientsConnected.put(name, c);
-        /*if(clientsConnected.size() == 2){
+        /*if(clientsConnected.size() == clientsNum){
             List<String> keys = new ArrayList<>(clientsConnected.keySet());
             Connection c1 = clientsConnected.get(keys.get(0));
             Connection c2 = clientsConnected.get(keys.get(1));
@@ -77,6 +77,8 @@ public class Server {
             playingConnection.put(c1, c2);
             playingConnection.put(c2, c1);
             clientsConnected.clear();
+
+
         }*/
 
     }

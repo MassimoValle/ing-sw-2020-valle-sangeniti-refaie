@@ -13,14 +13,6 @@ public class Player {
     private int numWorker = 2;                  /** Number of workers per player */
 
 
-    private LastTurnAction lastTurnAction;
-
-    private UserPlayerState userPlayerState;
-
-    private boolean moved;
-    private boolean built;
-
-
     /**
      *
      *      Create a player with the name specified by input user
@@ -57,33 +49,6 @@ public class Player {
 
 
     /**
-     * If the player did move on his turn the method will return true.
-     * <p></p>
-     * @return the boolean
-     */
-    public boolean hasMoved() {
-        return moved;
-    }
-
-    /**
-     * If the player has built on his turn the method will return true
-     * <p></p>
-     * @return the boolean
-     */
-    public boolean hasBuilt() {
-        return built;
-    }
-
-    public void setMoved(boolean moved) {
-        this.moved = moved;
-    }
-
-    public void setBuilt(boolean built) {
-        this.built = built;
-    }
-
-
-    /**
      * Gets player workers.
      * <p></p>
      * This list contains 2 elements as 2 is the number of workers per player.
@@ -103,22 +68,6 @@ public class Player {
         Worker newWorker = new Worker(getPlayerWorkers().size() + 1);
         getPlayerWorkers().add(newWorker);
         return newWorker;
-    }
-
-
-    public void assignGodToPlayer(God selectedGod) {
-        this.playerGod = selectedGod;
-    }
-
-
-
-
-
-
-
-    public void startRound() {
-        this.built = false;
-        this.moved = false;
     }
 
     @Override

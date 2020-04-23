@@ -14,14 +14,21 @@ public class GameMap {
 
     private Square[][] board;
 
+
+
+
    public GameMap() {
-       this.board = buildBoard();
+       this.board = new Square[COLUMNS][ROWS];
+
        for (int i=0; i<ROWS; i++) {
            for ( int j=0; j<COLUMNS; j++)  {
-               this.board[i][j] = new Square(i, j);
+               this.board[i][j] = new Square();
            }
        }
    }
+
+
+
 
     public Square[][] getBoard() {
         return this.board;
@@ -29,10 +36,6 @@ public class GameMap {
 
     public Square getSquare(Position pos) {
        return getBoard()[pos.getRow()][pos.getColumn()];
-    }
-
-    private Square[][] buildBoard() {
-       return new Square[COLUMNS][ROWS];
     }
 
     /**
@@ -54,12 +57,6 @@ public class GameMap {
     public int getSquareHeight(Position position) {
         return board[position.getRow()][position.getColumn()].getHeight();
     }
-
-    //SHOULD NEVER BE USED -- ONLY TESTING
-    public void setSquareHeight(Position position, int lvl) {
-       board[position.getRow()][position.getColumn()].setHeight(lvl);
-    }
-
 
     /**
      * Gets the difference in altitude between the squares in {@link Position from} and {@link Position to} inside the board
@@ -112,25 +109,6 @@ public class GameMap {
         return placesWhereYouCanBuildOn;
     }
 
-
-    /**
-     * Build a block onto the given {@link Position position}
-     *
-     * @param position the position where we want to build on
-     */
-    public void addBlock(Position position) {
-        if (getSquareHeight(position) >= 0 && getSquareHeight(position) <= 2) {
-            //build a block
-            getBoard()[position.getRow()][position.getColumn()].heightPlusOne();
-        } else if (getSquareHeight(position) == 3 ) {
-            //build a dome
-            getBoard()[position.getRow()][position.getColumn()].heightPlusOne();
-        } else {
-            //
-            System.out.println("There is already a Dome!");
-        }
-    }
-
     /**
      * Check if a {@link Position position} on the {@link GameMap gameMao} is real and free.
      *
@@ -144,56 +122,8 @@ public class GameMap {
        return false;
     }
 
-    /**
-     * Check if a {@link Position position} on the {@link GameMap gameMao} is real.
-     *
-     * @param position - the position we want to know if exists.
-     *
-     * @return boolean
-     */
-    private boolean isPositionOnMapReal(Position position){
-       if ( position.getColumn() < 0 || position.getColumn() >= COLUMNS ||
-            position.getRow() < 0 || position.getRow() >= ROWS)
-           return false;
-       return true;
-   }
-
-    /**
-     * Check if a {@link Square square} in {@link Position position} has someone else's worker on.
-     *
-     * @param position - the position we want to know if it is free
-     *
-     * @return boolean
-     */
-   private boolean isPositionFree(Position position){
-       if (board[position.getRow()][position.getColumn()].hasWorkerOn())
-           return false;
-       return true;
-   }
 
 
-    /**
-     * Update the {@link Worker worker} position and the {@link GameMap} too;
-     *
-     * @param worker   the worker
-     * @param position the position
-     */
-    public void setWorkerPosition(Position position){
-       if ( isPositionValid(position)) {
-           //Libero la posizione precedentemente occupata dal worker
-           /*
-           if ( worker.isPlaced() ) {
-               this.getSquare(worker.getWorkerPosition()).freeSquare();
-           }
-
-            */
-           //worker.setPosition(position);
-           //devo liberare la vecchia posizione
-
-           //board[position.getRow()][position.getColumn()].setWorkerOn(worker);
-
-       }
-   }
 
 
     /**
@@ -209,6 +139,46 @@ public class GameMap {
 
        }
         System.out.println(string);
+    }
+
+
+
+    // ### helper ###
+
+    /**
+     * Check if a {@link Position position} on the {@link GameMap gameMao} is real.
+     *
+     * @param position - the position we want to know if exists.
+     *
+     * @return boolean
+     */
+    private boolean isPositionOnMapReal(Position position){
+        if ( position.getColumn() < 0 || position.getColumn() >= COLUMNS ||
+                position.getRow() < 0 || position.getRow() >= ROWS)
+            return false;
+        return true;
+    }
+
+    /**
+     * Check if a {@link Square square} in {@link Position position} has someone else's worker on.
+     *
+     * @param position - the position we want to know if it is free
+     *
+     * @return boolean
+     */
+    private boolean isPositionFree(Position position){
+        if (board[position.getRow()][position.getColumn()].hasWorkerOn())
+            return false;
+        return true;
+    }
+
+
+
+    /// #### test ####
+
+    //SHOULD NEVER BE USED -- ONLY TESTING
+    public void setSquareHeight(Position position, int lvl) {
+        //board[position.getRow()][position.getColumn()].setHeight(lvl);
     }
 
 }

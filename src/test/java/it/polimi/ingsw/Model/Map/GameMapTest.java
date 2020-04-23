@@ -31,7 +31,7 @@ public class GameMapTest {
         }
     }
 
-    @Test
+    /*@Test
     public void increaseHeight() {
         gameMap.getBoard()[0][0].heightPlusOne();
         gameMap.getBoard()[0][0].heightPlusOne();
@@ -47,7 +47,7 @@ public class GameMapTest {
         //Ma che non sia raggiungibile
         System.out.println(gameMap.getReachableAdjacentPlaces(pos2).toString());
 
-    }
+    }*/
 
 
 

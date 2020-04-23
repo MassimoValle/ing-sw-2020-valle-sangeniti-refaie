@@ -13,7 +13,7 @@ public class SquareTest {
 
     @Before
     public void initClass() {
-        square = new Square(0, 0);
+        square = new Square();
     }
 
 

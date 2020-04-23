@@ -1,28 +1,22 @@
 package it.polimi.ingsw.Model.Map;
 
+import it.polimi.ingsw.Model.Building.*;
 import it.polimi.ingsw.Model.Player.Worker;
 
+import java.util.ArrayList;
+
 public class Square {
-
-    private int row;
-    private int column;
-
     //To keep trace of whose worker is on the square
     private Worker workerOnSquare;
+    private ArrayList<Block> tower;
 
 
-    private int height;
-
-    private boolean workerOn;
-    private boolean builtOver;
-
-
-    public Square(int row, int column) {
-        this.row = row;
-        this.column = column;
-        this.height = 0;
+    public Square() {
+        tower = null;
         this.workerOnSquare = null;
     }
+
+
 
     public Worker getWorkerOnSquare() {
         if (hasWorkerOn()) {
@@ -33,61 +27,85 @@ public class Square {
     }
 
     public int getHeight() {
-        return this.height;
+        return tower.size();
     }
 
     public  void freeSquare() {
-        this.workerOn = false;
         this.workerOnSquare = null;
     }
 
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
     public boolean hasWorkerOn() {
-        return workerOn;
+        return workerOnSquare != null;
     }
 
     public boolean hasBeenBuiltOver() {
-        return builtOver;
+        if(tower == null) return true;
+        return false;
     }
 
-    public void heightPlusOne() {
-        this.height++;
+    public boolean hasDome(){
+        if(tower.contains(Dome.class)){
+            return true;
+        }
+        return false;
     }
+
+
 
     public void setWorkerOn(Worker worker) {
-        this.workerOn = true;
         this.workerOnSquare = worker;
     }
 
+    public void addBlock() {
+        switch (tower.size()){
+            case 0:
+                tower.add(new LevelOneBlock());
+                break;
+            case 1:
+                tower.add(new LevelTwoBlock());
+                break;
+            case 2:
+                tower.add(new LevelThreeBlock());
+                break;
+            case 3:
+                tower.add(new Dome());
+                break;
+            default:
+                //throw new Exception();
+        }
+    }
+
+
+
+
     @Override
     public String toString() {
+        String ret = "";
         switch (getHeight()) {
             case 0:
-                if (workerOn) {
-                    return "0X";
-                } else return "0";
+                ret = "0";
+                break;
             case 1:
-                if (workerOn) {
-                    return "1X";
-                } else return "1";
+                ret = "1";
+                break;
             case 2:
-                if (workerOn) {
-                    return "2X";
-                } else return "2";
+                ret = "2";
+                break;
             case 3:
-                if (workerOn) {
-                    return "3X";
-                } else return "3";
+                ret = "3";
+                break;
             case 4:
-                if (workerOn) {
-                    return "DX";
-                } else return "D";
+                ret = "4";
+                break;
         }
-        return null;
+
+        if (workerOnSquare != null){
+            ret += "X";
+        }
+        return ret;
     }
+
+
 }
 
 

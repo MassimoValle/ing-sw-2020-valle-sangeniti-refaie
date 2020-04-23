@@ -27,19 +27,16 @@ public class Game extends Observable<Game> implements Cloneable{
 
     //Chosen Gods from the FIRST_PLAYER (GODLIKE PLAYER)
     private List<God> chosenGodsFromDeck;
-    private boolean godsChosen;
     private int numberOfPlayers;
     private GameMap gameMap;
 
 
-
-
-    public List<God> getChosenGodsFromDeck() {
-        return chosenGodsFromDeck;
-    }
-
-    public boolean areGodsChosen() {
-        return godsChosen;
+    private Game() {
+        this.players = new ArrayList<>();
+        this.deck = Deck.getInstance();
+        this.chosenGodsFromDeck = new ArrayList<>();
+        this.numberOfPlayers = 0;
+        this.gameMap = new GameMap();
     }
 
     public static Game getInstance() {
@@ -48,59 +45,31 @@ public class Game extends Observable<Game> implements Cloneable{
         return instance;
     }
 
-    public Game() {
-        this.players = new ArrayList<>();
-        this.deck = assignNewDeck();
-        this.chosenGodsFromDeck = new ArrayList<>();
-        this.numberOfPlayers = 0;
-        this.gameMap = assignNewMap();
-        this.godsChosen = false;
-    }
 
-    public Game getGame() {
-        return this.clone();
-    }
 
-    public GameMap getGameMap() {
-        return this.gameMap;
+
+    public List<Player> getPlayers() {
+        return this.players;
     }
 
     public Deck getDeck() {
         return this.deck;
     }
 
-    public List<Player> getPlayers() {
-        return this.players;
+    public List<God> getChosenGodsFromDeck() {
+        return chosenGodsFromDeck;
     }
-
 
     public int getNumberOfPlayers() { return numberOfPlayers; }
 
-
-
-    private GameMap assignNewMap() {
-        return new GameMap();
-    }
-
-    private Deck assignNewDeck() {
-        return new Deck();
-    }
-    
-    public void setGodsChosen(boolean godsChosen) {
-        this.godsChosen = godsChosen;
+    public GameMap getGameMap() {
+        return this.gameMap;
     }
 
 
 
-    /**
-     * Pick god from {@link Deck#getInstance()} and set the selected {@link God#takenFromDeck} true;
-     *
-     * @param i it references to the index that is shown to the player referred to the god
-     */
-    public void chooseGodFromDeck(int i) {
-        getDeck().getGod(i).setTakenFromDeck(true);
-        chosenGodsFromDeck.add(Deck.getInstance().getGod(i));
-    }
+
+
 
     /**
      * Add a new {@link Player player} to the current {@link Game game}.
@@ -124,7 +93,7 @@ public class Game extends Observable<Game> implements Cloneable{
      */
     public Player searchPlayerByName(String name) throws PlayerNotFoundException {
         Player result = null;
-        for (Player playerInGame : getPlayers()) {
+        for (Player playerInGame : players) {
             if (playerInGame.getPlayerName().equals(name)) {
                 result = playerInGame;
                 break;
@@ -136,20 +105,13 @@ public class Game extends Observable<Game> implements Cloneable{
         return result;
     }
 
-    private void numberOfPlayersPlusOne() {
-        this.numberOfPlayers = this.getNumberOfPlayers() + 1;
-    }
 
 
+    // ### DA SPOSTARE ###
 
-    /**
-     * Start round.
-     * Set to false {@link Player#moved } and {@link Player#built}
-     *
-     * @param player the player
-     */
-    public void initPlayerState(Player player) {
-        player.startRound();
+    public void chooseGodFromDeck(int i) {
+        getDeck().getGod(i).setTakenFromDeck(true);
+        chosenGodsFromDeck.add(Deck.getInstance().getGod(i));
     }
 
     /**
@@ -184,41 +146,7 @@ public class Game extends Observable<Game> implements Cloneable{
         return true;
     }
 
-    /**
-     * Build any kind of block (lvl1, lvl2, lv3 or a dome) with the selected {@link Worker worker}
-     * by {@link Player player} after he has moved in {@link Position position} chose by the player
-     *
-     *
-     * @param player   the worker's owner
-     * @param worker   worker selected by the player
-     * @param position position where we want to build
-     */
-    public void buildBlock(Player player, Worker worker, Position position) {
-        //ALWAYS CHECK THE PLAYER AND THE WORKER'S PROPERTY
 
-        //Controllo che il worker con il quale si vuole costruire sia lo stesso che si è mosso precedentemente
-
-        /*
-        if (this.activeWorker != worker) {
-            System.out.println("Devi costruire con lo stesso worker con il quale hai mosso!");
-            return;
-        }
-
-         */
-        getGameMap().addBlock(position);
-
-        //Worker has built so update its state
-        player.setBuilt(true);
-    }
-
-
-    /*
-    public void placeWorker(Player player, Worker workerSelected, Position position) {
-        //Created apposite class
-        getGameMap().setWorkerPosition(workerSelected, position);
-        workerSelected.setPlaced(true);
-    }
-    */
 
 
     @Override

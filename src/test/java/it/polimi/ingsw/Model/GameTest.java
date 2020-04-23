@@ -42,7 +42,7 @@ public class GameTest {
 
     @Before
     public void initClass() {
-        game = new Game();
+        game = Game.getInstance();
     }
 
     @Test
@@ -70,7 +70,6 @@ public class GameTest {
         assertEquals(0, game.getPlayers().size());
         assertEquals(0, game.getChosenGodsFromDeck().size());
         assertEquals(0, game.getNumberOfPlayers());
-        assertFalse(game.areGodsChosen());
     }
 
     /*

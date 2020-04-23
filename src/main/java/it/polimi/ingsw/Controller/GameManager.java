@@ -289,7 +289,7 @@ public class GameManager {
 
         Square squareWhereToBuild = gameInstance.getGameMap().getSquare(positionWhereToBuild);
 
-        Action buildAction = new BuildAction(activePlayer, activeWorker, positionWhereToBuild, squareWhereToBuild);
+        Action buildAction = new BuildAction(squareWhereToBuild);
 
 
         if (buildAction.isValid()) {
