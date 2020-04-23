@@ -25,19 +25,23 @@ public class TurnManager {
 
 
     public TurnManager(Game game) {
-        initTurnManager(game);
-    }
-
-    private void initTurnManager(Game game) {
         this.lastActivePlayer = null;
         this.activePlayer = null;
         this.activeWorker = null;
 
         this.godInGame = game.getChosenGodsFromDeck();
         this.playersInGame = game.getPlayers();
-
-
     }
+
+
+    public void setActivePlayer(Player player) {
+        this.activePlayer = player;
+    }
+
+    public void setActiveWorker(Worker Worker) {
+        this.activeWorker = Worker;
+    }
+
 
     public Player getActivePlayer() {
         return activePlayer;
@@ -50,4 +54,5 @@ public class TurnManager {
     public Worker getActiveWorker() {
         return activeWorker;
     }
+
 }

@@ -15,6 +15,8 @@ public class Worker {
     private Position workerPosition;
     private boolean placed;
 
+    private boolean selected;
+
 
     //ArayList contenente le posizioni in cui il worker selezionato può muoversi
     private List<Position> adjacentPosition;
@@ -29,6 +31,7 @@ public class Worker {
         this.workersNumber = workersNumber;
         this.isBlocked = false;
         this.placed = false;
+        this.selected = false;
     }
 
     public Position getWorkerPosition() {
@@ -44,7 +47,13 @@ public class Worker {
         return this;
     }
 
+    public boolean isSelected() {
+        return this.selected;
+    }
 
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 
     /**
      * Sets position check if the {@link Position newPosition} is free and if so it update the {@link Worker#workerPosition}

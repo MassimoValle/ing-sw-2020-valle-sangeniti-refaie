@@ -8,7 +8,7 @@ public class MoveRequest extends Request {
 
 
     public MoveRequest(String messageSender, String message, Position senderMovePosition) {
-        super(messageSender, message);
+        super(messageSender, MessageContent.MOVE);
         this.senderMovePosition = senderMovePosition;
     }
 

@@ -178,16 +178,19 @@ public class GameMap {
      * @param worker   the worker
      * @param position the position
      */
-    public void setWorkerPosition(Worker worker, Position position){
+    public void setWorkerPosition(Position position){
        if ( isPositionValid(position)) {
            //Libero la posizione precedentemente occupata dal worker
+           /*
            if ( worker.isPlaced() ) {
                this.getSquare(worker.getWorkerPosition()).freeSquare();
            }
-           worker.setPosition(position);
+
+            */
+           //worker.setPosition(position);
            //devo liberare la vecchia posizione
 
-           board[position.getRow()][position.getColumn()].setWorkerOn(worker);
+           //board[position.getRow()][position.getColumn()].setWorkerOn(worker);
 
        }
    }

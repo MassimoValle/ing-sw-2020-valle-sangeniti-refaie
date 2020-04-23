@@ -13,6 +13,9 @@ import it.polimi.ingsw.View.Observable;
 import java.util.ArrayList;
 import java.util.List;
 
+
+//GAME CLASS DOESN'T NEED TO IMPLEMENTS CLONABLE
+
 public class Game extends Observable<Game> implements Cloneable{
 
     //GAME MUST BE SINGLETON
@@ -20,11 +23,6 @@ public class Game extends Observable<Game> implements Cloneable{
 
     private List<Player> players;
     private Deck deck;
-
-    //Round info
-    private Player activePlayer;
-    private Worker activeWorker;
-    private Player lastActivePlayer;
 
 
     //Chosen Gods from the FIRST_PLAYER (GODLIKE PLAYER)
@@ -52,13 +50,11 @@ public class Game extends Observable<Game> implements Cloneable{
 
     public Game() {
         this.players = new ArrayList<>();
-        this.activePlayer = null;
         this.deck = assignNewDeck();
         this.chosenGodsFromDeck = new ArrayList<>();
         this.numberOfPlayers = 0;
         this.gameMap = assignNewMap();
         this.godsChosen = false;
-        this.activeWorker = null;
     }
 
     public Game getGame() {
@@ -77,7 +73,6 @@ public class Game extends Observable<Game> implements Cloneable{
         return this.players;
     }
 
-    public Player getActivePlayer() { return activePlayer; }
 
     public int getNumberOfPlayers() { return numberOfPlayers; }
 
@@ -95,13 +90,7 @@ public class Game extends Observable<Game> implements Cloneable{
         this.godsChosen = godsChosen;
     }
 
-    public void setActivePlayer(Player activePlayer) {
-        this.activePlayer = activePlayer;
-    }
 
-    public void setLastActivePlayer(Player lastActivePlayer) {
-        this.lastActivePlayer = lastActivePlayer;
-    }
 
     /**
      * Pick god from {@link Deck#getInstance()} and set the selected {@link God#takenFromDeck} true;
@@ -208,69 +197,29 @@ public class Game extends Observable<Game> implements Cloneable{
         //ALWAYS CHECK THE PLAYER AND THE WORKER'S PROPERTY
 
         //Controllo che il worker con il quale si vuole costruire sia lo stesso che si è mosso precedentemente
+
+        /*
         if (this.activeWorker != worker) {
             System.out.println("Devi costruire con lo stesso worker con il quale hai mosso!");
             return;
         }
+
+         */
         getGameMap().addBlock(position);
 
         //Worker has built so update its state
         player.setBuilt(true);
     }
 
-    /**
-     * Move the selected {@link Worker worker}  by {@link Player player} into the {@link Position position} chose by the player;
-     * Also set the worker passed as parameter to {@link Game#activeWorker}
-     *
-     * @param player   the worker's owner
-     * @param worker   worker selected by the player
-     * @param position position where we want to move
-     */
-    public void moveWorker(Player player, Worker worker, Position position) {
 
-    }
-
-
-
-    /**
-     * Place the {@link Worker workerSelected} in the {@link Position position}
-     * IT IS CALLED ONLY IN THE SETUP PHASE OF THE GAME
-     *
-     * @param player         the player that owns the worker
-     * @param workerSelected the worker selected by the player
-     * @param position       the position chosen by the placer where to place the Worker
-     */
+    /*
     public void placeWorker(Player player, Worker workerSelected, Position position) {
-        //TODO: verificare se il worker appartiene a quel giocatore
+        //Created apposite class
         getGameMap().setWorkerPosition(workerSelected, position);
         workerSelected.setPlaced(true);
     }
+    */
 
-
-    /**
-     * it allow the {@link Player } to move again.
-     *
-     * @param player
-     */
-    public void setMovedFalse(Player player) {
-        player.setMoved(false);
-    }
-
-
-    //QUESTI MEDOTI DOVRANNO ESSERE SPOSTATI NEL CONTROLLER [TurnManager]
-    //Startegy pattern implementation
-    private Action action;
-
-    public void doBuildAction(Player player, Worker workerSelected, Position newPosition) {
-        action = new BuildAction(player, workerSelected, newPosition);
-        action.doAction();
-    }
-
-    public void doMoveAction(Player player, Worker workerSelected, Position newPosition) {
-        action = new MoveAction(player, workerSelected, newPosition);
-        action.doAction();
-
-    }
 
     @Override
     public String toString() {
@@ -284,7 +233,6 @@ public class Game extends Observable<Game> implements Cloneable{
         Game game1 = new Game();
         game1.players = getPlayers();
         game1.gameMap = getGameMap();
-        game1.activePlayer = getActivePlayer();
         game1.deck = getDeck();
         game1.numberOfPlayers = getNumberOfPlayers();
         return game1;

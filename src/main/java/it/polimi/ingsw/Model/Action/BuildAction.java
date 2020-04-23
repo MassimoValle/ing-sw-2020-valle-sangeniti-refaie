@@ -1,20 +1,24 @@
 package it.polimi.ingsw.Model.Action;
 
 
+import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 
 public class BuildAction implements Action {
 
-    private final Player player;
-    private final Worker playerWorker;
-    private final Position newPosition;
+    private final Player workersOwner;
+    private final Worker workerToUseToBuild;
+    private final Position positionWhereToBuildOn;
+    private Square square;
 
-    public BuildAction(Player player, Worker playerWorker, Position newPosition) {
-        this.player = player;
-        this.playerWorker = playerWorker;
-        this.newPosition = newPosition;
+
+    public BuildAction(Player workersOwner, Worker workerToUseToBuild, Position positionWhereToBuildOn, Square square) {
+        this.workersOwner = workersOwner;
+        this.workerToUseToBuild = workerToUseToBuild;
+        this.positionWhereToBuildOn = positionWhereToBuildOn;
+        this.square = square;
     }
 
 

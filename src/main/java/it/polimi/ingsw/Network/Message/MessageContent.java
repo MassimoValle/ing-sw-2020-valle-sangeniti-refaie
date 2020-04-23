@@ -6,7 +6,9 @@ public enum MessageContent {
     CONNECTION_RESPONSE,
     LOGIN,
 
+
     PLACE_WORKER,
+    SELECT_WORKER,
     MOVE,
     BUILD,
 

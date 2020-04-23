@@ -8,13 +8,8 @@ import it.polimi.ingsw.Model.Player.Position;
 public class Request extends Message{
 
 
-    public Request(String messageSender, String message) {
-        super(messageSender, message);
-
+    public Request(String messageSender, MessageContent messageContent) {
+        super(messageSender, messageContent);
     }
 
-
-    public Request(String messageSender) {
-        super(messageSender);
-    }
 }
