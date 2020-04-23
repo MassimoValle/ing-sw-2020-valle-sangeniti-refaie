@@ -11,26 +11,30 @@ public class BuildAction implements Action {
     private final Player workersOwner;
     private final Worker workerToUseToBuild;
     private final Position positionWhereToBuildOn;
-    private Square square;
+    private Square squareWhereToBuildOn;
 
 
-    public BuildAction(Player workersOwner, Worker workerToUseToBuild, Position positionWhereToBuildOn, Square square) {
+    public BuildAction(Player workersOwner, Worker workerToUseToBuild, Position positionWhereToBuildOn, Square squareWhereToBuildOn) {
         this.workersOwner = workersOwner;
         this.workerToUseToBuild = workerToUseToBuild;
         this.positionWhereToBuildOn = positionWhereToBuildOn;
-        this.square = square;
+        this.squareWhereToBuildOn = squareWhereToBuildOn;
     }
 
 
     @Override
     public boolean isValid() {
+        if (squareWhereToBuildOn.hasWorkerOn()) {
+            return false;
+        }
+
         return true;
     }
 
     @Override
     public void doAction() {
 
-        //Do something
+        squareWhereToBuildOn.heightPlusOne();
 
     }
 }

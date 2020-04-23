@@ -4,6 +4,7 @@ import it.polimi.ingsw.Exceptions.Game.PlayerNotFoundException;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
+import it.polimi.ingsw.Network.Message.BuildRequest;
 import it.polimi.ingsw.Network.Message.MoveRequest;
 import it.polimi.ingsw.Network.Message.PlaceWorkerRequest;
 import it.polimi.ingsw.Network.Message.SelectWorkerRequest;
@@ -54,6 +55,8 @@ public class GameManagerTest {
         Worker worker1 = simone.getPlayerWorkers().get(1);
         Position pos00 = new Position(0,0);
         Position pos01 = new Position(0,1);
+        Position pos02 = new Position(0,2);
+        Position pos03 = new Position(0,3);
 
         gameManager.setGameState(PossibleGameState.PLACING_WORKERS);
 
@@ -80,6 +83,24 @@ public class GameManagerTest {
         );
 
         gameManager.getGameInstance().getGameMap().printBoard();
+
+        gameManager.setGameState(PossibleGameState.WORKER_SELECTED);
+
+        gameManager.handleMessage(
+                new MoveRequest(username, pos02)
+        );
+
+        gameManager.getGameInstance().getGameMap().printBoard();
+
+        gameManager.setGameState(PossibleGameState.WORKER_MOVED);
+
+        gameManager.handleMessage(
+                new BuildRequest(username, pos03)
+        );
+
+        gameManager.getGameInstance().getGameMap().printBoard();
+
+
 
     }
 }

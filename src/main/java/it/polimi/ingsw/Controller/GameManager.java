@@ -117,13 +117,13 @@ public class GameManager {
 
             case MOVE:
                 //FACCIO MUOVERE IL GIOCATORE
-                if (gameState == PossibleGameState.READY_TO_PLAY || gameState == PossibleGameState.FIRST_MOVE) {
+                if (gameState == PossibleGameState.READY_TO_PLAY || gameState == PossibleGameState.FIRST_MOVE || gameState == PossibleGameState.WORKER_SELECTED) {
 
                     return handleMoveAction((MoveRequest) message);
                 }
                 break;
             case BUILD: //
-                if (gameState == PossibleGameState.WORKER_SELECTED) {
+                if (gameState == PossibleGameState.WORKER_MOVED) {
                     return handleBuildAction((BuildRequest) message);
                 }
                 break;
@@ -244,13 +244,23 @@ public class GameManager {
     }
 
     private Response handleMoveAction(MoveRequest request) {
+
+        String requestSender = request.getMessageSender();
+
+
         Player activePlayer = turnManager.getActivePlayer();
         Worker activeWorker = turnManager.getActiveWorker();
         Position positionWhereToMove = request.getSenderMovePosition();
 
+        //Controllo che il player sia nel suo turno
+        if(!checkTurnOwnership(requestSender) ) { //The player who sent the request isn't the playerActive
+            return buildNegativeResponse("It's not your turn!");
+        }
+
+        Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getWorkerPosition());
         Square squareWhereToMove = gameInstance.getGameMap().getSquare(positionWhereToMove);
 
-        Action moveAction = new MoveAction(activePlayer, activeWorker, positionWhereToMove, squareWhereToMove);
+        Action moveAction = new MoveAction(activePlayer, activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
 
         if (moveAction.isValid()) {
@@ -265,13 +275,21 @@ public class GameManager {
     }
 
     private Response handleBuildAction(BuildRequest request) {
+
+        String requestSender = request.getMessageSender();
+
         Player activePlayer = turnManager.getActivePlayer();
         Worker activeWorker = turnManager.getActiveWorker();
         Position positionWhereToBuild = request.getPositionWhereToBuild();
 
-        Square squareWhereToMoveWorker = gameInstance.getGameMap().getSquare(positionWhereToBuild);
+        //Controllo che il player sia nel suo turno
+        if(!checkTurnOwnership(requestSender) ) { //The player who sent the request isn't the playerActive
+            return buildNegativeResponse("It's not your turn!");
+        }
 
-        Action buildAction = new BuildAction(activePlayer, activeWorker, positionWhereToBuild, squareWhereToMoveWorker);
+        Square squareWhereToBuild = gameInstance.getGameMap().getSquare(positionWhereToBuild);
+
+        Action buildAction = new BuildAction(activePlayer, activeWorker, positionWhereToBuild, squareWhereToBuild);
 
 
         if (buildAction.isValid()) {

@@ -1,6 +1,5 @@
 package it.polimi.ingsw.Model.Action;
 
-import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
@@ -11,19 +10,21 @@ public class MoveAction implements Action {
     private final Player player;
     private final Worker playerWorker;
     private final Position newPosition;
-    private Square square;
+    private Square oldPositionSquare;
+    private Square newPositionSquare;
 
 
-    public MoveAction(Player player, Worker playerWorker, Position newPosition, Square square) {
+    public MoveAction(Player player, Worker playerWorker, Position newPosition,Square oldPositionSquare, Square newPositionSquare) {
         this.player = player;
         this.playerWorker = playerWorker;
         this.newPosition = newPosition;
-        this.square = square;
+        this.oldPositionSquare = oldPositionSquare;
+        this.newPositionSquare = newPositionSquare;
     }
 
     @Override
     public boolean isValid() {
-        if (square.hasWorkerOn()) {
+        if (newPositionSquare.hasWorkerOn()) {
             return false;
         }
         return true;
@@ -40,10 +41,11 @@ public class MoveAction implements Action {
     public void doAction() {
 
         //Aggiorno la posizione del worker
+        oldPositionSquare.freeSquare();
         playerWorker.setPosition(newPosition);
 
         //Aggiorno la mappa di gioco
-        square.setWorkerOn(playerWorker);
+        newPositionSquare.setWorkerOn(playerWorker);
 
 
 
