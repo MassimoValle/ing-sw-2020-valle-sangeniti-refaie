@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Model.God;
 
+import it.polimi.ingsw.Model.Game;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -43,7 +44,7 @@ public class Deck extends ArrayList<God>{
                 String godPowerType = eElement.getElementsByTagName("powerType").item(0).getTextContent();
                 String godPowerDescription = eElement.getElementsByTagName("powerDescription").item(0).getTextContent();
 
-                God tmp = new God(godName, godDescription, new Power(godPowerType, godPowerDescription));
+                God tmp = createGod(godName, godDescription, godPowerType, godPowerDescription);
 
                 this.add(tmp);
             }
@@ -52,6 +53,55 @@ public class Deck extends ArrayList<God>{
             e.printStackTrace();
             return false;
         }
+    }
+
+    private God createGod(String godName, String godDescription, String godPowerType, String godPowerDescription) {
+
+        switch (godName) {
+            case "Apollo" :
+                return new God(godName, godDescription, new Power.ApolloPower(godPowerType, godPowerDescription));
+
+            case "Artemis" :
+                return new God(godName, godDescription, new Power.ArtemisPower(godPowerType, godPowerDescription));
+
+            case "Athena" :
+                return new God(godName, godDescription, new Power.AthenaPower(godPowerType, godPowerDescription));
+
+            case "Atlas" :
+                return new God(godName, godDescription, new Power.AtlasPower(godPowerType, godPowerDescription));
+
+            case "Demeter" :
+                return new God(godName, godDescription, new Power.DemeterPower(godPowerType, godPowerDescription));
+
+            case "Hephaestus" :
+                return new God(godName, godDescription, new Power.HephaestusPower(godPowerType, godPowerDescription));
+
+            case "Minotaur" :
+                return new God(godName, godDescription, new Power.MinotaurPower(godPowerType, godPowerDescription));
+
+            case "Pan" :
+                return new God(godName, godDescription, new Power.PanPower(godPowerType, godPowerDescription));
+
+            case "Prometheus" :
+                return new God(godName, godDescription, new Power.PrometheusPower(godPowerType, godPowerDescription));
+
+            case "Chronus" :
+                return new God(godName, godDescription, new Power.ChronusPower(godPowerType, godPowerDescription));
+
+            case "Hera" :
+                return new God(godName, godDescription, new Power.HeraPower(godPowerType, godPowerDescription));
+
+            case "Hestia" :
+                return new God(godName, godDescription, new Power.HestiaPower(godPowerType, godPowerDescription));
+
+            case "Poseidon" :
+                return new God(godName, godDescription, new Power.PoseidonPower(godPowerType, godPowerDescription));
+
+            case "Triton" :
+                return new God(godName, godDescription, new Power.TritonPower(godPowerType, godPowerDescription));
+
+        }
+        return null;
     }
 
     private void removeGod(God selectedGod) {
@@ -66,7 +116,7 @@ public class Deck extends ArrayList<God>{
      * @return selectedGod god
      */
     public God getGod(int choice) {
-        God selectedGod = Deck.getInstance().get(choice-1);
+        God selectedGod = Deck.getInstance().get(choice);
         return selectedGod;
     }
 
@@ -77,7 +127,7 @@ public class Deck extends ArrayList<God>{
     public String toString() {
         String string = "Vuota";
         for ( int i = 0; i < getInstance().size(); i++) {
-            string = string.concat(getInstance().getGod(i+1).toString() + "\n");
+            string = string.concat(getInstance().getGod(i).toString() + "\n");
         }
         return string;
         }

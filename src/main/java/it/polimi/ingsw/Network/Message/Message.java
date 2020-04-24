@@ -3,7 +3,7 @@ package it.polimi.ingsw.Network.Message;
 import java.io.Serializable;
 
 public class Message implements Serializable {
-    private String messageSender;
+    private final String messageSender;
     private MessageContent messageContent;
     private MessageStatus messageStatus;
     private String message;
@@ -12,6 +12,16 @@ public class Message implements Serializable {
     public Message(String messageSender, String message) {
         this.messageSender = messageSender;
         this.message = message;
+    }
+
+    public Message(String messageSender, MessageContent messageContent) {
+        this.messageSender = messageSender;
+        this.messageContent = messageContent;
+    }
+
+    public Message(String messageSender, MessageStatus messageStatus) {
+        this.messageSender = messageSender;
+        this.messageStatus = messageStatus;
     }
 
     public Message(String messageSender, MessageContent messageContent, String message) {

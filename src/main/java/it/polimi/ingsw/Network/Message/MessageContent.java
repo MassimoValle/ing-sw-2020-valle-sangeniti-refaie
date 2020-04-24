@@ -5,6 +5,14 @@ public enum MessageContent {
     FIRST_CONNECTION,
     CONNECTION_RESPONSE,
     LOGIN,
+
+    GODS_CHOSE,
+
+    PLACE_WORKER,
+    SELECT_WORKER,
+    MOVE,
+    BUILD,
+
     GOD_SELECTION,
     ASYNC,
     YOUR_TURN,
@@ -13,4 +21,5 @@ public enum MessageContent {
     PLAYERS_HAS_BUILT,
     END_OF_TURN,
     CHECK,
+    ;
 }

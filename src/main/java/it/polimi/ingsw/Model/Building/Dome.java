@@ -1,10 +1,16 @@
 package it.polimi.ingsw.Model.Building;
 
-public class Dome {
+import it.polimi.ingsw.Model.Player.Position;
+
+public class Dome extends Block {
 
 
+    public Dome(){
+        // assegna png
+    }
 
-    public void initDome() {};
+    @Override
+    void build(Position pos) {
 
-    public void placeDome() { };
+    }
 }

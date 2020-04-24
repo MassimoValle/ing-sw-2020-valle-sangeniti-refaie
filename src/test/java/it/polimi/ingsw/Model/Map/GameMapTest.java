@@ -31,7 +31,7 @@ public class GameMapTest {
         }
     }
 
-    @Test
+    /*@Test
     public void increaseHeight() {
         gameMap.getBoard()[0][0].heightPlusOne();
         gameMap.getBoard()[0][0].heightPlusOne();
@@ -47,10 +47,11 @@ public class GameMapTest {
         //Ma che non sia raggiungibile
         System.out.println(gameMap.getReachableAdjacentPlaces(pos2).toString());
 
-    }
+    }*/
 
 
 
+    /*
 
     @Test
     public void setWorkerPosition(){
@@ -67,7 +68,9 @@ public class GameMapTest {
 
     }
 
+     */
 
+    /*
     @Test
     public void workerOnSquare(){
         Worker worker1 = new Worker(0);
@@ -76,12 +79,15 @@ public class GameMapTest {
         assertEquals(worker1, gameMap.getWorkerOnSquare(pos1));
     }
 
+     */
+
+    /*
     @Test
     public void squareHeight(){
-        /*gameMap.getBoard()[0][0].heightPlusOne();
         gameMap.getBoard()[0][0].heightPlusOne();
         gameMap.getBoard()[0][0].heightPlusOne();
-        gameMap.getBoard()[0][0].heightPlusOne();*/
+        gameMap.getBoard()[0][0].heightPlusOne();
+        gameMap.getBoard()[0][0].heightPlusOne();
 
         gameMap.setSquareHeight(pos1, 4);
 
@@ -89,6 +95,8 @@ public class GameMapTest {
         assertEquals(4, gameMap.getSquareHeight(pos1));
 
     }
+    */
+
 
     @Test
     public void placesWhereYouCanBuildOn(){
@@ -102,6 +110,8 @@ public class GameMapTest {
 
     }
 
+
+    /*
     @Test
     public void addBlock(){
         Position pos = new Position(0, 0);
@@ -109,6 +119,8 @@ public class GameMapTest {
         assertEquals(1, gameMap.getSquareHeight(pos));
     }
 
+
+     */
 
 
 

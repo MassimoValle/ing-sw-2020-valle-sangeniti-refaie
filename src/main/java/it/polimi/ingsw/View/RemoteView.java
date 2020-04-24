@@ -16,7 +16,7 @@ public class RemoteView extends View {
             System.out.println("Received: " + message);
             try{
                 // è il mio turno
-                TurnManager turnManager = new TurnManager(RemoteView.this.getPlayer());
+                //TurnManager turnManager = new TurnManager(RemoteView.this.getPlayer());
                 // do something
 
                 // fine turno
