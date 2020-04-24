@@ -123,6 +123,26 @@ public class GameMap {
     }
 
 
+    /**
+     * It checks if the {@link Worker worker} has no reachable places or in case he has than if he has adjacent places to build on
+     *
+     *
+     * @return boolean
+     */
+    public boolean isWorkerStuck(Worker worker) {
+        ArrayList<Position> placesWhereToMove;
+        placesWhereToMove = getReachableAdjacentPlaces(worker.getWorkerPosition());
+
+        if (placesWhereToMove.size() == 0) return true;
+
+
+        for (Position position: placesWhereToMove ) {
+            ArrayList<Position> placesWhereYouCanBuildOn = getPlacesWhereYouCanBuildOn(position);
+            if (placesWhereYouCanBuildOn.size() != 0) return false;
+        }
+
+        return true;
+    }
 
 
 

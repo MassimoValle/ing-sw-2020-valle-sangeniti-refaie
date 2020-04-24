@@ -6,6 +6,7 @@ public enum MessageContent {
     CONNECTION_RESPONSE,
     LOGIN,
 
+    GODS_CHOSE,
 
     PLACE_WORKER,
     SELECT_WORKER,

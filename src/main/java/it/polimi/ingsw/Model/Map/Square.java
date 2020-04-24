@@ -27,7 +27,10 @@ public class Square {
     }
 
     public int getHeight() {
-        return tower.size();
+        if (tower == null)
+            return 0;
+        else
+            return tower.size();
     }
 
     public  void freeSquare() {
@@ -57,6 +60,9 @@ public class Square {
     }
 
     public void addBlock() {
+        if (tower == null) {
+            tower = new ArrayList<>();
+        }
         switch (tower.size()){
             case 0:
                 tower.add(new LevelOneBlock());

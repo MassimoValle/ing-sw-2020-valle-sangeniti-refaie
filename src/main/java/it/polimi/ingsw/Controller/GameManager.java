@@ -1,7 +1,6 @@
 package it.polimi.ingsw.Controller;
 
 import it.polimi.ingsw.Model.Action.*;
-import it.polimi.ingsw.Model.God.Deck;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Map.Square;
@@ -11,8 +10,8 @@ import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.*;
 import it.polimi.ingsw.Network.Server;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GameManager {
 
@@ -21,7 +20,6 @@ public class GameManager {
 
     private static transient Server server;
     private final Game gameInstance;
-    private final LobbyManager lobby;
     private transient TurnManager turnManager;
 
     private PossibleGameState gameState;
@@ -37,7 +35,6 @@ public class GameManager {
 
     public GameManager(Server server){
         this.server = server;
-        this.lobby = null;
         this.gameInstance = Game.getInstance();
         this.turnManager = null;
         this.gameState = PossibleGameState.GAME_INIT;
@@ -49,76 +46,55 @@ public class GameManager {
         this.gameState = gameState;
     }
 
+    //public only for test purposes
+    //QUESTO METODO DOVREBBE ESSERE INVOCATO UNA VOLTA SCADUTO IL COUNTDOWN DI INIZIO MATCH;
+    //MI METTO IN ATTESA CHE IL GODLIKE PLAYER PRESCELTO MI INVII I GOD DA UTILIZZARE NELLA PARTITA
+    public Response notifyTheGodLikePlayer() {
+
+        //scegli un player a caso
+        Random rand = new Random();
+        int n = rand.nextInt(gameInstance.getNumberOfPlayers());
+        Player godLikePlayer = gameInstance.getPlayers().get(n);
+
+        initTurnManager(gameInstance, godLikePlayer);
+
+        setGameState(PossibleGameState.GODLIKE_PLAYER_MOMENT);
+
+        //Notifico al player in questione che deve scegliere i god
+        return buildPositiveResponse("Let's chose which gods you want to be part of the game!");
+
+        //Costruisco la ChoseGodsRequest sul client e la invio al server che la gestirà nella handleMessage;
+    }
 
 
-    //NOI VOGLIAMO CHE LA HANDLE MESSAGE RITORNI UNA RISPOSTA IN SEGUITO AD UNA RICHIESTA
-    //UNA SORTA DI TUNNEL SEMPRE APERTO
-    //IL SERVER COMUNICA LA RISPOSTA AL CLIENT E SI METTE IN ATTESA IN UN DETERMINATO STATO DI UNA SPECIFICA RICHIESTA
+
     public Response handleMessage(Message message) {
-
-        //SI PUO' GESTIRE LA COSA COME UNA SORTA DI FAR "HOSTARE" UNA PARTITA AL PLAYER (SOLO SULLA CARTA, NON EFFETTIVAMENTE)
-
-        //FASE INIZIALE CREO LA LOBBY
-        //DA DECEIDERE SE: -1)CREARLA SUBITO COL COSTRUTTORE DEL GAME MANAGER OPPURE
-        //                 -2)UNA VOLTA RICEVUTO IL PRIMO MESSAGGIO DI RICHIESTA DA UN CLIENT
-
-
-        //CASO 1: CREO LA LOBBY E AGGIORNO LO STATO DEL GIOCO PossibleGameState.IN_LOBBY
-
-        if (gameState == PossibleGameState.GAME_INIT) {
-            //GESTISCO IL !!PRIMO MESSAGGIO!! TI TIPO LOGIN DA UN CLIENT E CREO LA LOBBY
-            if (message.getMessageContent() == MessageContent.LOGIN) {
-                lobby.handleMessage(message);
-                setGameState(PossibleGameState.IN_LOBBY);
-            }
-        }
-
-
-        //QUI GESTISCO I FUTURI LOGIN DAI PROSSIMI PLAYER
-
-        //!!!IMPORTANTE SARA' LA LOBBY A DIRMI QUANDO LA PARTITA POTRAÌ INIZIARE
-        //Quindi ad esempio nel momento in cui una volta raggiunto il numero di player nella lobby
-        //che assumiamo venga settato nel momento in cui venga lancaito il server da riga di comando
-        //allora nella lobby partirà un COUNTDOWN (gameState settato a READY_TO_PLAY) ad es 5 secondi
-        //successivamente gameState verrà settato a GODLIKE_PLAYER_MOMENT e inizia il setup di gioco
-
-        if (gameState == PossibleGameState.IN_LOBBY ) {
-            if (message.getMessageContent() == MessageContent.LOGIN) {
-                lobby.handleMessage(message);
-
-            }
-        }
-
         //SONO PRONTO A PARTIRE ==> INIZIALIZZO IL TURN MANAGER
-        if (gameState == PossibleGameState.READY_TO_PLAY && veryFirstRound ) {
-            initTurnManager(gameInstance);
-            setGameState(PossibleGameState.PLACING_WORKERS);
+        if (gameState == PossibleGameState.GODLIKE_PLAYER_MOMENT && veryFirstRound ) {
+            return handleGodsChosen((ChoseGodsRequest) message);
         }
-
         switch(message.getMessageContent()) {
-
+            case GODS_CHOSE:
+                if (gameState == PossibleGameState.GODLIKE_PLAYER_MOMENT) {
+                    return handleGodsChosen((ChoseGodsRequest) message);
+                }
+                break;
             //CONTROLLO IL PROSEGUO DELLA PARTITA
             case SELECT_WORKER:
                 //Seleziono il worker da muovere/posizionare
                 if (gameState == PossibleGameState.PLACING_WORKERS || gameState == PossibleGameState.SELECTING_WORKER ) {
-
                     return handleSelectWorkerAction((SelectWorkerRequest) message);
                 }
-
                 break;
-
             case PLACE_WORKER:
                 //Piazzo i worker del singolo player
                 if (gameState == PossibleGameState.PLACING_WORKERS && veryFirstRound) {
-
                     return handlePlaceWorkerAction((PlaceWorkerRequest) message );
                 }
                 break;
-
             case MOVE:
                 //FACCIO MUOVERE IL GIOCATORE
                 if (gameState == PossibleGameState.READY_TO_PLAY || gameState == PossibleGameState.FIRST_MOVE || gameState == PossibleGameState.WORKER_SELECTED) {
-
                     return handleMoveAction((MoveRequest) message);
                 }
                 break;
@@ -127,7 +103,6 @@ public class GameManager {
                     return handleBuildAction((BuildRequest) message);
                 }
                 break;
-
             case WORKER_MOVED: //
                 break;
             case WORKER_CHOSEN: //
@@ -139,15 +114,25 @@ public class GameManager {
                 server.broadcast(message);
                 break;
         }
-
         return buildNegativeResponse("Non si dovrebbe mai arrivare qui");
     }
 
-    public void initTurnManager(Game gameInstance) {
-        this.turnManager = new TurnManager(gameInstance);
+    public void initTurnManager(Game gameInstance, Player godlikePlayer) {
+        this.turnManager = new TurnManager(gameInstance, godlikePlayer);
     }
 
 
+    /**
+     * Assign the {@link God god} chosen by the {@link Player player}
+     *
+     * @param player player
+     * @param god    god
+     */
+    public void assignGodToPlayer(Player player, God god) {
+        god.setAssigned(true);
+        player.setPlayerGod(god);
+    }
+    /*
     public ArrayList<God> choseGodsFromDeck(int[] indices) {
         ArrayList<God> selectedGods = new ArrayList<>();
 
@@ -163,6 +148,8 @@ public class GameManager {
         return selectedGods;
     }
 
+     */
+
 
     //Metodo invocato dalla lobby una volta raggiunti i player necessari
     public void addPLayersToGame(List<String> players) {
@@ -176,6 +163,15 @@ public class GameManager {
         }
 
 
+    }
+
+
+    private Response handleGodsChosen(ChoseGodsRequest request) {
+        gameInstance.setChosenGodsFromDeck(request.getChosenGod());
+        turnManager.setGodsInGame(request.getChosenGod());
+
+        setGameState(PossibleGameState.ACTION_DONE);
+        return buildPositiveResponse("Gods selezionati");
     }
 
 
@@ -201,17 +197,27 @@ public class GameManager {
             }
         }
 
-        turnManager.setActiveWorker(workerFromRequest);
 
 
         Action selectWorkerAction = new SelectWorkerAction(activePlayer, workerFromRequest);
 
-        if (selectWorkerAction.isValid()) {
+        //
+        if (!workerFromRequest.isPlaced()) {
             selectWorkerAction.doAction();
+        } else if ( workerFromRequest.isPlaced() ) {
+
+            if ( ! gameInstance.getGameMap().isWorkerStuck(workerFromRequest) ) {
+                selectWorkerAction.doAction();
+            }
+            else {
+                return buildNegativeResponse("Worker Stuck!");
+            }
+
         } else {
             return buildNegativeResponse("You cannot select this worker");
         }
 
+        turnManager.setActiveWorker(workerFromRequest);
         setGameState(PossibleGameState.ACTION_DONE);
         return buildPositiveResponse("Worker Selected");
 

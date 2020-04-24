@@ -116,7 +116,7 @@ public class Deck extends ArrayList<God>{
      * @return selectedGod god
      */
     public God getGod(int choice) {
-        God selectedGod = Deck.getInstance().get(choice-1);
+        God selectedGod = Deck.getInstance().get(choice);
         return selectedGod;
     }
 
@@ -127,7 +127,7 @@ public class Deck extends ArrayList<God>{
     public String toString() {
         String string = "Vuota";
         for ( int i = 0; i < getInstance().size(); i++) {
-            string = string.concat(getInstance().getGod(i+1).toString() + "\n");
+            string = string.concat(getInstance().getGod(i).toString() + "\n");
         }
         return string;
         }

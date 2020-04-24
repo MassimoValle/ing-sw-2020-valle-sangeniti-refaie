@@ -102,7 +102,7 @@ public class GameTest {
     }
      */
 
-
+    /*
     @Test
     public void pickGodFromDeck(){
 
@@ -112,6 +112,8 @@ public class GameTest {
         assertNotNull(game.getChosenGodsFromDeck());
 
     }
+
+     */
 
     /*
 

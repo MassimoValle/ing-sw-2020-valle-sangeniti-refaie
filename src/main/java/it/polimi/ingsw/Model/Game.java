@@ -105,45 +105,8 @@ public class Game extends Observable<Game> implements Cloneable{
         return result;
     }
 
-
-
-    // ### DA SPOSTARE ###
-
-    public void chooseGodFromDeck(int i) {
-        getDeck().getGod(i).setTakenFromDeck(true);
-        chosenGodsFromDeck.add(Deck.getInstance().getGod(i));
-    }
-
-    /**
-     * Assign the {@link God god} chosen by the {@link Player player}
-     *
-     * @param player player
-     * @param god    god
-     */
-    public void assignGodToPlayer(Player player, God god) {
-        god.setAssigned(true);
-        player.setPlayerGod(god);
-    }
-
-    /**
-     * It checks if the {@link Worker worker} has no reachable places or in case he has than if he has adjacent places to build on
-     *
-     *
-     * @return boolean
-     */
-    public boolean isWorkerStuck(Worker worker) {
-        ArrayList<Position> placesWhereToMove;
-        placesWhereToMove = getGameMap().getReachableAdjacentPlaces(worker.getWorkerPosition());
-
-        if (placesWhereToMove.size() == 0) return true;
-
-
-        for (Position position: placesWhereToMove ) {
-            ArrayList<Position> placesWhereYouCanBuildOn = getGameMap().getPlacesWhereYouCanBuildOn(position);
-            if (placesWhereYouCanBuildOn.size() != 0) return false;
-        }
-
-        return true;
+    public void setChosenGodsFromDeck(ArrayList<God> godsChosen) {
+        chosenGodsFromDeck.addAll(godsChosen);
     }
 
 

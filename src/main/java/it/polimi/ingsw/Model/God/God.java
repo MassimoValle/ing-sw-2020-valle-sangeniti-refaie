@@ -5,7 +5,6 @@ public class God {
     private String godName;
     private String godDescription;
     private Power godPower;
-    private boolean takenFromDeck;
 
     //if one God is assigned to one player
     private boolean assigned;
@@ -15,19 +14,10 @@ public class God {
         this.godName = godName;
         this.godDescription = godDescription;
         this.godPower = godPower;
-        this.takenFromDeck = false;
         this.assigned = false;
 
     }
 
-
-    public boolean isTakenFromDeck() {
-        return takenFromDeck;
-    }
-
-    public void setTakenFromDeck(boolean takenFromDeck) {
-        this.takenFromDeck = takenFromDeck;
-    }
 
     public  boolean isAssigned() {
         return assigned;
