@@ -6,6 +6,8 @@ import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.Network.Message.MessageContent;
 import it.polimi.ingsw.Network.Message.MessageStatus;
+import it.polimi.ingsw.Network.Message.Requests.Request;
+import it.polimi.ingsw.Network.Message.Response;
 import it.polimi.ingsw.View.RemoteView;
 
 import java.io.IOException;
@@ -24,12 +26,15 @@ public class Server {
 
     private List<Connection> connections = new ArrayList<Connection>();
     private Map<String, Connection> clientsConnected = new HashMap<>();
-    private Map<Connection, Connection> playingConnection = new HashMap<>();
     private Map<String, Connection> playersInLobby = new HashMap<>();
 
-    private int clientsNum;
+    // Controller of the game
+    GameManager gameManager;
 
-    private GameManager gameManager;
+    // field set by a user
+    private int lobbySize = 2;
+
+
 
 
     //Register connection
@@ -40,55 +45,48 @@ public class Server {
     //Deregister connection
     public synchronized void deregisterConnection(Connection c){
         connections.remove(c);
-        Connection opponent = playingConnection.get(c);
-        if(opponent != null){
-            opponent.closeConnection();
-            playingConnection.remove(c);
-            playingConnection.remove(opponent);
-            //Iterator<String> iterator = waitingConnection.keySet().iterator();
-            //while(iterator.hasNext()){
-            //    if(waitingConnection.get(iterator.next())==c){
-            //        iterator.remove();
-            //    }
-            //}
-        }
+        for (Map.Entry<String, Connection> entry : playersInLobby.entrySet())
+            if(entry.getValue().equals(c))
+                playersInLobby.remove(entry);
     }
 
-    private List<String> getClientsUsername() {
-        List<String> clientsUsername = new ArrayList<>();
-        clientsConnected.forEach((String, Connection) -> clientsUsername.add(String));
-        return clientsUsername;
-    }
 
-    public synchronized void lobby(Connection c, String name){
-        clientsConnected.put(name, c);
-        /*if(clientsConnected.size() == clientsNum){
-            List<String> keys = new ArrayList<>(clientsConnected.keySet());
-            Connection c1 = clientsConnected.get(keys.get(0));
-            Connection c2 = clientsConnected.get(keys.get(1));
-            RemoteView player1 = new RemoteView(new Player(keys.get(0)), keys.get(1), c1, true);
-            RemoteView player2 = new RemoteView(new Player(keys.get(1)), keys.get(0), c2, false);
-            Game game1 = new Game();
-            //Controller controller = new Controller(model);
-            game1.addObserver(player1);
-            game1.addObserver(player2);
-            //player1.addObserver(controller);
-            //player2.addObserver(controller);
-            playingConnection.put(c1, c2);
-            playingConnection.put(c2, c1);
+
+    // full up lobby and start game
+    public synchronized void lobby() {
+
+        if(clientsConnected.size() == lobbySize){
+
+            Game game = new Game();
+
+
+            for (Map.Entry<String, Connection> entry : clientsConnected.entrySet())
+            {
+                RemoteView player = new RemoteView(new Player(entry.getKey()), entry.getValue());
+                game.addObserver(player);
+                //player.addObserver(controller);
+                playersInLobby.put(entry.getKey(), entry.getValue());
+                game.addPlayer(entry.getKey());
+            }
+
+
+            Map.Entry<String,Connection> activePlayer = clientsConnected.entrySet().iterator().next();;
+            gameManager = new GameManager(game, new Player(activePlayer.getKey()));
+
             clientsConnected.clear();
 
+            System.out.println("new game!");
 
-        }*/
+        }
 
     }
+
+
+
+
 
     public Server() throws IOException {
         this.serverSocket = new ServerSocket(PORT);
-
-        this.gameManager = new GameManager(this);
-
-        this.clientsNum = 0;
     }
 
     public void run(){
@@ -106,37 +104,25 @@ public class Server {
         }
     }
 
+    // Create connnection, register it and execute via executor
     private void newConnection(Socket socket) {
-        clientsNum++;
         Connection connection = new Connection(socket, this);
         registerConnection(connection);
         executor.submit(connection);
     }
 
-    public synchronized void broadcast(Message message){
-
-        System.out.println(message.getMessage());
-
-        for (Map.Entry<String, Connection> entry : clientsConnected.entrySet())
-        {
-            String playerName = entry.getKey();
-            if(!message.getMessageSender().equals(playerName)){
-                entry.getValue().sendMessage(message);
-            }
-        }
-    }
 
 
 
     //Methods that has to call the GameManager to handle the request by the client
     //(the message can be whatever)
     //For example: the Username asked at the beginning, a place where to move, ecc
-    public void handleMessage(Message message, Connection connection) {
+    public void handleMessage(Request message, Connection connection) {
 
         //Do something if MessageStatus.ERROR
         if (message.getMessageStatus() == MessageStatus.ERROR) {
             connection.sendMessage(
-                    new Message("[SERVER]", MessageStatus.CLIENT_ERROR, "Errore nel server")
+                    new Response("[SERVER]", MessageContent.LOGIN, MessageStatus.CLIENT_ERROR, "Errore nel server")
             );
         }
 
@@ -152,52 +138,42 @@ public class Server {
         }
 
         //Everything else is handled by the GameManager
-        gameManager.handleMessage(message);
+        if(gameManager != null)
+            gameManager.handleMessage(message);
+        else
+            System.out.println("gameManager non inizializzato!");
 
     }
 
-    //Metodo che controlla se il nome immesso dal player è valido/già in uso ecc
+    // Check if there is a client with same name
     public void login(String username, Connection connection) {
         //UserName taken
         if( clientsConnected.containsKey(username) ) {
             connection.sendMessage(
-                    new Message("[SERVER]", MessageContent.LOGIN, MessageStatus.ERROR, "Username taken")
+                    new Response("[SERVER]", MessageContent.LOGIN, MessageStatus.ERROR, "Username taken")
             );
         } else {
             registerClient(username, connection);
         }
     }
 
-
+    // Register client in clientsConnected
     public void registerClient(String username, Connection connection){
+
         clientsConnected.put(username, connection);
+        connection.setName(username);
+        lobby();
+
         System.out.println("CLIENT REGISTRATO: " + username);
 
         connection.sendMessage(
-                new Message("[SERVER]", MessageContent.LOGIN, MessageStatus.OK, "Connected! Ready to play!")
+                new Response("[SERVER]", MessageContent.LOGIN, MessageStatus.OK, "Connected! Ready to play!")
         );
 
+
+
+
     }
-
-
-    /**
-     * TODO: not working
-     *
-     * Method to send {@param message} message to every client inside the {@param clients} clients
-     *
-     * @param clients message
-     * @param message clients
-     */
-    public void sendMessageTo(Map<String, Connection> clients, String message) {
-        clients.forEach((clientName, connection) -> connection.sendMessage(
-                new Message("[SERVER]", MessageContent.ASYNC, MessageStatus.OK, message)
-        ));
-    }
-
-    public Map<String, Connection> getClientsConnected() {
-        return clientsConnected;
-    }
-
 
 
 }
