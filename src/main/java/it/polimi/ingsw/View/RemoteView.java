@@ -9,7 +9,7 @@ import it.polimi.ingsw.Network.Message.MessageStatus;
 
 public class RemoteView extends View {
 
-    private class MessageReceiver implements Observer<String> {
+    /*private class MessageReceiver implements Observer<String> {
 
         @Override
         public void update(String message) {
@@ -29,35 +29,29 @@ public class RemoteView extends View {
                 );
             }
         }
-    }
+    }*/
 
     private Connection connection;
-    private boolean fistPlayer;
 
-    public RemoteView(Player player, String opponent, Connection c, boolean firstPlayer){
+    public RemoteView(Player player, Connection c){
         super(player);
-        this.fistPlayer = firstPlayer;
         this.connection = c;
-        c.addObserver(new MessageReceiver());
+        //c.addObserver(new MessageReceiver());
         //c.asyncSend("Your opponent is: " + opponent + "\tMake your move");
         /*c.sendMessage(
                 new Response("Your opponent is: ", MessageStatus.OK)
-        );
-        if(this.fistPlayer){
-            // sei il primo, fai il tuo turno
-            TurnManager turnManager = new TurnManager(this.getPlayer());
-            // do something
-
-            // fine turno
-            c.sendMessage(
-                    new Response("Is your turn!", MessageStatus.OK)
-            );
-        }*/
+        );*/
     }
 
     @Override
-    protected void showGame(Game game1) {
-        System.out.println("something");
+    protected void showGame(Game game) {
+
+        // !!! il model è stato modificato
+
+        connection.sendMessage(game.notifyPlayer(getPlayer()));
+
+
+
         //connection.send(model.getOutcome(getPlayer()).printOutcome() + "\tMake your move");
     }
 }
