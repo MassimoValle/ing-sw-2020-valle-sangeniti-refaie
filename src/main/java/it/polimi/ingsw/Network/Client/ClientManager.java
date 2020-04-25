@@ -1,8 +1,7 @@
 package it.polimi.ingsw.Network.Client;
 
-import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.MessageContent;
-import it.polimi.ingsw.Network.Message.MessageStatus;
+import it.polimi.ingsw.Network.Message.*;
+import it.polimi.ingsw.Network.Message.Requests.Request;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -44,7 +43,7 @@ public class ClientManager {
                 case CONNECTION_RESPONSE:
                     break;
                 case LOGIN:
-                    printMessageFromServer(message);
+                    printMessageFromServer((Response) message);
                     if(message.getMessageStatus() == MessageStatus.ERROR){
                         login();
                     }
@@ -68,18 +67,18 @@ public class ClientManager {
                 case END_OF_TURN:
                     break;
                 default: CHECK:
-                    printMessageFromServer(message);
+                    printMessageFromServer((Response) message);
                     break;
             }
         }
 
     }
 
-    private void printMessageFromServer(Message message){
+    private void printMessageFromServer(Response message){
         String out = "#### [SERVER] ####\n";
         out += "Message content: " + message.getMessageContent() + "\n";
         out += "Message status: " + message.getMessageStatus() + "\n";
-        out += "Message value: " + message.getMessage() + "\n";
+        out += "Message value: " + message.getGameManagerSays() + "\n";
         out += "________________\n";
 
         consoleOut.println(out);
@@ -111,7 +110,7 @@ public class ClientManager {
 
             try {
                 Client.sendMessage(
-                        new Message(username, MessageContent.LOGIN, username)
+                        new Request(username, Dispatcher.GAME, MessageContent.LOGIN, MessageStatus.OK, username)
                 );
             }catch (IOException e){
                 e.printStackTrace();
@@ -125,7 +124,7 @@ public class ClientManager {
             consoleOut.print("DEBUG: ");
             String inputLine = consoleIn.nextLine();
             Client.sendMessage(
-                    new Message(getUsername(), MessageContent.CHECK, inputLine)
+                    new Request(getUsername(), Dispatcher.GAME, MessageContent.CHECK, MessageStatus.OK, inputLine)
             );
         } catch (IOException e) {
             e.printStackTrace();

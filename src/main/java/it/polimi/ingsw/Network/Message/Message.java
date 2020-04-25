@@ -6,36 +6,10 @@ public class Message implements Serializable {
     private final String messageSender;
     private MessageContent messageContent;
     private MessageStatus messageStatus;
-    private String message;
 
-
-    public Message(String messageSender, String message) {
-        this.messageSender = messageSender;
-        this.message = message;
-    }
-
-    public Message(String messageSender, MessageContent messageContent) {
+    public Message(String messageSender, MessageContent messageContent, MessageStatus messageStatus) {
         this.messageSender = messageSender;
         this.messageContent = messageContent;
-    }
-
-    public Message(String messageSender, MessageStatus messageStatus) {
-        this.messageSender = messageSender;
-        this.messageStatus = messageStatus;
-    }
-
-    public Message(String messageSender, MessageContent messageContent, String message) {
-        this(messageSender, message);
-        this.messageContent = messageContent;
-    }
-
-    public Message(String messageSender, MessageStatus messageStatus, String message) {
-        this(messageSender, message);
-        this.messageStatus = messageStatus;
-    }
-
-    public Message(String messageSender, MessageContent messageContent, MessageStatus messageStatus, String message) {
-        this(messageSender, messageContent, message);
         this.messageStatus = messageStatus;
     }
 
@@ -44,15 +18,17 @@ public class Message implements Serializable {
 
     public MessageContent getMessageContent() { return messageContent; }
 
-    public MessageStatus getMessageStatus() { return messageStatus; }
-
-    public String getMessage() { return message; }
+    public MessageStatus getMessageStatus() {
+        return messageStatus;
+    }
 
     @Override
     public String toString() {
         return "\nMessageSender: " + messageSender +
                 "\nMessageContent: " + messageContent +
-                "\nMessageStatus: " + messageStatus +
-                "\nmessage:" + message;
+                "\nMessageStatus: " + getMessageStatus();
     }
+
+
+
 }

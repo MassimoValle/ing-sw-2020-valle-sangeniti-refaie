@@ -1,15 +1,18 @@
-package it.polimi.ingsw.Network.Message;
+package it.polimi.ingsw.Network.Message.Requests;
 
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
+import it.polimi.ingsw.Network.Message.Dispatcher;
+import it.polimi.ingsw.Network.Message.MessageContent;
+import it.polimi.ingsw.Network.Message.MessageStatus;
 
 public class PlaceWorkerRequest extends Request{
 
     private Worker workerToPlace;
     private Position positionToPlaceWorker;
 
-    public PlaceWorkerRequest(String messageSender, Worker workerToPlace, Position positionToPlaceWorker) {
-        super(messageSender, MessageContent.PLACE_WORKER);
+    public PlaceWorkerRequest(String messageSender, Dispatcher messageDispatcher, MessageStatus messageStatus, Worker workerToPlace, Position positionToPlaceWorker) {
+        super(messageSender, messageDispatcher, MessageContent.PLACE_WORKER, messageStatus);
 
         this.workerToPlace = workerToPlace;
         this.positionToPlaceWorker = positionToPlaceWorker;
