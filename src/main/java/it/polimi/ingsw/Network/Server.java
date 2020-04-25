@@ -66,6 +66,7 @@ public class Server {
                 game.addObserver(player);
                 //player.addObserver(controller);
                 playersInLobby.put(entry.getKey(), entry.getValue());
+
                 game.addPlayer(entry.getKey());
             }
 

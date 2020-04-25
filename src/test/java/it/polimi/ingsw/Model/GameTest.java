@@ -42,7 +42,7 @@ public class GameTest {
 
     @Before
     public void initClass() {
-        game = Game.getInstance();
+        game = new Game();
     }
 
     @Test

@@ -119,7 +119,11 @@ public class Game extends Observable<Game> implements Cloneable{
     public Response buildPositiveResponse(Player player, MessageContent messageContent, String gameManagerSays) {
 
         String activePlayerUsername = player.getPlayerName();
-        return new Response(activePlayerUsername, messageContent, MessageStatus.OK, gameManagerSays);
+        Response x = new Response(activePlayerUsername, messageContent, MessageStatus.OK, gameManagerSays);
+
+        changes.put(player, x);
+
+        return x;
     }
 
 

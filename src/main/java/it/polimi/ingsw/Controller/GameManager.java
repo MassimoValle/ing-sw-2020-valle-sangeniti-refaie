@@ -69,7 +69,7 @@ public class GameManager {
         gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
 
         //Notifico al player in questione che deve scegliere i god
-        gameInstance.buildPositiveResponse(player, MessageContent.GODS_CHOSE, "Let's chose which gods you want to be part of the game!");
+        gameInstance.buildPositiveResponse(godLikePlayer, MessageContent.GODS_CHOSE, "Let's chose which gods you want to be part of the game!");
 
         //Costruisco la ChoseGodsRequest sul client e la invio al server che la gestirà nella handleMessage;
     }
@@ -108,11 +108,14 @@ public class GameManager {
 
     public void handleMessage(Request message) {
 
-        checkTurnOwnership(message.getMessageSender());
+        if(!checkTurnOwnership(message.getMessageSender()))
+            return;
 
 
         if(message.getMessageDispatcher() == Dispatcher.TURN){
-            turnManager = new TurnManager(gameInstance, activePlayer);
+
+            if(turnManager != null) turnManager = new TurnManager(gameInstance, activePlayer);
+
             turnManager.handleMessage(message);
             return;
         }
@@ -129,7 +132,7 @@ public class GameManager {
                 break;
 
             case GOD_SELECTION:
-                handlePlaceWorkerAction((PlaceWorkerRequest) message);
+                handleGodAssign((AssignGodRequest) message);
                 break;
         }
 

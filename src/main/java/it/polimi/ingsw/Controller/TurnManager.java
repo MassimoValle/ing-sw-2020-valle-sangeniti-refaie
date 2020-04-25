@@ -21,6 +21,7 @@ public class TurnManager {
 
     private Player player;
     private Worker selectedWorker;
+
     private UserPlayerState userPlayerState;
 
 
