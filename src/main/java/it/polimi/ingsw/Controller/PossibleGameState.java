@@ -8,10 +8,13 @@ public enum PossibleGameState {
     ASSIGN_GOD ("Every player has to chose 1 god from the ones selected by the Godlike player"),
 
     FIRST_MOVE ("The turn has just started"),
+    PLACING_WORKERS ("Each player has to place his workers on the board"),
+
+    /* // gestiti dalla UserPlayerState
     SELECTING_WORKER ("The player select the worker to place/move"),
     WORKER_SELECTED ("The player has selected the worker to place/move"),
-    PLACING_WORKERS ("Each player has to place his workers on the board"),
     WORKER_MOVED ("The player has moved, if he hasn't any extra abilities, now must build"),
+    */
 
     START_GAME("The first player start playing"),
     ACTION_DONE ("The player has done his action");

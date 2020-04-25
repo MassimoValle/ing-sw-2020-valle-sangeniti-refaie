@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Controller;
 
+import it.polimi.ingsw.Exceptions.Game.PlayerNotFoundException;
 import it.polimi.ingsw.Model.Action.*;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.God;
@@ -8,22 +9,41 @@ import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.*;
-import it.polimi.ingsw.Network.Server;
-
-import java.util.List;
-import java.util.Random;
+import it.polimi.ingsw.Network.Message.Requests.AssignGodRequest;
+import it.polimi.ingsw.Network.Message.Requests.ChoseGodsRequest;
+import it.polimi.ingsw.Network.Message.Requests.PlaceWorkerRequest;
+import it.polimi.ingsw.Network.Message.Requests.Request;
 
 public class GameManager {
 
-    final int MIN_CONNECTION_IN = 2;
-    final int MAX_CONNECTION_IN = 3;
-
-    private static transient Server server;
     private final Game gameInstance;
-    private transient TurnManager turnManager;
+    private TurnManager turnManager = null;
+
+    public static Player lastActivePlayer;
+    public static Worker lastActiveWorker;
+
+    private Player activePlayer;
+
 
     private PossibleGameState gameState;
-    private boolean veryFirstRound;             //TRUE until ALL players haven't placed their workers
+
+
+
+    public GameManager(Game game, Player activePlayer){
+
+        gameState = PossibleGameState.GAME_INIT;
+
+        this.gameInstance = game;
+        this.activePlayer = activePlayer;
+
+        notifyTheGodLikePlayer(activePlayer);
+
+    }
+
+
+
+
+    // getter
 
     public Game getGameInstance() {
         return this.gameInstance;
@@ -33,43 +53,89 @@ public class GameManager {
         return gameState;
     }
 
-    public GameManager(Server server){
-        this.server = server;
-        this.gameInstance = Game.getInstance();
-        this.turnManager = null;
-        this.gameState = PossibleGameState.GAME_INIT;
-        this.veryFirstRound = true;
-    }
 
-    //public only for test purposes
-    public void setGameState(PossibleGameState gameState) {
-        this.gameState = gameState;
-    }
 
-    //public only for test purposes
-    //QUESTO METODO DOVREBBE ESSERE INVOCATO UNA VOLTA SCADUTO IL COUNTDOWN DI INIZIO MATCH;
-    //MI METTO IN ATTESA CHE IL GODLIKE PLAYER PRESCELTO MI INVII I GOD DA UTILIZZARE NELLA PARTITA
-    public Response notifyTheGodLikePlayer() {
+
+
+    public void notifyTheGodLikePlayer(Player player) {
 
         //scegli un player a caso
-        Random rand = new Random();
+        /*Random rand = new Random();
         int n = rand.nextInt(gameInstance.getNumberOfPlayers());
-        Player godLikePlayer = gameInstance.getPlayers().get(n);
+        Player godLikePlayer = gameInstance.getPlayers().get(n);*/
 
-        initTurnManager(gameInstance, godLikePlayer);
+        Player godLikePlayer = player;
 
-        setGameState(PossibleGameState.GODLIKE_PLAYER_MOMENT);
+        gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
 
         //Notifico al player in questione che deve scegliere i god
-        return buildPositiveResponse("Let's chose which gods you want to be part of the game!");
+        gameInstance.buildPositiveResponse(player, MessageContent.GODS_CHOSE, "Let's chose which gods you want to be part of the game!");
 
         //Costruisco la ChoseGodsRequest sul client e la invio al server che la gestirà nella handleMessage;
     }
 
+    public void assignGodToPlayer(Player player, God god) {
+        player.setPlayerGod(god);
+        god.setAssigned(true);
+        gameState = PossibleGameState.IN_LOBBY;
+    }
 
 
-    public Response handleMessage(Message message) {
-        //SONO PRONTO A PARTIRE ==> INIZIALIZZO IL TURN MANAGER
+
+
+    // helper
+    private Player getPlayerByName(String messageSender) {
+        try {
+            return gameInstance.searchPlayerByName(messageSender);
+        }
+        catch (PlayerNotFoundException e){
+            System.out.println("### PLAYER NOT FOUND");
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    private boolean checkTurnOwnership(String username) {
+        return username.equals(activePlayer.getPlayerName());
+    }
+
+
+
+
+
+    // handler
+
+    public void handleMessage(Request message) {
+
+        checkTurnOwnership(message.getMessageSender());
+
+
+        if(message.getMessageDispatcher() == Dispatcher.TURN){
+            turnManager = new TurnManager(gameInstance, activePlayer);
+            turnManager.handleMessage(message);
+            return;
+        }
+
+
+        // if(message.getMessageDispatcher() == Dispatcher.GAME){
+        switch (message.getMessageContent()){
+            case GODS_CHOSE:
+                handleGodsChosen((ChoseGodsRequest) message);
+                break;
+
+            case PLACE_WORKER:
+                handlePlaceWorkerAction((PlaceWorkerRequest) message);
+                break;
+
+            case GOD_SELECTION:
+                handlePlaceWorkerAction((PlaceWorkerRequest) message);
+                break;
+        }
+
+
+
+        /*//SONO PRONTO A PARTIRE ==> INIZIALIZZO IL TURN MANAGER
         if (gameState == PossibleGameState.GODLIKE_PLAYER_MOMENT && veryFirstRound ) {
             return handleGodsChosen((ChoseGodsRequest) message);
         }
@@ -110,247 +176,74 @@ public class GameManager {
             case PLAYERS_HAS_BUILT: //
                 break;
             case CHECK:
-                // broadcast
-                server.broadcast(message);
                 break;
         }
-        return buildNegativeResponse("Non si dovrebbe mai arrivare qui");
+        return buildNegativeResponse("Non si dovrebbe mai arrivare qui");*/
     }
 
-    public void initTurnManager(Game gameInstance, Player godlikePlayer) {
-        this.turnManager = new TurnManager(gameInstance, godlikePlayer);
+    private void handleGodsChosen(ChoseGodsRequest request) {
+
+        gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
+
+        gameInstance.setChosenGodsFromDeck(activePlayer, request.getChosenGod());
+
+        gameState = PossibleGameState.ACTION_DONE;
     }
 
+    private void handlePlaceWorkerAction(PlaceWorkerRequest request) {
 
-    /**
-     * Assign the {@link God god} chosen by the {@link Player player}
-     *
-     * @param player player
-     * @param god    god
-     */
-    public void assignGodToPlayer(Player player, God god) {
-        god.setAssigned(true);
-        player.setPlayerGod(god);
-    }
-    /*
-    public ArrayList<God> choseGodsFromDeck(int[] indices) {
-        ArrayList<God> selectedGods = new ArrayList<>();
+        gameState = PossibleGameState.PLACING_WORKERS;
 
-        for (int i = 0; i < lobby.getPlayersInLobby().size(); i++) {
-            //Mostro a video gli dei disponibili per la scelta
-            System.out.println(Deck.getInstance().toString());
-
-            for (int j = 0; j < indices.length; j++) {
-                selectedGods.add(Deck.getInstance().getGod(j));
-            }
-        }
-
-        return selectedGods;
-    }
-
-     */
-
-
-    //Metodo invocato dalla lobby una volta raggiunti i player necessari
-    public void addPLayersToGame(List<String> players) {
-
-        //UPDATE THE GAME STATE
-        gameState = PossibleGameState.READY_TO_PLAY;
-
-        //Init players in game
-        for (String playerToAdd : players) {
-            gameInstance.addPlayer(playerToAdd);
-        }
-
-
-    }
-
-
-    private Response handleGodsChosen(ChoseGodsRequest request) {
-        gameInstance.setChosenGodsFromDeck(request.getChosenGod());
-        turnManager.setGodsInGame(request.getChosenGod());
-
-        setGameState(PossibleGameState.ACTION_DONE);
-        return buildPositiveResponse("Gods selezionati");
-    }
-
-
-    private Response handleSelectWorkerAction(SelectWorkerRequest request) {
-
-        String requestSender = request.getMessageSender();
-        Player activePlayer = turnManager.getActivePlayer();
-        Worker workerFromRequest = request.getWorkerToSelect();
-
-        //Controllo che il player sia nel suo turno
-        if(!checkTurnOwnership(requestSender) ) { //The player who sent the request isn't the playerActive
-            return buildNegativeResponse("It's not your turn!");
-        }
-
-        //When a handleSelectWorkerRequest occurs the activeWorker in the turn must be set tu null
-        //or has to be the other player's worker
-        Worker activeWorker = turnManager.getActiveWorker();
-
-        //You get into this statement only if the activeWorker is own by someone else.
-        if (activeWorker != null) {
-            if (!(activeWorker == activePlayer.getPlayerWorkers().get(0) || activeWorker == activePlayer.getPlayerWorkers().get(1))) {
-                return buildNegativeResponse("There's something wrong with the worker selection");
-            }
-        }
-
-
-
-        Action selectWorkerAction = new SelectWorkerAction(activePlayer, workerFromRequest);
-
-        //
-        if (!workerFromRequest.isPlaced()) {
-            selectWorkerAction.doAction();
-        } else if ( workerFromRequest.isPlaced() ) {
-
-            if ( ! gameInstance.getGameMap().isWorkerStuck(workerFromRequest) ) {
-                selectWorkerAction.doAction();
-            }
-            else {
-                return buildNegativeResponse("Worker Stuck!");
-            }
-
-        } else {
-            return buildNegativeResponse("You cannot select this worker");
-        }
-
-        turnManager.setActiveWorker(workerFromRequest);
-        setGameState(PossibleGameState.ACTION_DONE);
-        return buildPositiveResponse("Worker Selected");
-
-    }
-
-    private Response handlePlaceWorkerAction(PlaceWorkerRequest request) {
-        Player activePlayer = turnManager.getActivePlayer();
-        Worker activeWorker = turnManager.getActiveWorker();
         Position positionToPlaceWorker = request.getPositionToPlaceWorker();
 
-        //Controllo che il worker che il player vuole piazzare sia lo stesso che ha selezionato inizialmente
-        if (request.getWorkerToPlace() != activeWorker) {
-            return buildNegativeResponse("The worker you want to place isn't the worker selected!");
-        }
-
-        //Passo direttamente lo square su cui piazzare il worker dal controller, per ovviare alle getInstance in classi che non c'èentrano nulla
         Square squareWhereToPlaceWorker = gameInstance.getGameMap().getSquare(positionToPlaceWorker);
 
-        Action placeWorkerAction = new PlaceWorkerAction(activePlayer, activeWorker, positionToPlaceWorker, squareWhereToPlaceWorker);
+        Action placeWorkerAction = new PlaceWorkerAction(activePlayer, request.getWorkerToPlace(), positionToPlaceWorker, squareWhereToPlaceWorker);
 
         if (placeWorkerAction.isValid()) {
+
             placeWorkerAction.doAction();
-        } else {
-            return buildNegativeResponse("You cannot place the worker here");
+            gameState = PossibleGameState.ACTION_DONE;
+
         }
 
-        setGameState(PossibleGameState.ACTION_DONE);
-        return buildPositiveResponse("Worker Placed");
-
     }
 
-    private Response handleMoveAction(MoveRequest request) {
+    private void handleGodAssign(AssignGodRequest request) {
 
-        String requestSender = request.getMessageSender();
+        gameState = PossibleGameState.ASSIGN_GOD;
 
+        Player p = getPlayerByName(request.getMessageSender());
+        assignGodToPlayer(p, request.getGod());
 
-        Player activePlayer = turnManager.getActivePlayer();
-        Worker activeWorker = turnManager.getActiveWorker();
-        Position positionWhereToMove = request.getSenderMovePosition();
-
-        //Controllo che il player sia nel suo turno
-        if(!checkTurnOwnership(requestSender) ) { //The player who sent the request isn't the playerActive
-            return buildNegativeResponse("It's not your turn!");
-        }
-
-        Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getWorkerPosition());
-        Square squareWhereToMove = gameInstance.getGameMap().getSquare(positionWhereToMove);
-
-        Action moveAction = new MoveAction(activePlayer, activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
-
-
-        if (moveAction.isValid()) {
-            moveAction.doAction();
-        } else {
-            return buildNegativeResponse("You cannot move here!");
-        }
-
-
-        setGameState(PossibleGameState.ACTION_DONE);
-        return buildPositiveResponse("Worker Moved!");
-    }
-
-    private Response handleBuildAction(BuildRequest request) {
-
-        String requestSender = request.getMessageSender();
-
-        Player activePlayer = turnManager.getActivePlayer();
-        Worker activeWorker = turnManager.getActiveWorker();
-        Position positionWhereToBuild = request.getPositionWhereToBuild();
-
-        //Controllo che il player sia nel suo turno
-        if(!checkTurnOwnership(requestSender) ) { //The player who sent the request isn't the playerActive
-            return buildNegativeResponse("It's not your turn!");
-        }
-
-        Square squareWhereToBuild = gameInstance.getGameMap().getSquare(positionWhereToBuild);
-
-        Action buildAction = new BuildAction(squareWhereToBuild);
-
-
-        if (buildAction.isValid()) {
-            buildAction.doAction();
-        } else {
-            return buildNegativeResponse("You cannot move here!");
-        }
-
-
-        setGameState(PossibleGameState.ACTION_DONE);
-        return buildPositiveResponse("Worker Moved!");
-    }
-
-    /**
-     * It checks if the {@link Player#getPlayerName()} is the turn owner
-     *
-     * @param username the username of the player we want to know if is the turn owner
-     *
-     * @return true if he is the turn owner, false otherwise
-     */
-    private boolean checkTurnOwnership(String username) {
-        if ( turnManager.getActivePlayer().getPlayerName().equals(username) )
-            return true;
-        else
-            return false;
-    }
-
-    private Response buildNegativeResponse(String gameManagerSays) {
-
-        String activePlayerUsername = turnManager.getActivePlayer().getPlayerName();
-        return new Response(activePlayerUsername, gameManagerSays, MessageStatus.ERROR);
-
-    }
-
-    private Response buildPositiveResponse(String gameManagaerSays) {
-
-        String activePlayerUsername = turnManager.getActivePlayer().getPlayerName();
-        return new Response(activePlayerUsername, gameManagaerSays , MessageStatus.OK);
+        gameState = PossibleGameState.ACTION_DONE;
     }
 
 
 
 
 
-    //Methods below only used for test Purpose
-    public void addPlayerToCurrentGame(String username) {
+
+
+    // test
+
+    /*
+    public void _addPlayerToCurrentGame(String username) {
         gameInstance.addPlayer(username);
     }
 
-    public void setNewActivePlayer(Player player) {
+    public void _setGameState(PossibleGameState gameState) {
+        this.gameState = gameState;
+    }
+
+    public void _setNewActivePlayer(Player player) {
         turnManager.setActivePlayer(player);
     }
 
-    public TurnManager getTurnManager() {
+    public TurnManager _getTurnManager() {
         return this.turnManager;
     }
+
+     */
 
 }
