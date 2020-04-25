@@ -45,9 +45,6 @@ public class Game extends Observable<Game> implements Cloneable{
         return instance;
     }
 
-
-
-
     public List<Player> getPlayers() {
         return this.players;
     }
@@ -65,9 +62,6 @@ public class Game extends Observable<Game> implements Cloneable{
     public GameMap getGameMap() {
         return this.gameMap;
     }
-
-
-
 
 
 
@@ -110,7 +104,37 @@ public class Game extends Observable<Game> implements Cloneable{
     }
 
 
+    /**
+     * Set the {@link God god} picked up by the {@link Player player}
+     *
+     * @param player player
+     * @param pickedGod    god
+     */
+    public void setGodToPlayer(Player player, God pickedGod) {
+        player.setPlayerGod(pickedGod);
+    }
 
+
+    public boolean godsPickedByEveryone() {
+        boolean a = true;
+        for (Player player : players) {
+            if (!player.godAssigned()) {
+                a = false;
+            }
+        }
+        return a;
+    }
+
+
+    public boolean workersPlacedByEveryone() {
+        for (Player player : players) {
+            for (Worker worker : player.getPlayerWorkers()) {
+                if ( !worker.isPlaced() )
+                    return false;
+            }
+        }
+        return true;
+    }
 
     @Override
     public String toString() {
@@ -128,6 +152,7 @@ public class Game extends Observable<Game> implements Cloneable{
         game1.numberOfPlayers = getNumberOfPlayers();
         return game1;
     }
+
 }
 
 

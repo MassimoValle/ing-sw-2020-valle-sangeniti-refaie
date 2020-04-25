@@ -75,5 +75,18 @@ public class Player {
         return "Player Name: " + this.playerName.toUpperCase();
     }
 
+    public boolean godAssigned() {
+        if (playerGod != null )
+            return true;
+        else return false;
+    }
+
+    public boolean areWorkerPlaced() {
+        for (Worker worker : playerWorkers) {
+            if (!worker.isPlaced())
+                return false;
+        }
+        return true;
+    }
 }
 

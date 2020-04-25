@@ -1,7 +1,7 @@
 package it.polimi.ingsw.Controller;
 
 import it.polimi.ingsw.Exceptions.Game.PlayerNotFoundException;
-import it.polimi.ingsw.Model.God.Deck;
+import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
@@ -21,7 +21,7 @@ public class GameManagerTest {
 
 
     @Test
-    public void gameFlowTest() throws IOException, PlayerNotFoundException {
+    public void gameFlowTest() throws PlayerNotFoundException {
         try {
             gameManager = new GameManager(new Server());
 
@@ -29,42 +29,15 @@ public class GameManagerTest {
             e.printStackTrace();
         }
 
-        assertEquals(PossibleGameState.GAME_INIT, gameManager.getGameState());
-
-        gameManager.addPlayerToCurrentGame("Simone");
-        gameManager.addPlayerToCurrentGame("Massimo");
-        gameManager.addPlayerToCurrentGame("Magdy");
-
-        assertEquals(3, gameManager.getGameInstance().getNumberOfPlayers());
+        gameManager._addPlayerToCurrentGame("Simone");
+        gameManager._addPlayerToCurrentGame("Massimo");
+        gameManager._addPlayerToCurrentGame("Magdy");
 
         Player simone = gameManager.getGameInstance().searchPlayerByName("Simone");
         Player massimo = gameManager.getGameInstance().searchPlayerByName("Massimo");
         Player magdy = gameManager.getGameInstance().searchPlayerByName("Magdy");
 
-
-
-        String simo = simone.getPlayerName();
-        Worker worker0 = simone.getPlayerWorkers().get(0);
-        Worker worker1 = simone.getPlayerWorkers().get(1);
-
-        String max = massimo.getPlayerName();
-        Worker worker0max = massimo.getPlayerWorkers().get(0);
-        Worker worker1max = massimo.getPlayerWorkers().get(1);
-
-        String mag = magdy.getPlayerName();
-        Worker worker0mag = magdy.getPlayerWorkers().get(0);
-        Worker worker1mag = magdy.getPlayerWorkers().get(1);
-
-
-        Position pos00 = new Position(0,0);
-        Position pos01 = new Position(0,1);
-        Position pos02 = new Position(0,2);
-        Position pos03 = new Position(0,3);
-        Position pos10 = new Position(1,0);
-        Position pos11 = new Position(1,1);
-
-        //HO SCELTO I GOD CHE FARANNO PARTE DELLA PARTITA
-        gameManager.setGameState(PossibleGameState.READY_TO_PLAY);
+        assertEquals(3, gameManager.getGameInstance().getNumberOfPlayers());
 
         ArrayList<God> chosenGod = new ArrayList<>();
 
@@ -73,114 +46,139 @@ public class GameManagerTest {
         chosenGod.add(gameManager.getGameInstance().getDeck().getGod(2));
 
 
-        gameManager.notifyTheGodLikePlayer();
-        gameManager.setNewActivePlayer(simone);
-        gameManager.setGameState(PossibleGameState.GODLIKE_PLAYER_MOMENT);
+        gameManager.startGame();
 
+        //SET THIS WAY BECAUSE THE startGame() set a random Player
+        gameManager._setNewActivePlayer(simone);
+
+        //ATTENDO UNA CHOSE GODS REQUEST CONTENENTI I GOD CHE IL GIOCATORE SCELTO RANDOM HA SCELTO PER LA PARTITA
         gameManager.handleMessage(
-                new ChoseGodsRequest(simo, chosenGod )
+                new ChoseGodsRequest(simone.getPlayerName(), chosenGod )
         );
 
+        //ADESSO A TURNO I GIOCATORI SCELGONO IL GOD TRA QUELLI SCELTI DAL GODLIKE PLAYER
 
-        gameManager.setGameState(PossibleGameState.PLACING_WORKERS);
-
+        //PRIMA MASSIMO
         gameManager.handleMessage(
-                new SelectWorkerRequest(simo, worker0)
+                new PickGodRequest(massimo.getPlayerName(), chosenGod.get(0))
         );
 
-        gameManager.setGameState(PossibleGameState.PLACING_WORKERS);
-
+        //POI MAGDY
         gameManager.handleMessage(
-                new PlaceWorkerRequest(simo, worker0, pos00)
+                new PickGodRequest(magdy.getPlayerName(), chosenGod.get(1))
         );
 
-        gameManager.setGameState(PossibleGameState.PLACING_WORKERS);
-
+        //INFINE SIMONE
         gameManager.handleMessage(
-                new SelectWorkerRequest(simo, worker1)
+                new PickGodRequest(simone.getPlayerName(), chosenGod.get(2))
         );
 
-        gameManager.setGameState(PossibleGameState.PLACING_WORKERS);
+        //gamestate == FILLING_BOARD
+        //A TURNO I GIOCATORI SELEZIONANO E PIAZZANO I WORKER
 
+        //MASSIMO SELEZIONA...
         gameManager.handleMessage(
-                new PlaceWorkerRequest(simo, worker1, pos01)
+                new SelectWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(0))
+        );
+
+        //E PIAZZA IL WORKER N°1
+        gameManager.handleMessage(
+                new PlaceWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(0), new Position(0,0))
+        );
+
+        //MASSIMO SELEZIONA...
+        gameManager.handleMessage(
+                new SelectWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(1))
+        );
+
+        //E PIAZZA IL WORKER N°2
+        gameManager.handleMessage(
+                new PlaceWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(1), new Position(0,1))
+        );
+
+        //Tocca a Magdy piazzare i propri worker
+        gameManager.handleMessage(
+                new SelectWorkerRequest(magdy.getPlayerName(), magdy.getPlayerWorkers().get(0))
+        );
+        gameManager.handleMessage(
+                new PlaceWorkerRequest(magdy.getPlayerName(), magdy.getPlayerWorkers().get(0), new Position(1,0))
+        );
+        gameManager.handleMessage(
+                new SelectWorkerRequest(magdy.getPlayerName(), magdy.getPlayerWorkers().get(1))
+        );
+        gameManager.handleMessage(
+                new PlaceWorkerRequest(magdy.getPlayerName(), magdy.getPlayerWorkers().get(1), new Position(1,1))
+        );
+
+        //Tocca a simone piazzare i worker
+        gameManager.handleMessage(
+                new SelectWorkerRequest(simone.getPlayerName(), simone.getPlayerWorkers().get(0))
+        );
+        gameManager.handleMessage(
+                new PlaceWorkerRequest(simone.getPlayerName(), simone.getPlayerWorkers().get(0), new Position(2,0))
+        );
+        gameManager.handleMessage(
+                new SelectWorkerRequest(simone.getPlayerName(), simone.getPlayerWorkers().get(1))
+        );
+        gameManager.handleMessage(
+                new PlaceWorkerRequest(simone.getPlayerName(), simone.getPlayerWorkers().get(1), new Position(2,1))
+        );
+
+        //WORKER PIAZZATI, INIZIA LA PARTITA VERA E PROPRIA
+        gameManager.getGameInstance().getGameMap().printBoard();
+
+        //TURNO DI MAX, SELEZIONA UN WORKER...
+        gameManager.handleMessage(
+                new SelectWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(1))
+        );
+
+        //LO MUOVE...
+        gameManager.handleMessage(
+                new MoveRequest(massimo.getPlayerName(), new Position(0, 2))
+        );
+
+        //E COSTRUISCE
+        gameManager.handleMessage(
+                new BuildRequest(massimo.getPlayerName(), new Position(0,3))
         );
 
         gameManager.getGameInstance().getGameMap().printBoard();
 
-        //Simone ha finito di piazzare i propri worker tocca a Max
 
-        gameManager.getTurnManager().nextTurn(massimo);
-        assertEquals(gameManager.getTurnManager().getActivePlayer(), massimo);
-
-        gameManager.setGameState(PossibleGameState.PLACING_WORKERS);
-
+        //TURNO DI MAGDY, SELEZIONA UN WORKER...
         gameManager.handleMessage(
-                new SelectWorkerRequest(max, worker0max)
+                new SelectWorkerRequest(magdy.getPlayerName(), magdy.getPlayerWorkers().get(1))
         );
 
-        gameManager.setGameState(PossibleGameState.PLACING_WORKERS);
-
+        //LO MUOVE...
         gameManager.handleMessage(
-                new PlaceWorkerRequest(max, worker0max, pos10)
+                new MoveRequest(magdy.getPlayerName(), new Position(1, 2))
         );
 
-        gameManager.setGameState(PossibleGameState.PLACING_WORKERS);
-
+        //E COSTRUISCE
         gameManager.handleMessage(
-                new SelectWorkerRequest(max, worker1max)
-        );
-
-        gameManager.setGameState(PossibleGameState.PLACING_WORKERS);
-
-        gameManager.handleMessage(
-                new PlaceWorkerRequest(max, worker1max, pos11)
+                new BuildRequest(magdy.getPlayerName(), new Position(1,3))
         );
 
         gameManager.getGameInstance().getGameMap().printBoard();
 
-
-        //Max ha piazzato i suoi worker tocca a Magdy
-
-        gameManager.getTurnManager().nextTurn(magdy);
-        assertEquals(gameManager.getTurnManager().getActivePlayer(), magdy);
-
-        gameManager.setGameState(PossibleGameState.PLACING_WORKERS);
-
+        //TURNO DI SIMONE, SELEZIONA UN WORKER...
         gameManager.handleMessage(
-                new SelectWorkerRequest(mag, worker0mag)
+                new SelectWorkerRequest(simone.getPlayerName(), simone.getPlayerWorkers().get(1))
         );
 
-        gameManager.setGameState(PossibleGameState.PLACING_WORKERS);
-
+        //LO MUOVE...
         gameManager.handleMessage(
-                new PlaceWorkerRequest(mag, worker0mag, new Position(4,4))
+                new MoveRequest(simone.getPlayerName(), new Position(2, 2))
         );
 
-        gameManager.setGameState(PossibleGameState.PLACING_WORKERS);
-
+        //E COSTRUISCE
         gameManager.handleMessage(
-                new SelectWorkerRequest(mag, worker1mag)
-        );
-
-        gameManager.setGameState(PossibleGameState.PLACING_WORKERS);
-
-        gameManager.handleMessage(
-                new PlaceWorkerRequest(mag, worker1mag, new Position(4,3))
+                new BuildRequest(simone.getPlayerName(), new Position(2,3))
         );
 
         gameManager.getGameInstance().getGameMap().printBoard();
 
-        //Magdy ha piazzato i suoi worker, può iniziare  la partita vera e propria
-
-        gameManager.getTurnManager().nextTurn(simone);
-        assertEquals(gameManager.getTurnManager().getActivePlayer(), simone);
-
-        gameManager.setGameState(PossibleGameState.SELECTING_WORKER);
-
-        assertTrue(gameManager.getGameInstance().getGameMap().isWorkerStuck(worker0));
-        gameManager.handleMessage(
-                new SelectWorkerRequest(simo, worker0)
-        );
     }
+
 }

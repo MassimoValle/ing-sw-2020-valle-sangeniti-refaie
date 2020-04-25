@@ -1,14 +1,12 @@
 package it.polimi.ingsw.Network.Client;
 
-import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.MessageContent;
-import it.polimi.ingsw.Network.Message.MessageStatus;
+import it.polimi.ingsw.Network.Message.*;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Scanner;
 
-public class ClientManager {
+public class ClientManager implements ClientManagerListener{
 
     private static ClientManager instance = null;
 
@@ -130,6 +128,15 @@ public class ClientManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+
+
+
+    public void update(Response response) {
+
+        //UPDATE THE VIEW
 
     }
 

@@ -7,6 +7,7 @@ public enum MessageContent {
     LOGIN,
 
     GODS_CHOSE,
+    PICK_GOD,
 
     PLACE_WORKER,
     SELECT_WORKER,
