@@ -1,18 +1,16 @@
 package it.polimi.ingsw.Model.Action;
 
-import it.polimi.ingsw.Model.Game;
-import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Worker;
 
-import java.util.List;
 
+/**
+ * The Select worker action mark the Worker as SELECTED
+ */
 public class SelectWorkerAction implements Action{
 
-    private Player workersOwner;
     private Worker workerToSelect;
 
-    public SelectWorkerAction(Player workersOwner, Worker workerToSelect) {
-        this.workersOwner = workersOwner;
+    public SelectWorkerAction(Worker workerToSelect) {
         this.workerToSelect = workerToSelect;
     }
 

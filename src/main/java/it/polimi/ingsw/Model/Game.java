@@ -24,8 +24,6 @@ public class Game extends Observable<Game> implements Cloneable{
     private List<Player> players;
     private Deck deck;
 
-
-    //Chosen Gods from the FIRST_PLAYER (GODLIKE PLAYER)
     private List<God> chosenGodsFromDeck;
     private int numberOfPlayers;
     private GameMap gameMap;
@@ -99,6 +97,11 @@ public class Game extends Observable<Game> implements Cloneable{
         return result;
     }
 
+    /**
+     * It fill the {@link #chosenGodsFromDeck}
+     *
+     * @param godsChosen the gods chosen by the GodLikePlayer
+     */
     public void setChosenGodsFromDeck(ArrayList<God> godsChosen) {
         chosenGodsFromDeck.addAll(godsChosen);
     }
@@ -115,6 +118,11 @@ public class Game extends Observable<Game> implements Cloneable{
     }
 
 
+    /**
+     * It checks if every {@link Player} has a God
+     *
+     * @return true if every player has a God
+     */
     public boolean godsPickedByEveryone() {
         boolean a = true;
         for (Player player : players) {
@@ -126,6 +134,11 @@ public class Game extends Observable<Game> implements Cloneable{
     }
 
 
+    /**
+     * It checks if every {@link Player} has placed its workers
+     *
+     * @return the boolean
+     */
     public boolean workersPlacedByEveryone() {
         for (Player player : players) {
             for (Worker worker : player.getPlayerWorkers()) {

@@ -5,17 +5,18 @@ import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 
+/**
+ * The MoveAction update the workers position & the gameMap
+ */
 public class MoveAction implements Action {
 
-    private final Player player;
     private final Worker playerWorker;
     private final Position newPosition;
     private Square oldPositionSquare;
     private Square newPositionSquare;
 
 
-    public MoveAction(Player player, Worker playerWorker, Position newPosition,Square oldPositionSquare, Square newPositionSquare) {
-        this.player = player;
+    public MoveAction(Worker playerWorker, Position newPosition,Square oldPositionSquare, Square newPositionSquare) {
         this.playerWorker = playerWorker;
         this.newPosition = newPosition;
         this.oldPositionSquare = oldPositionSquare;

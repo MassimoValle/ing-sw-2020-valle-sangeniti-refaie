@@ -6,7 +6,8 @@ import it.polimi.ingsw.Model.Player.Worker;
 import java.util.ArrayList;
 
 public class Square {
-    //To keep trace of whose worker is on the square
+
+    //To keep trace of worker is on the square
     private Worker workerOnSquare;
     private ArrayList<Block> tower;
 
@@ -15,8 +16,6 @@ public class Square {
         tower = null;
         this.workerOnSquare = null;
     }
-
-
 
     public Worker getWorkerOnSquare() {
         if (hasWorkerOn()) {
@@ -33,17 +32,17 @@ public class Square {
             return tower.size();
     }
 
-    public  void freeSquare() {
-        this.workerOnSquare = null;
-    }
-
     public boolean hasWorkerOn() {
         return workerOnSquare != null;
     }
 
+    /**
+     *  Checks if any kind of {@link Block} has been placed over
+     *
+     * @return true if {@link #tower} still not initalized
+     */
     public boolean hasBeenBuiltOver() {
-        if(tower == null) return true;
-        return false;
+        return tower != null;
     }
 
     public boolean hasDome(){
@@ -53,32 +52,55 @@ public class Square {
         return false;
     }
 
-
-
+    /**
+     * Sets {@link Worker} on {@link #workerOnSquare}
+     *
+     * @param worker the worker
+     */
     public void setWorkerOn(Worker worker) {
         this.workerOnSquare = worker;
     }
 
-    public void addBlock() {
+    /**
+     * Sets the square free from the previously worker placed
+     */
+    public void freeSquare() {
+        this.workerOnSquare = null;
+    }
+
+
+    /**
+     * Add a {@link Block} to the {@link #tower}
+     *
+     * @param dome true if the block we want to add is a {@link Dome}
+     */
+    public void addBlock(boolean dome) {
+
         if (tower == null) {
             tower = new ArrayList<>();
         }
-        switch (tower.size()){
-            case 0:
-                tower.add(new LevelOneBlock());
-                break;
-            case 1:
-                tower.add(new LevelTwoBlock());
-                break;
-            case 2:
-                tower.add(new LevelThreeBlock());
-                break;
-            case 3:
-                tower.add(new Dome());
-                break;
-            default:
-                //throw new Exception();
+
+        if (dome) {
+            tower.add(new Dome());
+        } else {
+            switch (tower.size()){
+                case 0:
+                    tower.add(new LevelOneBlock());
+                    break;
+                case 1:
+                    tower.add(new LevelTwoBlock());
+                    break;
+                case 2:
+                    tower.add(new LevelThreeBlock());
+                    break;
+                case 3:
+                    tower.add(new Dome());
+                    break;
+                default:
+                    //throw new Exception();
+            }
         }
+
     }
 
 
@@ -87,6 +109,14 @@ public class Square {
     @Override
     public String toString() {
         String ret = "";
+
+        if (getHeight() != 0) {
+            if (hasDome()) {
+                return "D";
+            }
+        }
+
+
         switch (getHeight()) {
             case 0:
                 ret = "0";

@@ -2,26 +2,27 @@ package it.polimi.ingsw.Model.Action;
 
 import it.polimi.ingsw.Model.Map.Square;
 
-
 /**
- * The BuildAction is called whenever a player wants to build every kind of level
- * The construction of a Block/Dome is transparent to the player who wants to build
+ * The BuildDomeAction is used only if ATLAS is in game and a player wants to build a Dome
+ * .
  */
-public class BuildAction implements Action {
+public class BuildDomeAction implements Action{
+
     private Square squareWhereToBuildOn;
 
 
-    public BuildAction(Square squareWhereToBuildOn) {
+    public BuildDomeAction(Square squareWhereToBuildOn) {
         this.squareWhereToBuildOn = squareWhereToBuildOn;
     }
 
 
     @Override
     public boolean isValid() {
-
         if (squareWhereToBuildOn.hasWorkerOn()) {
             return false;
         }
+
+        //IL CONTROLLO PER VEDERE SE HAI ATLAS (permette di costruire una dome a qualsiasi livello) VIENE FATTO NEL CONTROLLER
 
         return true;
     }
@@ -29,7 +30,8 @@ public class BuildAction implements Action {
     @Override
     public void doAction() {
 
-        squareWhereToBuildOn.addBlock(false);
+        squareWhereToBuildOn.addBlock(true);
+
 
     }
 }

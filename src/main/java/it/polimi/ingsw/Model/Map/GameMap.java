@@ -197,7 +197,7 @@ public class GameMap {
     /// #### test ####
 
     //SHOULD NEVER BE USED -- ONLY TESTING
-    public void setSquareHeight(Position position, int lvl) {
+    public void _setSquareHeight(Position position, int lvl) {
         //board[position.getRow()][position.getColumn()].setHeight(lvl);
     }
 

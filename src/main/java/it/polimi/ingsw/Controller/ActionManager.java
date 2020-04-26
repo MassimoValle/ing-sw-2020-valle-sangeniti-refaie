@@ -9,6 +9,9 @@ import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.*;
 
+/**
+ * The ActionManager handles every request sent by a client to perform an action
+ */
 public class ActionManager {
 
     private Game gameInstance;
@@ -21,14 +24,26 @@ public class ActionManager {
         this.gameManager = gameManager;
         this.turnManager = gameManager.getTurnManager();
 
-        gameManager.setGameState(PossibleGameState.GODLIKE_PLAYER_MOMENT);
+        gameManager.updateGameState(PossibleGameState.GODLIKE_PLAYER_MOMENT);
     }
 
+    /**
+     * It handles the the request .
+     *
+     * @param message the request sent by the client
+     * @return positive/negative response if the client can perform action requested
+     */
     public Response handleRequest(Message message) {
 
         PossibleGameState gameState = gameManager.getGameState();
 
+        //Controllo che il player sia nel suo turno
+        if(!isYourTurn(message.getMessageSender())) { //The player who sent the request isn't the playerActive
+            return buildNegativeResponse("It's not your turn!");
+        }
+
         switch (message.getMessageContent()) {
+
             case PICK_GOD:
                 if (gameState == PossibleGameState.ASSIGNING_GOD) {
                     return handlePickGodRequest((PickGodRequest) message);
@@ -60,54 +75,60 @@ public class ActionManager {
         }
     }
 
+    /**
+     * It handles the {@link ChoseGodsRequest} when the {@link PossibleGameState#GODLIKE_PLAYER_MOMENT}
+     *
+     * @param request the request sent by the client
+     * @return positive/negative response if the client can perform action requested
+     */
     Response handleGodsChosen(ChoseGodsRequest request) {
         gameInstance.setChosenGodsFromDeck(request.getChosenGod());
         turnManager.setGodsInGame(request.getChosenGod());
 
-        //gameManager.setGameState(PossibleGameState.ACTION_DONE);
 
-        gameManager.setGameState(PossibleGameState.ASSIGNING_GOD);
-
+        gameManager.updateGameState(PossibleGameState.ASSIGNING_GOD);
         turnManager.updateTurnState(PossibleGameState.ASSIGNING_GOD);
 
         return buildPositiveResponse("Gods selected!");
     }
 
+    /**
+     * It handles the {@link PickGodRequest} when the {@link PossibleGameState#ASSIGNING_GOD}
+     *
+     * @param request the request sent by the client
+     * @return positive/negative response if the client can perform action requested
+     */
     Response handlePickGodRequest(PickGodRequest request) {
         String requestSender = request.getMessageSender();
         Player activePlayer = turnManager.getActivePlayer();
         God pickedGod = request.getPickedGod();
 
-        if(!isYourTurn(requestSender)) { //The player who sent the request isn't the playerActive
-            return buildNegativeResponse("It's not your turn!");
-        }
-
         gameInstance.setGodToPlayer(activePlayer, pickedGod);
 
-        //gameManager.setGameState(PossibleGameState.ACTION_DONE);
-
-
         if (gameInstance.godsPickedByEveryone()) {
-            gameManager.setGameState(PossibleGameState.FILLING_BOARD);
+            gameManager.updateGameState(PossibleGameState.FILLING_BOARD);
             turnManager.updateTurnState(PossibleGameState.FILLING_BOARD);
             return buildPositiveResponse("Gods picked up, now it's time to fill the board!");
         }
 
-        gameManager.setGameState(PossibleGameState.ASSIGNING_GOD);
+        gameManager.updateGameState(PossibleGameState.ASSIGNING_GOD);
         turnManager.updateTurnState(PossibleGameState.ASSIGNING_GOD);
         return buildPositiveResponse("God picked up!");
     }
 
+    /**
+     * It handle the {@link SelectWorkerRequest} by a player
+     * or in {@link PossibleGameState#FILLING_BOARD} when the players have to place their workers
+     * or in {@link PossibleGameState#START_ROUND} when the player has to select one Worker
+     *
+     * @param request the request sent by the client
+     * @return positive/negative response if the client can perform action requested
+     */
     Response handleSelectWorkerAction(SelectWorkerRequest request) {
 
         String requestSender = request.getMessageSender();
         Player activePlayer = turnManager.getActivePlayer();
         Worker workerFromRequest = request.getWorkerToSelect();
-
-        //Controllo che il player sia nel suo turno
-        if(!isYourTurn(requestSender)) { //The player who sent the request isn't the playerActive
-            return buildNegativeResponse("It's not your turn!");
-        }
 
         //When a handleSelectWorkerRequest occurs the activeWorker in the turn must be set tu null
         //or has to be the other player's worker
@@ -122,7 +143,7 @@ public class ActionManager {
 
 
 
-        Action selectWorkerAction = new SelectWorkerAction(activePlayer, workerFromRequest);
+        Action selectWorkerAction = new SelectWorkerAction(workerFromRequest);
 
         //
         if (!workerFromRequest.isPlaced()) {
@@ -143,13 +164,20 @@ public class ActionManager {
         turnManager.setActiveWorker(workerFromRequest);
 
         //gameManager.setGameState(PossibleGameState.ACTION_DONE);
-        gameManager.setGameState(PossibleGameState.WORKER_SELECTED);
+        gameManager.updateGameState(PossibleGameState.WORKER_SELECTED);
 
 
         return buildPositiveResponse("Worker Selected");
 
     }
 
+    /**
+     * It handle the {@link PlaceWorkerRequest} by a player that can be sent to Server after the {@link SelectWorkerRequest}
+     * It's called only in {@link PossibleGameState#FILLING_BOARD} whe the players have to place their workers yet
+     *
+     * @param request the request sent by the client
+     * @return positive/negative response if the client can perform action requested
+     */
     Response handlePlaceWorkerAction(PlaceWorkerRequest request) {
         Player activePlayer = turnManager.getActivePlayer();
         Worker activeWorker = turnManager.getActiveWorker();
@@ -163,7 +191,7 @@ public class ActionManager {
         //Passo direttamente lo square su cui piazzare il worker dal controller, per ovviare alle getInstance in classi che non c'èentrano nulla
         Square squareWhereToPlaceWorker = gameInstance.getGameMap().getSquare(positionToPlaceWorker);
 
-        Action placeWorkerAction = new PlaceWorkerAction(activePlayer, activeWorker, positionToPlaceWorker, squareWhereToPlaceWorker);
+        Action placeWorkerAction = new PlaceWorkerAction(activeWorker, positionToPlaceWorker, squareWhereToPlaceWorker);
 
         if (placeWorkerAction.isValid()) {
             placeWorkerAction.doAction();
@@ -173,39 +201,40 @@ public class ActionManager {
 
         if (activePlayer.areWorkerPlaced()) {
             if ( gameInstance.workersPlacedByEveryone()) {
-                gameManager.setGameState(PossibleGameState.START_GAME);
+                gameManager.updateGameState(PossibleGameState.START_GAME);
                 turnManager.updateTurnState(PossibleGameState.START_GAME);
                 return buildPositiveResponse("Everybody have plaed their workers, we are ready to Start!");
             }
 
-            gameManager.setGameState(PossibleGameState.FILLING_BOARD);
+            gameManager.updateGameState(PossibleGameState.FILLING_BOARD);
             turnManager.updateTurnState(PossibleGameState.FILLING_BOARD);
             return buildPositiveResponse("Worker Placed");
         }
 
-            gameManager.setGameState(PossibleGameState.FILLING_BOARD);
+            gameManager.updateGameState(PossibleGameState.FILLING_BOARD);
         return buildPositiveResponse("Worker Placed! Let's place the other one!");
 
     }
 
+    /**
+     * It handle the {@link MoveRequest} by a player that can be sent to Server after the {@link SelectWorkerRequest}
+     * It's called only in {@link PossibleGameState#WORKER_SELECTED} whe the player have to move the previously selected worker
+     *
+     * @param request the request sent by the client
+     * @return positive/negative response if the client can perform action requested
+     */
     Response handleMoveAction(MoveRequest request) {
 
         String requestSender = request.getMessageSender();
-
 
         Player activePlayer = turnManager.getActivePlayer();
         Worker activeWorker = turnManager.getActiveWorker();
         Position positionWhereToMove = request.getSenderMovePosition();
 
-        //Controllo che il player sia nel suo turno
-        if(!isYourTurn(requestSender)) { //The player who sent the request isn't the playerActive
-            return buildNegativeResponse("It's not your turn!");
-        }
-
         Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getWorkerPosition());
         Square squareWhereToMove = gameInstance.getGameMap().getSquare(positionWhereToMove);
 
-        Action moveAction = new MoveAction(activePlayer, activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
+        Action moveAction = new MoveAction(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
 
         if (moveAction.isValid()) {
@@ -215,12 +244,21 @@ public class ActionManager {
         }
 
 
-        gameManager.setGameState(PossibleGameState.WORKER_MOVED);
+        gameManager.updateGameState(PossibleGameState.WORKER_MOVED);
         turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
 
         return buildPositiveResponse("Worker Moved!");
     }
 
+    /**
+     * It handle the {@link BuildRequest} by a player that can be sent to Server after the {@link MoveRequest}
+     * It's called only in {@link PossibleGameState#WORKER_SELECTED} whe the player have to move the previously selected worker
+     *
+     * @param request the request sent by the client
+     * @return positive/negative response if the client can perform action requested,
+     *
+     *  in case of SOME GOD'S POWERS it can be called also when the {@link PossibleGameState#WORKER_SELECTED}
+     */
     Response handleBuildAction(BuildRequest request) {
 
         String requestSender = request.getMessageSender();
@@ -228,11 +266,6 @@ public class ActionManager {
         Player activePlayer = turnManager.getActivePlayer();
         Worker activeWorker = turnManager.getActiveWorker();
         Position positionWhereToBuild = request.getPositionWhereToBuild();
-
-        //Controllo che il player sia nel suo turno
-        if(!isYourTurn(requestSender)) { //The player who sent the request isn't the playerActive
-            return buildNegativeResponse("It's not your turn!");
-        }
 
         Square squareWhereToBuild = gameInstance.getGameMap().getSquare(positionWhereToBuild);
 
@@ -242,16 +275,22 @@ public class ActionManager {
         if (buildAction.isValid()) {
             buildAction.doAction();
         } else {
-            return buildNegativeResponse("You cannot move here!");
+            return buildNegativeResponse("You cannot build here!");
         }
 
-        gameManager.setGameState(PossibleGameState.BUILT);
+        gameManager.updateGameState(PossibleGameState.BUILT);
         turnManager.updateTurnState(PossibleGameState.BUILT);
-        gameManager.setGameState(PossibleGameState.START_ROUND);
+        gameManager.updateGameState(PossibleGameState.START_ROUND);
 
-        return buildPositiveResponse("Worker Moved!");
+        return buildPositiveResponse("Built!");
     }
 
+    /**
+     * Build negative response.
+     *
+     * @param gameManagerSays the message from the Game Manager
+     * @return the response
+     */
     Response buildNegativeResponse(String gameManagerSays) {
 
         String activePlayerUsername = turnManager.getActivePlayer().getPlayerName();
@@ -259,12 +298,17 @@ public class ActionManager {
 
     }
 
-    Response buildPositiveResponse(String gameManagaerSays) {
+    /**
+     * Build Positive response.
+     *
+     * @param gameManagerSays the message from the Game Manager
+     * @return the response
+     */
+    Response buildPositiveResponse(String gameManagerSays) {
 
         String activePlayerUsername = turnManager.getActivePlayer().getPlayerName();
-        return new Response(activePlayerUsername, gameManagaerSays , MessageStatus.OK);
+        return new Response(activePlayerUsername, gameManagerSays , MessageStatus.OK);
     }
-
 
     /**
      * It checks if the {@link Player#getPlayerName()} is the turn owner
@@ -279,7 +323,5 @@ public class ActionManager {
         else
             return true;
     }
-
-
 
 }
