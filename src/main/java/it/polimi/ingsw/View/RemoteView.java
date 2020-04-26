@@ -47,8 +47,10 @@ public class RemoteView extends View {
     protected void showGame(Game game) {
 
         // !!! il model è stato modificato
+        Message response = game.notifyPlayer(getPlayer());
 
-        connection.sendMessage(game.notifyPlayer(getPlayer()));
+        if(response != null)
+            connection.sendMessage(response);
 
 
 

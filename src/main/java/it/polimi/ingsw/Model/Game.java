@@ -30,7 +30,7 @@ public class Game extends Observable<Game> implements Cloneable{
     private List<God> chosenGodsFromDeck;
     private GameMap gameMap;
 
-    private final Map<Player, Message> changes = new HashMap<>();
+    private final HashMap<Player, Message> changes = new HashMap<>();
 
 
     public Game() {
@@ -43,7 +43,7 @@ public class Game extends Observable<Game> implements Cloneable{
 
 
 
-
+    // getter
     public List<Player> getPlayers() {
         return this.players;
     }
@@ -65,17 +65,9 @@ public class Game extends Observable<Game> implements Cloneable{
 
 
 
-
-
-    /**
-     * Add a new {@link Player player} to the current {@link Game game}.
-     *
-     * @param name the name given to the new Player
-     * @return the newly created player
-     */
-    public void addPlayer(String name) {
-        Player newPlayer = new Player(name);
-        players.add(newPlayer);
+    // function
+    public void addPlayer(Player player) {
+        players.add(player);
     }
 
     /**
@@ -109,6 +101,7 @@ public class Game extends Observable<Game> implements Cloneable{
 
 
 
+    // add Message in changes
     public Response buildNegativeResponse(Player player, MessageContent messageContent, String gameManagerSays) {
 
         String activePlayerUsername = player.getPlayerName();
@@ -123,9 +116,16 @@ public class Game extends Observable<Game> implements Cloneable{
 
         changes.put(player, x);
 
+        notify(this);
+
         return x;
     }
 
+    public Message notifyPlayer(Player player) {
+        Message x = changes.get(player);
+        System.out.println("message taken by " + player.getPlayerName());
+        return x;
+    }
 
 
 
@@ -145,10 +145,6 @@ public class Game extends Observable<Game> implements Cloneable{
         game1.gameMap = getGameMap();
         game1.deck = getDeck();
         return game1;
-    }
-
-    public Message notifyPlayer(Player player) {
-        return changes.get(player);
     }
 }
 
