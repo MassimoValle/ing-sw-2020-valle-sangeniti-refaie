@@ -17,29 +17,59 @@ import it.polimi.ingsw.Network.Message.Requests.SelectWorkerRequest;
 public class TurnManager {
 
 
-    private Game game;
+    private static Game game;
 
     private Player player;
     private Worker selectedWorker;
 
+    private static int currentPlayer = 0;
+
     private UserPlayerState userPlayerState;
 
 
-    public TurnManager(Game game, Player player) {
+    public TurnManager(Game game) {
 
         userPlayerState = UserPlayerState.STARTING_TURN;
 
         this.game = game;
-        this.player = player;
-
+        this.player = GameManager.activePlayer;
 
     }
 
+
+
+    // setter
     public void setSelectedWorker(Worker Worker) {
         this.selectedWorker = Worker;
     }
 
 
+
+    // function
+    public static Player nextPlayer() {
+        return game.getPlayers().get((currentPlayer % game.getPlayers().size()) +1);
+    }
+
+
+
+
+    // handler
+    public void handleMessage(Message message) {
+
+        if(!GameManager.checkTurnOwnership(message.getMessageSender()))
+            return;
+
+        switch (message.getMessageContent()){
+
+            case SELECT_WORKER -> handleSelectWorkerAction((SelectWorkerRequest) message);
+
+            case MOVE -> handleMoveAction((MoveRequest) message);
+
+            case BUILD -> handleBuildAction((BuildRequest) message);
+
+            case END_OF_TURN -> handleEndAction((EndRequest) message);
+        }
+    }
 
     private void handleSelectWorkerAction(SelectWorkerRequest request) {
 
@@ -112,30 +142,21 @@ public class TurnManager {
         //setGameState(PossibleGameState.ACTION_DONE);
     }
 
-    private void handleEndingAction(EndRequest request) {
+    private void handleEndAction(EndRequest request) {
 
         userPlayerState = UserPlayerState.ENDING_TURN;
 
-        // do something
-
+        // set GameManager attributes
         GameManager.lastActivePlayer = player;
         GameManager.lastActiveWorker = selectedWorker;
 
-        userPlayerState = UserPlayerState.NOT_YOUR_TURN;
+        // set local attributes
+        player = nextPlayer();
+        selectedWorker = null;
+        currentPlayer++;
+
+        userPlayerState = UserPlayerState.STARTING_TURN;
 
     }
 
-
-    public void handleMessage(Message message) {
-        switch (message.getMessageContent()){
-
-            case SELECT_WORKER -> handleSelectWorkerAction((SelectWorkerRequest) message);
-
-            case MOVE -> handleMoveAction((MoveRequest) message);
-
-            case BUILD -> handleBuildAction((BuildRequest) message);
-
-            case END_OF_TURN -> handleEndingAction((EndRequest) message);
-        }
-    }
 }

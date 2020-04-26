@@ -17,12 +17,11 @@ import it.polimi.ingsw.Network.Message.Requests.Request;
 public class GameManager {
 
     private final Game gameInstance;
-    private TurnManager turnManager = null;
 
     public static Player lastActivePlayer;
     public static Worker lastActiveWorker;
 
-    private Player activePlayer;
+    public static Player activePlayer;
 
 
     private PossibleGameState gameState;
@@ -44,7 +43,6 @@ public class GameManager {
 
 
     // getter
-
     public Game getGameInstance() {
         return this.gameInstance;
     }
@@ -56,7 +54,7 @@ public class GameManager {
 
 
 
-
+    // function
     public void notifyTheGodLikePlayer(Player player) {
 
         //scegli un player a caso
@@ -71,7 +69,6 @@ public class GameManager {
         //Notifico al player in questione che deve scegliere i god
         gameInstance.buildPositiveResponse(godLikePlayer, MessageContent.GODS_CHOSE, "Let's chose which gods you want to be part of the game!");
 
-        //Costruisco la ChoseGodsRequest sul client e la invio al server che la gestirà nella handleMessage;
     }
 
     public void assignGodToPlayer(Player player, God god) {
@@ -96,7 +93,7 @@ public class GameManager {
 
     }
 
-    private boolean checkTurnOwnership(String username) {
+    public static boolean checkTurnOwnership(String username) {
         return username.equals(activePlayer.getPlayerName());
     }
 
@@ -105,23 +102,11 @@ public class GameManager {
 
 
     // handler
-
     public void handleMessage(Request message) {
 
         if(!checkTurnOwnership(message.getMessageSender()))
             return;
 
-
-        if(message.getMessageDispatcher() == Dispatcher.TURN){
-
-            if(turnManager != null) turnManager = new TurnManager(gameInstance, activePlayer);
-
-            turnManager.handleMessage(message);
-            return;
-        }
-
-
-        // if(message.getMessageDispatcher() == Dispatcher.GAME){
         switch (message.getMessageContent()){
             case GODS_CHOSE:
                 handleGodsChosen((ChoseGodsRequest) message);
@@ -190,6 +175,8 @@ public class GameManager {
 
         gameInstance.setChosenGodsFromDeck(activePlayer, request.getChosenGod());
 
+        activePlayer = TurnManager.nextPlayer();
+
         gameState = PossibleGameState.ACTION_DONE;
     }
 
@@ -218,6 +205,8 @@ public class GameManager {
 
         Player p = getPlayerByName(request.getMessageSender());
         assignGodToPlayer(p, request.getGod());
+
+        activePlayer = TurnManager.nextPlayer();
 
         gameState = PossibleGameState.ACTION_DONE;
     }
