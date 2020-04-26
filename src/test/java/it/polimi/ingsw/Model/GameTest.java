@@ -58,7 +58,8 @@ public class GameTest {
     @Test
     public void addPlayer() throws PlayerNotFoundException {
         String name = "player";
-        game.addPlayer(name);
+        Player player = new Player(name);
+        game.addPlayer(player);
 
         assertNotNull(game.searchPlayerByName(name));
     }
