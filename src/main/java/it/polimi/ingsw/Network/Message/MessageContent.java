@@ -5,6 +5,7 @@ public enum MessageContent {
     FIRST_CONNECTION,
     CONNECTION_RESPONSE,
     LOGIN,
+    NUM_PLAYER,
 
     GODS_CHOSE,
 

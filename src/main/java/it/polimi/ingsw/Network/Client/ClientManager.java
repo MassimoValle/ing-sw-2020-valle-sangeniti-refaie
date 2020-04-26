@@ -1,10 +1,14 @@
 package it.polimi.ingsw.Network.Client;
 
+import it.polimi.ingsw.Model.Game;
+import it.polimi.ingsw.Model.God.Deck;
+import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Network.Message.*;
 import it.polimi.ingsw.Network.Message.Requests.Request;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ClientManager {
@@ -47,14 +51,34 @@ public class ClientManager {
                     if(message.getMessageStatus() == MessageStatus.ERROR){
                         login();
                     }
+                    break;
+                case NUM_PLAYER:
 
-                    // do something
+                    consoleOut.print("lobby size [MIN: 2, MAX: 3]: ");
+                    String input;
+                    do{
+                        input = consoleIn.nextLine();
+                    }while (!(input.equals("2") || input.equals("3")));
+
+                    try {
+                        Client.sendMessage(
+                                new Request(username, Dispatcher.GAME, MessageContent.NUM_PLAYER, MessageStatus.OK, input)
+                        );
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
 
                     break;
+
+                case GODS_CHOSE:
+                    printMessageFromServer((Response) message);
+                    break;
+
                 case GOD_SELECTION:
                     // printo la lista di gods
                     // scelgo che gods voglio
                     // invio gli indici dei god scelti al server
+                    chooseGods((Response) message);
                     break;
                 case YOUR_TURN:
                     break;
@@ -115,6 +139,37 @@ public class ClientManager {
             }catch (IOException e){
                 e.printStackTrace();
             }
+
+    }
+
+    private void chooseGods(Response message)
+    {
+        Deck deck = null; // = message.getGameManagerSays();
+
+        // print deck
+
+        String input = consoleIn.nextLine();
+
+
+        /*
+        String[] gods = input.split(" ");
+        ArrayList<God> godChosen = new ArrayList<>();
+
+        for (int i = 0; i < gods.length; i++) {
+            godChosen.add(deck.getGod(Integer.parseInt(gods[i])));
+        }
+        */
+
+
+        try {
+            Client.sendMessage(
+                    new Request(username, Dispatcher.GAME, MessageContent.GOD_SELECTION, MessageStatus.OK, input)
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+
 
     }
 
