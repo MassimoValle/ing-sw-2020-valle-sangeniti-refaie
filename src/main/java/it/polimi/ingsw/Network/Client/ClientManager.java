@@ -1,14 +1,14 @@
 package it.polimi.ingsw.Network.Client;
 
-import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.Deck;
-import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Network.Message.*;
+import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
+import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.Request;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ClientManager {
@@ -62,7 +62,7 @@ public class ClientManager {
 
                     try {
                         Client.sendMessage(
-                                new Request(username, Dispatcher.GAME, MessageContent.NUM_PLAYER, MessageStatus.OK, input)
+                                new Request(username, Dispatcher.SETUP_GAME, MessageContent.NUM_PLAYER, MessageStatus.OK, input)
                         );
                     }catch (IOException e){
                         e.printStackTrace();
@@ -134,7 +134,7 @@ public class ClientManager {
 
             try {
                 Client.sendMessage(
-                        new Request(username, Dispatcher.GAME, MessageContent.LOGIN, MessageStatus.OK, username)
+                        new Request(username, Dispatcher.SETUP_GAME, MessageContent.LOGIN, MessageStatus.OK, username)
                 );
             }catch (IOException e){
                 e.printStackTrace();
@@ -163,7 +163,7 @@ public class ClientManager {
 
         try {
             Client.sendMessage(
-                    new Request(username, Dispatcher.GAME, MessageContent.GOD_SELECTION, MessageStatus.OK, input)
+                    new Request(username, Dispatcher.SETUP_GAME, MessageContent.GOD_SELECTION, MessageStatus.OK, input)
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -179,7 +179,7 @@ public class ClientManager {
             consoleOut.print("DEBUG: ");
             String inputLine = consoleIn.nextLine();
             Client.sendMessage(
-                    new Request(getUsername(), Dispatcher.GAME, MessageContent.CHECK, MessageStatus.OK, inputLine)
+                    new Request(getUsername(), Dispatcher.SETUP_GAME, MessageContent.CHECK, MessageStatus.OK, inputLine)
             );
         } catch (IOException e) {
             e.printStackTrace();

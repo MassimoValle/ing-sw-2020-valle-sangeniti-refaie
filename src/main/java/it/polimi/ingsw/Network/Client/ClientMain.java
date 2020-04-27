@@ -10,7 +10,8 @@ public class ClientMain {
     public static void main(String[] args) {
 
         Client client1 = new Client("localhost", 8080);
-        Scanner in = new Scanner(System.in);
+
+        /*Scanner in = new Scanner(System.in);
         boolean doIt = true;
 
         while (doIt) {
@@ -25,7 +26,7 @@ public class ClientMain {
                     doIt = false;
 
             }
-        }
+        }*/
         try {
             client1.run();
         } catch (IOException ex) {

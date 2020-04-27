@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Network.Message;
+package it.polimi.ingsw.Network.Message.Enum;
 
 //Enumerations that indicates in what state of the connection the message is sent
 public enum MessageContent {

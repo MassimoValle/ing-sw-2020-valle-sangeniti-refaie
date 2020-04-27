@@ -6,15 +6,14 @@ import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Map.GameMap;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.MessageContent;
-import it.polimi.ingsw.Network.Message.MessageStatus;
+import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Response;
 import it.polimi.ingsw.View.Observable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 //GAME CLASS DOESN'T NEED TO IMPLEMENTS CLONABLE

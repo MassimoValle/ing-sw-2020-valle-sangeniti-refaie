@@ -32,7 +32,7 @@ public class TurnManager {
         userPlayerState = UserPlayerState.STARTING_TURN;
 
         this.game = game;
-        this.player = GameManager.activePlayer;
+        this.player = SetUpGameController.activePlayer;
 
     }
 
@@ -56,7 +56,7 @@ public class TurnManager {
     // handler
     public void handleMessage(Message message) {
 
-        if(!GameManager.checkTurnOwnership(message.getMessageSender()))
+        if(!SetUpGameController.checkTurnOwnership(message.getMessageSender()))
             return;
 
         switch (message.getMessageContent()){
@@ -147,8 +147,8 @@ public class TurnManager {
         userPlayerState = UserPlayerState.ENDING_TURN;
 
         // set GameManager attributes
-        GameManager.lastActivePlayer = player;
-        GameManager.lastActiveWorker = selectedWorker;
+        SetUpGameController.lastActivePlayer = player;
+        SetUpGameController.lastActiveWorker = selectedWorker;
 
         // set local attributes
         player = nextPlayer();

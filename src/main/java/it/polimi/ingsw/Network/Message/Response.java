@@ -1,6 +1,9 @@
 package it.polimi.ingsw.Network.Message;
 
 
+import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+
 public class Response extends Message {
 
     private String gameManagerSays;

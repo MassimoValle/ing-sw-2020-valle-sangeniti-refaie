@@ -1,11 +1,10 @@
 package it.polimi.ingsw.Network;
 
-import it.polimi.ingsw.Controller.GameManager;
-import it.polimi.ingsw.Controller.TurnManager;
+import it.polimi.ingsw.Controller.SuperMegaController;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
-import it.polimi.ingsw.Network.Message.MessageContent;
-import it.polimi.ingsw.Network.Message.MessageStatus;
+import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.Request;
 import it.polimi.ingsw.Network.Message.Response;
 import it.polimi.ingsw.View.RemoteView;
@@ -29,8 +28,7 @@ public class Server {
     private final Map<String, Connection> playersInLobby = new HashMap<>();
 
     // Controller of the game
-    GameManager gameManager;
-    TurnManager turnManager;
+    SuperMegaController superMegaController;
 
     // field set by a user
     private int lobbySize = 0;
@@ -115,8 +113,7 @@ public class Server {
 
 
             System.out.println("new game!");
-            gameManager = new GameManager(game, activePlayer);
-            turnManager = new TurnManager(game);
+            superMegaController = new SuperMegaController(game, activePlayer);
 
         }
 
@@ -178,15 +175,7 @@ public class Server {
 
     private void handleControllerMessage(Request message) {
 
-        if(gameManager != null && turnManager != null){
-
-            switch (message.getMessageDispatcher()) {
-                case GAME -> gameManager.handleMessage(message);
-                case TURN -> turnManager.handleMessage(message);
-            }
-        }
-
-        else System.out.println("gameManager non inizializzato!");
+        superMegaController.dispatcher(message);
     }
 
 

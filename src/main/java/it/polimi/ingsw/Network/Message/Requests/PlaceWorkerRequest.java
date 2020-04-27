@@ -2,9 +2,9 @@ package it.polimi.ingsw.Network.Message.Requests;
 
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
-import it.polimi.ingsw.Network.Message.Dispatcher;
-import it.polimi.ingsw.Network.Message.MessageContent;
-import it.polimi.ingsw.Network.Message.MessageStatus;
+import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
+import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 
 public class PlaceWorkerRequest extends Request{
 

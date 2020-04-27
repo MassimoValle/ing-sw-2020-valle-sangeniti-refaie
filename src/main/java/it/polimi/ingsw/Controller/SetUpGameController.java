@@ -8,13 +8,13 @@ import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
-import it.polimi.ingsw.Network.Message.*;
+import it.polimi.ingsw.Network.Message.Enum.MessageContent;
 import it.polimi.ingsw.Network.Message.Requests.AssignGodRequest;
 import it.polimi.ingsw.Network.Message.Requests.ChoseGodsRequest;
 import it.polimi.ingsw.Network.Message.Requests.PlaceWorkerRequest;
 import it.polimi.ingsw.Network.Message.Requests.Request;
 
-public class GameManager {
+public class SetUpGameController {
 
     private final Game gameInstance;
 
@@ -28,7 +28,7 @@ public class GameManager {
 
 
 
-    public GameManager(Game game, Player activePlayer){
+    public SetUpGameController(Game game, Player activePlayer){
 
         gameState = PossibleGameState.GAME_INIT;
 

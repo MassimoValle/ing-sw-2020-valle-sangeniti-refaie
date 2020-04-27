@@ -1,24 +1,13 @@
 package it.polimi.ingsw.Controller;
 
 import it.polimi.ingsw.Exceptions.Game.PlayerNotFoundException;
-import it.polimi.ingsw.Model.Game;
-import it.polimi.ingsw.Model.God.God;
-import it.polimi.ingsw.Model.Player.Player;
-import it.polimi.ingsw.Model.Player.Position;
-import it.polimi.ingsw.Model.Player.Worker;
-import it.polimi.ingsw.Network.Message.Requests.ChoseGodsRequest;
-import it.polimi.ingsw.Network.Message.Requests.PlaceWorkerRequest;
-import it.polimi.ingsw.Network.Message.Requests.SelectWorkerRequest;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import java.io.IOException;
-import java.util.ArrayList;
 
-public class GameManagerTest {
+public class SetUpGameControllerTest {
 
-    GameManager gameManager;
+    SetUpGameController setUpGameController;
 
 
 

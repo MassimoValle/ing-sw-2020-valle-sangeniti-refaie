@@ -1,5 +1,8 @@
 package it.polimi.ingsw.Network.Message;
 
+import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+
 import java.io.Serializable;
 
 public class Message implements Serializable {

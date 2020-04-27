@@ -3,9 +3,7 @@ package it.polimi.ingsw.View;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Network.Connection;
-import it.polimi.ingsw.Controller.TurnManager;
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.MessageStatus;
 
 public class RemoteView extends View {
 
