@@ -1,16 +1,19 @@
 package it.polimi.ingsw.Model;
 
-import it.polimi.ingsw.Exceptions.Game.PlayerNotFoundException;
-import it.polimi.ingsw.Model.Action.*;
+import it.polimi.ingsw.Controller.ActionManager;
 import it.polimi.ingsw.Model.God.Deck;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Map.GameMap;
 import it.polimi.ingsw.Model.Player.Player;
-import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
+import it.polimi.ingsw.Network.Message.Message;
+import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Network.Message.Response;
 import it.polimi.ingsw.View.Observable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -18,31 +21,27 @@ import java.util.List;
 
 public class Game extends Observable<Game> implements Cloneable{
 
-    //GAME MUST BE SINGLETON
-    private static Game instance;
 
     private List<Player> players;
     private Deck deck;
 
     private List<God> chosenGodsFromDeck;
-    private int numberOfPlayers;
     private GameMap gameMap;
 
+    private final HashMap<Player, Message> changes = new HashMap<>();
 
-    private Game() {
+
+    public Game() {
         this.players = new ArrayList<>();
         this.deck = Deck.getInstance();
         this.chosenGodsFromDeck = new ArrayList<>();
-        this.numberOfPlayers = 0;
         this.gameMap = new GameMap();
     }
 
-    public static Game getInstance() {
-        if (instance == null)
-            instance = new Game();
-        return instance;
-    }
 
+
+
+    // getter
     public List<Player> getPlayers() {
         return this.players;
     }
@@ -55,7 +54,7 @@ public class Game extends Observable<Game> implements Cloneable{
         return chosenGodsFromDeck;
     }
 
-    public int getNumberOfPlayers() { return numberOfPlayers; }
+    public int getNumberOfPlayers() { return players.size(); }
 
     public GameMap getGameMap() {
         return this.gameMap;
@@ -63,17 +62,10 @@ public class Game extends Observable<Game> implements Cloneable{
 
 
 
-    /**
-     * Add a new {@link Player player} to the current {@link Game game}.
-     *
-     * @param name the name given to the new Player
-     * @return the newly created player
-     */
-    public Player addPlayer(String name) {
-        Player newPlayer = new Player(name);
-        players.add(newPlayer);
-        numberOfPlayers++;
-        return newPlayer;
+
+    // function
+    public void addPlayer(Player player) {
+        players.add(player);
     }
 
     /**
@@ -81,9 +73,8 @@ public class Game extends Observable<Game> implements Cloneable{
      *
      * @param name
      * @return the player with that username
-     * @throws PlayerNotFoundException There's no player with that username
      */
-    public Player searchPlayerByName(String name) throws PlayerNotFoundException {
+    public Player searchPlayerByName(String name) {
         Player result = null;
         for (Player playerInGame : players) {
             if (playerInGame.getPlayerName().equals(name)) {
@@ -91,17 +82,9 @@ public class Game extends Observable<Game> implements Cloneable{
                 break;
             }
         }
-        if (result == null) {
-            throw new PlayerNotFoundException("Giocatore non trovato");
-        }
         return result;
     }
 
-    /**
-     * It fill the {@link #chosenGodsFromDeck}
-     *
-     * @param godsChosen the gods chosen by the GodLikePlayer
-     */
     public void setChosenGodsFromDeck(ArrayList<God> godsChosen) {
         chosenGodsFromDeck.addAll(godsChosen);
     }
@@ -149,6 +132,24 @@ public class Game extends Observable<Game> implements Cloneable{
         return true;
     }
 
+
+    public void putInChanges(Player player, Response response) {
+
+        changes.put(player, response);
+        notify(this);
+        
+    }
+
+    public Message notifyPlayer(Player player) {
+        Message x = changes.get(player);
+        System.out.println("message taken by " + player.getPlayerName());
+        return x;
+    }
+
+
+
+
+
     @Override
     public String toString() {
         return players.toString() +
@@ -162,7 +163,6 @@ public class Game extends Observable<Game> implements Cloneable{
         game1.players = getPlayers();
         game1.gameMap = getGameMap();
         game1.deck = getDeck();
-        game1.numberOfPlayers = getNumberOfPlayers();
         return game1;
     }
 

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Controller;
 
 public enum PossibleGameState {
+
     GAME_INIT ("Game manager has been just created"),
     GODLIKE_PLAYER_MOMENT ("One player have to chose which gods are going to take part of the game"),
     ASSIGNING_GOD ("Every player has to chose 1 god from the ones selected by the Godlike player"),

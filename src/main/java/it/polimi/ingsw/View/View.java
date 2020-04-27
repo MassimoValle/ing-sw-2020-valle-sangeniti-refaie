@@ -16,7 +16,7 @@ public abstract class View extends Observable<TurnManager> implements Observer<G
         return player;
     }
 
-    protected abstract void showGame(Game game1);
+    protected abstract void showGame(Game game);
 
 
     @Override

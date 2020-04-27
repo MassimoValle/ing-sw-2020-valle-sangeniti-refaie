@@ -1,6 +1,5 @@
 package it.polimi.ingsw.Model;
 
-import it.polimi.ingsw.Exceptions.Game.PlayerNotFoundException;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import org.junit.Before;
@@ -42,7 +41,7 @@ public class GameTest {
 
     @Before
     public void initClass() {
-        game = Game.getInstance();
+        game = new Game();
     }
 
     @Test
@@ -56,9 +55,10 @@ public class GameTest {
     }
 
     @Test
-    public void addPlayer() throws PlayerNotFoundException {
+    public void addPlayer() {
         String name = "player";
-        game.addPlayer(name);
+        Player player = new Player(name);
+        game.addPlayer(player);
 
         assertNotNull(game.searchPlayerByName(name));
     }

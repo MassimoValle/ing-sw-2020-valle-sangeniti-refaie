@@ -1,20 +1,20 @@
-package it.polimi.ingsw.Network.Message;
+package it.polimi.ingsw.Network.Message.Enum;
 
 //Enumerations that indicates in what state of the connection the message is sent
 public enum MessageContent {
     FIRST_CONNECTION,
     CONNECTION_RESPONSE,
     LOGIN,
+    NUM_PLAYER, // per la lobbysize
 
-    GODS_CHOSE,
-    PICK_GOD,
+    GODS_CHOSE, // godLikePlayer
+    PICK_GOD,   // ogni giocatore si piglia un god
 
     PLACE_WORKER,
     SELECT_WORKER,
     MOVE,
     BUILD,
 
-    GOD_SELECTION,
     ASYNC,
     YOUR_TURN,
     WORKER_CHOSEN,

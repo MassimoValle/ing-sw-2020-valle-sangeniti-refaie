@@ -1,11 +1,20 @@
 package it.polimi.ingsw.Controller;
 
+import it.polimi.ingsw.Model.Action.*;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.God;
+import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.PossiblePlayerState;
 import it.polimi.ingsw.Model.God.Power;
+import it.polimi.ingsw.Model.Player.Position;
+import it.polimi.ingsw.Model.Player.UserPlayerState;
 import it.polimi.ingsw.Model.Player.Worker;
+import it.polimi.ingsw.Network.Message.*;
+import it.polimi.ingsw.Network.Message.Requests.BuildRequest;
+import it.polimi.ingsw.Network.Message.Requests.EndRequest;
+import it.polimi.ingsw.Network.Message.Requests.MoveRequest;
+import it.polimi.ingsw.Network.Message.Requests.SelectWorkerRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,37 +25,32 @@ import java.util.List;
  */
 public class TurnManager {
 
+
     private Player lastActivePlayer;
     private Worker lastActiveWorker;
     private Player activePlayer;
     private Worker activeWorker;
-
-    private List<Player> inGamePlayers;
+    private final List<Player> inGamePlayers;
     private List<God> inGameGods;
-    private List<Power> inGamePowers;
 
     private PossiblePlayerState playerState;
 
 
-    /**
-     * Instantiates a new Turn manager.
-     *
-     * @param game          the game
-     * @param godlikePlayer the godlike player
-     */
-    public TurnManager(Game game, Player godlikePlayer) {
+
+    public TurnManager(List<Player> players) {
+
         this.lastActivePlayer = null;
         this.lastActiveWorker = null;
-        this.activePlayer = godlikePlayer;
+        this.activePlayer = null;
         this.activeWorker = null;
-        this.inGamePlayers = game.getPlayers();
+        this.inGamePlayers = players;
 
         updatePlayerState(PossiblePlayerState.CHOSE_GODS);
-
-
-        //When the TurnManager is instantiated this info is not available yet.
-        //this.godInGame = game.getChosenGodsFromDeck();
     }
+
+
+
+    // setter
 
     /**
      * Gets active player.
@@ -186,9 +190,27 @@ public class TurnManager {
     public void nextTurn(Player player) {
         this.lastActivePlayer = activePlayer;
         this.lastActiveWorker = activeWorker;
-
         this.activePlayer = player;
         this.activeWorker = null;
     }
+
+
+        /*
+    private void handleEndAction(EndRequest request) {
+
+        userPlayerState = UserPlayerState.ENDING_TURN;
+
+        // set GameManager attributes
+        SetUpGameController.lastActivePlayer = player;
+        SetUpGameController.lastActiveWorker = selectedWorker;
+
+        // set local attributes
+        player = nextPlayer();
+        selectedWorker = null;
+        currentPlayer++;
+
+        userPlayerState = UserPlayerState.STARTING_TURN;
+
+    }*/
 
 }

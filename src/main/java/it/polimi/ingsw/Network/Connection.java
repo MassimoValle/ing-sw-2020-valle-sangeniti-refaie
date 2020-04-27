@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Network;
 
 import it.polimi.ingsw.Network.Message.Message;
+import it.polimi.ingsw.Network.Message.Requests.Request;
 import it.polimi.ingsw.View.Observable;
 
 import java.io.IOException;
@@ -17,7 +18,6 @@ public class Connection extends Observable<String> implements Runnable {
     private ObjectOutputStream socketOut;
 
     private String name;
-
     private boolean active;
 
     private final Object outLock = new Object();
@@ -45,9 +45,21 @@ public class Connection extends Observable<String> implements Runnable {
 
     }
 
+
+
+    // getter
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     private synchronized boolean isActive(){
         return active;
     }
+
+
+
+    // send Message
 
     public void sendMessage(Message message) {
         if (isActive()) {
@@ -72,6 +84,10 @@ public class Connection extends Observable<String> implements Runnable {
         }).start();
     }
 
+
+
+    // close Connection
+
     public synchronized void closeConnection(){
         if (isActive()) {
             try {
@@ -92,6 +108,8 @@ public class Connection extends Observable<String> implements Runnable {
         System.out.println("Done!");
     }
 
+
+
     @Override
     public void run() {
         while (isActive()) {
@@ -99,13 +117,7 @@ public class Connection extends Observable<String> implements Runnable {
                 synchronized (inLock) {
                     Message message = (Message) socketIn.readObject();
 
-                    server.handleMessage(message, this);
-
-                    if(name == null){
-                        name = message.getMessageSender();
-                        server.lobby(this, name);
-                    }
-
+                    server.handleMessage((Request) message, this);
 
                 }
 
@@ -126,5 +138,7 @@ public class Connection extends Observable<String> implements Runnable {
             }
         }
     }
+
+
 }
 

@@ -1,6 +1,11 @@
 package it.polimi.ingsw.Network.Client;
 
+import it.polimi.ingsw.Model.God.Deck;
 import it.polimi.ingsw.Network.Message.*;
+import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
+import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Network.Message.Requests.Request;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -42,18 +47,39 @@ public class ClientManager implements ClientManagerListener{
                 case CONNECTION_RESPONSE:
                     break;
                 case LOGIN:
-                    printMessageFromServer(message);
+                    printMessageFromServer((Response) message);
                     if(message.getMessageStatus() == MessageStatus.ERROR){
                         login();
                     }
+                    break;
+                case NUM_PLAYER:
 
-                    // do something
+                    consoleOut.print("lobby size [MIN: 2, MAX: 3]: ");
+                    String input;
+                    do{
+                        input = consoleIn.nextLine();
+                    }while (!(input.equals("2") || input.equals("3")));
+
+                    try {
+                        Client.sendMessage(
+                                new Request(username, Dispatcher.SETUP_GAME, MessageContent.NUM_PLAYER, MessageStatus.OK, input)
+                        );
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
 
                     break;
-                case GOD_SELECTION:
+
+                case GODS_CHOSE:
+                    // choseGod
+                    printMessageFromServer((Response) message);
+                    break;
+
+                case PICK_GOD:
                     // printo la lista di gods
                     // scelgo che gods voglio
                     // invio gli indici dei god scelti al server
+                    chooseGods((Response) message);
                     break;
                 case YOUR_TURN:
                     break;
@@ -66,18 +92,18 @@ public class ClientManager implements ClientManagerListener{
                 case END_OF_TURN:
                     break;
                 default: CHECK:
-                    printMessageFromServer(message);
+                    printMessageFromServer((Response) message);
                     break;
             }
         }
 
     }
 
-    private void printMessageFromServer(Message message){
+    private void printMessageFromServer(Response message){
         String out = "#### [SERVER] ####\n";
         out += "Message content: " + message.getMessageContent() + "\n";
         out += "Message status: " + message.getMessageStatus() + "\n";
-        out += "Message value: " + message.getMessage() + "\n";
+        out += "Message value: " + message.getGameManagerSays() + "\n";
         out += "________________\n";
 
         consoleOut.println(out);
@@ -109,11 +135,42 @@ public class ClientManager implements ClientManagerListener{
 
             try {
                 Client.sendMessage(
-                        new Message(username, MessageContent.LOGIN, username)
+                        new Request(username, Dispatcher.SETUP_GAME, MessageContent.LOGIN, MessageStatus.OK, username)
                 );
             }catch (IOException e){
                 e.printStackTrace();
             }
+
+    }
+
+    private void chooseGods(Response message)
+    {
+        Deck deck = null; // = message.getGameManagerSays();
+
+        // print deck
+
+        String input = consoleIn.nextLine();
+
+
+        /*
+        String[] gods = input.split(" ");
+        ArrayList<God> godChosen = new ArrayList<>();
+
+        for (int i = 0; i < gods.length; i++) {
+            godChosen.add(deck.getGod(Integer.parseInt(gods[i])));
+        }
+        */
+
+
+        try {
+            Client.sendMessage(
+                    new Request(username, Dispatcher.SETUP_GAME, MessageContent.PICK_GOD, MessageStatus.OK, input)
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+
 
     }
 
@@ -123,7 +180,7 @@ public class ClientManager implements ClientManagerListener{
             consoleOut.print("DEBUG: ");
             String inputLine = consoleIn.nextLine();
             Client.sendMessage(
-                    new Message(getUsername(), MessageContent.CHECK, inputLine)
+                    new Request(getUsername(), Dispatcher.SETUP_GAME, MessageContent.CHECK, MessageStatus.OK, inputLine)
             );
         } catch (IOException e) {
             e.printStackTrace();

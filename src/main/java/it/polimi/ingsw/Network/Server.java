@@ -1,11 +1,12 @@
 package it.polimi.ingsw.Network;
 
-import it.polimi.ingsw.Controller.GameManager;
+import it.polimi.ingsw.Controller.SuperMegaController;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
-import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.MessageContent;
-import it.polimi.ingsw.Network.Message.MessageStatus;
+import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Network.Message.Requests.Request;
+import it.polimi.ingsw.Network.Message.Response;
 import it.polimi.ingsw.View.RemoteView;
 
 import java.io.IOException;
@@ -18,18 +19,21 @@ import java.util.concurrent.Executors;
 public class Server {
 
     private static final int PORT= 8080;
-    private ServerSocket serverSocket;
+    private final ServerSocket serverSocket;
 
-    private ExecutorService executor = Executors.newFixedThreadPool(128);
+    private final ExecutorService executor = Executors.newFixedThreadPool(128);
 
-    private List<Connection> connections = new ArrayList<Connection>();
-    private Map<String, Connection> clientsConnected = new HashMap<>();
-    private Map<Connection, Connection> playingConnection = new HashMap<>();
-    private Map<String, Connection> playersInLobby = new HashMap<>();
+    private final List<Connection> connections = new ArrayList<Connection>();
+    private final Map<String, Connection> clientsConnected = new HashMap<>();
+    private final Map<String, Connection> playersInLobby = new HashMap<>();
 
-    private int clientsNum;
+    // Controller of the game
+    SuperMegaController superMegaController;
 
-    private GameManager gameManager;
+    // field set by a user
+    private int lobbySize = 0;
+
+
 
 
     //Register connection
@@ -40,55 +44,61 @@ public class Server {
     //Deregister connection
     public synchronized void deregisterConnection(Connection c){
         connections.remove(c);
-        Connection opponent = playingConnection.get(c);
-        if(opponent != null){
-            opponent.closeConnection();
-            playingConnection.remove(c);
-            playingConnection.remove(opponent);
-            //Iterator<String> iterator = waitingConnection.keySet().iterator();
-            //while(iterator.hasNext()){
-            //    if(waitingConnection.get(iterator.next())==c){
-            //        iterator.remove();
-            //    }
-            //}
+        for (Map.Entry<String, Connection> entry : playersInLobby.entrySet())
+            if(entry.getValue().equals(c))
+                playersInLobby.remove(entry);
+    }
+
+
+
+    // full up lobby and start game
+    public synchronized void lobby() {
+
+        if(clientsConnected.size() >= lobbySize && lobbySize != 0){
+
+            Game game = new Game();
+            Player activePlayer = null;
+
+            int loop = 0;
+
+
+            for (Map.Entry<String, Connection> entry : clientsConnected.entrySet()) {
+
+                if(loop < lobbySize){
+
+                    System.out.println(entry.getKey() + " = " + entry.getValue());
+
+                    Player player = new Player(entry.getKey());
+                    if(loop == 0) activePlayer = player;
+
+                    RemoteView rvplayer = new RemoteView(player, entry.getValue());
+                    game.addObserver(rvplayer);
+
+                    game.addPlayer(player);
+                    playersInLobby.put(player.getPlayerName(), entry.getValue());
+
+                    clientsConnected.remove(entry);  // remove entry from clientsConnected
+                    loop++;
+                }
+
+            }
+
+            // PROBLEMA: hashmap al contrario XC
+
+
+            System.out.println("new game!");
+            superMegaController = new SuperMegaController(game, activePlayer);
+
         }
-    }
-
-    private List<String> getClientsUsername() {
-        List<String> clientsUsername = new ArrayList<>();
-        clientsConnected.forEach((String, Connection) -> clientsUsername.add(String));
-        return clientsUsername;
-    }
-
-    public synchronized void lobby(Connection c, String name){
-        clientsConnected.put(name, c);
-        /*if(clientsConnected.size() == clientsNum){
-            List<String> keys = new ArrayList<>(clientsConnected.keySet());
-            Connection c1 = clientsConnected.get(keys.get(0));
-            Connection c2 = clientsConnected.get(keys.get(1));
-            RemoteView player1 = new RemoteView(new Player(keys.get(0)), keys.get(1), c1, true);
-            RemoteView player2 = new RemoteView(new Player(keys.get(1)), keys.get(0), c2, false);
-            Game game1 = new Game();
-            //Controller controller = new Controller(model);
-            game1.addObserver(player1);
-            game1.addObserver(player2);
-            //player1.addObserver(controller);
-            //player2.addObserver(controller);
-            playingConnection.put(c1, c2);
-            playingConnection.put(c2, c1);
-            clientsConnected.clear();
-
-
-        }*/
 
     }
+
+
+
+
 
     public Server() throws IOException {
         this.serverSocket = new ServerSocket(PORT);
-
-        this.gameManager = new GameManager(this);
-
-        this.clientsNum = 0;
     }
 
     public void run(){
@@ -106,98 +116,109 @@ public class Server {
         }
     }
 
+
+
+
+    // Create connnection, register it and execute via executor
     private void newConnection(Socket socket) {
-        clientsNum++;
         Connection connection = new Connection(socket, this);
         registerConnection(connection);
         executor.submit(connection);
     }
 
-    public synchronized void broadcast(Message message){
-
-        System.out.println(message.getMessage());
-
-        for (Map.Entry<String, Connection> entry : clientsConnected.entrySet())
-        {
-            String playerName = entry.getKey();
-            if(!message.getMessageSender().equals(playerName)){
-                entry.getValue().sendMessage(message);
-            }
-        }
-    }
 
 
 
     //Methods that has to call the GameManager to handle the request by the client
     //(the message can be whatever)
     //For example: the Username asked at the beginning, a place where to move, ecc
-    public void handleMessage(Message message, Connection connection) {
 
-        //Do something if MessageStatus.ERROR
+
+    // handle message
+    public void handleMessage(Request message, Connection connection) {
+
+        switch (message.getMessageContent()){
+            case LOGIN -> checkLogin(message, connection);
+            case NUM_PLAYER -> setLobbySize(message);
+
+            //Everything else is handled in GameManager or TurnManager
+            default -> handleControllerMessage(message);
+        }
+
+    }
+
+    private void handleControllerMessage(Request message) {
+
+        superMegaController.dispatcher(message);
+    }
+
+
+
+    // lobby size
+    public void askLobbySize(Connection connection){
+        connection.sendMessage(
+                new Response("[SERVER]", MessageContent.NUM_PLAYER, MessageStatus.OK, "Lobby size?")
+        );
+    }
+
+    private void setLobbySize(Request message) {
+
+            lobbySize = Integer.parseInt(message.getClientManagerSays());
+            lobby();
+
+    }
+
+
+
+    // login
+    private void checkLogin(Request message, Connection connection) {
+
         if (message.getMessageStatus() == MessageStatus.ERROR) {
             connection.sendMessage(
-                    new Message("[SERVER]", MessageStatus.CLIENT_ERROR, "Errore nel server")
+                    new Response("[SERVER]", MessageContent.LOGIN, MessageStatus.CLIENT_ERROR, "Errore nel server")
             );
         }
 
-        //Register Client if MessageContent.LOGIN
-        if ( message.getMessageContent() == MessageContent.LOGIN) {
+        else if ( message.getMessageStatus() == MessageStatus.OK) {
 
             if(connections.size() == 1) {
                 registerClient(message.getMessageSender(), connection);
+                askLobbySize(connection);
+
             } else {
                 login(message.getMessageSender(), connection);
             }
 
         }
-
-        //Everything else is handled by the GameManager
-        gameManager.handleMessage(message);
-
     }
 
-    //Metodo che controlla se il nome immesso dal player è valido/già in uso ecc
+    // Check if there is a client with same name
     public void login(String username, Connection connection) {
         //UserName taken
         if( clientsConnected.containsKey(username) ) {
             connection.sendMessage(
-                    new Message("[SERVER]", MessageContent.LOGIN, MessageStatus.ERROR, "Username taken")
+                    new Response("[SERVER]", MessageContent.LOGIN, MessageStatus.ERROR, "Username taken")
             );
         } else {
             registerClient(username, connection);
         }
     }
 
-
+    // Register client in clientsConnected
     public void registerClient(String username, Connection connection){
+
+        connection.setName(username);
         clientsConnected.put(username, connection);
+
         System.out.println("CLIENT REGISTRATO: " + username);
 
         connection.sendMessage(
-                new Message("[SERVER]", MessageContent.LOGIN, MessageStatus.OK, "Connected! Ready to play!")
+                new Response("[SERVER]", MessageContent.LOGIN, MessageStatus.OK, "Connected! Ready to play!")
         );
 
+        lobby();
+
+
     }
-
-
-    /**
-     * TODO: not working
-     *
-     * Method to send {@param message} message to every client inside the {@param clients} clients
-     *
-     * @param clients message
-     * @param message clients
-     */
-    public void sendMessageTo(Map<String, Connection> clients, String message) {
-        clients.forEach((clientName, connection) -> connection.sendMessage(
-                new Message("[SERVER]", MessageContent.ASYNC, MessageStatus.OK, message)
-        ));
-    }
-
-    public Map<String, Connection> getClientsConnected() {
-        return clientsConnected;
-    }
-
-
 
 }
