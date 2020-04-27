@@ -25,8 +25,6 @@ public class ActionManager {
     public ActionManager(Game game, TurnManager turnManager) {
         this.gameInstance = game;
         this.turnManager = turnManager;
-
-        //this.gameManager = gameManager;
     }
 
 
@@ -42,7 +40,7 @@ public class ActionManager {
 
         //Controllo che il player sia nel suo turno
         if(!isYourTurn(message.getMessageSender())) { //The player who sent the request isn't the playerActive
-            return buildNegativeResponse(gameInstance.searchPlayerByName(message.getMessageSender()), message.getMessageContent(), "It's not your turn!");
+            return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(message.getMessageSender()), message.getMessageContent(), "It's not your turn!");
         }
 
         switch (message.getMessageContent()) {
@@ -64,7 +62,7 @@ public class ActionManager {
                     return handleBuildAction((BuildRequest) message);
                 }
 
-            default: return buildNegativeResponse(gameInstance.searchPlayerByName(message.getMessageSender()), message.getMessageContent(),"Must never be reached!");
+            default: return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(message.getMessageSender()), message.getMessageContent(),"Must never be reached!");
         }
     }
 
@@ -89,7 +87,7 @@ public class ActionManager {
         //You get into this statement only if the activeWorker is own by someone else.
         if (activeWorker != null) {
             if (!(activeWorker == activePlayer.getPlayerWorkers().get(0) || activeWorker == activePlayer.getPlayerWorkers().get(1))) {
-                return buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "There's something wrong with the worker selection");
+                return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "There's something wrong with the worker selection");
             }
         }
 
@@ -106,12 +104,12 @@ public class ActionManager {
                 selectWorkerAction.doAction();
             }
             else {
-                return buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "Worker stuck!");
+                return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "Worker stuck!");
 
             }
 
         } else {
-            return buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "You cannot select this worker!");
+            return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "You cannot select this worker!");
 
         }
 
@@ -121,7 +119,7 @@ public class ActionManager {
         gameState = PossibleGameState.WORKER_SELECTED;
 
 
-        return buildPositiveResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "Worker Selected!");
+        return SuperMegaController.buildPositiveResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "Worker Selected!");
 
 
     }
@@ -150,14 +148,14 @@ public class ActionManager {
         if (moveAction.isValid()) {
             moveAction.doAction();
         } else {
-            return buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "You cannot move here!");
+            return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "You cannot move here!");
         }
 
 
         gameState = PossibleGameState.WORKER_MOVED;
         turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
 
-        return buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Worker Moved!");
+        return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Worker Moved!");
     }
 
     /**
@@ -185,7 +183,7 @@ public class ActionManager {
         if (buildAction.isValid()) {
             buildAction.doAction();
         } else {
-            return buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "You cannot build here!");
+            return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "You cannot build here!");
 
         }
 
@@ -193,7 +191,7 @@ public class ActionManager {
         turnManager.updateTurnState(PossibleGameState.BUILT);
         gameState = PossibleGameState.START_ROUND;
 
-        return buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Built!");
+        return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Built!");
 
     }
 
@@ -215,37 +213,6 @@ public class ActionManager {
     }
 
 
-
-
-
-    /**
-     * Build negative response.
-     *
-     * @param gameManagerSays the message from the Game Manager
-     * @return the response
-     */
-    public static Response buildNegativeResponse(Player player, MessageContent messageContent, String gameManagerSays) {
-
-        Response res = new Response(player.getPlayerName(), messageContent, MessageStatus.ERROR, gameManagerSays);
-        gameInstance.putInChanges(player, res);
-
-        return res;
-
-    }
-
-    /**
-     * Build Positive response.
-     *
-     * @param gameManagerSays the message from the Game Manager
-     * @return the response
-     */
-    public static Response buildPositiveResponse(Player player, MessageContent messageContent, String gameManagerSays) {
-
-        Response res = new Response(player.getPlayerName(), messageContent, MessageStatus.OK, gameManagerSays);
-        gameInstance.putInChanges(player, res);
-
-        return res;
-    }
 
 
 

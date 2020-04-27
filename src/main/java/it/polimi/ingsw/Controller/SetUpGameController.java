@@ -67,7 +67,7 @@ public class SetUpGameController {
         gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
 
         //Notifico al player in questione che deve scegliere i god
-        ActionManager.buildPositiveResponse(godLikePlayer, MessageContent.GODS_CHOSE, "Let's chose which gods you want to be part of the game!");
+        SuperMegaController.buildPositiveResponse(godLikePlayer, MessageContent.GODS_CHOSE, "Let's chose which gods you want to be part of the game!");
 
     }
 
@@ -97,7 +97,7 @@ public class SetUpGameController {
     public void handleMessage(Request message) {
 
         if(!checkTurnOwnership(message.getMessageSender())) {
-            ActionManager.buildNegativeResponse(getPlayerByName(message.getMessageSender()), message.getMessageContent(), "Not ur turn");
+            SuperMegaController.buildNegativeResponse(getPlayerByName(message.getMessageSender()), message.getMessageContent(), "Not ur turn");
             return;
         }
 
@@ -115,12 +115,12 @@ public class SetUpGameController {
         gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
 
         gameInstance.setChosenGodsFromDeck(request.getChosenGod());
-        ActionManager.buildPositiveResponse(activePlayer, MessageContent.GODS_CHOSE, "Gods selezionati");
+        SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.GODS_CHOSE, "Gods selezionati");
         
         //activePlayer = TurnManager.nextPlayer();
 
         // response: scegli un god
-        ActionManager.buildPositiveResponse(activePlayer, MessageContent.PICK_GOD, "Piglia un god");
+        SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.PICK_GOD, "Piglia un god");
 
     }
 

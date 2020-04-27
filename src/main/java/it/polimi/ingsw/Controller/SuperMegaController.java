@@ -3,7 +3,10 @@ package it.polimi.ingsw.Controller;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Network.Connection;
+import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.Request;
+import it.polimi.ingsw.Network.Message.Response;
 
 import java.util.Map;
 
@@ -13,7 +16,7 @@ public class SuperMegaController {
     private final TurnManager turnManager;
     private final ActionManager actionManager;
 
-    private Game game;
+    private static Game game;
 
     public SuperMegaController(Game game, Player activePlayer){
 
@@ -35,4 +38,38 @@ public class SuperMegaController {
         }
 
     }
+
+
+
+    // FIXME: da decidere se tenere qui
+
+    /**
+     * Build negative response.
+     *
+     * @param gameManagerSays the message from the Game Manager
+     * @return the response
+     */
+    public static Response buildNegativeResponse(Player player, MessageContent messageContent, String gameManagerSays) {
+
+        Response res = new Response(player.getPlayerName(), messageContent, MessageStatus.ERROR, gameManagerSays);
+        game.putInChanges(player, res);
+
+        return res;
+
+    }
+
+    /**
+     * Build Positive response.
+     *
+     * @param gameManagerSays the message from the Game Manager
+     * @return the response
+     */
+    public static Response buildPositiveResponse(Player player, MessageContent messageContent, String gameManagerSays) {
+
+        Response res = new Response(player.getPlayerName(), messageContent, MessageStatus.OK, gameManagerSays);
+        game.putInChanges(player, res);
+
+        return res;
+    }
+
 }
