@@ -2,8 +2,8 @@ package it.polimi.ingsw.Network.Message.Enum;
 
 //Enumerations that indicates in what state of the connection the message is sent
 public enum MessageContent {
-    FIRST_CONNECTION,
-    CONNECTION_RESPONSE,
+    //FIRST_CONNECTION,
+    //CONNECTION_RESPONSE,
     LOGIN,
     NUM_PLAYER, // per la lobbysize
 

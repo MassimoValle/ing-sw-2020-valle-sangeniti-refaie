@@ -8,11 +8,11 @@ import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 
 public class PlaceWorkerRequest extends Request{
 
-    private Worker workerToPlace;
-    private Position positionToPlaceWorker;
+    private final Worker workerToPlace;
+    private final Position positionToPlaceWorker;
 
-    public PlaceWorkerRequest(String messageSender, Dispatcher messageDispatcher, MessageStatus messageStatus, Worker workerToPlace, Position positionToPlaceWorker) {
-        super(messageSender, messageDispatcher, MessageContent.PLACE_WORKER, messageStatus);
+    public PlaceWorkerRequest(String messageSender, MessageStatus messageStatus, Worker workerToPlace, Position positionToPlaceWorker) {
+        super(messageSender, Dispatcher.SETUP_GAME, MessageContent.PLACE_WORKER, messageStatus);
 
         this.workerToPlace = workerToPlace;
         this.positionToPlaceWorker = positionToPlaceWorker;

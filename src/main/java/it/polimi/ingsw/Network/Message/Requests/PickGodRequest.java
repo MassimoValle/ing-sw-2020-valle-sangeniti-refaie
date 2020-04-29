@@ -7,11 +7,11 @@ import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 
 public class PickGodRequest extends Request {
 
-    private God pickedGod;
+    private final God pickedGod;
 
-    public PickGodRequest(String messageSender, God pickedGod) {
+    public PickGodRequest(String messageSender, MessageStatus messageStatus, God pickedGod) {
 
-        super(messageSender, Dispatcher.SETUP_GAME, MessageContent.PICK_GOD, MessageStatus.OK);
+        super(messageSender, Dispatcher.SETUP_GAME, MessageContent.PICK_GOD, messageStatus);
         this.pickedGod = pickedGod;
 
     }

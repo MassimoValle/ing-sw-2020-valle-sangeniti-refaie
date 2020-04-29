@@ -1,14 +1,21 @@
 package it.polimi.ingsw.Network.Client;
 
 import it.polimi.ingsw.Model.God.Deck;
+import it.polimi.ingsw.Model.God.God;
+import it.polimi.ingsw.Model.Player.Position;
+import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.*;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
 import it.polimi.ingsw.Network.Message.Enum.MessageContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Network.Message.Requests.ChoseGodsRequest;
+import it.polimi.ingsw.Network.Message.Requests.PickGodRequest;
+import it.polimi.ingsw.Network.Message.Requests.PlaceWorkerRequest;
 import it.polimi.ingsw.Network.Message.Requests.Request;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ClientManager implements ClientManagerListener{
@@ -20,8 +27,12 @@ public class ClientManager implements ClientManagerListener{
         return username;
     }
 
-    private Scanner consoleIn;
-    private PrintStream consoleOut;
+    private final Scanner consoleIn;
+    private final PrintStream consoleOut;
+
+
+
+
 
     private ClientManager(){
 
@@ -38,49 +49,38 @@ public class ClientManager implements ClientManagerListener{
         return instance;
     }
 
+
+
+
+
     public void handleMessageFromServer(Message message){
+
+        printMessageFromServer((Response) message);
 
         if(message.getMessageContent() != null) {
             switch (message.getMessageContent()){
-                case FIRST_CONNECTION:
-                    break;
-                case CONNECTION_RESPONSE:
-                    break;
+
                 case LOGIN:
-                    printMessageFromServer((Response) message);
-                    if(message.getMessageStatus() == MessageStatus.ERROR){
-                        login();
-                    }
+                    if(message.getMessageStatus() == MessageStatus.OK) return;
+                    else login();
                     break;
+
                 case NUM_PLAYER:
-
-                    consoleOut.print("lobby size [MIN: 2, MAX: 3]: ");
-                    String input;
-                    do{
-                        input = consoleIn.nextLine();
-                    }while (!(input.equals("2") || input.equals("3")));
-
-                    try {
-                        Client.sendMessage(
-                                new Request(username, Dispatcher.SETUP_GAME, MessageContent.NUM_PLAYER, MessageStatus.OK, input)
-                        );
-                    }catch (IOException e){
-                        e.printStackTrace();
-                    }
-
+                    chooseNumPlayers();
                     break;
 
                 case GODS_CHOSE:
-                    // choseGod
-                    printMessageFromServer((Response) message);
+                    //chooseGodFromDeck((Response) message);
                     break;
 
                 case PICK_GOD:
-                    // printo la lista di gods
-                    // scelgo che gods voglio
-                    // invio gli indici dei god scelti al server
-                    chooseGods((Response) message);
+                    pickGod((Response) message);
                     break;
+
+                case PLACE_WORKER:
+                    placeWorker((Response) message);
+                    break;
+
                 case YOUR_TURN:
                     break;
                 case WORKER_CHOSEN:
@@ -99,17 +99,11 @@ public class ClientManager implements ClientManagerListener{
 
     }
 
-    private void printMessageFromServer(Response message){
-        String out = "#### [SERVER] ####\n";
-        out += "Message content: " + message.getMessageContent() + "\n";
-        out += "Message status: " + message.getMessageStatus() + "\n";
-        out += "Message value: " + message.getGameManagerSays() + "\n";
-        out += "________________\n";
 
-        consoleOut.println(out);
-    }
 
-    //Ask the user to insert a username
+
+
+    // functions
     public String askUsername() {
         consoleOut.print("Enter your username: ");
 
@@ -129,7 +123,6 @@ public class ClientManager implements ClientManagerListener{
         return username;
 
     }
-
     public void login(){
             String username = askUsername();
 
@@ -143,28 +136,59 @@ public class ClientManager implements ClientManagerListener{
 
     }
 
-    private void chooseGods(Response message)
-    {
-        Deck deck = null; // = message.getGameManagerSays();
+    private void chooseNumPlayers(){
+        String input;
+        do{
+            consoleOut.print("lobby size [MIN: 2, MAX: 3]: ");
+            input = consoleIn.nextLine();
+        }while (!(input.equals("2") || input.equals("3")));
 
-        // print deck
-
-        String input = consoleIn.nextLine();
-
-
-        /*
-        String[] gods = input.split(" ");
-        ArrayList<God> godChosen = new ArrayList<>();
-
-        for (int i = 0; i < gods.length; i++) {
-            godChosen.add(deck.getGod(Integer.parseInt(gods[i])));
+        try {
+            Client.sendMessage(
+                    new Request(username, Dispatcher.SETUP_GAME, MessageContent.NUM_PLAYER, MessageStatus.OK, input)
+            );
+        }catch (IOException e){
+            e.printStackTrace();
         }
-        */
+    }
+
+    private void chooseGodFromDeck(Response response){
+        Deck deck = null;// = (Deck) response.getObject();
+        int howMany = Integer.parseInt(response.getGameManagerSays());
+
+        consoleOut.println(deck.toString());
+        ArrayList<God> godChoosen = new ArrayList<>();
+
+        for (int i = 0; i < howMany; i++) {
+            int index = Integer.parseInt(consoleIn.nextLine());
+            godChoosen.add(deck.getGod(index));
+        }
+
+        try {
+            Client.sendMessage(
+                    new ChoseGodsRequest(username, MessageStatus.OK, godChoosen)
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void pickGod(Response message) {
+
+        ArrayList<God> hand = null; // = message.getObject();
+
+        consoleOut.println(hand.toString());
+
+        int index = Integer.parseInt(consoleIn.nextLine());
+
+        God picked = hand.get(index);
 
 
         try {
             Client.sendMessage(
-                    new Request(username, Dispatcher.SETUP_GAME, MessageContent.PICK_GOD, MessageStatus.OK, input)
+                    new PickGodRequest(username, MessageStatus.OK, picked)
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -174,15 +198,23 @@ public class ClientManager implements ClientManagerListener{
 
     }
 
-    public void debug() {
-        // #DEBUG
+    private void placeWorker(Response message) {
+        consoleOut.print("row: ");
+        int row = Integer.parseInt(consoleIn.nextLine());
+        consoleOut.println();
+
+        consoleOut.print("col: ");
+        int col = Integer.parseInt(consoleIn.nextLine());
+        consoleOut.println();
+
+        Worker w = new Worker(1);
+        Position p = new Position(row, col);
+
         try {
-            consoleOut.print("DEBUG: ");
-            String inputLine = consoleIn.nextLine();
             Client.sendMessage(
-                    new Request(getUsername(), Dispatcher.SETUP_GAME, MessageContent.CHECK, MessageStatus.OK, inputLine)
+                    new PlaceWorkerRequest(username, MessageStatus.OK, w, p)
             );
-        } catch (IOException e) {
+        }catch (IOException e){
             e.printStackTrace();
         }
 
@@ -191,10 +223,22 @@ public class ClientManager implements ClientManagerListener{
 
 
 
-    public void update(Response response) {
 
-        //UPDATE THE VIEW
+    @Override
+    public void update(Response response) { }
 
+
+
+
+
+    // test
+    private void printMessageFromServer(Response message){
+        String out = "#### [SERVER] ####\n";
+        out += "Message content: " + message.getMessageContent() + "\n";
+        out += "Message status: " + message.getMessageStatus() + "\n";
+        out += "Message value: " + message.getGameManagerSays() + "\n";
+        out += "________________\n";
+
+        consoleOut.println(out);
     }
-
 }

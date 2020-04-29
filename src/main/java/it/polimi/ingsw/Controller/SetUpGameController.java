@@ -92,7 +92,7 @@ public class SetUpGameController {
         switch (request.getMessageContent()) {
 
             case GODS_CHOSE -> handleGodsChosen((ChoseGodsRequest) request);
-            case PICK_GOD -> handleGodAssign((AssignGodRequest) request);
+            case PICK_GOD -> handleGodAssignment((AssignGodRequest) request);
             case PLACE_WORKER -> handlePlaceWorkerAction((PlaceWorkerRequest) request);
 
         }
@@ -112,7 +112,7 @@ public class SetUpGameController {
 
     }
 
-    private void handleGodAssign(AssignGodRequest request) {
+    private void handleGodAssignment(AssignGodRequest request) {
 
         SuperMegaController.gameState = PossibleGameState.ASSIGNING_GOD;
         //turnManager.updateTurnState(PossibleGameState.ASSIGNING_GOD);
