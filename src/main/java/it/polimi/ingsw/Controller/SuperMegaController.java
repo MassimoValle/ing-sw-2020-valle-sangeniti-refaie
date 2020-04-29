@@ -18,15 +18,23 @@ public class SuperMegaController {
 
     private static Game game;
 
+    public static PossibleGameState gameState;
+
+
+
+
+
     public SuperMegaController(Game game, Player activePlayer){
 
-        this.game = game;
+        SuperMegaController.game = game;
 
         setUpGameController = new SetUpGameController(game, activePlayer);
         turnManager = new TurnManager(game.getPlayers());
         actionManager = new ActionManager(game, turnManager);
 
     }
+
+
 
 
 
@@ -38,6 +46,8 @@ public class SuperMegaController {
         }
 
     }
+
+
 
 
 

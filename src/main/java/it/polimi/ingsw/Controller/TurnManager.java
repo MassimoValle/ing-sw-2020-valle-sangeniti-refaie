@@ -50,7 +50,7 @@ public class TurnManager {
 
 
 
-    // setter
+    // getter
 
     /**
      * Gets active player.
@@ -70,11 +70,11 @@ public class TurnManager {
         return activeWorker;
     }
 
-    /**
-     * Sets gods in game, it is used because when the turn manager is instantiated this info is still not available
-     *
-     * @param chosenGod the chosen god by the {@link GameManager#godLikePlayer}
-     */
+
+
+
+    // setter
+
     public void setGodsInGame(ArrayList<God> chosenGod) {
         this.inGameGods = chosenGod;
     }
@@ -96,6 +96,11 @@ public class TurnManager {
     public void setActiveWorker(Worker Worker) {
         this.activeWorker = Worker;
     }
+
+
+
+
+    // functions
 
     /**
      * It updates the current {@link #playerState}
