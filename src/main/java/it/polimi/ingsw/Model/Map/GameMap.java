@@ -1,7 +1,6 @@
 package it.polimi.ingsw.Model.Map;
 
 
-import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 
@@ -81,7 +80,8 @@ public class GameMap {
        ArrayList<Position> reachablePlaces = new ArrayList<>();
 
        for(Position pos : adjacentPlaces) {
-           if(getDifferenceInAltitude(from, pos) >= -1 && !( getBoard()[pos.getRow()][pos.getColumn()].hasWorkerOn() ) ) {
+           if(getDifferenceInAltitude(from, pos) >= -1 && !(getBoard()[pos.getRow()][pos.getColumn()].hasWorkerOn()) &&
+                   !getBoard()[pos.getRow()][pos.getColumn()].hasDome() ) {
                reachablePlaces.add(pos);
            }
        }
@@ -102,7 +102,8 @@ public class GameMap {
         ArrayList<Position> placesWhereYouCanBuildOn = new ArrayList<>();
 
         for (Position pos : whereToMoveAdjacentPlaces) {
-            if (getSquareHeight(pos) < 4 && getSquareHeight(pos) >= 0 && !(getBoard()[pos.getRow()][pos.getColumn()].hasWorkerOn())) {
+            if (getSquareHeight(pos) < 4 && getSquareHeight(pos) >= 0 && !(getBoard()[pos.getRow()][pos.getColumn()].hasWorkerOn()) &&
+                    !getBoard()[pos.getRow()][pos.getColumn()].hasDome()) {
                 placesWhereYouCanBuildOn.add(pos);
             }
         }
@@ -116,7 +117,7 @@ public class GameMap {
      *
      * @return boolean
      */
-    private boolean isPositionValid(Position position){
+    public boolean isPositionValid(Position position){
        if (isPositionOnMapReal(position) && isPositionFree(position))
            return true;
        return false;
@@ -172,7 +173,7 @@ public class GameMap {
      *
      * @return boolean
      */
-    private boolean isPositionOnMapReal(Position position){
+    public boolean isPositionOnMapReal(Position position){
         if ( position.getColumn() < 0 || position.getColumn() >= COLUMNS ||
                 position.getRow() < 0 || position.getRow() >= ROWS)
             return false;
@@ -186,19 +187,10 @@ public class GameMap {
      *
      * @return boolean
      */
-    private boolean isPositionFree(Position position){
+    public boolean isPositionFree(Position position){
         if (board[position.getRow()][position.getColumn()].hasWorkerOn())
             return false;
         return true;
-    }
-
-
-
-    /// #### test ####
-
-    //SHOULD NEVER BE USED -- ONLY TESTING
-    public void _setSquareHeight(Position position, int lvl) {
-        //board[position.getRow()][position.getColumn()].setHeight(lvl);
     }
 
 }

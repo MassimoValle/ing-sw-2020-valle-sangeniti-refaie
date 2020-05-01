@@ -21,9 +21,6 @@ public class Worker {
     //ArayList contenente le posizioni in cui il worker selezionato può muoversi
     private List<Position> adjacentPosition;
 
-    public void hasMoved() { };
-    public void hasBuilt() { };
-
 
     public Worker(int workersNumber) {
         this.height = 0;
@@ -55,9 +52,17 @@ public class Worker {
         this.selected = selected;
     }
 
+    public void setPlaced(boolean placed) {
+        this.placed = placed;
+    }
+
+    public boolean isPlaced() {
+        return placed;
+    }
+
+
     /**
-     * Sets position check if the {@link Position newPosition} is free and if so it update the {@link Worker#workerPosition}
-     * ps: branch else should never be reached because the {@link Position newPosition} will not be available to the player to chose
+     * Update the {@link Worker#workerPosition}
      *
      * @param position will be the new Worker Position
      */
@@ -70,17 +75,6 @@ public class Worker {
     @Override
     public String toString() {
         return "Worker " + workersNumber + "si trova in " + workerPosition;
-    }
-
-    /**
-     * Set {@link Worker#placed} true.
-     */
-    public void setPlaced(boolean placed) {
-        this.placed = placed;
-    }
-
-    public boolean isPlaced() {
-        return placed;
     }
 
 }

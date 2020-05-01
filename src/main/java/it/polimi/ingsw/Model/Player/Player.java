@@ -12,6 +12,8 @@ public class Player {
     private List<Worker> playerWorkers;         /** List of workers assigned to the player */
     private int numWorker = 2;                  /** Number of workers per player */
 
+    //private LastTurnAction[] lastTurnActions;
+
 
     /**
      *
@@ -24,7 +26,7 @@ public class Player {
     public Player(String playerName) {
         this.playerName = playerName;
         this.playerWorkers = new ArrayList<>();
-        for (int i = 0; i < numWorker; i++) { this.playerWorkers.add(new Worker(i + 1)); }   // 2 workers
+        for (int i = 0; i < numWorker; i++) { this.playerWorkers.add(new Worker(i)); }   // 2 workers
     }
 
     /**
@@ -36,6 +38,12 @@ public class Player {
         return this.playerGod;
     }
 
+
+    /**
+     * Set the {@link God} passed as parameter to {@link Player this}
+     *
+     * @param selectedGod the selected god
+     */
     public void setPlayerGod(God selectedGod) {
         this.playerGod = selectedGod;
     }

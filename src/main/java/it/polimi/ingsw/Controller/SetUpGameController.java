@@ -35,10 +35,11 @@ public class SetUpGameController {
     }
 
 
-
-
-
-    // function
+    /**
+     * Notify the godlike {@link Player} that he has to chose the {@link java.util.ArrayList<God> } he wants to be part of the game
+     *
+     * @param godLikePlayer the god like {@link Player}
+     */
     public void notifyTheGodLikePlayer(Player godLikePlayer) {
 
         //scegli un player a caso
@@ -53,6 +54,13 @@ public class SetUpGameController {
 
     }
 
+
+    /**
+     * Assign {@link God} to {@link Player}
+     *
+     * @param player the player
+     * @param god    the god
+     */
     public void assignGodToPlayer(Player player, God god) {
         player.setPlayerGod(god);
         god.setAssigned(true);
@@ -63,6 +71,11 @@ public class SetUpGameController {
         return username.equals(activePlayer.getPlayerName());
     }
 
+    /**
+     * It updates the player you expect an interaction from
+     *
+     * @return the {@link Player} who owns the turn
+     */
     public Player nextPlayer() {
         currentPlayer++;
         return gameInstance.getPlayers().get((currentPlayer % gameInstance.getPlayers().size() +1));
@@ -78,10 +91,11 @@ public class SetUpGameController {
     }
 
 
-
-
-
-    // handler
+    /**
+     * Handles the {@link Request} sent by the client
+     *
+     * @param request the request
+     */
     public void handleMessage(Request request) {
 
         if(!checkTurnOwnership(request.getMessageSender())) {
@@ -98,6 +112,12 @@ public class SetUpGameController {
         }
     }
 
+
+    /**
+     * It handles the {@link ChoseGodsRequest}
+     *
+     * @param request the request sent by the client
+     */
     private void handleGodsChosen(ChoseGodsRequest request) {
 
         SuperMegaController.gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
@@ -112,6 +132,11 @@ public class SetUpGameController {
 
     }
 
+    /**
+     * It handles the {@link PickGodRequest}
+     *
+     * @param request the request sent by the client who own
+     */
     private void handleGodAssignment(AssignGodRequest request) {
 
         SuperMegaController.gameState = PossibleGameState.ASSIGNING_GOD;
@@ -134,6 +159,11 @@ public class SetUpGameController {
         }
     }
 
+    /**
+     * It handles the {@link PlaceWorkerRequest}
+     *
+     * @param request the request sent by the client
+     */
     private void handlePlaceWorkerAction(PlaceWorkerRequest request) {
 
         SuperMegaController.gameState = PossibleGameState.FILLING_BOARD;

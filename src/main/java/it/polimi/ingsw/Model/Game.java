@@ -61,9 +61,11 @@ public class Game extends Observable<Game> implements Cloneable{
     }
 
 
-
-
-    // function
+    /**
+     * Add {@link Player} to the {@link Game}
+     *
+     * @param player the player we want to add
+     */
     public void addPlayer(Player player) {
         players.add(player);
     }
@@ -85,19 +87,13 @@ public class Game extends Observable<Game> implements Cloneable{
         return result;
     }
 
+    /**
+     * It fills the {@link Game#chosenGodsFromDeck} with the {@link ArrayList<God>} passed as parameter
+     *
+     * @param godsChosen the gods chosen to be part of this game
+     */
     public void setChosenGodsFromDeck(ArrayList<God> godsChosen) {
         chosenGodsFromDeck.addAll(godsChosen);
-    }
-
-
-    /**
-     * Set the {@link God god} picked up by the {@link Player player}
-     *
-     * @param player player
-     * @param pickedGod    god
-     */
-    public void setGodToPlayer(Player player, God pickedGod) {
-        player.setPlayerGod(pickedGod);
     }
 
 
@@ -133,13 +129,24 @@ public class Game extends Observable<Game> implements Cloneable{
     }
 
 
+    /**
+     * It put the {@link Response} to the relative {@link Player} in the {@link Game#changes} HashMap
+     *
+     * @param player the player to whom the answer is intended
+     * @param response the response that must be sent to the player
+     */
     public void putInChanges(Player player, Response response) {
-
         changes.put(player, response);
         notify(this);
-        
     }
 
+
+    /**
+     * It notify the {@link Player} to whom the {@link Message} is intended
+     *
+     * @param player the player to whom the answer is intended
+     * @return the message that must be sent to the player
+     */
     public Message notifyPlayer(Player player) {
         Message x = changes.get(player);
         System.out.println("message taken by " + player.getPlayerName());
