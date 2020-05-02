@@ -7,6 +7,7 @@ import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.*;
 
 public class SetUpGameController {
@@ -64,8 +65,9 @@ public class SetUpGameController {
     }
 
     public Player nextPlayer() {
+        Player next = gameInstance.getPlayers().get((currentPlayer % gameInstance.getPlayers().size() +1));
         currentPlayer++;
-        return gameInstance.getPlayers().get((currentPlayer % gameInstance.getPlayers().size() +1));
+        return next;
     }
 
 
@@ -94,6 +96,7 @@ public class SetUpGameController {
             case GODS_CHOSE -> handleGodsChosen((ChoseGodsRequest) request);
             case PICK_GOD -> handleGodAssignment((AssignGodRequest) request);
             case PLACE_WORKER -> handlePlaceWorkerAction((PlaceWorkerRequest) request);
+            default -> SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "Something went wrong!");
 
         }
     }
