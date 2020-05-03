@@ -18,6 +18,13 @@ public class Request extends Message {
         this.messageDispatcher = messageDispatcher;
     }
 
+    public Request(String messageSender, Dispatcher messageDispatcher, MessageContent messageContent) {
+        super(messageSender, messageContent);
+        this.messageDispatcher = messageDispatcher;
+    }
+
+
+
     public Request(String messageSender, Dispatcher messageDispatcher, MessageContent messageContent, MessageStatus messageStatus, String clientManagerSays) {
         super(messageSender, messageContent, messageStatus);
         this.messageDispatcher = messageDispatcher;

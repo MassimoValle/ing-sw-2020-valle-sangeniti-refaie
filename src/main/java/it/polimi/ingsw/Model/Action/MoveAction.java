@@ -49,6 +49,5 @@ public class MoveAction implements Action {
         newPositionSquare.setWorkerOn(playerWorker);
 
 
-
     }
 }

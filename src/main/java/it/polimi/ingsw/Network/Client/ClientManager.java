@@ -13,6 +13,7 @@ import it.polimi.ingsw.Network.Message.Requests.PickGodRequest;
 import it.polimi.ingsw.Network.Message.Requests.PlaceWorkerRequest;
 import it.polimi.ingsw.Network.Message.Requests.Request;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -166,7 +167,7 @@ public class ClientManager implements ClientManagerListener{
 
         try {
             Client.sendMessage(
-                    new ChoseGodsRequest(username, MessageStatus.OK, godChoosen)
+                    new ChoseGodsRequest(username, godChoosen)
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -207,7 +208,7 @@ public class ClientManager implements ClientManagerListener{
         int col = Integer.parseInt(consoleIn.nextLine());
         consoleOut.println();
 
-        Worker w = new Worker(1);
+        Worker w = new Worker(1, Color.BLUE);
         Position p = new Position(row, col);
 
         try {

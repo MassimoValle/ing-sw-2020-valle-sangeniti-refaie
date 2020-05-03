@@ -33,6 +33,12 @@ public class GameMap {
         return this.board;
     }
 
+    /**
+     * It gets the {@link Square} defined by that {@link Position}
+     *
+     * @param pos the square position
+     * @return the square
+     */
     public Square getSquare(Position pos) {
        return getBoard()[pos.getRow()][pos.getColumn()];
     }

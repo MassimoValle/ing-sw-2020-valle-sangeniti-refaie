@@ -2,6 +2,7 @@ package it.polimi.ingsw.Model.Player;
 
 import it.polimi.ingsw.Model.Game;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ public class Worker {
     
     //Numero del worker
     private int workersNumber;
+    private Color color;
 
     private boolean isBlocked;
     private int height;
@@ -22,13 +24,14 @@ public class Worker {
     private List<Position> adjacentPosition;
 
 
-    public Worker(int workersNumber) {
+    public Worker(int workersNumber, Color color) {
         this.height = 0;
         this.workerPosition = null;
         this.workersNumber = workersNumber;
         this.isBlocked = false;
         this.placed = false;
         this.selected = false;
+        this.color = color;
     }
 
     public Position getWorkerPosition() {
@@ -37,6 +40,10 @@ public class Worker {
 
     public int getWorkersNumber() {
         return workersNumber;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     private Worker placeNewWorker(Position position) {

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Controller;
 
-import it.polimi.ingsw.Model.Action.*;
+import it.polimi.ingsw.Model.Action.Action;
+import it.polimi.ingsw.Model.Action.PlaceWorkerAction;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Map.Square;
@@ -9,6 +10,14 @@ import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Network.Message.Enum.MessageContent;
 import it.polimi.ingsw.Network.Message.Requests.*;
 
+import java.util.ArrayList;
+
+
+/**
+ *
+ * This controller manages the set-up phases of the game, before the actual game starts.
+ *
+ */
 public class SetUpGameController {
 
     private final Game gameInstance;
@@ -67,7 +76,14 @@ public class SetUpGameController {
         SuperMegaController.gameState = PossibleGameState.ASSIGNING_GOD;
     }
 
-    private boolean checkTurnOwnership(String username) {
+
+    /**
+     * Check if the player is the turn owner
+     *
+     * @param username the player username
+     * @return true if the player is the turn owner, false otherwise
+     */
+    private boolean isYourTurn(String username) {
         return username.equals(activePlayer.getPlayerName());
     }
 
@@ -99,18 +115,39 @@ public class SetUpGameController {
      */
     public void handleMessage(Request request) {
 
-        if(!checkTurnOwnership(request.getMessageSender())) {
-            SuperMegaController.buildNegativeResponse(getPlayerByName(request.getMessageSender()), request.getMessageContent(), "Not ur turn");
+        if(!isYourTurn(request.getMessageSender())) {
+            SuperMegaController.buildNegativeResponse(getPlayerByName(request.getMessageSender()), request.getMessageContent(), "It's not your turn!");
             return;
         }
 
         switch (request.getMessageContent()) {
+            case GODS_CHOSE:
 
-            case GODS_CHOSE -> handleGodsChosen((ChoseGodsRequest) request);
-            case PICK_GOD -> handleGodAssignment((AssignGodRequest) request);
-            case PLACE_WORKER -> handlePlaceWorkerAction((PlaceWorkerRequest) request);
+                if (SuperMegaController.gameState != PossibleGameState.GODLIKE_PLAYER_MOMENT) {
+                    SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot perform this action");
+                } else {
+                    handleGodsChosen((ChoseGodsRequest) request);
+                }
+                break;
+            case PICK_GOD:
 
-            default -> SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "Something went wrong!");
+                if (SuperMegaController.gameState != PossibleGameState.ASSIGNING_GOD) {
+                    SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot perform this action");
+                } else {
+                    handleGodAssignment((AssignGodRequest) request);
+                }
+                break;
+            case PLACE_WORKER:
+
+                if (SuperMegaController.gameState != PossibleGameState.FILLING_BOARD) {
+                    SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot perform this action");
+                } else {
+                    handleGodAssignment((AssignGodRequest) request);
+                }
+                break;
+            default:
+                SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "Something went wrong!");
+                break;
         }
     }
 
@@ -122,16 +159,17 @@ public class SetUpGameController {
      */
     private void handleGodsChosen(ChoseGodsRequest request) {
 
-        SuperMegaController.gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
+        ArrayList<God> godsChosen = request.getChosenGods();
 
-        gameInstance.setChosenGodsFromDeck(request.getChosenGod());
-        SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.GODS_CHOSE, "Gods selezionati");
+        gameInstance.setChosenGodsFromDeck(godsChosen);
+        SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.GODS_CHOSE, "Gods selected by the GodLike Player");
 
+        //Turno del giocatore successivo
         activePlayer = nextPlayer();
-
-        // response: scegli un god
-        SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.PICK_GOD, "Piglia un god");
-
+        //Game state update
+        SuperMegaController.gameState = PossibleGameState.ASSIGNING_GOD;
+        //Notify the next player
+        SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.PICK_GOD, "Let's choose a god!");
     }
 
     /**
@@ -141,7 +179,6 @@ public class SetUpGameController {
      */
     private void handleGodAssignment(AssignGodRequest request) {
 
-        SuperMegaController.gameState = PossibleGameState.ASSIGNING_GOD;
         //turnManager.updateTurnState(PossibleGameState.ASSIGNING_GOD);
 
         //Player p = getPlayerByName(request.getMessageSender());
@@ -206,6 +243,7 @@ public class SetUpGameController {
 
 
 
+
     // handler con check e javadoc
 
     /**
@@ -216,8 +254,8 @@ public class SetUpGameController {
      */
     /*
     Response handleGodsChosen(ChoseGodsRequest request) {
-        gameInstance.setChosenGodsFromDeck(request.getChosenGod());
-        turnManager.setGodsInGame(request.getChosenGod());
+        gameInstance.setChosenGodsFromDeck(request.getChosenGods());
+        turnManager.setGodsInGame(request.getChosenGods());
 
 
         gameManager.updateGameState(PossibleGameState.ASSIGNING_GOD);

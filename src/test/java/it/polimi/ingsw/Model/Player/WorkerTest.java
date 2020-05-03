@@ -5,6 +5,8 @@ import it.polimi.ingsw.Model.Map.GameMap;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.*;
+
 import static org.junit.Assert.*;
 
 public class WorkerTest {
@@ -20,13 +22,13 @@ public class WorkerTest {
     @Test
     public void checkWorkersPositionAndNumber() {
 
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(0, Color.RED);
         assertEquals(0, worker1.getWorkersNumber());
 
         worker1.setPosition(new Position(0,0));
         assertEquals(new Position(0,0), worker1.getWorkerPosition());
 
-        Worker worker2 = new Worker(1);
+        Worker worker2 = new Worker(1, Color.RED);
         assertEquals(1, worker2.getWorkersNumber());
 
         worker2.setPosition(new Position(0,1));
@@ -35,8 +37,8 @@ public class WorkerTest {
 
     @Test
     public void checkIfSelectedAndPlaced() {
-        Worker worker1 = new Worker(0);
-        Worker worker2 = new Worker(0);
+        Worker worker1 = new Worker(0, Color.RED);
+        Worker worker2 = new Worker(0, Color.RED);
 
         assertFalse(worker1.isPlaced());
         assertFalse(worker1.isSelected());

@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.theories.suppliers.TestedOn;
 
+import java.awt.*;
+
 import static org.junit.Assert.*;
 
 public class SquareTest {
@@ -27,7 +29,7 @@ public class SquareTest {
     public void getWorkerOnSquare(){
         assertNull(square.getWorkerOnSquare());
 
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(0, Color.RED);
         square.setWorkerOn (worker1);
         assertEquals(worker1, square.getWorkerOnSquare());
 
@@ -38,14 +40,14 @@ public class SquareTest {
     @Test
     public void hasWorkerOnSquare(){
         assertFalse(square.hasWorkerOn());
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(0, Color.RED);
         square.setWorkerOn (worker1);
         assertTrue(square.hasWorkerOn());
     }
 
     @Test
     public void checkIfBuilt() throws DomePresentException {
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(0, Color.RED);
 
         assertEquals(0, square.getHeight());
         assertFalse(square.hasBeenBuiltOver());

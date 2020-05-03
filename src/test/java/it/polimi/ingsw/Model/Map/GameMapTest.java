@@ -88,7 +88,7 @@ public class GameMapTest {
     @Test
     public void workerOnSquareTest() {
         Position pos1 = new Position(0,0);
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(0, Color.RED);
 
         assertNull(gameMap.getWorkerOnSquare(pos1));
 
@@ -98,7 +98,7 @@ public class GameMapTest {
 
     @Test
     public void workerIsStockTest() throws DomePresentException {
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(0, Color.RED);
 
         worker1.setPosition(new Position(0,0));
         worker1.setPlaced(true);
@@ -113,7 +113,7 @@ public class GameMapTest {
         assertTrue(gameMap.isWorkerStuck(worker1));
 
         //Now let's put another worker in pos(2,0)
-        Worker worker2 = new Worker(0);
+        Worker worker2 = new Worker(0, Color.RED);
 
         worker2.setPosition(new Position(2,0));
         worker2.setPlaced(true);
@@ -140,7 +140,7 @@ public class GameMapTest {
         //The pos2 (0,0) has to be free
         assertTrue(gameMap.isPositionFree(pos2));
 
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(0, Color.RED);
         worker1.setPosition(pos2);
         worker1.setPlaced(true);
         gameMap.getSquare(pos2).setWorkerOn(worker1);

@@ -12,6 +12,7 @@ import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Response;
 import it.polimi.ingsw.View.Observable;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +29,15 @@ public class Game extends Observable<Game> implements Cloneable{
     private List<God> chosenGodsFromDeck;
     private GameMap gameMap;
 
+    private List<Color> colorAvailable = new ArrayList<Color>(){{
+        add(Color.RED);
+        add(Color.BLUE);
+        add(Color.GREEN);
+    }};
+
     private final HashMap<Player, Message> changes = new HashMap<>();
+    private HashMap<Player, Color> playerColor = new HashMap<>();
+
 
 
     public Game() {
@@ -67,7 +76,15 @@ public class Game extends Observable<Game> implements Cloneable{
      * @param player the player we want to add
      */
     public void addPlayer(Player player) {
+        //Aggiungi il player alla partita
         players.add(player);
+
+        //Aggiorni l'hasmap
+        playerColor.put(player, colorAvailable.get(0));
+        colorAvailable.remove(0);
+
+        player.setColor(playerColor.get(player));
+
     }
 
     /**

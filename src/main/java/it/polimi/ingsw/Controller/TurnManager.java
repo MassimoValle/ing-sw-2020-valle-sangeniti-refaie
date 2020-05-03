@@ -1,20 +1,9 @@
 package it.polimi.ingsw.Controller;
 
-import it.polimi.ingsw.Model.Action.*;
-import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.God;
-import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.PossiblePlayerState;
-import it.polimi.ingsw.Model.God.Power;
-import it.polimi.ingsw.Model.Player.Position;
-import it.polimi.ingsw.Model.Player.UserPlayerState;
 import it.polimi.ingsw.Model.Player.Worker;
-import it.polimi.ingsw.Network.Message.*;
-import it.polimi.ingsw.Network.Message.Requests.BuildRequest;
-import it.polimi.ingsw.Network.Message.Requests.EndRequest;
-import it.polimi.ingsw.Network.Message.Requests.MoveRequest;
-import it.polimi.ingsw.Network.Message.Requests.SelectWorkerRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +21,9 @@ public class TurnManager {
     private Worker activeWorker;
     private final List<Player> inGamePlayers;
     private List<God> inGameGods;
+
+    private int moveTokens;
+    private int buildTokens;
 
     private PossiblePlayerState playerState;
 
@@ -138,14 +130,19 @@ public class TurnManager {
                 break;
 
             case WORKER_SELECTED:
+                moveTokens--;
                 updatePlayerState(PossiblePlayerState.WORKER_SELECTED);
                 break;
 
             case WORKER_MOVED:
-                updatePlayerState(PossiblePlayerState.WORKER_MOVED);
+                moveTokens--;
+                if (moveTokens == 0) {
+                    updatePlayerState(PossiblePlayerState.WORKER_MOVED);
+                }
                 break;
 
             case BUILT:
+                buildTokens--;
                 updatePlayerState(PossiblePlayerState.BUILT);
                 giveTurnOwnership();
         }
@@ -197,6 +194,20 @@ public class TurnManager {
         this.lastActiveWorker = activeWorker;
         this.activePlayer = player;
         this.activeWorker = null;
+        this.moveTokens = 1;
+        this.buildTokens = 1;
+    }
+
+    public int getMoveTokens() {
+        return moveTokens;
+    }
+
+    public void increaseMoveTokens() {
+        moveTokens++;
+    }
+
+    public void decreaseMoveTokens() {
+        moveTokens++;
     }
 
 
@@ -217,5 +228,12 @@ public class TurnManager {
         userPlayerState = UserPlayerState.STARTING_TURN;
 
     }*/
+
+
+
+
+
+
+
 
 }

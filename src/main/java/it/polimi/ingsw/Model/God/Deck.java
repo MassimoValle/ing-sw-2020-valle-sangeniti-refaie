@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Model.God;
 
-import it.polimi.ingsw.Model.Game;
+import it.polimi.ingsw.Model.God.GodsPower.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -59,46 +59,46 @@ public class Deck extends ArrayList<God>{
 
         switch (godName) {
             case "Apollo" :
-                return new God(godName, godDescription, new Power.ApolloPower(godPowerType, godPowerDescription));
+                return new God(godName, godDescription, new ApolloPower(godPowerType, godPowerDescription));
 
             case "Artemis" :
-                return new God(godName, godDescription, new Power.ArtemisPower(godPowerType, godPowerDescription));
+                return new God(godName, godDescription, new ArtemisPower(godPowerType, godPowerDescription));
 
             case "Athena" :
-                return new God(godName, godDescription, new Power.AthenaPower(godPowerType, godPowerDescription));
+                return new God(godName, godDescription, new AthenaPower(godPowerType, godPowerDescription));
 
             case "Atlas" :
-                return new God(godName, godDescription, new Power.AtlasPower(godPowerType, godPowerDescription));
+                return new God(godName, godDescription, new AtlasPower(godPowerType, godPowerDescription));
 
             case "Demeter" :
-                return new God(godName, godDescription, new Power.DemeterPower(godPowerType, godPowerDescription));
+                return new God(godName, godDescription, new DemeterPower(godPowerType, godPowerDescription));
 
             case "Hephaestus" :
-                return new God(godName, godDescription, new Power.HephaestusPower(godPowerType, godPowerDescription));
+                return new God(godName, godDescription, new HephaestusPower(godPowerType, godPowerDescription));
 
             case "Minotaur" :
-                return new God(godName, godDescription, new Power.MinotaurPower(godPowerType, godPowerDescription));
+                return new God(godName, godDescription, new MinotaurPower(godPowerType, godPowerDescription));
 
             case "Pan" :
-                return new God(godName, godDescription, new Power.PanPower(godPowerType, godPowerDescription));
+                return new God(godName, godDescription, new PanPower(godPowerType, godPowerDescription));
 
             case "Prometheus" :
-                return new God(godName, godDescription, new Power.PrometheusPower(godPowerType, godPowerDescription));
+                return new God(godName, godDescription, new PrometheusPower(godPowerType, godPowerDescription));
 
             case "Chronus" :
-                return new God(godName, godDescription, new Power.ChronusPower(godPowerType, godPowerDescription));
+                return new God(godName, godDescription, new ChronusPower(godPowerType, godPowerDescription));
 
             case "Hera" :
-                return new God(godName, godDescription, new Power.HeraPower(godPowerType, godPowerDescription));
+                return new God(godName, godDescription, new HeraPower(godPowerType, godPowerDescription));
 
             case "Hestia" :
-                return new God(godName, godDescription, new Power.HestiaPower(godPowerType, godPowerDescription));
+                return new God(godName, godDescription, new HestiaPower(godPowerType, godPowerDescription));
 
             case "Poseidon" :
-                return new God(godName, godDescription, new Power.PoseidonPower(godPowerType, godPowerDescription));
+                return new God(godName, godDescription, new PoseidonPower(godPowerType, godPowerDescription));
 
             case "Triton" :
-                return new God(godName, godDescription, new Power.TritonPower(godPowerType, godPowerDescription));
+                return new God(godName, godDescription, new TritonPower(godPowerType, godPowerDescription));
 
         }
         return null;

@@ -14,7 +14,7 @@ public class SuperMegaController {
     private final TurnManager turnManager;
     private final ActionManager actionManager;
 
-    private static Game game;
+    private static Game gameInstance;
 
     public static PossibleGameState gameState;
 
@@ -22,18 +22,20 @@ public class SuperMegaController {
 
 
 
-    public SuperMegaController(Game game, Player activePlayer){
+    public SuperMegaController(Game gameInstance, Player activePlayer){
 
-        SuperMegaController.game = game;
+        SuperMegaController.gameInstance = gameInstance;
 
-        setUpGameController = new SetUpGameController(game, activePlayer);
-        turnManager = new TurnManager(game.getPlayers());
-        actionManager = new ActionManager(game, turnManager);
+        setUpGameController = new SetUpGameController(gameInstance, activePlayer);
+        turnManager = new TurnManager(gameInstance.getPlayers());
+        actionManager = new ActionManager(gameInstance, turnManager);
 
     }
 
 
-
+    public Game getGameInstance() {
+        return gameInstance;
+    }
 
 
     public void dispatcher(Request request){
@@ -60,7 +62,7 @@ public class SuperMegaController {
     public static Response buildNegativeResponse(Player player, MessageContent messageContent, String gameManagerSays) {
 
         Response res = new Response(player.getPlayerName(), messageContent, MessageStatus.ERROR, gameManagerSays);
-        game.putInChanges(player, res);
+        gameInstance.putInChanges(player, res);
 
         return res;
 
@@ -75,9 +77,16 @@ public class SuperMegaController {
     public static Response buildPositiveResponse(Player player, MessageContent messageContent, String gameManagerSays) {
 
         Response res = new Response(player.getPlayerName(), messageContent, MessageStatus.OK, gameManagerSays);
-        game.putInChanges(player, res);
+        gameInstance.putInChanges(player, res);
 
         return res;
     }
 
+
+
+
+    //      ####    TESTING-ONLY    ####
+    public SetUpGameController _getSetUpGameController() {
+        return setUpGameController;
+    }
 }

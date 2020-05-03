@@ -1,14 +1,15 @@
 package it.polimi.ingsw.Controller;
 
-import it.polimi.ingsw.Model.Action.*;
+import it.polimi.ingsw.Model.Action.Action;
+import it.polimi.ingsw.Model.Action.BuildAction;
+import it.polimi.ingsw.Model.Action.SelectWorkerAction;
 import it.polimi.ingsw.Model.Game;
+import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.*;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
-import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.*;
 
 /**
@@ -132,28 +133,38 @@ public class ActionManager {
      * @return positive/negative response if the client can perform action requested
      */
     Response handleMoveAction(MoveRequest request) {
-
-        String requestSender = request.getMessageSender();
-
-        Player activePlayer = turnManager.getActivePlayer();
+        boolean canMoveAgain = false;                   //It is used to check if the move has to be done again
         Worker activeWorker = turnManager.getActiveWorker();
         Position positionWhereToMove = request.getSenderMovePosition();
+        God playerGod = gameInstance.searchPlayerByName(request.getMessageSender()).getPlayerGod();
 
         Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getWorkerPosition());
         Square squareWhereToMove = gameInstance.getGameMap().getSquare(positionWhereToMove);
 
-        Action moveAction = new MoveAction(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
+        canMoveAgain = playerGod.getGodPower().move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
+        if (canMoveAgain) {
+            turnManager.increaseMoveTokens();
+        }
+/*
         if (moveAction.isValid()) {
             moveAction.doAction();
+            //canMoveAgain = moveAction.doAction();
         } else {
             return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "You cannot move here!");
         }
 
-
         gameState = PossibleGameState.WORKER_MOVED;
-        turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
+
+ */
+        if (canMoveAgain) {
+            gameState = PossibleGameState.WORKER_SELECTED;
+            turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
+        } else {
+            gameState = PossibleGameState.WORKER_MOVED;
+            turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
+        }
 
         return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Worker Moved!");
     }
