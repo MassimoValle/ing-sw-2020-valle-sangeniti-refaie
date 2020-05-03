@@ -77,8 +77,9 @@ public class SetUpGameController {
      * @return the {@link Player} who owns the turn
      */
     public Player nextPlayer() {
+        Player next = gameInstance.getPlayers().get((currentPlayer % gameInstance.getPlayers().size() +1));
         currentPlayer++;
-        return gameInstance.getPlayers().get((currentPlayer % gameInstance.getPlayers().size() +1));
+        return next;
     }
 
 
@@ -109,6 +110,7 @@ public class SetUpGameController {
             case PICK_GOD -> handleGodAssignment((AssignGodRequest) request);
             case PLACE_WORKER -> handlePlaceWorkerAction((PlaceWorkerRequest) request);
 
+            default -> SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "Something went wrong!");
         }
     }
 

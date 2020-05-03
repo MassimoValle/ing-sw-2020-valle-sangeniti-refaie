@@ -104,7 +104,7 @@ public class Server {
     public void run(){
         System.out.println("Server listening on port: " + PORT);
 
-        while(true){
+        while(!Thread.currentThread().isInterrupted()){
             try {
                 Socket socket = serverSocket.accept();
                 newConnection(socket);//Blocking call --server code will stop here and waiting for connection
@@ -141,7 +141,7 @@ public class Server {
             case LOGIN -> checkLogin(message, connection);
             case NUM_PLAYER -> setLobbySize(message);
 
-            //Everything else is handled in GameManager or TurnManager
+            //Everything else is handled by the SuperMegaController
             default -> handleControllerMessage(message);
         }
 

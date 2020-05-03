@@ -2,13 +2,11 @@ package it.polimi.ingsw.Controller;
 
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
-import it.polimi.ingsw.Network.Connection;
 import it.polimi.ingsw.Network.Message.Enum.MessageContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.Request;
 import it.polimi.ingsw.Network.Message.Response;
 
-import java.util.Map;
 
 public class SuperMegaController {
 
