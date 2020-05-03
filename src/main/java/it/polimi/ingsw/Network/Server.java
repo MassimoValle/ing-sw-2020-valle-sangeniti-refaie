@@ -47,6 +47,11 @@ public class Server {
         for (Map.Entry<String, Connection> entry : playersInLobby.entrySet())
             if(entry.getValue().equals(c))
                 playersInLobby.remove(entry);
+
+
+        if(lobbySize == 0){
+            askLobbySize(connections.get(0));
+        }
     }
 
 
