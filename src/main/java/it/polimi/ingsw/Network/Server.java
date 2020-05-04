@@ -146,7 +146,7 @@ public class Server {
             case LOGIN -> checkLogin(message, connection);
             case NUM_PLAYER -> setLobbySize(message);
 
-            //Everything else is handled in GameManager or TurnManager
+            //Everything else is handled by the SuperMegaController
             default -> handleControllerMessage(message);
         }
 

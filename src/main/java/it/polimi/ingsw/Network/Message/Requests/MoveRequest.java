@@ -10,8 +10,8 @@ public class MoveRequest extends Request {
     private final Position senderMovePosition;
 
 
-    public MoveRequest(String messageSender, MessageStatus messageStatus, Position senderMovePosition) {
-        super(messageSender, Dispatcher.TURN, MessageContent.MOVE, messageStatus);
+    public MoveRequest(String messageSender, Position senderMovePosition) {
+        super(messageSender, Dispatcher.TURN, MessageContent.MOVE);
         this.senderMovePosition = senderMovePosition;
     }
 

@@ -2,6 +2,7 @@ package it.polimi.ingsw.Model.Player;
 
 import it.polimi.ingsw.Model.God.God;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,9 @@ public class Player {
     private God playerGod;                      /** God card chosen by the player */
     private List<Worker> playerWorkers;         /** List of workers assigned to the player */
     private int numWorker = 2;                  /** Number of workers per player */
+    private Color color;
+
+    //private LastTurnAction[] lastTurnActions;
 
 
     /**
@@ -24,7 +28,7 @@ public class Player {
     public Player(String playerName) {
         this.playerName = playerName;
         this.playerWorkers = new ArrayList<>();
-        for (int i = 0; i < numWorker; i++) { this.playerWorkers.add(new Worker(i + 1)); }   // 2 workers
+        for (int i = 0; i < numWorker; i++) { this.playerWorkers.add(new Worker(i, color)); }   // 2 workers
     }
 
     /**
@@ -36,8 +40,19 @@ public class Player {
         return this.playerGod;
     }
 
+
+    /**
+     * Set the {@link God} passed as parameter to {@link Player this}
+     *
+     * @param selectedGod the selected god
+     */
     public void setPlayerGod(God selectedGod) {
         this.playerGod = selectedGod;
+    }
+
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     /**
@@ -65,7 +80,7 @@ public class Player {
      * @return the worker
      */
     public Worker addNewWorker() {
-        Worker newWorker = new Worker(getPlayerWorkers().size() + 1);
+        Worker newWorker = new Worker(getPlayerWorkers().size() + 1, this.color);
         getPlayerWorkers().add(newWorker);
         return newWorker;
     }

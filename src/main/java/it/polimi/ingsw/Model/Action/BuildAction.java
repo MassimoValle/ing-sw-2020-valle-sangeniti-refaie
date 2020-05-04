@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Model.Action;
 
+import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Model.Map.Square;
 
 
@@ -29,7 +30,11 @@ public class BuildAction implements Action {
     @Override
     public void doAction() {
 
-        squareWhereToBuildOn.addBlock(false);
+        try {
+            squareWhereToBuildOn.addBlock(false);
+        } catch (DomePresentException e) {
+            e.printStackTrace();
+        }
 
     }
 }

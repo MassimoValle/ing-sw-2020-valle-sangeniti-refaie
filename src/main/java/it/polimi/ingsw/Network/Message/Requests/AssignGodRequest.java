@@ -9,8 +9,8 @@ public class AssignGodRequest extends Request {
 
     private final God god;
 
-    public AssignGodRequest(String messageSender, MessageStatus messageStatus, God god){
-        super(messageSender, Dispatcher.SETUP_GAME, MessageContent.PICK_GOD, messageStatus);
+    public AssignGodRequest(String messageSender, God god){
+        super(messageSender, Dispatcher.SETUP_GAME, MessageContent.PICK_GOD);
         this.god = god;
     }
 

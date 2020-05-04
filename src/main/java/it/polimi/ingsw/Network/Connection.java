@@ -118,21 +118,7 @@ public class Connection extends Observable<String> implements Runnable {
                     Message message = (Message) socketIn.readObject();
 
                     server.handleMessage((Request) message, this);
-
                 }
-
-                /*
-                in = new Scanner(socket.getInputStream());
-                out = new PrintWriter(socket.getOutputStream());
-                send("Welcome! What's your name?");
-                name = in.nextLine();
-                server.lobby(this, name);
-                while(isActive()){
-                    String read = in.nextLine();
-                    notify(read);
-                }
-                */
-
             } catch (IOException | ClassNotFoundException e) {
                 System.err.println(e.getMessage());
                 close();

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.Model.God;
 
+import it.polimi.ingsw.Model.God.GodsPower.Power;
+
 public class God {
 
     private String godName;

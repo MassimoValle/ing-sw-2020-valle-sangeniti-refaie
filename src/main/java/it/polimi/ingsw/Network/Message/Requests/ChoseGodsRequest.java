@@ -11,12 +11,12 @@ public class ChoseGodsRequest extends Request {
 
     private final ArrayList<God> chosenGod;
 
-    public ChoseGodsRequest(String messageSender, MessageStatus messageStatus, ArrayList<God> chosenGod) {
-        super(messageSender, Dispatcher.SETUP_GAME, MessageContent.GODS_CHOSE, messageStatus);
+    public ChoseGodsRequest(String messageSender, ArrayList<God> chosenGod) {
+        super(messageSender, Dispatcher.SETUP_GAME, MessageContent.GODS_CHOSE);
         this.chosenGod = chosenGod;
     }
 
-    public ArrayList<God> getChosenGod() {
+    public ArrayList<God> getChosenGods() {
         return this.chosenGod;
     }
 }

@@ -14,6 +14,7 @@ import it.polimi.ingsw.Network.Message.Requests.PlaceWorkerRequest;
 import it.polimi.ingsw.Network.Message.Requests.Request;
 import it.polimi.ingsw.Network.Message.Responses.Response;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -90,7 +91,7 @@ public class ClientManager implements ClientManagerListener{
                     break;
                 case PLAYERS_HAS_BUILT:
                     break;
-                case END_OF_TURN:
+                case END_TURN:
                     break;
                 default: CHECK:
                     printMessageFromServer((Response) message);
@@ -167,7 +168,7 @@ public class ClientManager implements ClientManagerListener{
 
         try {
             Client.sendMessage(
-                    new ChoseGodsRequest(username, MessageStatus.OK, godChoosen)
+                    new ChoseGodsRequest(username, godChoosen)
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -189,7 +190,7 @@ public class ClientManager implements ClientManagerListener{
 
         try {
             Client.sendMessage(
-                    new PickGodRequest(username, MessageStatus.OK, picked)
+                    new PickGodRequest(username, picked)
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -208,12 +209,12 @@ public class ClientManager implements ClientManagerListener{
         int col = Integer.parseInt(consoleIn.nextLine());
         consoleOut.println();
 
-        Worker w = new Worker(1);
+        Worker w = new Worker(1, Color.BLUE);
         Position p = new Position(row, col);
 
         try {
             Client.sendMessage(
-                    new PlaceWorkerRequest(username, MessageStatus.OK, w, p)
+                    new PlaceWorkerRequest(username, w, p)
             );
         }catch (IOException e){
             e.printStackTrace();

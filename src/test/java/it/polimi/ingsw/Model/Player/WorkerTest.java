@@ -5,28 +5,55 @@ import it.polimi.ingsw.Model.Map.GameMap;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.*;
+
 import static org.junit.Assert.*;
 
 public class WorkerTest {
 
     GameMap gameMap;
-    Worker worker1;
-    Position pos1;
+
 
     @Before
     public void setUp() throws Exception {
         GameMap gameMap = new GameMap();
-        worker1 = new Worker(0);
-        pos1 = new Position(0,0);
     }
 
     @Test
-    public void setPosition() {
-        worker1.setPosition(pos1);
-        assertEquals(pos1, worker1.getWorkerPosition());
+    public void checkWorkersPositionAndNumber() {
 
+        Worker worker1 = new Worker(0, Color.RED);
+        assertEquals(0, worker1.getWorkersNumber());
+
+        worker1.setPosition(new Position(0,0));
+        assertEquals(new Position(0,0), worker1.getWorkerPosition());
+
+        Worker worker2 = new Worker(1, Color.RED);
+        assertEquals(1, worker2.getWorkersNumber());
+
+        worker2.setPosition(new Position(0,1));
+        assertEquals(new Position(0,1), worker2.getWorkerPosition());
     }
 
+    @Test
+    public void checkIfSelectedAndPlaced() {
+        Worker worker1 = new Worker(0, Color.RED);
+        Worker worker2 = new Worker(0, Color.RED);
+
+        assertFalse(worker1.isPlaced());
+        assertFalse(worker1.isSelected());
+
+        assertFalse(worker2.isPlaced());
+        assertFalse(worker2.isSelected());
+
+        worker1.setSelected(true);
+        worker1.setPlaced(true);
+        assertTrue(worker1.isPlaced());
+        assertTrue(worker1.isSelected());
+
+        assertFalse(worker2.isPlaced());
+        assertFalse(worker2.isSelected());
+    }
 
 
 }

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Model.Map;
 
+import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Model.Building.*;
 import it.polimi.ingsw.Model.Player.Worker;
 
@@ -46,8 +47,13 @@ public class Square {
     }
 
     public boolean hasDome(){
-        if(tower.contains(Dome.class)){
-            return true;
+
+        if (tower == null) return false;
+
+        for(Block b : tower) {
+            if (b instanceof Dome) {
+                return true;
+            }
         }
         return false;
     }
@@ -74,7 +80,11 @@ public class Square {
      *
      * @param dome true if the block we want to add is a {@link Dome}
      */
-    public void addBlock(boolean dome) {
+    public void addBlock(boolean dome) throws DomePresentException {
+
+        if (this.hasDome()) {
+            throw new DomePresentException();
+        }
 
         if (tower == null) {
             tower = new ArrayList<>();
@@ -106,6 +116,11 @@ public class Square {
 
 
 
+    //testing-only
+    public ArrayList<Block> _getTower() {
+        return this.tower;
+    }
+
     @Override
     public String toString() {
         String ret = "";
@@ -118,21 +133,11 @@ public class Square {
 
 
         switch (getHeight()) {
-            case 0:
-                ret = "0";
-                break;
-            case 1:
-                ret = "1";
-                break;
-            case 2:
-                ret = "2";
-                break;
-            case 3:
-                ret = "3";
-                break;
-            case 4:
-                ret = "4";
-                break;
+            case 0 -> ret = "0";
+            case 1 -> ret = "1";
+            case 2 -> ret = "2";
+            case 3 -> ret = "3";
+            case 4 -> ret = "4";
         }
 
         if (workerOnSquare != null){

@@ -1,7 +1,8 @@
 package it.polimi.ingsw.Model;
 
 import it.polimi.ingsw.Model.God.God;
-import it.polimi.ingsw.Model.God.Power;
+import it.polimi.ingsw.Model.God.GodsPower.ApolloPower;
+import it.polimi.ingsw.Model.God.GodsPower.Power;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ public class GodTest {
 
     @BeforeClass
     public static void initClass() {
-        god = new God("testGod", "godDescr", new Power("powerType", "powerDescr"));
+        god = new God("testGod", "godDescr", new ApolloPower("powerType", "powerDescr"));
     }
 
     @Test

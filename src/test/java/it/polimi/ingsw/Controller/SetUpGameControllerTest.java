@@ -2,7 +2,7 @@ package it.polimi.ingsw.Controller;
 
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.God;
-import it.polimi.ingsw.Model.God.Power;
+import it.polimi.ingsw.Model.God.GodsPower.ApolloPower;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,9 +51,9 @@ public class SetUpGameControllerTest {
         game.addPlayer(p3);
 
         gods = new ArrayList<>();
-        gods.add(new God("apello", "desc", new Power("Your move", "desc")));
-        gods.add(new God("figlio", "desc", new Power("Your move", "desc")));
-        gods.add(new God("apollo", "desc", new Power("Your move", "desc")));
+        gods.add(new God("apello", "desc", new ApolloPower("Your move", "desc")));
+        gods.add(new God("figlio", "desc", new ApolloPower("Your move", "desc")));
+        gods.add(new God("apollo", "desc", new ApolloPower("Your move", "desc")));
 
 
         superMegaController = new SuperMegaController(game, activePlayer);
@@ -64,7 +65,7 @@ public class SetUpGameControllerTest {
     @Test
     public void assignignGod(){
 
-        God god = new God("apollo", "desc", new Power.ApolloPower("Your move", "desc"));
+        God god = new God("apollo", "desc", new ApolloPower("Your move", "desc"));
         setUpGameController.assignGodToPlayer(activePlayer, god);
 
         int index = game.getPlayers().indexOf(activePlayer);
@@ -72,8 +73,9 @@ public class SetUpGameControllerTest {
         assertEquals(game.getPlayers().get(index).getPlayerGod(), god);
     }
 
-    @Test
+    // FIXME: 04/05/20
     public void discardRequest(){
+
         Player bobby = new Player("bobby");
         game.addPlayer(bobby);
 
@@ -87,7 +89,7 @@ public class SetUpGameControllerTest {
         SuperMegaController.gameState = PossibleGameState.ASSIGNING_GOD;
 
         God god = gods.get(0);
-        Request request = new AssignGodRequest(activePlayer.getPlayerName(), MessageStatus.OK, god);
+        Request request = new AssignGodRequest(activePlayer.getPlayerName(), god);
         setUpGameController.handleMessage(request);
 
         assertEquals(activePlayer.getPlayerGod(), god);
@@ -101,7 +103,7 @@ public class SetUpGameControllerTest {
     public void chosenGodRequest(){
         SuperMegaController.gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
 
-        Request request = new ChoseGodsRequest(activePlayer.getPlayerName(), MessageStatus.OK, gods);
+        Request request = new ChoseGodsRequest(activePlayer.getPlayerName(), gods);
         setUpGameController.handleMessage(request);
 
         assertEquals(game.getChosenGodsFromDeck(), gods);
@@ -111,9 +113,9 @@ public class SetUpGameControllerTest {
     public void placeWorkerRequest(){
 
         SuperMegaController.gameState = PossibleGameState.FILLING_BOARD;
-        Worker worker = new Worker(1);
+        Worker worker = new Worker(1, Color.RED);
         Position position = new Position(1, 1);
-        Request request = new PlaceWorkerRequest(activePlayer.getPlayerName(), MessageStatus.OK, worker, position);
+        Request request = new PlaceWorkerRequest(activePlayer.getPlayerName(), worker, position);
 
         setUpGameController.handleMessage(request);
 
@@ -126,7 +128,7 @@ public class SetUpGameControllerTest {
         idx++;
         if(idx == players.size()) idx = 0;
 
-        Request request = new AssignGodRequest(players.get(idx).getPlayerName(), MessageStatus.OK, god);
+        Request request = new AssignGodRequest(players.get(idx).getPlayerName(), god);
         setUpGameController.handleMessage(request);
 
         assertEquals(players.get(idx).getPlayerGod(), god);
@@ -156,11 +158,11 @@ public class SetUpGameControllerTest {
         Position position1 = new Position(idx, idx);
         Position position2 = new Position(idx, idx+1);
 
-        Request request1 = new PlaceWorkerRequest(activePlayer.getPlayerName(), MessageStatus.OK, workers.get(0), position1);
+        Request request1 = new PlaceWorkerRequest(activePlayer.getPlayerName(), workers.get(0), position1);
         setUpGameController.handleMessage(request1);
         assertEquals(game.getGameMap().getWorkerOnSquare(position1), workers.get(0));
 
-        Request request2 = new PlaceWorkerRequest(activePlayer.getPlayerName(), MessageStatus.OK, workers.get(1), position2);
+        Request request2 = new PlaceWorkerRequest(activePlayer.getPlayerName(), workers.get(1), position2);
         setUpGameController.handleMessage(request2);
         assertEquals(game.getGameMap().getWorkerOnSquare(position2), workers.get(1));
 

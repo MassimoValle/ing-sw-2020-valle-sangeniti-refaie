@@ -1,7 +1,6 @@
 package it.polimi.ingsw.Model.Action;
 
 import it.polimi.ingsw.Model.Map.Square;
-import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 

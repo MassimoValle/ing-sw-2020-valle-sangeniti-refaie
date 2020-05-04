@@ -1,11 +1,14 @@
 package it.polimi.ingsw.Model.Map;
 
+import it.polimi.ingsw.Controller.PossibleGameState;
+import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.*;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -13,9 +16,6 @@ import static org.junit.Assert.*;
 public class GameMapTest {
 
     GameMap gameMap;
-    Position pos1 = new Position(0,0);
-    Position pos2 = new Position(0,1);
-    Position pos3 = new Position(1,0);
 
     @Before
     public void setUp() throws Exception {
@@ -31,98 +31,130 @@ public class GameMapTest {
         }
     }
 
-    /*@Test
-    public void increaseHeight() {
-        gameMap.getBoard()[0][0].heightPlusOne();
-        gameMap.getBoard()[0][0].heightPlusOne();
+    @Test
+    public void checkDifference() throws DomePresentException {
+        gameMap.getBoard()[0][0].addBlock(false);
+        gameMap.getBoard()[0][0].addBlock(false);
+        gameMap.getBoard()[0][0].addBlock(false);
+        gameMap.getBoard()[0][0].addBlock(false);
 
-        assertEquals(2, gameMap.getBoard()[0][0].getHeight());
+
+        assertEquals(4, gameMap.getBoard()[0][0].getHeight());
 
         System.out.println("Let's ceck the difference between position 0,0 and 0,1");
-        assertEquals(-2, gameMap.getDifferenceInAltitude(pos2, pos1));
+        assertEquals(4, gameMap.getDifferenceInAltitude(new Position(0,0), new Position(0,1)));
 
-        //Mi aspetto che la pos 0,0 sia adiacente
-        System.out.println(pos2.getAdjacentPlaces());
+        //Pos (0,0) is adjacent...
+        System.out.println(new Position(0,1).getAdjacentPlaces());
 
-        //Ma che non sia raggiungibile
-        System.out.println(gameMap.getReachableAdjacentPlaces(pos2).toString());
+        //...but not reachable
+        System.out.println(gameMap.getReachableAdjacentPlaces(new Position(0,1)).toString());
 
-    }*/
+        System.out.println(gameMap.getPlacesWhereYouCanBuildOn(new Position(0,1)));
+    }
 
 
 
-    /*
 
     @Test
-    public void setWorkerPosition(){
-        Worker worker1 = new Worker(0);
-        Worker worker2 = new Worker(1);
-        gameMap.setWorkerPosition (worker1, pos1);
-        gameMap.setWorkerPosition(worker2, pos2);
+    public void placesWhereYouCanBuildOn() throws Exception {
+        Position pos1 = new Position(1,1);
+        assertNotNull(gameMap.getPlacesWhereYouCanBuildOn(pos1));
 
-        assertTrue(gameMap.getSquare(pos1).hasWorkerOn());
-        assertTrue(gameMap.getSquare(pos2).hasWorkerOn());
+        List<Position> positions = gameMap.getPlacesWhereYouCanBuildOn(pos1);
 
+        //Assuming we are in pos(1,1) we can build in all the surrounding squares
+        assertEquals(8, positions.size());
+        assertEquals(new Position(0, 1), positions.get(0));
+        assertEquals(new Position(0, 2), positions.get(1));
+        assertEquals(new Position(1, 2), positions.get(2));
+        assertEquals(new Position(2, 2), positions.get(3));
+        assertEquals(new Position(2, 1), positions.get(4));
+        assertEquals(new Position(2, 0), positions.get(5));
+        assertEquals(new Position(1, 0), positions.get(6));
+        assertEquals(new Position(0, 0), positions.get(7));
+
+        //Let's put a dome on the square in pos(0,0)
+        gameMap.getSquare(new Position(0,0)).addBlock(true);
+
+        positions = gameMap.getPlacesWhereYouCanBuildOn(pos1);
+        assertEquals(7, positions.size());
 
         gameMap.printBoard();
 
     }
 
-     */
 
-    /*
     @Test
-    public void workerOnSquare(){
-        Worker worker1 = new Worker(0);
-        gameMap.setWorkerPosition (worker1, pos1);
+    public void workerOnSquareTest() {
+        Position pos1 = new Position(0,0);
+        Worker worker1 = new Worker(0, Color.RED);
 
+        assertNull(gameMap.getWorkerOnSquare(pos1));
+
+        gameMap.getSquare(pos1).setWorkerOn(worker1);
         assertEquals(worker1, gameMap.getWorkerOnSquare(pos1));
     }
 
-     */
-
-    /*
     @Test
-    public void squareHeight(){
-        gameMap.getBoard()[0][0].heightPlusOne();
-        gameMap.getBoard()[0][0].heightPlusOne();
-        gameMap.getBoard()[0][0].heightPlusOne();
-        gameMap.getBoard()[0][0].heightPlusOne();
+    public void workerIsStockTest() throws DomePresentException {
+        Worker worker1 = new Worker(0, Color.RED);
 
-        gameMap.setSquareHeight(pos1, 4);
+        worker1.setPosition(new Position(0,0));
+        worker1.setPlaced(true);
+        gameMap.getSquare(new Position(0,0)).setWorkerOn(worker1);
 
+        //let's place a dome around the worker
+        gameMap.getSquare(new Position(0,1)).addBlock(true);
+        gameMap.getSquare(new Position(1,1)).addBlock(true);
+        gameMap.getSquare(new Position(1,0)).addBlock(true);
 
-        assertEquals(4, gameMap.getSquareHeight(pos1));
+        assertEquals(0,gameMap.getReachableAdjacentPlaces(new Position(0,0)).size());
+        assertTrue(gameMap.isWorkerStuck(worker1));
 
-    }
-    */
+        //Now let's put another worker in pos(2,0)
+        Worker worker2 = new Worker(0, Color.RED);
 
+        worker2.setPosition(new Position(2,0));
+        worker2.setPlaced(true);
+        gameMap.getSquare(new Position(2,0)).setWorkerOn(worker2);
 
-    @Test
-    public void placesWhereYouCanBuildOn(){
-        assertNotNull(gameMap.getPlacesWhereYouCanBuildOn(pos1));
+        assertEquals(3, gameMap.getReachableAdjacentPlaces(new Position(2,0)).size());
+        assertEquals(new Position(2,1), gameMap.getReachableAdjacentPlaces(new Position(2,0)).get(0));
+        assertEquals(new Position(3,1), gameMap.getReachableAdjacentPlaces(new Position(2,0)).get(1));
+        assertEquals(new Position(3,0), gameMap.getReachableAdjacentPlaces(new Position(2,0)).get(2));
 
-        List<Position> positions = gameMap.getPlacesWhereYouCanBuildOn(pos1);
-
-        assertEquals(new Position(0, 1), positions.get(0));
-        assertEquals(new Position(1, 0), positions.get(2));
-        assertEquals(new Position(1, 1), positions.get(1));
-
-    }
-
-
-    /*
-    @Test
-    public void addBlock(){
-        Position pos = new Position(0, 0);
-        gameMap.addBlock(pos);
-        assertEquals(1, gameMap.getSquareHeight(pos));
+        assertFalse(gameMap.isWorkerStuck(worker2));
     }
 
 
-     */
+    @Test
+    public void checkLegalPosition() {
+        Position pos1 = new Position(5,5);
+        assertFalse("Due to the board is 5x5 (from 0,0 to 4,4), pos1 must be NOT REAL", gameMap.isPositionOnMapReal(pos1));
+
+        Position pos2 = new Position(0,0);
+        assertTrue(gameMap.isPositionOnMapReal(pos2));
 
 
+        //The pos2 (0,0) has to be free
+        assertTrue(gameMap.isPositionFree(pos2));
 
+        Worker worker1 = new Worker(0, Color.RED);
+        worker1.setPosition(pos2);
+        worker1.setPlaced(true);
+        gameMap.getSquare(pos2).setWorkerOn(worker1);
+
+        assertFalse(gameMap.isPositionFree(pos2));
+
+        //isPositionValid return false if 1) pos is not valid or 2) pos is not real
+        Position pos3 = new Position(3,3);
+        assertTrue(gameMap.isPositionValid(pos3));
+
+        assertFalse("Pos1 (5,5) is out of bound",gameMap.isPositionValid(pos1));
+        assertFalse("Pos2 (0,0) is inside the board, but has a worker on", gameMap.isPositionValid(pos2));
+
+
+    }
 
 }

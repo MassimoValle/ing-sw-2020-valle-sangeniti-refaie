@@ -16,6 +16,13 @@ public class Message implements Serializable {
         this.messageStatus = messageStatus;
     }
 
+    public Message(String messageSender, MessageContent messageContent) {
+        this.messageSender = messageSender;
+        this.messageContent = messageContent;
+    }
+
+
+
 
     public String getMessageSender() { return messageSender; }
 
