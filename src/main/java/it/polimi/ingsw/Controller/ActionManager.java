@@ -38,33 +38,17 @@ public class ActionManager {
      */
     public Response handleRequest(Request request){
 
-
         //Controllo che il player sia nel suo turno
         if(!isYourTurn(request.getMessageSender())) { //The player who sent the request isn't the playerActive
             return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getMessageSender()), request.getMessageContent(), "It's not your turn!");
         }
 
-        switch (request.getMessageContent()) {
-
-            case SELECT_WORKER:
-                if (gameState == PossibleGameState.FILLING_BOARD || gameState == PossibleGameState.START_GAME ||
-                        gameState == PossibleGameState.START_ROUND) {
-                    return handleSelectWorkerAction((SelectWorkerRequest) request);
-                }
-
-
-            case MOVE:
-                if (gameState == PossibleGameState.WORKER_SELECTED) {
-                    return handleMoveAction((MoveRequest) request);
-                }
-
-            case BUILD:
-                if (gameState == PossibleGameState.WORKER_MOVED) {
-                    return handleBuildAction((BuildRequest) request);
-                }
-
-            default: return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getMessageSender()), request.getMessageContent(),"Must never be reached!");
-        }
+        return switch (request.getMessageContent()) {
+            case SELECT_WORKER -> handleSelectWorkerAction((SelectWorkerRequest) request);
+            case MOVE -> handleMoveAction((MoveRequest) request);
+            case BUILD -> handleBuildAction((BuildRequest) request);
+            default -> SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getMessageSender()), request.getMessageContent(), "Must never be reached!");
+        };
     }
 
     /**
@@ -76,9 +60,12 @@ public class ActionManager {
      * @return positive/negative response if the client can perform action requested
      */
     Response handleSelectWorkerAction(SelectWorkerRequest request) {
-
-        String requestSender = request.getMessageSender();
         Player activePlayer = turnManager.getActivePlayer();
+
+        if (! (gameState == PossibleGameState.FILLING_BOARD || gameState == PossibleGameState.START_ROUND) ) {
+            return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot select a worker!");
+        }
+
         Worker workerFromRequest = request.getWorkerToSelect();
 
         //When a handleSelectWorkerRequest occurs the activeWorker in the turn must be set tu null
@@ -86,43 +73,32 @@ public class ActionManager {
         Worker activeWorker = turnManager.getActiveWorker();
 
         //You get into this statement only if the activeWorker is own by someone else.
-        if (activeWorker != null) {
-            if (!(activeWorker == activePlayer.getPlayerWorkers().get(0) || activeWorker == activePlayer.getPlayerWorkers().get(1))) {
-                return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "There's something wrong with the worker selection");
+        if (activeWorker != null && !(activeWorker == activePlayer.getPlayerWorkers().get(0) || activeWorker == activePlayer.getPlayerWorkers().get(1))) {
+                return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "There's something wrong with the worker selection");
             }
-        }
-
-
 
         Action selectWorkerAction = new SelectWorkerAction(workerFromRequest);
 
-        //
         if (!workerFromRequest.isPlaced()) {
+            //worker is not placed yet
             selectWorkerAction.doAction();
         } else if ( workerFromRequest.isPlaced() ) {
-
             if ( ! gameInstance.getGameMap().isWorkerStuck(workerFromRequest) ) {
+                //worker isn't stuck
                 selectWorkerAction.doAction();
             }
             else {
-                return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "Worker stuck!");
-
+                //worker is stuck
+                return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "Worker stuck!");
             }
-
         } else {
-            return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "You cannot select this worker!");
-
+            return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot select this worker!");
         }
 
         turnManager.setActiveWorker(workerFromRequest);
-
-        //gameManager.setGameState(PossibleGameState.ACTION_DONE);
         gameState = PossibleGameState.WORKER_SELECTED;
-
-
+        turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
         return SuperMegaController.buildPositiveResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "Worker Selected!");
-
-
     }
 
     /**
@@ -133,29 +109,36 @@ public class ActionManager {
      * @return positive/negative response if the client can perform action requested
      */
     Response handleMoveAction(MoveRequest request) {
-        //actionInfo[0]
-        //actionInfo[1]
-        boolean[] actionInfo;                                           //It is used to check if the move has to be done again
+        Player activePlayer = turnManager.getActivePlayer();
+
+        if (gameState != PossibleGameState.WORKER_SELECTED) {
+            return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot move!");
+        }
+
         Worker activeWorker = turnManager.getActiveWorker();
-        Player requestSender = turnManager.getActivePlayer();
         Position positionWhereToMove = request.getSenderMovePosition();
         God playerGod = gameInstance.searchPlayerByName(request.getMessageSender()).getPlayerGod();
 
         Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getWorkerPosition());
         Square squareWhereToMove = gameInstance.getGameMap().getSquare(positionWhereToMove);
 
+        //actionInfo[0] value used to see if the action requested has been done
+        //actionInfo[1] value used to see if the action can be performed again
+        boolean[] actionInfo;
 
         actionInfo = playerGod.getGodPower().move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
+        //action hasn't been done
         if (!actionInfo[0]) {
-            return SuperMegaController.buildNegativeResponse(requestSender, request.getMessageContent(), "You cannot move here!");
+            return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot move here!");
         }
 
+        //action can not be performed again
         if (!actionInfo[1]) {
             gameState = PossibleGameState.WORKER_MOVED;
             turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
             return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Worker Moved!");
-        } else {
+        } else {    //action  can be performed again
             gameState = PossibleGameState.WORKER_SELECTED;
             turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
             return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Worker Moved! Worker has an extra move!");
@@ -173,35 +156,41 @@ public class ActionManager {
      *  in case of SOME GOD'S POWERS it can be called also when the {@link PossibleGameState#WORKER_SELECTED}
      */
     Response handleBuildAction(BuildRequest request) {
-
-        String requestSender = request.getMessageSender();
-
         Player activePlayer = turnManager.getActivePlayer();
-        Worker activeWorker = turnManager.getActiveWorker();
-        Position positionWhereToBuild = request.getPositionWhereToBuild();
 
-        Square squareWhereToBuild = gameInstance.getGameMap().getSquare(positionWhereToBuild);
-
-        Action buildAction = new BuildAction(squareWhereToBuild);
-
-
-        if (buildAction.isValid()) {
-            buildAction.doAction();
-        } else {
-            return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "You cannot build here!");
-
+        if (gameState != PossibleGameState.WORKER_MOVED) {
+            return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot build!");
         }
 
-        gameState = PossibleGameState.BUILT;
-        turnManager.updateTurnState(PossibleGameState.BUILT);
-        gameState = PossibleGameState.START_ROUND;
+        God playerGod = activePlayer.getPlayerGod();
+        Position positionWhereToBuild = request.getPositionWhereToBuild();
+        Square squareWhereToBuild = gameInstance.getGameMap().getSquare(positionWhereToBuild);
 
-        return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Built!");
+        //actionInfo[0] value used to see if the action requested has been done
+        //actionInfo[1] value used to see if the action can be performed again
+        boolean[] actionInfo;
 
+        actionInfo = playerGod.getGodPower().build(squareWhereToBuild);
+
+
+        if (!actionInfo[0]) {
+            //action hasn't been done
+            return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot build here!");
+        }
+
+
+        if (!actionInfo[1]) {
+            //action can not be performed again
+            gameState = PossibleGameState.BUILT;
+            turnManager.updateTurnState(PossibleGameState.BUILT);
+            return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Built!");
+        } else {
+            //action  can be performed again
+            gameState = PossibleGameState.WORKER_MOVED;
+            turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
+            return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Built! Worker has an extra built!");
+        }
     }
-
-
-
 
     /**
      * It checks if the {@link Player#getPlayerName()} is the turn owner

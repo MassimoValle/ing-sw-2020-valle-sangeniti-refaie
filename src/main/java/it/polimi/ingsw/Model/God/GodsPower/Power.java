@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Model.God.GodsPower;
 
+import it.polimi.ingsw.Controller.TurnManager;
 import it.polimi.ingsw.Model.Action.Action;
 import it.polimi.ingsw.Model.Action.BuildAction;
 import it.polimi.ingsw.Model.Action.MoveAction;
@@ -34,7 +35,7 @@ public abstract class Power {
      * @param positionWhereToMove    the position where to move
      * @param squareWhereTheWorkerIs the square where the worker is
      * @param squareWhereToMove      the square where to move
-     * @return true if worker can move again, false otherwise
+     * @return a boolean array containing the required info for the evolution of the game/turn
      */
     public boolean[] move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
 
@@ -60,12 +61,25 @@ public abstract class Power {
         return actionDone();
     }
 
+    /**
+     * After the action is validated and performed, it tells {@link it.polimi.ingsw.Controller.ActionManager} how to evolve
+     * This specific method returns values so that if the {@link TurnManager#getActivePlayer()} has moved, then he must build,
+     * in the same way if he has built, then he must end his turn
+     *
+     * @return a boolean array containing the required info for the evolution of the game/turn
+     */
     protected boolean[] actionDone() {
         boolean[] ret = new boolean[2];
         ret[0] = true;
         return ret;
     }
 
+    /**
+     * After the action is validated and performed, it tells {@link it.polimi.ingsw.Controller.ActionManager} how to evolve
+     * This specific method returns values so that if the {@link TurnManager#getActivePlayer()} has moved, then he can move again,
+     * in the same way if he has built, then he can build again
+     * @return a boolean array containing the required info for the evolution of the game/turn
+     */
     protected boolean[] actionDoneCanBeDoneAgain() {
         boolean[] ret = new boolean[2];
         ret[0] = true;
@@ -73,6 +87,12 @@ public abstract class Power {
         return ret;
     }
 
+    /**
+     * If the action is not validated, then this method make the {@link it.polimi.ingsw.Controller.ActionManager} to not evolve,
+     * actually makes it to waits to receive a valid action from the {@link TurnManager#getActivePlayer()}
+     *
+     * @return a boolean array containing the required info for the evolution of the game/turn
+     */
     protected boolean[] actionNotDone() {
         boolean[] ret = new boolean[2];
         return ret;

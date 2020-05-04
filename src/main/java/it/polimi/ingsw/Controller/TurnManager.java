@@ -122,7 +122,7 @@ public class TurnManager {
                 break;
 
 
-            case START_GAME: //TUTTI I WORKER SONO PIAZZATI INIZIA LA PARTITA VERA E PROPRIA
+            case START_ROUND: //Inizia il turno
                 updatePlayerState(PossiblePlayerState.STARTING_TURN);
                 giveTurnOwnership();
                 break;
