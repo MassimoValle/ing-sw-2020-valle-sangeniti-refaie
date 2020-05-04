@@ -3,12 +3,9 @@ package it.polimi.ingsw.Controller;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.God.Power;
-import it.polimi.ingsw.Model.God.PowerType;
-import it.polimi.ingsw.Model.Map.GameMap;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
-import it.polimi.ingsw.Network.Message.*;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
 import it.polimi.ingsw.Network.Message.Enum.MessageContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
@@ -16,12 +13,12 @@ import it.polimi.ingsw.Network.Message.Requests.AssignGodRequest;
 import it.polimi.ingsw.Network.Message.Requests.ChoseGodsRequest;
 import it.polimi.ingsw.Network.Message.Requests.PlaceWorkerRequest;
 import it.polimi.ingsw.Network.Message.Requests.Request;
-import it.polimi.ingsw.Network.Server;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -31,15 +28,32 @@ public class SetUpGameControllerTest {
     SetUpGameController setUpGameController;
     Player activePlayer;
     Game game;
+    ArrayList<Player> players = new ArrayList<>();
+
+    int idx = 0;
+
+    ArrayList<God> gods;
 
     @Before
     public void setUp() {
 
-        activePlayer = new Player("client1");
+        Player p1 = new Player("client1");
+        Player p2 = new Player("client2");
+        Player p3 = new Player("client3");
+
+        players.add(p1); players.add(p2); players.add(p3);
+        activePlayer = players.get(0);
+
         game = new Game();
-        game.addPlayer(activePlayer);
-        Player nextPlayer = new Player("pippo");
-        game.addPlayer(nextPlayer);
+        game.addPlayer(p1);
+        game.addPlayer(p2);
+        game.addPlayer(p3);
+
+        gods = new ArrayList<>();
+        gods.add(new God("apello", "desc", new Power("Your move", "desc")));
+        gods.add(new God("figlio", "desc", new Power("Your move", "desc")));
+        gods.add(new God("apollo", "desc", new Power("Your move", "desc")));
+
 
         superMegaController = new SuperMegaController(game, activePlayer);
         setUpGameController = new SetUpGameController(game, activePlayer);
@@ -69,24 +83,23 @@ public class SetUpGameControllerTest {
 
     @Test
     public void assigningGodRequest(){
-        God god = new God("apollo", "desc", new Power.ApolloPower("Your move", "desc"));
 
+        SuperMegaController.gameState = PossibleGameState.ASSIGNING_GOD;
+
+        God god = gods.get(0);
         Request request = new AssignGodRequest(activePlayer.getPlayerName(), MessageStatus.OK, god);
         setUpGameController.handleMessage(request);
 
         assertEquals(activePlayer.getPlayerGod(), god);
-        assertEquals(game.getPlayers().get( game.getPlayers().indexOf(activePlayer) ).getPlayerGod(), god);
-        assertEquals(SuperMegaController.gameState, PossibleGameState.ASSIGNING_GOD);
+
+        God playerGod = game.getPlayers().get(game.getPlayers().indexOf(activePlayer)).getPlayerGod();
+        assertEquals(playerGod, god);
+
     }
 
     @Test
     public void chosenGodRequest(){
-        ArrayList<God> gods = new ArrayList<>(){
-            final God apello = new God("apello", "desc", new Power("Your move", "desc"));
-            final God figlio = new God("figlio", "desc", new Power("Your move", "desc"));
-            final God apollo = new God("apollo", "desc", new Power("Your move", "desc"));
-
-        };
+        SuperMegaController.gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
 
         Request request = new ChoseGodsRequest(activePlayer.getPlayerName(), MessageStatus.OK, gods);
         setUpGameController.handleMessage(request);
@@ -94,9 +107,10 @@ public class SetUpGameControllerTest {
         assertEquals(game.getChosenGodsFromDeck(), gods);
     }
 
-
     @Test
     public void placeWorkerRequest(){
+
+        SuperMegaController.gameState = PossibleGameState.FILLING_BOARD;
         Worker worker = new Worker(1);
         Position position = new Position(1, 1);
         Request request = new PlaceWorkerRequest(activePlayer.getPlayerName(), MessageStatus.OK, worker, position);
@@ -106,166 +120,66 @@ public class SetUpGameControllerTest {
         assertEquals(game.getGameMap().getWorkerOnSquare(position), worker);
     }
 
+    @Ignore
+    public void flow_assigningGodRequest(){
+        God god = gods.get(idx);
+        idx++;
+        if(idx == players.size()) idx = 0;
+
+        Request request = new AssignGodRequest(players.get(idx).getPlayerName(), MessageStatus.OK, god);
+        setUpGameController.handleMessage(request);
+
+        assertEquals(players.get(idx).getPlayerGod(), god);
+        assertEquals(game.getPlayers().get( game.getPlayers().indexOf(players.get(idx)) ).getPlayerGod(), god);
+
+        if(idx != 0)
+            assertEquals(SuperMegaController.gameState, PossibleGameState.ASSIGNING_GOD);
+        else
+            assertEquals(SuperMegaController.gameState, PossibleGameState.FILLING_BOARD);
+    }
+
     @Test
-    public void gameFlowTest() {
-        /*try {
-            gameManager = new GameManager(new Server());
+    public void assigningGodFlow(){
+        chosenGodRequest();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        gameManager._addPlayerToCurrentGame("Simone");
-        gameManager._addPlayerToCurrentGame("Massimo");
-        gameManager._addPlayerToCurrentGame("Magdy");
-
-        Player simone = gameManager.getGameInstance().searchPlayerByName("Simone");
-        Player massimo = gameManager.getGameInstance().searchPlayerByName("Massimo");
-        Player magdy = gameManager.getGameInstance().searchPlayerByName("Magdy");
-
-        assertEquals(3, gameManager.getGameInstance().getNumberOfPlayers());
-
-        ArrayList<God> chosenGod = new ArrayList<>();
-
-        chosenGod.add(gameManager.getGameInstance().getDeck().getGod(0));
-        chosenGod.add(gameManager.getGameInstance().getDeck().getGod(1));
-        chosenGod.add(gameManager.getGameInstance().getDeck().getGod(2));
-
-
-        gameManager.startGame();
-
-        //SET THIS WAY BECAUSE THE startGame() set a random Player
-        gameManager._setNewActivePlayer(simone);
-
-        //ATTENDO UNA CHOSE GODS REQUEST CONTENENTI I GOD CHE IL GIOCATORE SCELTO RANDOM HA SCELTO PER LA PARTITA
-        gameManager.handleMessage(
-                new ChoseGodsRequest(simone.getPlayerName(), chosenGod )
-        );
-
-        //ADESSO A TURNO I GIOCATORI SCELGONO IL GOD TRA QUELLI SCELTI DAL GODLIKE PLAYER
-
-        //PRIMA MASSIMO
-        gameManager.handleMessage(
-                new PickGodRequest(massimo.getPlayerName(), chosenGod.get(0))
-        );
-
-        //POI MAGDY
-        gameManager.handleMessage(
-                new PickGodRequest(magdy.getPlayerName(), chosenGod.get(1))
-        );
-
-        //INFINE SIMONE
-        gameManager.handleMessage(
-                new PickGodRequest(simone.getPlayerName(), chosenGod.get(2))
-        );
-
-        //gamestate == FILLING_BOARD
-        //A TURNO I GIOCATORI SELEZIONANO E PIAZZANO I WORKER
-
-        //MASSIMO SELEZIONA...
-        gameManager.handleMessage(
-                new SelectWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(0))
-        );
-
-        //E PIAZZA IL WORKER N°1
-        gameManager.handleMessage(
-                new PlaceWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(0), new Position(0,0))
-        );
-
-        //MASSIMO SELEZIONA...
-        gameManager.handleMessage(
-                new SelectWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(1))
-        );
-
-        //E PIAZZA IL WORKER N°2
-        gameManager.handleMessage(
-                new PlaceWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(1), new Position(0,1))
-        );
-
-        //Tocca a Magdy piazzare i propri worker
-        gameManager.handleMessage(
-                new SelectWorkerRequest(magdy.getPlayerName(), magdy.getPlayerWorkers().get(0))
-        );
-        gameManager.handleMessage(
-                new PlaceWorkerRequest(magdy.getPlayerName(), magdy.getPlayerWorkers().get(0), new Position(1,0))
-        );
-        gameManager.handleMessage(
-                new SelectWorkerRequest(magdy.getPlayerName(), magdy.getPlayerWorkers().get(1))
-        );
-        gameManager.handleMessage(
-                new PlaceWorkerRequest(magdy.getPlayerName(), magdy.getPlayerWorkers().get(1), new Position(1,1))
-        );
-
-        //Tocca a simone piazzare i worker
-        gameManager.handleMessage(
-                new SelectWorkerRequest(simone.getPlayerName(), simone.getPlayerWorkers().get(0))
-        );
-        gameManager.handleMessage(
-                new PlaceWorkerRequest(simone.getPlayerName(), simone.getPlayerWorkers().get(0), new Position(2,0))
-        );
-        gameManager.handleMessage(
-                new SelectWorkerRequest(simone.getPlayerName(), simone.getPlayerWorkers().get(1))
-        );
-        gameManager.handleMessage(
-                new PlaceWorkerRequest(simone.getPlayerName(), simone.getPlayerWorkers().get(1), new Position(2,1))
-        );
-
-        //WORKER PIAZZATI, INIZIA LA PARTITA VERA E PROPRIA
-        gameManager.getGameInstance().getGameMap().printBoard();
-
-        //TURNO DI MAX, SELEZIONA UN WORKER...
-        gameManager.handleMessage(
-                new SelectWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(1))
-        );
-
-        //LO MUOVE...
-        gameManager.handleMessage(
-                new MoveRequest(massimo.getPlayerName(), new Position(0, 2))
-        );
-
-        //E COSTRUISCE
-        gameManager.handleMessage(
-                new BuildRequest(massimo.getPlayerName(), new Position(0,3))
-        );
-
-        gameManager.getGameInstance().getGameMap().printBoard();
-
-
-        //TURNO DI MAGDY, SELEZIONA UN WORKER...
-        gameManager.handleMessage(
-                new SelectWorkerRequest(magdy.getPlayerName(), magdy.getPlayerWorkers().get(1))
-        );
-
-        //LO MUOVE...
-        gameManager.handleMessage(
-                new MoveRequest(magdy.getPlayerName(), new Position(1, 2))
-        );
-
-        //E COSTRUISCE
-        gameManager.handleMessage(
-                new BuildRequest(magdy.getPlayerName(), new Position(1,3))
-        );
-
-        gameManager.getGameInstance().getGameMap().printBoard();
-
-        //TURNO DI SIMONE, SELEZIONA UN WORKER...
-        gameManager.handleMessage(
-                new SelectWorkerRequest(simone.getPlayerName(), simone.getPlayerWorkers().get(1))
-        );
-
-        //LO MUOVE...
-        gameManager.handleMessage(
-                new MoveRequest(simone.getPlayerName(), new Position(2, 2))
-        );
-
-        //E COSTRUISCE
-        gameManager.handleMessage(
-                new BuildRequest(simone.getPlayerName(), new Position(2,3))
-        );
-
-        gameManager.getGameInstance().getGameMap().printBoard();
-        */
+        flow_assigningGodRequest();
+        flow_assigningGodRequest();
+        flow_assigningGodRequest();
 
     }
+
+    @Ignore
+    public void flow_placingWorkerRequest(){
+        SuperMegaController.gameState = PossibleGameState.FILLING_BOARD;
+        List<Worker> workers = players.get(idx).getPlayerWorkers();
+        activePlayer = players.get(idx);
+        Position position1 = new Position(idx, idx);
+        Position position2 = new Position(idx, idx+1);
+
+        Request request1 = new PlaceWorkerRequest(activePlayer.getPlayerName(), MessageStatus.OK, workers.get(0), position1);
+        setUpGameController.handleMessage(request1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(position1), workers.get(0));
+
+        Request request2 = new PlaceWorkerRequest(activePlayer.getPlayerName(), MessageStatus.OK, workers.get(1), position2);
+        setUpGameController.handleMessage(request2);
+        assertEquals(game.getGameMap().getWorkerOnSquare(position2), workers.get(1));
+
+        idx++;
+    }
+
+    @Test
+    public void placingWorkerFlow(){
+
+        // player1
+        flow_placingWorkerRequest();
+
+        //player2
+        flow_placingWorkerRequest();
+
+        //player3
+        flow_placingWorkerRequest();
+
+    }
+
 
 }
