@@ -65,8 +65,9 @@ public class SetUpGameController {
     }
 
     public Player nextPlayer() {
-        Player next = gameInstance.getPlayers().get((currentPlayer % gameInstance.getPlayers().size() +1));
         currentPlayer++;
+        Player next = gameInstance.getPlayers().get((currentPlayer % gameInstance.getPlayers().size()));
+
         return next;
     }
 
@@ -103,12 +104,15 @@ public class SetUpGameController {
 
     private void handleGodsChosen(ChoseGodsRequest request) {
 
-        SuperMegaController.gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
+        if(SuperMegaController.gameState != PossibleGameState.GODLIKE_PLAYER_MOMENT){
+            return;
+        }
 
         gameInstance.setChosenGodsFromDeck(request.getChosenGod());
         SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.GODS_CHOSE, "Gods selezionati");
 
         activePlayer = nextPlayer();
+        SuperMegaController.gameState = PossibleGameState.ASSIGNING_GOD;
 
         // response: scegli un god
         SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.PICK_GOD, "Piglia un god");
@@ -117,7 +121,10 @@ public class SetUpGameController {
 
     private void handleGodAssignment(AssignGodRequest request) {
 
-        SuperMegaController.gameState = PossibleGameState.ASSIGNING_GOD;
+        if(SuperMegaController.gameState != PossibleGameState.ASSIGNING_GOD){
+            return;
+        }
+
         //turnManager.updateTurnState(PossibleGameState.ASSIGNING_GOD);
 
         //Player p = getPlayerByName(request.getMessageSender());
@@ -133,13 +140,17 @@ public class SetUpGameController {
 
             SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.PLACE_WORKER, "Posizione un worker");
             playerLoop = 0;
+            SuperMegaController.gameState = PossibleGameState.FILLING_BOARD;
 
         }
     }
 
     private void handlePlaceWorkerAction(PlaceWorkerRequest request) {
 
-        SuperMegaController.gameState = PossibleGameState.FILLING_BOARD;
+        if(SuperMegaController.gameState != PossibleGameState.FILLING_BOARD){
+            return;
+        }
+
         //turnManager.updateTurnState(PossibleGameState.FILLING_BOARD);
 
         Position positionToPlaceWorker = request.getPositionToPlaceWorker();
@@ -159,6 +170,7 @@ public class SetUpGameController {
 
                 if(playerLoop >= gameInstance.getPlayers().size()){
                     SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.SELECT_WORKER, "Piglia un god");
+                    SuperMegaController.gameState = PossibleGameState.START_ROUND;
                     playerLoop = 0;
                     return;
                 }
