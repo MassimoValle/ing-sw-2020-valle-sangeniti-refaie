@@ -109,11 +109,7 @@ public class Client {
          
         while(!Thread.currentThread().isInterrupted()) {
             try{
-
-                while (true){
-                    //clientManager.debug();
                     receiveMessage();
-                }
 
             } catch(NoSuchElementException e){
                 System.out.println("Connection closed from the client side");
