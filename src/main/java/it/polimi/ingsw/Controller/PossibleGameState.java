@@ -10,7 +10,7 @@ public enum PossibleGameState {
     WORKER_SELECTED ("The player has selected the worker to place/move"),
     WORKER_MOVED ("The player has moved, if he hasn't any extra abilities, now must build"),
     BUILT ("The player has built"),
-    START_GAME("The first player start playing"),
+    PLAYER_TURN_ENDING ("End of player turn")
     ;
 
 

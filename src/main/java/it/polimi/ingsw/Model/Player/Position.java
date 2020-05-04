@@ -3,6 +3,7 @@ package it.polimi.ingsw.Model.Player;
 import it.polimi.ingsw.Model.Game;
 
 import java.util.ArrayList;
+import java.util.List;
 
 //Posizione relativa alla board
 
@@ -122,6 +123,10 @@ public class Position {
         }
     }
 
+    public boolean isPerimetral() {
+        return row == 0 || row == 4 || column == 0 || column == 4;
+    }
+
 
     /**
      * Check if a {@link it.polimi.ingsw.Model.Map.Square square} has someone else's worker on.
@@ -141,5 +146,6 @@ public class Position {
     public String toString() {
         return "Position: " + this.getRow() + " , " + this.getColumn();
         }
+
 
 }

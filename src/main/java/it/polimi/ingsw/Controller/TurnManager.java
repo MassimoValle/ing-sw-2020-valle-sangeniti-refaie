@@ -1,5 +1,8 @@
 package it.polimi.ingsw.Controller;
 
+import it.polimi.ingsw.Model.Action.Action;
+import it.polimi.ingsw.Model.Action.BuildAction;
+import it.polimi.ingsw.Model.Action.MoveAction;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.PossiblePlayerState;
@@ -22,6 +25,8 @@ public class TurnManager {
     private final List<Player> inGamePlayers;
     private List<God> inGameGods;
 
+    private List<Action> actionPerformedByActivePlayer;
+
 
     private PossiblePlayerState playerState;
 
@@ -34,6 +39,7 @@ public class TurnManager {
         this.activePlayer = null;
         this.activeWorker = null;
         this.inGamePlayers = players;
+        this.actionPerformedByActivePlayer = new ArrayList<>();
 
         updatePlayerState(PossiblePlayerState.CHOSE_GODS);
     }
@@ -121,11 +127,11 @@ public class TurnManager {
                 giveTurnOwnership();
                 break;
 
-
+/*
             case START_ROUND: //Inizia il turno
                 updatePlayerState(PossiblePlayerState.STARTING_TURN);
                 giveTurnOwnership();
-                break;
+                break;*/
 
             case WORKER_SELECTED:
                 updatePlayerState(PossiblePlayerState.WORKER_SELECTED);
@@ -137,7 +143,11 @@ public class TurnManager {
 
             case BUILT:
                 updatePlayerState(PossiblePlayerState.BUILT);
+                break;
+            case PLAYER_TURN_ENDING:
+                updatePlayerState(PossiblePlayerState.ENDING_TURN);
                 giveTurnOwnership();
+
         }
 
     }
@@ -148,7 +158,7 @@ public class TurnManager {
      */
     private void giveTurnOwnership() {
 
-        int playerIndex = inGamePlayers.indexOf((Player) activePlayer);
+        int playerIndex = inGamePlayers.indexOf( activePlayer);
         Player nextPlayer = null;
 
         switch (inGamePlayers.size()) {
@@ -187,11 +197,49 @@ public class TurnManager {
         this.lastActiveWorker = activeWorker;
         this.activePlayer = player;
         this.activeWorker = null;
+        this.actionPerformedByActivePlayer = new ArrayList<>();
 
         //Quando inizia il turno di un nuovo giocatore dovrebbe essere invocato il metodo updateTurnState(START_ROUND)
         //cosicchè lo stato del player venga settato su STARTING_TURN
         this.playerState = PossiblePlayerState.STARTING_TURN;
     }
+
+    /**
+     * Check if the player during his turn has moved at least once
+     *
+     * @return the boolean
+     */
+    public boolean activePlayerHasMoved() {
+        boolean ret = false;
+        for (Action a: actionPerformedByActivePlayer) {
+            if (a instanceof MoveAction) {
+                ret = true;
+                break;
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Check if the player during his turn has build at least once
+     *
+     * @return the boolean
+     */
+    public boolean activePlayerHasBuilt() {
+        boolean ret = false;
+        for (Action a: actionPerformedByActivePlayer) {
+            if (a instanceof BuildAction) {
+                ret = true;
+                break;
+            }
+        }
+        return ret;
+    }
+
+    public void addActionPerformed(Action action) {
+        actionPerformedByActivePlayer.add(action);
+    }
+
 
         /*
     private void handleEndAction(EndRequest request) {

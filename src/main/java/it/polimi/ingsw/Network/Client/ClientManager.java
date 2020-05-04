@@ -90,7 +90,7 @@ public class ClientManager implements ClientManagerListener{
                     break;
                 case PLAYERS_HAS_BUILT:
                     break;
-                case END_OF_TURN:
+                case END_TURN:
                     break;
                 default: CHECK:
                     printMessageFromServer((Response) message);

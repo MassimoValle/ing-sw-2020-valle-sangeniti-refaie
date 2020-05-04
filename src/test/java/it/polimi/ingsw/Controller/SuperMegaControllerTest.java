@@ -108,6 +108,7 @@ public class SuperMegaControllerTest {
         superMegaController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
         superMegaController._getTurnManager().nextTurn(player1);
 
+
         //Tocca al player1
         //seleziona un worker...
         superMegaController.dispatcher(
@@ -121,6 +122,10 @@ public class SuperMegaControllerTest {
         superMegaController.dispatcher(
                 new BuildRequest(pl1, new Position(0,2))
         );
+        //passo il turno
+        superMegaController.dispatcher(
+                new EndTurnRequest(pl1)
+        );
 
         game.getGameMap().printBoard();
 
@@ -133,15 +138,21 @@ public class SuperMegaControllerTest {
                 new MoveRequest(pl2, new Position(4,2))
         );
 
-        //muovo la seconda volta
+        superMegaController.dispatcher(
+                new EndMoveRequest(pl2)
+        );
+ /*       //muovo la seconda volta
         superMegaController.dispatcher(
                 new MoveRequest(pl2, new Position(4,3))
-        );
+        );*/
         //costruisco
         superMegaController.dispatcher(
-                new BuildRequest(pl2, new Position(4,4))
+                new BuildRequest(pl2, new Position(4,3))
         );
-
+        //passo il turno
+        superMegaController.dispatcher(
+                new EndTurnRequest(pl1)
+        );
 
         game.getGameMap().printBoard();
 

@@ -66,6 +66,15 @@ public class PositionTest {
         assertEquals(3, new Position(4,4).getAdjacentPlaces().size());
     }
 
+    @Test
+    public void isPerimetral() {
+        Position pos1 = new Position(0,3);
+        assertTrue(pos1.isPerimetral());
+
+        Position pos2 = new Position(1,1);
+        assertFalse(pos2.isPerimetral());
+    }
+
 
 
 

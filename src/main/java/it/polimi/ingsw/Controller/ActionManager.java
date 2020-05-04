@@ -2,6 +2,7 @@ package it.polimi.ingsw.Controller;
 
 import it.polimi.ingsw.Model.Action.Action;
 import it.polimi.ingsw.Model.Action.BuildAction;
+import it.polimi.ingsw.Model.Action.MoveAction;
 import it.polimi.ingsw.Model.Action.SelectWorkerAction;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.God;
@@ -10,6 +11,7 @@ import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.*;
+import it.polimi.ingsw.Network.Message.Enum.MessageContent;
 import it.polimi.ingsw.Network.Message.Requests.*;
 
 /**
@@ -45,10 +47,14 @@ public class ActionManager {
 
         return switch (request.getMessageContent()) {
             case SELECT_WORKER -> handleSelectWorkerAction((SelectWorkerRequest) request);
+
             case MOVE -> handleMoveAction((MoveRequest) request);
             case END_MOVE -> handleEndMoveAction((EndMoveRequest) request);
+
             case BUILD -> handleBuildAction((BuildRequest) request);
             case END_BUILD -> handleEndBuildAction((EndBuildRequest) request);
+
+            case END_TURN -> handleEndTurnAction((EndTurnRequest) request);
             default -> SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getMessageSender()), request.getMessageContent(), "Must never be reached!");
         };
     }
@@ -120,7 +126,7 @@ public class ActionManager {
 
         Worker activeWorker = turnManager.getActiveWorker();
         Position positionWhereToMove = request.getSenderMovePosition();
-        God playerGod = gameInstance.searchPlayerByName(request.getMessageSender()).getPlayerGod();
+        God playerGod = activePlayer.getPlayerGod();
 
         Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getWorkerPosition());
         Square squareWhereToMove = gameInstance.getGameMap().getSquare(positionWhereToMove);
@@ -136,15 +142,20 @@ public class ActionManager {
             return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot move here!");
         }
 
+
+        //L'azione è stata eseguita quindi l'aggiungo alla lista nel turn manager
+        turnManager.addActionPerformed(new MoveAction(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove));
+
         //action can not be performed again
         if (!actionInfo[1]) {
             gameState = PossibleGameState.WORKER_MOVED;
             turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
             return SuperMegaController.buildPositiveResponse(activePlayer, request.getMessageContent(), "Worker Moved!");
         } else {    //action  can be performed again
+            //add the action done to the List inside the turn manager
             gameState = PossibleGameState.WORKER_SELECTED;
             turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
-            return SuperMegaController.buildPositiveResponse(activePlayer, request.getMessageContent(), "Worker Moved! Worker has an extra move!");
+            return SuperMegaController.buildPositiveResponse(activePlayer, request.getMessageContent(), "Worker Moved! Worker has an extra move! You can choose to move again or to build!");
         }
 
     }
@@ -152,6 +163,16 @@ public class ActionManager {
 
     private Response handleEndMoveAction(EndMoveRequest request) {
         Player activePlayer = turnManager.getActivePlayer();
+
+        if (gameState != PossibleGameState.WORKER_SELECTED && gameState != PossibleGameState.WORKER_MOVED) {
+            return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You must move at least once!");
+        }
+
+        //Sei sei arrivato qua vuol dire che hai sei in WORKER_MOVED, adesso controllo che hai costruito almeno una volta
+        if ( !turnManager.activePlayerHasMoved() ) {
+            return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You have to move at least once");
+        }
+
 
         gameState = PossibleGameState.WORKER_MOVED;
         turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
@@ -190,13 +211,12 @@ public class ActionManager {
             return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot build here!");
         }
 
-
+        //L'azione è stata eseguita
+        turnManager.addActionPerformed(new BuildAction(squareWhereToBuild));
         if (!actionInfo[1]) {
             //action can not be performed again
             gameState = PossibleGameState.BUILT;
             turnManager.updateTurnState(PossibleGameState.BUILT);
-            //Setto momentaneamento qui l'inizio del prossimo round, ma sarebbe compito della EndTurnAction();
-            gameState = PossibleGameState.START_ROUND;
             return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Built!");
         } else {
             //action  can be performed again
@@ -207,13 +227,47 @@ public class ActionManager {
     }
 
 
+
     private Response handleEndBuildAction(EndBuildRequest request) {
+        Player activePlayer = turnManager.getActivePlayer();
+
+        if (gameState != PossibleGameState.WORKER_MOVED) {
+            return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You must build at least once!");
+        }
+
+        //Sei sei arrivato qua vuol dire che hai sei in WORKER_MOVED, adesso controllo che hai costruito almeno una volta
+        if ( !turnManager.activePlayerHasBuilt() ) {
+            return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You have to build at least once");
+        }
 
         gameState = PossibleGameState.BUILT;
         turnManager.updateTurnState(PossibleGameState.BUILT);
-        //Setto momentaneamento qui l'inizio del prossimo round, ma sarebbe compito della EndTurnAction();
+        gameState = PossibleGameState.PLAYER_TURN_ENDING;
+        return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Devi passare il turno!");
+    }
+
+    private Response handleEndTurnAction(EndTurnRequest request) {
+        Player activePlayer = turnManager.getActivePlayer();
+
+        if (gameState != PossibleGameState.BUILT) {
+            if (gameState != PossibleGameState.PLAYER_TURN_ENDING) {
+                return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot end your turn");
+            }
+        }
+
+        if (!turnManager.activePlayerHasBuilt()) {
+            //QUESTO BLOCCO NON DOVREBBE MAI ESSERE RAGGIUNGIBILE PERCHÈ SE IL GAME STATE È BUILD ALLORAVUOL DIRE CHE HO COSTRUITO
+            return SuperMegaController.buildPositiveResponse(activePlayer, request.getMessageContent(), "You must build at least once");
+        }
+
+        //aggiorno lo stato del controller e notifico al player che
+        gameState = PossibleGameState.PLAYER_TURN_ENDING;
+        SuperMegaController.buildPositiveResponse(activePlayer, request.getMessageContent(), "Turn ending");
+        turnManager.updateTurnState(gameState);
+        activePlayer = turnManager.getActivePlayer();
         gameState = PossibleGameState.START_ROUND;
-        return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Built!");
+        return SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.STARTING_TURN, "Turn ending");
+
     }
 
     /**
