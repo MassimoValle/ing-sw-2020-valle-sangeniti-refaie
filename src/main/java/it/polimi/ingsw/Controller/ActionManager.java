@@ -6,10 +6,8 @@ import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
-import it.polimi.ingsw.Network.Message.*;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
-import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.*;
+import it.polimi.ingsw.Network.Message.Responses.Response;
 
 /**
  * The ActionManager handles every request sent by a client to perform an action
@@ -143,7 +141,6 @@ public class ActionManager {
         Square squareWhereToMove = gameInstance.getGameMap().getSquare(positionWhereToMove);
 
         Action moveAction = new MoveAction(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
-
 
         if (moveAction.isValid()) {
             moveAction.doAction();

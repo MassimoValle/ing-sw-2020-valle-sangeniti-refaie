@@ -1,8 +1,9 @@
-package it.polimi.ingsw.Network.Message;
+package it.polimi.ingsw.Network.Message.Responses;
 
 
 import it.polimi.ingsw.Network.Message.Enum.MessageContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Network.Message.Message;
 
 public class Response extends Message {
 

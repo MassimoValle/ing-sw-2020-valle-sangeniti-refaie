@@ -12,6 +12,7 @@ import it.polimi.ingsw.Network.Message.Requests.ChoseGodsRequest;
 import it.polimi.ingsw.Network.Message.Requests.PickGodRequest;
 import it.polimi.ingsw.Network.Message.Requests.PlaceWorkerRequest;
 import it.polimi.ingsw.Network.Message.Requests.Request;
+import it.polimi.ingsw.Network.Message.Responses.Response;
 
 import java.io.IOException;
 import java.io.PrintStream;

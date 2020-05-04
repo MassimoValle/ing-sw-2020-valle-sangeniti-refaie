@@ -6,7 +6,7 @@ import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Network.Message.Enum.MessageContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.Request;
-import it.polimi.ingsw.Network.Message.Response;
+import it.polimi.ingsw.Network.Message.Responses.Response;
 import it.polimi.ingsw.View.RemoteView;
 
 import java.io.IOException;
@@ -109,7 +109,7 @@ public class Server {
     public void run(){
         System.out.println("Server listening on port: " + PORT);
 
-        while(true){
+        while(!Thread.currentThread().isInterrupted()){
             try {
                 Socket socket = serverSocket.accept();
                 newConnection(socket);//Blocking call --server code will stop here and waiting for connection
