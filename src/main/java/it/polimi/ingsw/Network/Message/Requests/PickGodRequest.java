@@ -9,9 +9,9 @@ public class PickGodRequest extends Request {
 
     private final God pickedGod;
 
-    public PickGodRequest(String messageSender, MessageStatus messageStatus, God pickedGod) {
+    public PickGodRequest(String messageSender, God pickedGod) {
 
-        super(messageSender, Dispatcher.SETUP_GAME, MessageContent.PICK_GOD, messageStatus);
+        super(messageSender, Dispatcher.SETUP_GAME, MessageContent.PICK_GOD);
         this.pickedGod = pickedGod;
 
     }

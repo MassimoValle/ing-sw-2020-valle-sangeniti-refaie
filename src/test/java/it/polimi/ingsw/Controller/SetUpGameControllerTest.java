@@ -69,7 +69,7 @@ public class SetUpGameControllerTest {
     public void assigningGodRequest(){
         God god = new God("apollo", "desc", new ApolloPower("Your move", "desc"));
 
-        Request request = new AssignGodRequest(activePlayer.getPlayerName(), MessageStatus.OK, god);
+        Request request = new AssignGodRequest(activePlayer.getPlayerName(), god);
         setUpGameController.handleMessage(request);
 
         assertEquals(activePlayer.getPlayerGod(), god);
@@ -97,7 +97,7 @@ public class SetUpGameControllerTest {
     public void placeWorkerRequest(){
         Worker worker = new Worker(1, Color.RED);
         Position position = new Position(1, 1);
-        Request request = new PlaceWorkerRequest(activePlayer.getPlayerName(), MessageStatus.OK, worker, position);
+        Request request = new PlaceWorkerRequest(activePlayer.getPlayerName(), worker, position);
 
         setUpGameController.handleMessage(request);
 

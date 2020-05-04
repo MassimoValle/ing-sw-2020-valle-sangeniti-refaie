@@ -89,4 +89,10 @@ public class SuperMegaController {
     public SetUpGameController _getSetUpGameController() {
         return setUpGameController;
     }
+    public ActionManager _getActionManager() {
+        return actionManager;
+    }
+    public TurnManager _getTurnManager() {
+        return turnManager;
+    }
 }

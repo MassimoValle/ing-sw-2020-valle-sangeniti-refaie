@@ -9,9 +9,9 @@ public class BuildRequest extends Request {
 
     private final Position positionWhereToBuildOn;
 
-    public BuildRequest(String messageSender, MessageStatus messageStatus, Position positionWhereToBuildOn) {
+    public BuildRequest(String messageSender, Position positionWhereToBuildOn) {
 
-        super(messageSender, Dispatcher.TURN, MessageContent.BUILD, messageStatus);
+        super(messageSender, Dispatcher.TURN, MessageContent.BUILD);
         this.positionWhereToBuildOn = positionWhereToBuildOn;
 
     }

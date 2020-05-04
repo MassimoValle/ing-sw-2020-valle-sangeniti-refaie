@@ -2,12 +2,14 @@ package it.polimi.ingsw.Controller;
 
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.God;
+import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Player;
+import it.polimi.ingsw.Model.Player.Position;
+import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
 import it.polimi.ingsw.Network.Message.Enum.MessageContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
-import it.polimi.ingsw.Network.Message.Requests.ChoseGodsRequest;
-import it.polimi.ingsw.Network.Message.Requests.Request;
+import it.polimi.ingsw.Network.Message.Requests.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,8 +27,8 @@ public class SuperMegaControllerTest {
     @Before
     public void setUp() {
 
-        player1 = new Player("client1");
-        player2 = new Player("client2");
+        player1 = new Player("nome1");
+        player2 = new Player("nome2");
         game = new Game();
         game.addPlayer(player1);
         game.addPlayer(player2);
@@ -50,94 +52,102 @@ public class SuperMegaControllerTest {
     @Test
     public void gameFlowTest() {
 
+        String pl1 = player1.getPlayerName();
+        String pl2 = player2.getPlayerName();
+
         assertEquals(2, superMegaController.getGameInstance().getNumberOfPlayers());
 
 
-
+        //Aggiungo i god alla partita
         ArrayList<God> chosenGod = new ArrayList<>();
-        chosenGod.add(superMegaController.getGameInstance().getDeck().getGod(0));
-        chosenGod.add(superMegaController.getGameInstance().getDeck().getGod(1));
-        chosenGod.add(superMegaController.getGameInstance().getDeck().getGod(2));
+        chosenGod.add(game.getDeck().getGod(0));
+        chosenGod.add(game.getDeck().getGod(1));
+        game.setChosenGodsFromDeck(chosenGod);
 
+        //assegno i god ai rispettivi giocatori
+        player1.setPlayerGod(chosenGod.get(0));
+        game.getChosenGodsFromDeck().get(0).setAssigned(true);
+        player2.setPlayerGod(chosenGod.get(1));
+        game.getChosenGodsFromDeck().get(1).setAssigned(true);
 
+        //giocatore 1 piazza il primo worker
+        Worker w1pl1 = player1.getPlayerWorkers().get(0);
+        Square sq22 = game.getGameMap().getSquare(new Position(2,2));
 
-        //ATTENDO UNA CHOSEGODSREQUEST CONTENENTI I GOD CHE IL GIOCATORE HA SCELTO PER LA PARTITA
+        w1pl1.setPosition(new Position(2, 2));
+        sq22.setWorkerOn(w1pl1);
+        w1pl1.setPlaced(true);
+
+        //giocatore 2 piazza il primo worker
+        Worker w1pl2 = player2.getPlayerWorkers().get(0);
+        Square sq32 = game.getGameMap().getSquare(new Position(3,2));
+
+        w1pl2.setPosition(new Position(3, 2));
+        sq32.setWorkerOn(w1pl2);
+        w1pl2.setPlaced(true);
+
+        //giocatore 1 piazza il secondo worker
+        Worker w2pl1 = player1.getPlayerWorkers().get(1);
+        Square sq23 = game.getGameMap().getSquare(new Position(2,3));
+
+        w2pl1.setPosition(new Position(2, 3));
+        sq23.setWorkerOn(w2pl1);
+        w2pl1.setPlaced(true);
+
+        //giocatore 2 piazza il seoondo worker
+        Worker w2pl2 = player2.getPlayerWorkers().get(1);
+        Square sq33 = game.getGameMap().getSquare(new Position(3,3));
+
+        w2pl2.setPosition(new Position(3, 3));
+        sq33.setWorkerOn(w2pl2);
+        w2pl2.setPlaced(true);
+
+        game.getGameMap().printBoard();
+
+        superMegaController._getActionManager().setGameState(PossibleGameState.START_ROUND);
+        superMegaController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
+        superMegaController._getTurnManager().nextTurn(player1);
+
+        //Tocca al player1
+        //seleziona un worker...
         superMegaController.dispatcher(
-                new ChoseGodsRequest(player1.getPlayerName(), chosenGod)
+                new SelectWorkerRequest(pl1, w1pl1)
+        );
+        //lo muovo...
+        superMegaController.dispatcher(
+                new MoveRequest(pl1, new Position(1,2))
+        );
+        //e costruisco
+        superMegaController.dispatcher(
+                new BuildRequest(pl1, new Position(0,2))
         );
 
-        //ADESSO A TURNO I GIOCATORI SCELGONO IL GOD TRA QUELLI SCELTI DAL GODLIKE PLAYER
+        game.getGameMap().printBoard();
+
+        //Tocca al player2
+        superMegaController.dispatcher(
+                new SelectWorkerRequest(pl2, w1pl2)
+        );
+        //lo muovo la prima volta
+        superMegaController.dispatcher(
+                new MoveRequest(pl2, new Position(4,2))
+        );
+
+        //muovo la seconda volta
+        superMegaController.dispatcher(
+                new MoveRequest(pl2, new Position(4,3))
+        );
+        //costruisco
+        superMegaController.dispatcher(
+                new BuildRequest(pl2, new Position(4,4))
+        );
+
+
+        game.getGameMap().printBoard();
+
+
 
         /*
-        //PRIMA MASSIMO
-        gameManager.handleMessage(
-                new PickGodRequest(massimo.getPlayerName(), chosenGod.get(0))
-        );
-
-        //POI MAGDY
-        gameManager.handleMessage(
-                new PickGodRequest(magdy.getPlayerName(), chosenGod.get(1))
-        );
-
-        //INFINE SIMONE
-        gameManager.handleMessage(
-                new PickGodRequest(simone.getPlayerName(), chosenGod.get(2))
-        );
-
-        //gamestate == FILLING_BOARD
-        //A TURNO I GIOCATORI SELEZIONANO E PIAZZANO I WORKER
-
-        //MASSIMO SELEZIONA...
-        gameManager.handleMessage(
-                new SelectWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(0))
-        );
-
-        //E PIAZZA IL WORKER N°1
-        gameManager.handleMessage(
-                new PlaceWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(0), new Position(0,0))
-        );
-
-        //MASSIMO SELEZIONA...
-        gameManager.handleMessage(
-                new SelectWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(1))
-        );
-
-        //E PIAZZA IL WORKER N°2
-        gameManager.handleMessage(
-                new PlaceWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(1), new Position(0,1))
-        );
-
-        //Tocca a Magdy piazzare i propri worker
-        gameManager.handleMessage(
-                new SelectWorkerRequest(magdy.getPlayerName(), magdy.getPlayerWorkers().get(0))
-        );
-        gameManager.handleMessage(
-                new PlaceWorkerRequest(magdy.getPlayerName(), magdy.getPlayerWorkers().get(0), new Position(1,0))
-        );
-        gameManager.handleMessage(
-                new SelectWorkerRequest(magdy.getPlayerName(), magdy.getPlayerWorkers().get(1))
-        );
-        gameManager.handleMessage(
-                new PlaceWorkerRequest(magdy.getPlayerName(), magdy.getPlayerWorkers().get(1), new Position(1,1))
-        );
-
-        //Tocca a simone piazzare i worker
-        gameManager.handleMessage(
-                new SelectWorkerRequest(simone.getPlayerName(), simone.getPlayerWorkers().get(0))
-        );
-        gameManager.handleMessage(
-                new PlaceWorkerRequest(simone.getPlayerName(), simone.getPlayerWorkers().get(0), new Position(2,0))
-        );
-        gameManager.handleMessage(
-                new SelectWorkerRequest(simone.getPlayerName(), simone.getPlayerWorkers().get(1))
-        );
-        gameManager.handleMessage(
-                new PlaceWorkerRequest(simone.getPlayerName(), simone.getPlayerWorkers().get(1), new Position(2,1))
-        );
-
-        //WORKER PIAZZATI, INIZIA LA PARTITA VERA E PROPRIA
-        gameManager.getGameInstance().getGameMap().printBoard();
-
         //TURNO DI MAX, SELEZIONA UN WORKER...
         gameManager.handleMessage(
                 new SelectWorkerRequest(massimo.getPlayerName(), massimo.getPlayerWorkers().get(1))

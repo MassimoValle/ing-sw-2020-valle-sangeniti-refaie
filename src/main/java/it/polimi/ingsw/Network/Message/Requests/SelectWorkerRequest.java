@@ -13,16 +13,16 @@ public class SelectWorkerRequest extends Request {
 
 
 
-    public SelectWorkerRequest(String messageSender, MessageStatus messageStatus,  Worker workerToSelect, Position workerToSelectPosition) {
-        super(messageSender, Dispatcher.TURN, MessageContent.SELECT_WORKER, messageStatus);
+    public SelectWorkerRequest(String messageSender,  Worker workerToSelect, Position workerToSelectPosition) {
+        super(messageSender, Dispatcher.TURN, MessageContent.SELECT_WORKER);
         this.workerToSelect = workerToSelect;
         this.workerToSelectPosition = workerToSelectPosition;
     }
 
 
     //Used in case Worker hasn't been placed yet
-    public SelectWorkerRequest(String messageSender, MessageStatus messageStatus,  Worker workerToSelect) {
-        super(messageSender, Dispatcher.TURN, MessageContent.SELECT_WORKER, messageStatus);
+    public SelectWorkerRequest(String messageSender,  Worker workerToSelect) {
+        super(messageSender, Dispatcher.TURN, MessageContent.SELECT_WORKER);
         this.workerToSelect = workerToSelect;
     }
 

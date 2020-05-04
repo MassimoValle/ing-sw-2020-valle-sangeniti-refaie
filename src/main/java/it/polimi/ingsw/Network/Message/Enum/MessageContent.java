@@ -13,9 +13,10 @@ public enum MessageContent {
     PLACE_WORKER,
     SELECT_WORKER,
     MOVE,
+    END_MOVE,
     BUILD,
+    END_BUILD,
 
-    ASYNC,
     YOUR_TURN,
     WORKER_CHOSEN,
     WORKER_MOVED,

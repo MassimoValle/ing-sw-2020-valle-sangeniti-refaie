@@ -24,6 +24,8 @@ public class ArtemisPower extends Power {
             super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
         } else if (startingPlace.equals(squareWhereToMove)) {
             return actionNotDone();
+        } else {
+            super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
         }
 
 

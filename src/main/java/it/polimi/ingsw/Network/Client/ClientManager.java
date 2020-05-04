@@ -189,7 +189,7 @@ public class ClientManager implements ClientManagerListener{
 
         try {
             Client.sendMessage(
-                    new PickGodRequest(username, MessageStatus.OK, picked)
+                    new PickGodRequest(username, picked)
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -213,7 +213,7 @@ public class ClientManager implements ClientManagerListener{
 
         try {
             Client.sendMessage(
-                    new PlaceWorkerRequest(username, MessageStatus.OK, w, p)
+                    new PlaceWorkerRequest(username, w, p)
             );
         }catch (IOException e){
             e.printStackTrace();

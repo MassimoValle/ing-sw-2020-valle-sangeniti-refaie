@@ -46,7 +46,9 @@ public class ActionManager {
         return switch (request.getMessageContent()) {
             case SELECT_WORKER -> handleSelectWorkerAction((SelectWorkerRequest) request);
             case MOVE -> handleMoveAction((MoveRequest) request);
+            case END_MOVE -> handleEndMoveAction((EndMoveRequest) request);
             case BUILD -> handleBuildAction((BuildRequest) request);
+            case END_BUILD -> handleEndBuildAction((EndBuildRequest) request);
             default -> SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getMessageSender()), request.getMessageContent(), "Must never be reached!");
         };
     }
@@ -62,9 +64,10 @@ public class ActionManager {
     Response handleSelectWorkerAction(SelectWorkerRequest request) {
         Player activePlayer = turnManager.getActivePlayer();
 
-        if (! (gameState == PossibleGameState.FILLING_BOARD || gameState == PossibleGameState.START_ROUND) ) {
-            return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot select a worker!");
-        }
+        if ( gameState != PossibleGameState.START_ROUND && gameState != PossibleGameState.WORKER_SELECTED) {
+                return SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot select a worker!");
+            }
+
 
         Worker workerFromRequest = request.getWorkerToSelect();
 
@@ -98,7 +101,7 @@ public class ActionManager {
         turnManager.setActiveWorker(workerFromRequest);
         gameState = PossibleGameState.WORKER_SELECTED;
         turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
-        return SuperMegaController.buildPositiveResponse(gameInstance.searchPlayerByName(request.getClientManagerSays()), request.getMessageContent(), "Worker Selected!");
+        return SuperMegaController.buildPositiveResponse(activePlayer, request.getMessageContent(), "Worker Selected!");
     }
 
     /**
@@ -137,13 +140,22 @@ public class ActionManager {
         if (!actionInfo[1]) {
             gameState = PossibleGameState.WORKER_MOVED;
             turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
-            return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Worker Moved!");
+            return SuperMegaController.buildPositiveResponse(activePlayer, request.getMessageContent(), "Worker Moved!");
         } else {    //action  can be performed again
             gameState = PossibleGameState.WORKER_SELECTED;
             turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
-            return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Worker Moved! Worker has an extra move!");
+            return SuperMegaController.buildPositiveResponse(activePlayer, request.getMessageContent(), "Worker Moved! Worker has an extra move!");
         }
 
+    }
+
+
+    private Response handleEndMoveAction(EndMoveRequest request) {
+        Player activePlayer = turnManager.getActivePlayer();
+
+        gameState = PossibleGameState.WORKER_MOVED;
+        turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
+        return SuperMegaController.buildPositiveResponse(activePlayer, request.getMessageContent(), "Ora puoi costruire");
     }
 
     /**
@@ -183,6 +195,8 @@ public class ActionManager {
             //action can not be performed again
             gameState = PossibleGameState.BUILT;
             turnManager.updateTurnState(PossibleGameState.BUILT);
+            //Setto momentaneamento qui l'inizio del prossimo round, ma sarebbe compito della EndTurnAction();
+            gameState = PossibleGameState.START_ROUND;
             return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Built!");
         } else {
             //action  can be performed again
@@ -190,6 +204,16 @@ public class ActionManager {
             turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
             return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Built! Worker has an extra built!");
         }
+    }
+
+
+    private Response handleEndBuildAction(EndBuildRequest request) {
+
+        gameState = PossibleGameState.BUILT;
+        turnManager.updateTurnState(PossibleGameState.BUILT);
+        //Setto momentaneamento qui l'inizio del prossimo round, ma sarebbe compito della EndTurnAction();
+        gameState = PossibleGameState.START_ROUND;
+        return SuperMegaController.buildPositiveResponse(turnManager.getActivePlayer(), request.getMessageContent(), "Built!");
     }
 
     /**
@@ -207,4 +231,11 @@ public class ActionManager {
     }
 
 
+
+
+    //  ####    TESTING-ONLY    ####
+
+    public void setGameState(PossibleGameState gameState) {
+        this.gameState = gameState;
+    }
 }

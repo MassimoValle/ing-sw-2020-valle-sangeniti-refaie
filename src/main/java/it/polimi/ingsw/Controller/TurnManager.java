@@ -187,6 +187,10 @@ public class TurnManager {
         this.lastActiveWorker = activeWorker;
         this.activePlayer = player;
         this.activeWorker = null;
+
+        //Quando inizia il turno di un nuovo giocatore dovrebbe essere invocato il metodo updateTurnState(START_ROUND)
+        //cosicchè lo stato del player venga settato su STARTING_TURN
+        this.playerState = PossiblePlayerState.STARTING_TURN;
     }
 
         /*
