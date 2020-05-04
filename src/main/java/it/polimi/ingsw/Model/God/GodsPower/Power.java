@@ -36,18 +36,20 @@ public abstract class Power {
      * @param squareWhereToMove      the square where to move
      * @return true if worker can move again, false otherwise
      */
-    public boolean move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
+    public boolean[] move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
 
         Action moveAction = new MoveAction(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
         if ( moveAction.isValid() ) {
             moveAction.doAction();
+        } else {
+            return actionNotDone();
         }
 
-        return false;
+        return actionDone();
     }
 
-    public boolean build(Square squareWhereToBuild) {
+    public boolean[] build(Square squareWhereToBuild) {
 
         Action buildAction = new BuildAction(squareWhereToBuild);
 
@@ -55,11 +57,26 @@ public abstract class Power {
             buildAction.doAction();
         }
 
-        return true;
+        return actionDone();
     }
 
+    protected boolean[] actionDone() {
+        boolean[] ret = new boolean[2];
+        ret[0] = true;
+        return ret;
+    }
 
+    protected boolean[] actionDoneCanBeDoneAgain() {
+        boolean[] ret = new boolean[2];
+        ret[0] = true;
+        ret[1] = true;
+        return ret;
+    }
 
+    protected boolean[] actionNotDone() {
+        boolean[] ret = new boolean[2];
+        return ret;
+    }
 
 
 }

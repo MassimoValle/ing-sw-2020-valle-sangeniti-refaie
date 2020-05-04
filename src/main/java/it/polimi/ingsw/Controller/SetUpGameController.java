@@ -142,7 +142,7 @@ public class SetUpGameController {
                 if (SuperMegaController.gameState != PossibleGameState.FILLING_BOARD) {
                     SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot perform this action");
                 } else {
-                    handleGodAssignment((AssignGodRequest) request);
+                    handlePlaceWorkerAction((PlaceWorkerRequest) request);
                 }
                 break;
             default:

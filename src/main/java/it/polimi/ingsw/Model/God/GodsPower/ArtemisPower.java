@@ -9,23 +9,31 @@ import it.polimi.ingsw.Model.Player.Worker;
 public class ArtemisPower extends Power {
 
     static boolean firstMove;
+    static Square startingPlace;
 
     public ArtemisPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
         firstMove = true;
+        startingPlace = null;
     }
 
     @Override
-    public boolean move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
+    public boolean[] move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
 
-        Action moveAction = new MoveAction(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
-        moveAction.doAction();
+        if (startingPlace == null) {
+            super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
+        } else if (startingPlace.equals(squareWhereToMove)) {
+            return actionNotDone();
+        }
+
+
 
         if (firstMove) {
             firstMove = false;
-            return true;
+            startingPlace = squareWhereTheWorkerIs;
+            return actionDoneCanBeDoneAgain();
         } else {
-            return firstMove;
+            return actionDone();
         }
     }
 

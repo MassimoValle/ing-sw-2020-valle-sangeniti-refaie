@@ -22,8 +22,6 @@ public class TurnManager {
     private final List<Player> inGamePlayers;
     private List<God> inGameGods;
 
-    private int moveTokens;
-    private int buildTokens;
 
     private PossiblePlayerState playerState;
 
@@ -130,19 +128,14 @@ public class TurnManager {
                 break;
 
             case WORKER_SELECTED:
-                moveTokens--;
                 updatePlayerState(PossiblePlayerState.WORKER_SELECTED);
                 break;
 
             case WORKER_MOVED:
-                moveTokens--;
-                if (moveTokens == 0) {
-                    updatePlayerState(PossiblePlayerState.WORKER_MOVED);
-                }
+                updatePlayerState(PossiblePlayerState.WORKER_MOVED);
                 break;
 
             case BUILT:
-                buildTokens--;
                 updatePlayerState(PossiblePlayerState.BUILT);
                 giveTurnOwnership();
         }
@@ -194,22 +187,7 @@ public class TurnManager {
         this.lastActiveWorker = activeWorker;
         this.activePlayer = player;
         this.activeWorker = null;
-        this.moveTokens = 1;
-        this.buildTokens = 1;
     }
-
-    public int getMoveTokens() {
-        return moveTokens;
-    }
-
-    public void increaseMoveTokens() {
-        moveTokens++;
-    }
-
-    public void decreaseMoveTokens() {
-        moveTokens++;
-    }
-
 
         /*
     private void handleEndAction(EndRequest request) {

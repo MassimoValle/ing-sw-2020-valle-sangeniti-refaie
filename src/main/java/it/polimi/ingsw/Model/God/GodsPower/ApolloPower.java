@@ -13,28 +13,28 @@ public class ApolloPower extends Power {
     }
 
     @Override
-    public boolean move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
+    public boolean[] move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
 
         //Controllo se attiva il potere di Apollo
         if (squareWhereToMove.hasWorkerOn() && !squareWhereToMove.getWorkerOnSquare().getColor().equals(activeWorker.getColor()) ) {
 
             Worker worker = squareWhereToMove.getWorkerOnSquare();
+            //Prima devo liberare lo squareWhereToMove altrimenti la riga 26 non verrà eseguita
+            squareWhereToMove.freeSquare();
             Position pos = activeWorker.getWorkerPosition();
 
+            //Sposto il worker del player che ha apollo
+            super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
-            Action moveAction = new MoveAction(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
-            moveAction.doAction();
+            //Sposto il worker che si deve mettere al posto di apollo
+            super.move(worker, pos, squareWhereToMove, squareWhereTheWorkerIs);
 
-            Action moveActionInvert = new MoveAction(worker, pos, squareWhereToMove, squareWhereTheWorkerIs);
-            moveActionInvert.doAction();
+            return actionDone();
+
         }
 
         //Faccio la classica moveAction
-        Action moveAction = new MoveAction(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
-
-        moveAction.doAction();
-
-        return false;
+        return super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
     }
 
 }
