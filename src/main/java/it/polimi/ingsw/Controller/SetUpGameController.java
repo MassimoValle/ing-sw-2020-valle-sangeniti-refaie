@@ -108,6 +108,11 @@ public class SetUpGameController {
             return;
         }
 
+        if(request.getChosenGod().size() != gameInstance.getPlayers().size()){
+            SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "Troppi pochi gods");
+            return;
+        }
+
         gameInstance.setChosenGodsFromDeck(request.getChosenGod());
         SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.GODS_CHOSE, "Gods selezionati");
 
