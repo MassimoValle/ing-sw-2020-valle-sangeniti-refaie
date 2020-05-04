@@ -16,7 +16,7 @@ public class MoveAction implements Action {
     private Square newPositionSquare;
 
 
-    public MoveAction(Worker playerWorker, Position newPosition,Square oldPositionSquare, Square newPositionSquare) {
+    public MoveAction(Worker playerWorker, Position newPosition, Square oldPositionSquare, Square newPositionSquare) {
         this.playerWorker = playerWorker;
         this.newPosition = newPosition;
         this.oldPositionSquare = oldPositionSquare;

@@ -9,10 +9,10 @@ import java.util.ArrayList;
 
 public class ChoseGodsRequest extends Request {
 
-    private ArrayList<God> chosenGod;
+    private final ArrayList<God> chosenGod;
 
-    public ChoseGodsRequest(String messageSender, Dispatcher messageDispatcher, MessageStatus messageStatus, ArrayList<God> chosenGod) {
-        super(messageSender, messageDispatcher, MessageContent.GODS_CHOSE, messageStatus);
+    public ChoseGodsRequest(String messageSender, MessageStatus messageStatus, ArrayList<God> chosenGod) {
+        super(messageSender, Dispatcher.SETUP_GAME, MessageContent.GODS_CHOSE, messageStatus);
         this.chosenGod = chosenGod;
     }
 

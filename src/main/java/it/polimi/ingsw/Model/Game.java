@@ -1,15 +1,12 @@
 package it.polimi.ingsw.Model;
 
-import it.polimi.ingsw.Controller.ActionManager;
 import it.polimi.ingsw.Model.God.Deck;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Map.GameMap;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
-import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
-import it.polimi.ingsw.Network.Message.Response;
+import it.polimi.ingsw.Network.Message.Responses.Response;
 import it.polimi.ingsw.View.Observable;
 
 import java.util.ArrayList;

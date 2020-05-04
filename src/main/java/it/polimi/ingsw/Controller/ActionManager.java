@@ -6,18 +6,16 @@ import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
-import it.polimi.ingsw.Network.Message.*;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
-import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.*;
+import it.polimi.ingsw.Network.Message.Responses.Response;
 
 /**
  * The ActionManager handles every request sent by a client to perform an action
  */
 public class ActionManager {
 
-    private static Game gameInstance;
-    private TurnManager turnManager;
+    private final Game gameInstance;
+    private final TurnManager turnManager;
 
     private PossibleGameState gameState;
 
@@ -32,37 +30,37 @@ public class ActionManager {
     /**
      * It handles the the request .
      *
-     * @param message the request sent by the client
+     * @param request the request sent by the client
      * @return positive/negative response if the client can perform action requested
      */
-    public Response handleRequest(Request message){
+    public Response handleRequest(Request request){
 
 
         //Controllo che il player sia nel suo turno
-        if(!isYourTurn(message.getMessageSender())) { //The player who sent the request isn't the playerActive
-            return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(message.getMessageSender()), message.getMessageContent(), "It's not your turn!");
+        if(!isYourTurn(request.getMessageSender())) { //The player who sent the request isn't the playerActive
+            return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getMessageSender()), request.getMessageContent(), "It's not your turn!");
         }
 
-        switch (message.getMessageContent()) {
+        switch (request.getMessageContent()) {
 
             case SELECT_WORKER:
                 if (gameState == PossibleGameState.FILLING_BOARD || gameState == PossibleGameState.START_GAME ||
                         gameState == PossibleGameState.START_ROUND) {
-                    return handleSelectWorkerAction((SelectWorkerRequest) message);
+                    return handleSelectWorkerAction((SelectWorkerRequest) request);
                 }
 
 
             case MOVE:
                 if (gameState == PossibleGameState.WORKER_SELECTED) {
-                    return handleMoveAction((MoveRequest) message);
+                    return handleMoveAction((MoveRequest) request);
                 }
 
             case BUILD:
                 if (gameState == PossibleGameState.WORKER_MOVED) {
-                    return handleBuildAction((BuildRequest) message);
+                    return handleBuildAction((BuildRequest) request);
                 }
 
-            default: return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(message.getMessageSender()), message.getMessageContent(),"Must never be reached!");
+            default: return SuperMegaController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getMessageSender()), request.getMessageContent(),"Must never be reached!");
         }
     }
 
@@ -144,7 +142,6 @@ public class ActionManager {
 
         Action moveAction = new MoveAction(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
-
         if (moveAction.isValid()) {
             moveAction.doAction();
         } else {
@@ -212,99 +209,5 @@ public class ActionManager {
             return true;
     }
 
-
-
-
-
-
-
-    // set up manager
-
-    /**
-     * It handles the {@link ChoseGodsRequest} when the {@link PossibleGameState#GODLIKE_PLAYER_MOMENT}
-     *
-     * @param request the request sent by the client
-     * @return positive/negative response if the client can perform action requested
-     */
-    /*
-    Response handleGodsChosen(ChoseGodsRequest request) {
-        gameInstance.setChosenGodsFromDeck(request.getChosenGod());
-        turnManager.setGodsInGame(request.getChosenGod());
-
-
-        gameManager.updateGameState(PossibleGameState.ASSIGNING_GOD);
-        turnManager.updateTurnState(PossibleGameState.ASSIGNING_GOD);
-
-        return buildPositiveResponse("Gods selected!");
-    }*/
-
-    /**
-     * It handles the {@link PickGodRequest} when the {@link PossibleGameState#ASSIGNING_GOD}
-     *
-     * @param request the request sent by the client
-     * @return positive/negative response if the client can perform action requested
-     */
-    /*Response handlePickGodRequest(PickGodRequest request) {
-        String requestSender = request.getMessageSender();
-        Player activePlayer = turnManager.getActivePlayer();
-        God pickedGod = request.getPickedGod();
-
-        gameInstance.setGodToPlayer(activePlayer, pickedGod);
-
-        if (gameInstance.godsPickedByEveryone()) {
-            gameManager.updateGameState(PossibleGameState.FILLING_BOARD);
-            turnManager.updateTurnState(PossibleGameState.FILLING_BOARD);
-            return buildPositiveResponse("Gods picked up, now it's time to fill the board!");
-        }
-
-        gameManager.updateGameState(PossibleGameState.ASSIGNING_GOD);
-        turnManager.updateTurnState(PossibleGameState.ASSIGNING_GOD);
-        return buildPositiveResponse("God picked up!");
-    }*/
-
-    /**
-     * It handle the {@link PlaceWorkerRequest} by a player that can be sent to Server after the {@link SelectWorkerRequest}
-     * It's called only in {@link PossibleGameState#FILLING_BOARD} whe the players have to place their workers yet
-     *
-     * @param request the request sent by the client
-     * @return positive/negative response if the client can perform action requested
-     */
-    /*Response handlePlaceWorkerAction(PlaceWorkerRequest request) {
-        Player activePlayer = turnManager.getActivePlayer();
-        Worker activeWorker = turnManager.getActiveWorker();
-        Position positionToPlaceWorker = request.getPositionToPlaceWorker();
-
-        //Controllo che il worker che il player vuole piazzare sia lo stesso che ha selezionato inizialmente
-        if (request.getWorkerToPlace() != activeWorker) {
-            return buildNegativeResponse("The worker you want to place isn't the worker selected!");
-        }
-
-        //Passo direttamente lo square su cui piazzare il worker dal controller, per ovviare alle getInstance in classi che non c'èentrano nulla
-        Square squareWhereToPlaceWorker = gameInstance.getGameMap().getSquare(positionToPlaceWorker);
-
-        Action placeWorkerAction = new PlaceWorkerAction(activeWorker, positionToPlaceWorker, squareWhereToPlaceWorker);
-
-        if (placeWorkerAction.isValid()) {
-            placeWorkerAction.doAction();
-        } else {
-            return buildNegativeResponse("You cannot place the worker here");
-        }
-
-        if (activePlayer.areWorkerPlaced()) {
-            if ( gameInstance.workersPlacedByEveryone()) {
-                gameManager.updateGameState(PossibleGameState.START_GAME);
-                turnManager.updateTurnState(PossibleGameState.START_GAME);
-                return buildPositiveResponse("Everybody have plaed their workers, we are ready to Start!");
-            }
-
-            gameManager.updateGameState(PossibleGameState.FILLING_BOARD);
-            turnManager.updateTurnState(PossibleGameState.FILLING_BOARD);
-            return buildPositiveResponse("Worker Placed");
-        }
-
-        gameManager.updateGameState(PossibleGameState.FILLING_BOARD);
-        return buildPositiveResponse("Worker Placed! Let's place the other one!");
-
-    }*/
 
 }

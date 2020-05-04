@@ -135,6 +135,7 @@ public class Connection extends Observable<String> implements Runnable {
 
             } catch (IOException | ClassNotFoundException e) {
                 System.err.println(e.getMessage());
+                close();
             }
         }
     }

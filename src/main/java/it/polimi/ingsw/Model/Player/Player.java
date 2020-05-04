@@ -81,7 +81,7 @@ public class Player {
         else return false;
     }
 
-    public boolean areWorkerPlaced() {
+    public boolean areWorkersPlaced() {
         for (Worker worker : playerWorkers) {
             if (!worker.isPlaced())
                 return false;

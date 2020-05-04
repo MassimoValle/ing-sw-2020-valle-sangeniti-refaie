@@ -10,7 +10,7 @@ import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
  */
 public class Request extends Message {
 
-    private Dispatcher messageDispatcher;
+    private final Dispatcher messageDispatcher;
     private String clientManagerSays;
 
     public Request(String messageSender, Dispatcher messageDispatcher, MessageContent messageContent, MessageStatus messageStatus) {

@@ -7,11 +7,11 @@ import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 
 public class BuildRequest extends Request {
 
-    private Position positionWhereToBuildOn;
+    private final Position positionWhereToBuildOn;
 
-    public BuildRequest(String messageSender, Dispatcher messageDispatcher, MessageStatus messageStatus, Position positionWhereToBuildOn) {
+    public BuildRequest(String messageSender, MessageStatus messageStatus, Position positionWhereToBuildOn) {
 
-        super(messageSender, messageDispatcher,  MessageContent.BUILD, messageStatus);
+        super(messageSender, Dispatcher.TURN, MessageContent.BUILD, messageStatus);
         this.positionWhereToBuildOn = positionWhereToBuildOn;
 
     }

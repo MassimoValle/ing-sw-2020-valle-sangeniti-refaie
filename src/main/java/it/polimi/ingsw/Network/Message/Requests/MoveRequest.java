@@ -7,11 +7,11 @@ import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 
 public class MoveRequest extends Request {
 
-    private Position senderMovePosition;
+    private final Position senderMovePosition;
 
 
-    public MoveRequest(String messageSender, Dispatcher messageDispatcher, MessageStatus messageStatus, Position senderMovePosition) {
-        super(messageSender, messageDispatcher, MessageContent.MOVE, messageStatus);
+    public MoveRequest(String messageSender, MessageStatus messageStatus, Position senderMovePosition) {
+        super(messageSender, Dispatcher.TURN, MessageContent.MOVE, messageStatus);
         this.senderMovePosition = senderMovePosition;
     }
 

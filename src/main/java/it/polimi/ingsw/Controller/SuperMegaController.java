@@ -2,13 +2,10 @@ package it.polimi.ingsw.Controller;
 
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
-import it.polimi.ingsw.Network.Connection;
 import it.polimi.ingsw.Network.Message.Enum.MessageContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.Request;
-import it.polimi.ingsw.Network.Message.Response;
-
-import java.util.Map;
+import it.polimi.ingsw.Network.Message.Responses.Response;
 
 public class SuperMegaController {
 
@@ -18,15 +15,23 @@ public class SuperMegaController {
 
     private static Game game;
 
+    public static PossibleGameState gameState;
+
+
+
+
+
     public SuperMegaController(Game game, Player activePlayer){
 
-        this.game = game;
+        SuperMegaController.game = game;
 
         setUpGameController = new SetUpGameController(game, activePlayer);
         turnManager = new TurnManager(game.getPlayers());
         actionManager = new ActionManager(game, turnManager);
 
     }
+
+
 
 
 
@@ -38,6 +43,8 @@ public class SuperMegaController {
         }
 
     }
+
+
 
 
 
