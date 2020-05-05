@@ -56,9 +56,10 @@ public abstract class Power {
 
         if (buildAction.isValid() ) {
             buildAction.doAction();
+            return actionDone();
         }
 
-        return actionDone();
+        return actionNotDone();
     }
 
     /**

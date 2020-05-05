@@ -256,9 +256,16 @@ public class ActionManager {
     private Response handleEndTurnAction(EndTurnRequest request) {
         Player activePlayer = turnManager.getActivePlayer();
 
+        //TODO this code must be revisited
+        if (gameState == PossibleGameState.WORKER_MOVED && !turnManager.activePlayerHasBuilt()) {
+            return MasterController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot end your turn, you must build first");
+        }
+
         if (gameState != PossibleGameState.BUILT) {
             if (gameState != PossibleGameState.PLAYER_TURN_ENDING) {
-                return MasterController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot end your turn");
+                if (gameState != PossibleGameState.WORKER_MOVED) {
+                    return MasterController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot end your turn");
+                }
             }
         }
 
