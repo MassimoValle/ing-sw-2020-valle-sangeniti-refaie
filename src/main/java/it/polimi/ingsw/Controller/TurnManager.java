@@ -23,7 +23,6 @@ public class TurnManager {
     private Player activePlayer;
     private Worker activeWorker;
     private final List<Player> inGamePlayers;
-    private List<God> inGameGods;
 
     private List<Action> actionPerformedByActivePlayer;
 
