@@ -4,7 +4,9 @@ package it.polimi.ingsw.Model.Map;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GameMap {
 
@@ -12,6 +14,7 @@ public class GameMap {
     public final int ROWS = 5;
 
     private Square[][] board;
+
 
 
 
@@ -94,6 +97,13 @@ public class GameMap {
 
        return reachablePlaces;
     }
+
+
+
+
+
+
+
 
     /**
      * Return adjacent places where it is possible to build on

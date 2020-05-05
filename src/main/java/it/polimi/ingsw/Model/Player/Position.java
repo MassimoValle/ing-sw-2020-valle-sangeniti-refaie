@@ -142,4 +142,11 @@ public class Position {
         return "Position: " + this.getRow() + " , " + this.getColumn();
         }
 
-}
+
+    public boolean isPerimetral(){
+        return row == 0 || row == 4 || column == 0 || column == 4;
+    }
+
+
+    }
+
