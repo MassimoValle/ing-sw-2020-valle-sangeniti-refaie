@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Network;
 
-import it.polimi.ingsw.Controller.SuperMegaController;
+import it.polimi.ingsw.Controller.MasterController;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Network.Message.Enum.MessageContent;
@@ -28,7 +28,7 @@ public class Server {
     private final Map<String, Connection> playersInLobby = new HashMap<>();
 
     // Controller of the game
-    SuperMegaController superMegaController;
+    MasterController masterController;
 
     // field set by a user
     private int lobbySize = 0;
@@ -92,7 +92,7 @@ public class Server {
 
 
             System.out.println("new game!");
-            superMegaController = new SuperMegaController(game, activePlayer);
+            masterController = new MasterController(game, activePlayer);
 
         }
 
@@ -154,7 +154,7 @@ public class Server {
 
     private void handleControllerMessage(Request message) {
 
-        superMegaController.dispatcher(message);
+        masterController.dispatcher(message);
     }
 
 

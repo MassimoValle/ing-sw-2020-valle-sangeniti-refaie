@@ -30,5 +30,6 @@ public enum MessageContent {
     WORKER_MOVED,
     PLAYERS_HAS_BUILT,
     CHECK,
+    PLAYER_WON,
     ;
 }

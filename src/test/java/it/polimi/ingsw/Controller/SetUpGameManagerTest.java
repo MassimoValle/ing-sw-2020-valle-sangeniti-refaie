@@ -23,10 +23,10 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class SetUpGameControllerTest {
+public class SetUpGameManagerTest {
 
-    SuperMegaController superMegaController;    // need to build a response
-    SetUpGameController setUpGameController;
+    MasterController masterController;    // need to build a response
+    SetUpGameManager setUpGameManager;
     Player activePlayer;
     Game game;
     ArrayList<Player> players = new ArrayList<>();
@@ -56,8 +56,8 @@ public class SetUpGameControllerTest {
         gods.add(new God("apollo", "desc", new ApolloPower("Your move", "desc")));
 
 
-        superMegaController = new SuperMegaController(game, activePlayer);
-        setUpGameController = new SetUpGameController(game, activePlayer);
+        masterController = new MasterController(game, activePlayer);
+        setUpGameManager = new SetUpGameManager(game, activePlayer);
 
     }
 
@@ -66,7 +66,7 @@ public class SetUpGameControllerTest {
     public void assignignGod(){
 
         God god = new God("apollo", "desc", new ApolloPower("Your move", "desc"));
-        setUpGameController.assignGodToPlayer(activePlayer, god);
+        setUpGameManager.assignGodToPlayer(activePlayer, god);
 
         int index = game.getPlayers().indexOf(activePlayer);
 
@@ -80,17 +80,17 @@ public class SetUpGameControllerTest {
         game.addPlayer(bobby);
 
         Request request = new Request("bobby", Dispatcher.SETUP_GAME, MessageContent.CHECK, MessageStatus.OK);
-        setUpGameController.handleMessage(request);
+        setUpGameManager.handleMessage(request);
     }
 
     @Test
     public void assigningGodRequest(){
 
-        SuperMegaController.gameState = PossibleGameState.ASSIGNING_GOD;
+        MasterController.gameState = PossibleGameState.ASSIGNING_GOD;
 
         God god = gods.get(0);
         Request request = new AssignGodRequest(activePlayer.getPlayerName(), god);
-        setUpGameController.handleMessage(request);
+        setUpGameManager.handleMessage(request);
 
         assertEquals(activePlayer.getPlayerGod(), god);
 
@@ -101,10 +101,10 @@ public class SetUpGameControllerTest {
 
     @Test
     public void chosenGodRequest(){
-        SuperMegaController.gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
+        MasterController.gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
 
         Request request = new ChoseGodsRequest(activePlayer.getPlayerName(), gods);
-        setUpGameController.handleMessage(request);
+        setUpGameManager.handleMessage(request);
 
         assertEquals(game.getChosenGodsFromDeck(), gods);
     }
@@ -112,12 +112,12 @@ public class SetUpGameControllerTest {
     @Test
     public void placeWorkerRequest(){
 
-        SuperMegaController.gameState = PossibleGameState.FILLING_BOARD;
+        MasterController.gameState = PossibleGameState.FILLING_BOARD;
         Worker worker = new Worker(1, Color.RED);
         Position position = new Position(1, 1);
         Request request = new PlaceWorkerRequest(activePlayer.getPlayerName(), worker, position);
 
-        setUpGameController.handleMessage(request);
+        setUpGameManager.handleMessage(request);
 
         assertEquals(game.getGameMap().getWorkerOnSquare(position), worker);
     }
@@ -129,15 +129,15 @@ public class SetUpGameControllerTest {
         if(idx == players.size()) idx = 0;
 
         Request request = new AssignGodRequest(players.get(idx).getPlayerName(), god);
-        setUpGameController.handleMessage(request);
+        setUpGameManager.handleMessage(request);
 
         assertEquals(players.get(idx).getPlayerGod(), god);
         assertEquals(game.getPlayers().get( game.getPlayers().indexOf(players.get(idx)) ).getPlayerGod(), god);
 
         if(idx != 0)
-            assertEquals(SuperMegaController.gameState, PossibleGameState.ASSIGNING_GOD);
+            assertEquals(MasterController.gameState, PossibleGameState.ASSIGNING_GOD);
         else
-            assertEquals(SuperMegaController.gameState, PossibleGameState.FILLING_BOARD);
+            assertEquals(MasterController.gameState, PossibleGameState.FILLING_BOARD);
     }
 
     @Test
@@ -152,18 +152,18 @@ public class SetUpGameControllerTest {
 
     @Ignore
     public void flow_placingWorkerRequest(){
-        SuperMegaController.gameState = PossibleGameState.FILLING_BOARD;
+        MasterController.gameState = PossibleGameState.FILLING_BOARD;
         List<Worker> workers = players.get(idx).getPlayerWorkers();
         activePlayer = players.get(idx);
         Position position1 = new Position(idx, idx);
         Position position2 = new Position(idx, idx+1);
 
         Request request1 = new PlaceWorkerRequest(activePlayer.getPlayerName(), workers.get(0), position1);
-        setUpGameController.handleMessage(request1);
+        setUpGameManager.handleMessage(request1);
         assertEquals(game.getGameMap().getWorkerOnSquare(position1), workers.get(0));
 
         Request request2 = new PlaceWorkerRequest(activePlayer.getPlayerName(), workers.get(1), position2);
-        setUpGameController.handleMessage(request2);
+        setUpGameManager.handleMessage(request2);
         assertEquals(game.getGameMap().getWorkerOnSquare(position2), workers.get(1));
 
         idx++;

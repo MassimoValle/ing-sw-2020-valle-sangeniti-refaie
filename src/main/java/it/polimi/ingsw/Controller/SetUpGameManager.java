@@ -8,10 +8,7 @@ import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Network.Message.Enum.MessageContent;
-import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.*;
-
-import java.util.ArrayList;
 
 
 /**
@@ -19,7 +16,7 @@ import java.util.ArrayList;
  * This controller manages the set-up phases of the game, before the actual game starts.
  *
  */
-public class SetUpGameController {
+public class SetUpGameManager {
 
     private final Game gameInstance;
 
@@ -32,9 +29,9 @@ public class SetUpGameController {
 
 
 
-    public SetUpGameController(Game game, Player activePlayer){
+    public SetUpGameManager(Game game, Player activePlayer){
 
-        SuperMegaController.gameState = PossibleGameState.GAME_INIT;
+        MasterController.gameState = PossibleGameState.GAME_INIT;
 
         this.gameInstance = game;
         this.activePlayer = activePlayer;
@@ -57,10 +54,10 @@ public class SetUpGameController {
         int n = rand.nextInt(gameInstance.getNumberOfPlayers());
         Player godLikePlayer = gameInstance.getPlayers().get(n);*/
 
-        SuperMegaController.gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
+        MasterController.gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
 
         //Notifico al player in questione che deve scegliere i god
-        SuperMegaController.buildPositiveResponse(godLikePlayer, MessageContent.GODS_CHOSE, "Let's chose which gods you want to be part of the game!");
+        MasterController.buildPositiveResponse(godLikePlayer, MessageContent.GODS_CHOSE, "Let's chose which gods you want to be part of the game!");
 
     }
 
@@ -74,7 +71,7 @@ public class SetUpGameController {
     public void assignGodToPlayer(Player player, God god) {
         player.setPlayerGod(god);
         god.setAssigned(true);
-        SuperMegaController.gameState = PossibleGameState.ASSIGNING_GOD;
+        MasterController.gameState = PossibleGameState.ASSIGNING_GOD;
     }
 
 
@@ -118,7 +115,7 @@ public class SetUpGameController {
     public void handleMessage(Request request) {
 
         if(!isYourTurn(request.getMessageSender())) {
-            SuperMegaController.buildNegativeResponse(getPlayerByName(request.getMessageSender()), request.getMessageContent(), "It's not your turn!");
+            MasterController.buildNegativeResponse(getPlayerByName(request.getMessageSender()), request.getMessageContent(), "It's not your turn!");
             return;
         }
 
@@ -126,7 +123,7 @@ public class SetUpGameController {
             case GODS_CHOSE -> handleGodsChosen((ChoseGodsRequest) request);
             case PICK_GOD -> handleGodAssignment((AssignGodRequest) request);
             case PLACE_WORKER -> handlePlaceWorkerAction((PlaceWorkerRequest) request);
-            default -> SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "Something went wrong!");
+            default -> MasterController.buildNegativeResponse(activePlayer, request.getMessageContent(), "Something went wrong!");
         }
     }
 
@@ -138,24 +135,24 @@ public class SetUpGameController {
      */
     private void handleGodsChosen(ChoseGodsRequest request) {
 
-        if(SuperMegaController.gameState != PossibleGameState.GODLIKE_PLAYER_MOMENT){
+        if(MasterController.gameState != PossibleGameState.GODLIKE_PLAYER_MOMENT){
             return;
         }
 
         if(request.getChosenGods().size() != gameInstance.getPlayers().size()){
-            SuperMegaController.buildNegativeResponse(activePlayer, request.getMessageContent(), "Troppi pochi gods");
+            MasterController.buildNegativeResponse(activePlayer, request.getMessageContent(), "Troppi pochi gods");
             return;
         }
 
         gameInstance.setChosenGodsFromDeck(request.getChosenGods());
-        SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.GODS_CHOSE, "Gods selezionati");
+        MasterController.buildPositiveResponse(activePlayer, MessageContent.GODS_CHOSE, "Gods selezionati");
 
         //Turno del giocatore successivo
         activePlayer = nextPlayer();
-        SuperMegaController.gameState = PossibleGameState.ASSIGNING_GOD;
+        MasterController.gameState = PossibleGameState.ASSIGNING_GOD;
 
         // response: scegli un god
-        SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.PICK_GOD, "Piglia un god");
+        MasterController.buildPositiveResponse(activePlayer, MessageContent.PICK_GOD, "Piglia un god");
 
     }
 
@@ -166,7 +163,7 @@ public class SetUpGameController {
      */
     private void handleGodAssignment(AssignGodRequest request) {
 
-        if(SuperMegaController.gameState != PossibleGameState.ASSIGNING_GOD){
+        if(MasterController.gameState != PossibleGameState.ASSIGNING_GOD){
             return;
         }
 
@@ -179,13 +176,13 @@ public class SetUpGameController {
         playerLoop++;
 
         if(playerLoop < gameInstance.getPlayers().size())
-            SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.PICK_GOD, "Piglia un god");
+            MasterController.buildPositiveResponse(activePlayer, MessageContent.PICK_GOD, "Piglia un god");
 
         else {
 
-            SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.PLACE_WORKER, "Posizione un worker");
+            MasterController.buildPositiveResponse(activePlayer, MessageContent.PLACE_WORKER, "Posizione un worker");
             playerLoop = 0;
-            SuperMegaController.gameState = PossibleGameState.FILLING_BOARD;
+            MasterController.gameState = PossibleGameState.FILLING_BOARD;
 
         }
     }
@@ -197,7 +194,7 @@ public class SetUpGameController {
      */
     private void handlePlaceWorkerAction(PlaceWorkerRequest request) {
 
-        if(SuperMegaController.gameState != PossibleGameState.FILLING_BOARD){
+        if(MasterController.gameState != PossibleGameState.FILLING_BOARD){
             return;
         }
 
@@ -219,19 +216,19 @@ public class SetUpGameController {
                 playerLoop++;
 
                 if(playerLoop >= gameInstance.getPlayers().size()){
-                    SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.SELECT_WORKER, "Piglia un god");
-                    SuperMegaController.gameState = PossibleGameState.START_ROUND;
+                    MasterController.buildPositiveResponse(activePlayer, MessageContent.SELECT_WORKER, "Piglia un god");
+                    MasterController.gameState = PossibleGameState.START_ROUND;
                     playerLoop = 0;
                     return;
                 }
 
             }
 
-            SuperMegaController.buildPositiveResponse(activePlayer, MessageContent.PLACE_WORKER, "Posizione un worker");
+            MasterController.buildPositiveResponse(activePlayer, MessageContent.PLACE_WORKER, "Posizione un worker");
 
         }
         else
-            SuperMegaController.buildNegativeResponse(activePlayer, MessageContent.PLACE_WORKER, "Errore nel posizionamento del worker");
+            MasterController.buildNegativeResponse(activePlayer, MessageContent.PLACE_WORKER, "Errore nel posizionamento del worker");
 
     }
 

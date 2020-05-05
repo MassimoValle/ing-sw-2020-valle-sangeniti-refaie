@@ -17,10 +17,10 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
-public class SuperMegaControllerTest {
+public class MasterControllerTest {
 
-    SuperMegaController superMegaController;
-    SetUpGameController setUpGameController;
+    MasterController masterController;
+    SetUpGameManager setUpGameManager;
     Game game;
     Player player1, player2;
 
@@ -33,15 +33,15 @@ public class SuperMegaControllerTest {
         game.addPlayer(player1);
         game.addPlayer(player2);
 
-        superMegaController = new SuperMegaController(game, player1);
-        setUpGameController = superMegaController._getSetUpGameController();
+        masterController = new MasterController(game, player1);
+        setUpGameManager = masterController._getSetUpGameController();
     }
 
 
     @Test
     public void checkDispatcher(){
         Request request = new Request(player1.getPlayerName(), Dispatcher.SETUP_GAME, MessageContent.CHECK, MessageStatus.OK);
-        superMegaController.dispatcher(request);
+        masterController.dispatcher(request);
 
         //request = new Request(player.getPlayerName(), Dispatcher.TURN, MessageContent.CHECK, MessageStatus.OK);
         //superMegaController.dispatcher(request);
@@ -55,7 +55,7 @@ public class SuperMegaControllerTest {
         String pl1 = player1.getPlayerName();
         String pl2 = player2.getPlayerName();
 
-        assertEquals(2, superMegaController.getGameInstance().getNumberOfPlayers());
+        assertEquals(2, masterController.getGameInstance().getNumberOfPlayers());
 
 
         //Aggiungo i god alla partita
@@ -104,41 +104,41 @@ public class SuperMegaControllerTest {
 
         game.getGameMap().printBoard();
 
-        superMegaController._getActionManager().setGameState(PossibleGameState.START_ROUND);
-        superMegaController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
-        superMegaController._getTurnManager().nextTurn(player1);
+        masterController._getActionManager().setGameState(PossibleGameState.START_ROUND);
+        masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
+        masterController._getTurnManager().nextTurn(player1);
 
 
         //Tocca al player1
         //seleziona un worker...
-        superMegaController.dispatcher(
+        masterController.dispatcher(
                 new SelectWorkerRequest(pl1, w1pl1)
         );
         //lo muovo...
-        superMegaController.dispatcher(
+        masterController.dispatcher(
                 new MoveRequest(pl1, new Position(1,2))
         );
         //e costruisco
-        superMegaController.dispatcher(
+        masterController.dispatcher(
                 new BuildRequest(pl1, new Position(0,2))
         );
         //passo il turno
-        superMegaController.dispatcher(
+        masterController.dispatcher(
                 new EndTurnRequest(pl1)
         );
 
         game.getGameMap().printBoard();
 
         //Tocca al player2
-        superMegaController.dispatcher(
+        masterController.dispatcher(
                 new SelectWorkerRequest(pl2, w1pl2)
         );
         //lo muovo la prima volta
-        superMegaController.dispatcher(
+        masterController.dispatcher(
                 new MoveRequest(pl2, new Position(4,2))
         );
 
-        superMegaController.dispatcher(
+        masterController.dispatcher(
                 new EndMoveRequest(pl2)
         );
  /*       //muovo la seconda volta
@@ -146,11 +146,11 @@ public class SuperMegaControllerTest {
                 new MoveRequest(pl2, new Position(4,3))
         );*/
         //costruisco
-        superMegaController.dispatcher(
+        masterController.dispatcher(
                 new BuildRequest(pl2, new Position(4,3))
         );
         //passo il turno
-        superMegaController.dispatcher(
+        masterController.dispatcher(
                 new EndTurnRequest(pl1)
         );
 

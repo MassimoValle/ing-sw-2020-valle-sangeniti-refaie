@@ -6,11 +6,12 @@ import it.polimi.ingsw.Network.Message.Enum.MessageContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.Request;
 import it.polimi.ingsw.Network.Message.Responses.Response;
+import it.polimi.ingsw.Network.Message.Responses.WonResponse;
 
 
-public class SuperMegaController {
+public class MasterController {
 
-    private final SetUpGameController setUpGameController;
+    private final SetUpGameManager setUpGameManager;
     private final TurnManager turnManager;
     private final ActionManager actionManager;
 
@@ -22,11 +23,11 @@ public class SuperMegaController {
 
 
 
-    public SuperMegaController(Game gameInstance, Player activePlayer){
+    public MasterController(Game gameInstance, Player activePlayer){
 
-        SuperMegaController.gameInstance = gameInstance;
+        MasterController.gameInstance = gameInstance;
 
-        setUpGameController = new SetUpGameController(gameInstance, activePlayer);
+        setUpGameManager = new SetUpGameManager(gameInstance, activePlayer);
         turnManager = new TurnManager(gameInstance.getPlayers());
         actionManager = new ActionManager(gameInstance, turnManager);
 
@@ -38,10 +39,15 @@ public class SuperMegaController {
     }
 
 
+    /**
+     * It dispatch the request based on game phases
+     *
+     * @param request the request sent by the client
+     */
     public void dispatcher(Request request){
 
         switch (request.getMessageDispatcher()) {
-            case SETUP_GAME -> setUpGameController.handleMessage(request);
+            case SETUP_GAME -> setUpGameManager.handleMessage(request);
             case TURN -> actionManager.handleRequest(request);
         }
 
@@ -82,12 +88,22 @@ public class SuperMegaController {
         return res;
     }
 
+    //Fa la stessa identica cosa del buildPositiveResponse solo che invia una WonResponse
+    public static Response buildWonResponse(Player player, String gameManagerSays) {
+
+        Response res = new WonResponse(player.getPlayerName(), gameManagerSays);
+        gameInstance.putInChanges(player, res);
+
+        //da notificare a tutti gli altri giocatori che un player ha vinto --> fine partita
+
+        return res;
+    }
 
 
 
     //      ####    TESTING-ONLY    ####
-    public SetUpGameController _getSetUpGameController() {
-        return setUpGameController;
+    public SetUpGameManager _getSetUpGameController() {
+        return setUpGameManager;
     }
     public ActionManager _getActionManager() {
         return actionManager;
