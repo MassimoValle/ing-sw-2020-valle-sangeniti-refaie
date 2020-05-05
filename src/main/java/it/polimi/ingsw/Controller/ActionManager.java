@@ -29,6 +29,7 @@ public class ActionManager {
     public ActionManager(Game game, TurnManager turnManager) {
         this.gameInstance = game;
         this.turnManager = turnManager;
+        this.gameState = SuperMegaController.gameState;
     }
 
 

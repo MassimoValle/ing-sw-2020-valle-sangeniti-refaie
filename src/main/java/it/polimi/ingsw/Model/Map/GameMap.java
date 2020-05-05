@@ -168,6 +168,12 @@ public class GameMap {
         System.out.println(string);
     }
 
+    @Override
+    public String toString() {
+        printBoard();
+        return null;
+    }
+
 
 
     // ### helper ###

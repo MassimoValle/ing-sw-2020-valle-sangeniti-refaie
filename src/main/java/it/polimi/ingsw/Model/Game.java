@@ -13,11 +13,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 
-//GAME CLASS DOESN'T NEED TO IMPLEMENTS CLONABLE
-
-public class Game extends Observable<Game> implements Cloneable{
+public class Game extends Observable<Game> {
 
 
     private List<Player> players;
@@ -26,15 +25,15 @@ public class Game extends Observable<Game> implements Cloneable{
     private List<God> chosenGodsFromDeck;
     private GameMap gameMap;
 
-    private List<Color> colorAvailable = new ArrayList<Color>(){{
-        add(Color.RED);
-        add(Color.BLUE);
-        add(Color.GREEN);
-    }};
-
+    private List<Color> colorAvailable = new ArrayList<Color>();
     private final HashMap<Player, Message> changes = new HashMap<>();
     private HashMap<Player, Color> playerColor = new HashMap<>();
 
+    private static Game gameIntance;
+
+    public static Game getGameIntance() {
+        return Objects.requireNonNullElseGet(gameIntance, Game::new);
+    }
 
 
     public Game() {
@@ -42,10 +41,10 @@ public class Game extends Observable<Game> implements Cloneable{
         this.deck = Deck.getInstance();
         this.chosenGodsFromDeck = new ArrayList<>();
         this.gameMap = new GameMap();
+
+        initColorAvailable();
+
     }
-
-
-
 
     // getter
     public List<Player> getPlayers() {
@@ -66,6 +65,12 @@ public class Game extends Observable<Game> implements Cloneable{
         return this.gameMap;
     }
 
+
+    private void initColorAvailable() {
+        colorAvailable.add(Color.RED);
+        colorAvailable.add(Color.BLUE);
+        colorAvailable.add(Color.GREEN);
+    }
 
     /**
      * Add {@link Player} to the {@link Game}
@@ -151,7 +156,15 @@ public class Game extends Observable<Game> implements Cloneable{
      */
     public void putInChanges(Player player, Response response) {
         changes.put(player, response);
+
+        //sendUpdateToEveryone();
+
         notify(this);
+    }
+
+    private void sendUpdateToEveryone() {
+        ModelSerialized modelSerialized = new ModelSerialized();
+        //mandiamo a tutti questo model serialized cosi per aggiornare la loro view
     }
 
 
@@ -169,22 +182,11 @@ public class Game extends Observable<Game> implements Cloneable{
 
 
 
-
-
     @Override
     public String toString() {
         return players.toString() +
                 gameMap.toString() +
                 deck.toString();
-    }
-
-    @Override
-    public Game clone(){
-        Game game1 = new Game();
-        game1.players = getPlayers();
-        game1.gameMap = getGameMap();
-        game1.deck = getDeck();
-        return game1;
     }
 
 }

@@ -61,7 +61,7 @@ public class Server {
 
         if(clientsConnected.size() >= lobbySize && lobbySize != 0){
 
-            Game game = new Game();
+            Game game = Game.getGameIntance();
             Player activePlayer = null;
 
             int loop = 0;
