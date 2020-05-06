@@ -9,7 +9,7 @@ import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 
-public abstract class Power {
+public abstract class Power implements GodsChecker {
 
     protected String powerDescription;
     protected PowerType powerType;
@@ -100,4 +100,12 @@ public abstract class Power {
     }
 
 
+    public boolean canPreventsFromPerformingAction(){
+        return false;
+    }
+
+    @Override
+    public boolean checkIfActionNotPermitted(MoveAction moveAction) {
+        return false;
+    }
 }

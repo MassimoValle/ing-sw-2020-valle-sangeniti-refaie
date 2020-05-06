@@ -2,6 +2,7 @@ package it.polimi.ingsw.Model;
 
 import it.polimi.ingsw.Model.God.Deck;
 import it.polimi.ingsw.Model.God.God;
+import it.polimi.ingsw.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Model.Map.GameMap;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Worker;
@@ -57,6 +58,14 @@ public class Game extends Observable<Game> {
 
     public List<God> getChosenGodsFromDeck() {
         return chosenGodsFromDeck;
+    }
+
+    public List<Power> getPowersInGame() {
+        ArrayList<Power> powers = new ArrayList<>();
+        for (God god: chosenGodsFromDeck) {
+            powers.add(god.getGodPower());
+        }
+        return powers;
     }
 
     public int getNumberOfPlayers() { return players.size(); }

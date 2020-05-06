@@ -70,10 +70,6 @@ public class TurnManager {
 
     // setter
 
-    public void setGodsInGame(ArrayList<God> chosenGod) {
-        this.inGameGods = chosenGod;
-    }
-
     /**
      * Sets active player.
      *
