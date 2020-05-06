@@ -5,6 +5,7 @@ import it.polimi.ingsw.Network.Message.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.NoSuchElementException;
 
 public class Client {
@@ -13,11 +14,29 @@ public class Client {
 
     private Socket socket;
 
-    private String ip;
-    private int port;
+    private final String ip;
+    private final int port;
 
     private static ObjectInputStream socketIn;
     private static ObjectOutputStream socketOut;
+
+
+
+
+
+    public Client(String ip, int port){
+        this.ip = ip;
+        this.port = port;
+
+        clientManager = ClientManager.getInstance();
+
+        //Ping ping = new Ping(ip);
+        //new Thread(() -> ping.run()).start();
+    }
+
+
+
+
 
     public static class Ping implements Runnable{
 
@@ -54,15 +73,36 @@ public class Client {
         }
     }
 
-    public Client(String ip, int port){
-        this.ip = ip;
-        this.port = port;
-        Ping ping = new Ping(ip);
+    private void ping(){
 
-        clientManager = ClientManager.getInstance();
+        new Thread(() -> {
+            try {
+                if(!getKeepAlive()){
+                    socket.close();
+                }
+            } catch (InterruptedException | IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
 
-        //new Thread(() -> ping.run()).start();
     }
+
+    private boolean getKeepAlive() throws SocketException, InterruptedException {
+
+        while (!Thread.currentThread().isInterrupted()){
+
+            System.out.println("Socket keep alive: " + socket.getKeepAlive());
+
+            if(!socket.getKeepAlive()) return false;
+
+            Thread.sleep(5000);
+        }
+
+        return true;
+    }
+
+
+
 
 
     public static void sendMessage(Message message) throws IOException {
@@ -83,21 +123,8 @@ public class Client {
         }
     }
 
-    public void startConnection() {
-
-        try{
-            socket = new Socket(ip, port);
-            System.out.println("Connection established");
-
-            socketOut = new ObjectOutputStream(socket.getOutputStream());
-            socketIn = new ObjectInputStream(socket.getInputStream());
 
 
-        } catch (IOException ex) {
-            System.out.println("Impossible to connect to " + ip + port);
-            ex.printStackTrace();
-        }
-    }
 
 
     public void run() throws IOException {
@@ -118,4 +145,25 @@ public class Client {
         }
         
     }
+
+    public void startConnection() {
+
+        try{
+            socket = new Socket(ip, port);
+            System.out.println("Connection established");
+
+            socket.setKeepAlive(true);
+            ping();
+
+            socketOut = new ObjectOutputStream(socket.getOutputStream());
+            socketIn = new ObjectInputStream(socket.getInputStream());
+
+
+        } catch (IOException ex) {
+            System.out.println("Impossible to connect to " + ip + port);
+            ex.printStackTrace();
+        }
+    }
+
+
 }

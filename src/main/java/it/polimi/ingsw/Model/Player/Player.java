@@ -55,6 +55,10 @@ public class Player {
         this.color = color;
     }
 
+    public Color getColor() {
+        return color;
+    }
+
     /**
      * Gets player name.
      * <p></p>

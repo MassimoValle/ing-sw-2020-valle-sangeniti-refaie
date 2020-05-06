@@ -9,7 +9,9 @@ import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 
-public abstract class Power implements GodsChecker {
+import java.io.Serializable;
+
+public abstract class Power implements Serializable, GodsChecker {
 
     protected String powerDescription;
     protected PowerType powerType;

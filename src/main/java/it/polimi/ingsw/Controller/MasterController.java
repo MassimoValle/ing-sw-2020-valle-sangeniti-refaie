@@ -2,8 +2,9 @@ package it.polimi.ingsw.Controller;
 
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
 import it.polimi.ingsw.Network.Message.Requests.Request;
 import it.polimi.ingsw.Network.Message.Responses.Response;
 import it.polimi.ingsw.Network.Message.Responses.WonResponse;
@@ -65,9 +66,9 @@ public class MasterController {
      * @param gameManagerSays the message from the Game Manager
      * @return the response
      */
-    public static Response buildNegativeResponse(Player player, MessageContent messageContent, String gameManagerSays) {
+    public static Response buildNegativeResponse(Player player, ResponseContent responseContent, String gameManagerSays) {
 
-        Response res = new Response(player.getPlayerName(), messageContent, MessageStatus.ERROR, gameManagerSays);
+        Response res = new Response(player.getPlayerName(), responseContent, MessageStatus.ERROR, gameManagerSays);
         gameInstance.putInChanges(player, res);
 
         return res;
@@ -80,9 +81,9 @@ public class MasterController {
      * @param gameManagerSays the message from the Game Manager
      * @return the response
      */
-    public static Response buildPositiveResponse(Player player, MessageContent messageContent, String gameManagerSays) {
+    public static Response buildPositiveResponse(Player player, ResponseContent responseContent, String gameManagerSays) {
 
-        Response res = new Response(player.getPlayerName(), messageContent, MessageStatus.OK, gameManagerSays);
+        Response res = new Response(player.getPlayerName(), responseContent, MessageStatus.OK, gameManagerSays);
         gameInstance.putInChanges(player, res);
 
         return res;

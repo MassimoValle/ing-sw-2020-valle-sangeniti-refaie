@@ -2,7 +2,9 @@ package it.polimi.ingsw.Model.God.GodsPower;
 
 import it.polimi.ingsw.Model.Map.Square;
 
-public class DemeterPower extends Power {
+import java.io.Serializable;
+
+public class DemeterPower extends Power implements Serializable {
 
     public DemeterPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);

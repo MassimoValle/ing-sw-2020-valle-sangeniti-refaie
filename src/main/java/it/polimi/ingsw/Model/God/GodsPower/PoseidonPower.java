@@ -4,7 +4,9 @@ import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 
-public class PoseidonPower extends Power {
+import java.io.Serializable;
+
+public class PoseidonPower extends Power implements Serializable {
 
 
     private static Square squareFromToBuild;

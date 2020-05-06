@@ -1,12 +1,12 @@
 package it.polimi.ingsw.Network.Message.Requests;
 
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 
 public class EndBuildRequest extends Request{
 
     public EndBuildRequest(String messageSender) {
-        super(messageSender, Dispatcher.TURN, MessageContent.END_BUILD);
+        super(messageSender, Dispatcher.TURN, RequestContent.END_BUILD);
     }
 
 }

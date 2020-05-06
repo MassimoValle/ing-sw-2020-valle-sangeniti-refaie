@@ -2,8 +2,7 @@ package it.polimi.ingsw.Network.Message.Requests;
 
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
-import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 
 public class MoveRequest extends Request {
 
@@ -11,7 +10,7 @@ public class MoveRequest extends Request {
 
 
     public MoveRequest(String messageSender, Position senderMovePosition) {
-        super(messageSender, Dispatcher.TURN, MessageContent.MOVE);
+        super(messageSender, Dispatcher.TURN, RequestContent.MOVE);
         this.senderMovePosition = senderMovePosition;
     }
 

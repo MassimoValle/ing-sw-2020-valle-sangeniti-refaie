@@ -7,7 +7,7 @@ import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.*;
 
@@ -40,7 +40,7 @@ public class MasterControllerTest {
 
     @Test
     public void checkDispatcher() {
-        Request request = new Request(player1.getPlayerName(), Dispatcher.SETUP_GAME, MessageContent.CHECK, MessageStatus.OK);
+        Request request = new Request(player1.getPlayerName(), Dispatcher.SETUP_GAME, RequestContent.CHECK, MessageStatus.OK);
         masterController.dispatcher(request);
 
         //request = new Request(player.getPlayerName(), Dispatcher.TURN, MessageContent.CHECK, MessageStatus.OK);

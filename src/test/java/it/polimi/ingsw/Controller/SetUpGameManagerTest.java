@@ -7,7 +7,7 @@ import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.AssignGodRequest;
 import it.polimi.ingsw.Network.Message.Requests.ChoseGodsRequest;
@@ -79,7 +79,7 @@ public class SetUpGameManagerTest {
         Player bobby = new Player("bobby");
         game.addPlayer(bobby);
 
-        Request request = new Request("bobby", Dispatcher.SETUP_GAME, MessageContent.CHECK, MessageStatus.OK);
+        Request request = new Request("bobby", Dispatcher.SETUP_GAME, RequestContent.CHECK, MessageStatus.OK);
         setUpGameManager.handleMessage(request);
     }
 
