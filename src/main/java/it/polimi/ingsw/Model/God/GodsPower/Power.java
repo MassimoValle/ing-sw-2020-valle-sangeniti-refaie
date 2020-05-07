@@ -39,7 +39,7 @@ public abstract class Power implements GodsChecker {
      */
     public ActionOutcome move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
 
-        Action moveAction = new MoveAction(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
+        Action moveAction = new MoveAction(this, activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
         if ( moveAction.isValid() ) {
             moveAction.doAction();

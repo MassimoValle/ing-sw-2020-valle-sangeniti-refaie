@@ -144,7 +144,7 @@ public class ActionManager {
 
 
         //L'azione è stata eseguita quindi l'aggiungo alla lista nel turn manager
-        turnManager.addActionPerformed(new MoveAction(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove));
+        turnManager.addActionPerformed(new MoveAction(playerGod.getGodPower(), activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove));
 
         //vado a contrllare se con questa mossa l'activePlayer ha vinto (sono salito da un livello 2 a un livello 3)
         if (playerHasWon(activePlayer)) {

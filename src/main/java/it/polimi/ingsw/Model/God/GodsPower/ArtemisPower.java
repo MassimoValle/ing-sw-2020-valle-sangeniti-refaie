@@ -10,6 +10,8 @@ public class ArtemisPower extends Power {
     boolean firstMove = true;
     Square startingPlace = null;
 
+    private ActionOutcome outcome;
+
     public ArtemisPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
     }
@@ -18,22 +20,26 @@ public class ArtemisPower extends Power {
     public ActionOutcome move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
 
         if (startingPlace == null) {
-            super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
+            outcome = super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
+            if (outcome == ActionOutcome.DONE) {
+                firstMove = false;
+                startingPlace = squareWhereTheWorkerIs;
+                return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
+            } else {
+                return ActionOutcome.NOT_DONE;
+            }
+
         } else if (startingPlace.equals(squareWhereToMove)) {
             return ActionOutcome.NOT_DONE;
         } else {
-            super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
+            outcome = super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
+            if (outcome == ActionOutcome.DONE) {
+                return ActionOutcome.DONE;
+            } else {
+                return ActionOutcome.NOT_DONE;
+            }
         }
 
-
-
-        if (firstMove) {
-            firstMove = false;
-            startingPlace = squareWhereTheWorkerIs;
-            return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
-        } else {
-            return ActionOutcome.DONE;
-        }
     }
 
 }

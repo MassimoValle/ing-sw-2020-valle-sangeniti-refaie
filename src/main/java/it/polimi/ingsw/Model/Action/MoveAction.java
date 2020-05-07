@@ -14,6 +14,8 @@ import java.util.ArrayList;
  */
 public class MoveAction implements Action {
 
+
+    private final Power godsPowerPerformingAction;
     public final Worker playerWorker;
     public final Position newPosition;
     public final Square oldPositionSquare;
@@ -21,11 +23,12 @@ public class MoveAction implements Action {
 
 
 
-    public MoveAction(Worker playerWorker, Position newPosition, Square oldPositionSquare, Square newPositionSquare) {
+    public MoveAction(Power godsPowerPerformingAction, Worker playerWorker, Position newPosition, Square oldPositionSquare, Square newPositionSquare) {
         this.playerWorker = playerWorker;
         this.newPosition = newPosition;
         this.oldPositionSquare = oldPositionSquare;
         this.newPositionSquare = newPositionSquare;
+        this.godsPowerPerformingAction = godsPowerPerformingAction;
     }
 
     /**
@@ -37,7 +40,7 @@ public class MoveAction implements Action {
     public boolean isValid() {
 
         //if some God Power is active that prevent you from doing this move
-        if(godsPowerActive() || newPositionSquare.hasWorkerOn()) {
+        if(godsPowerActive(godsPowerPerformingAction) || newPositionSquare.hasWorkerOn()) {
             return false;
         }
 
@@ -69,15 +72,15 @@ public class MoveAction implements Action {
      *
      * @return true if action not permitted, false otherwise
      */
-    private boolean godsPowerActive() {
-        boolean result = false;
+    private boolean godsPowerActive(Power godsPowerPerformingAction) {
+
         ArrayList<Power> powersInGame = (ArrayList<Power>) Game.getInstance().getPowersInGame();
         for (Power godPower: powersInGame) {
-            if (godPower.canPreventsFromPerformingAction() && godPower.checkIfActionNotPermitted(this)) {
-                 result = true;
+            if (godPower!= godsPowerPerformingAction && godPower.canPreventsFromPerformingAction() && godPower.checkIfActionNotPermitted(this)) {
+                 return true;
             }
         }
-        return result;
+        return false;
     }
 
 }
