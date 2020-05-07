@@ -1,7 +1,6 @@
 package it.polimi.ingsw.Model.God.GodsPower;
 
-import it.polimi.ingsw.Model.Action.Action;
-import it.polimi.ingsw.Model.Action.MoveAction;
+import it.polimi.ingsw.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
@@ -13,7 +12,7 @@ public class ApolloPower extends Power {
     }
 
     @Override
-    public boolean[] move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
+    public ActionOutcome move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
 
         //Controllo se attiva il potere di Apollo
         if (squareWhereToMove.hasWorkerOn() && !squareWhereToMove.getWorkerOnSquare().getColor().equals(activeWorker.getColor()) ) {
@@ -29,7 +28,7 @@ public class ApolloPower extends Power {
             //Sposto il worker che si deve mettere al posto di apollo
             super.move(worker, pos, squareWhereToMove, squareWhereTheWorkerIs);
 
-            return actionDone();
+            return ActionOutcome.DONE;
 
         }
 

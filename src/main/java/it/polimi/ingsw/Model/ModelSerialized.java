@@ -19,7 +19,7 @@ public class ModelSerialized implements Serializable {
 
     public ModelSerialized() {
 
-        this.gameMap = Game.getGameIntance().getGameMap();
+        this.gameMap = Game.getInstance().getGameMap();
 
     }
 

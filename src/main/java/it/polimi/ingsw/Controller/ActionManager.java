@@ -1,9 +1,6 @@
 package it.polimi.ingsw.Controller;
 
-import it.polimi.ingsw.Model.Action.Action;
-import it.polimi.ingsw.Model.Action.BuildAction;
-import it.polimi.ingsw.Model.Action.MoveAction;
-import it.polimi.ingsw.Model.Action.SelectWorkerAction;
+import it.polimi.ingsw.Model.Action.*;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Map.Square;
@@ -24,6 +21,8 @@ public class ActionManager {
     private final TurnManager turnManager;
 
     private PossibleGameState gameState;
+
+    private ActionOutcome actionOutcome;
 
 
     public ActionManager(Game game, TurnManager turnManager) {
@@ -133,14 +132,13 @@ public class ActionManager {
         Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getWorkerPosition());
         Square squareWhereToMove = gameInstance.getGameMap().getSquare(positionWhereToMove);
 
-        //actionInfo[0] value used to see if the action requested has been done
-        //actionInfo[1] value used to see if the action can be performed again
-        boolean[] actionInfo;
 
-        actionInfo = playerGod.getGodPower().move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
+        //ESEGUO LA MOSSA E METTO L'ESITO IN moveOutcome
+        actionOutcome = playerGod.getGodPower().move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
+
 
         //action hasn't been done
-        if (!actionInfo[0]) {
+        if (actionOutcome == ActionOutcome.NOT_DONE) {
             return MasterController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot move here!");
         }
 
@@ -154,7 +152,7 @@ public class ActionManager {
         }
 
         //action can not be performed again
-        if (!actionInfo[1]) {
+        if (actionOutcome == ActionOutcome.DONE) {
             gameState = PossibleGameState.WORKER_MOVED;
             turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
             return MasterController.buildPositiveResponse(activePlayer, request.getMessageContent(), "Worker Moved!");
@@ -210,17 +208,18 @@ public class ActionManager {
         //actionInfo[1] value used to see if the action can be performed again
         boolean[] actionInfo;
 
-        actionInfo = playerGod.getGodPower().build(squareWhereToBuild);
+        actionOutcome = playerGod.getGodPower().build(squareWhereToBuild);
 
 
-        if (!actionInfo[0]) {
+        if (actionOutcome == ActionOutcome.NOT_DONE) {
             //action hasn't been done
             return MasterController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot build here!");
         }
 
         //L'azione è stata eseguita
         turnManager.addActionPerformed(new BuildAction(squareWhereToBuild));
-        if (!actionInfo[1]) {
+
+        if (actionOutcome == ActionOutcome.DONE) {
             //action can not be performed again
             gameState = PossibleGameState.BUILT;
             turnManager.updateTurnState(PossibleGameState.BUILT);

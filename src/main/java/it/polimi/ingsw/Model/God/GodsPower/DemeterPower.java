@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Model.God.GodsPower;
 
+import it.polimi.ingsw.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Model.Map.Square;
 
 public class DemeterPower extends Power {
@@ -9,7 +10,7 @@ public class DemeterPower extends Power {
     }
 
     @Override
-    public boolean[] build(Square squareWhereToBuild) {
+    public ActionOutcome build(Square squareWhereToBuild) {
         return super.build(squareWhereToBuild);
     }
 }

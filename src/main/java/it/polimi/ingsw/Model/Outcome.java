@@ -19,7 +19,7 @@ public class Outcome {
     }
 
     private void getInfo() {
-        this.gameMap = Game.getGameIntance().getGameMap();
+        this.gameMap = Game.getInstance().getGameMap();
     }
 
 

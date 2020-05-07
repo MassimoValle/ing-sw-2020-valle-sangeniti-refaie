@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Model.God.GodsPower;
 
+import it.polimi.ingsw.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
@@ -7,9 +8,9 @@ import it.polimi.ingsw.Model.Player.Worker;
 public class PoseidonPower extends Power {
 
 
-    private static Square squareFromToBuild;
-    private static final int buildsLimit = 3;
-    private static int buildCounter = 0;
+    private Square squareFromToBuild;
+    private final int buildsLimit = 3;
+    private int buildCounter = 0;
     private boolean canBuildUpToThreeTimes = false;
 
     public PoseidonPower(String powerType, String powerDescription) {
@@ -19,23 +20,23 @@ public class PoseidonPower extends Power {
 
 
     @Override
-    public boolean[] move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
+    public ActionOutcome move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
         squareFromToBuild = squareWhereToMove;
         return super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
     }
 
     @Override
-    public boolean[] build(Square squareWhereToBuild) {
+    public ActionOutcome build(Square squareWhereToBuild) {
 
         if ( canBuildUpToThreeTimes ) {
             super.build(squareWhereToBuild);
             buildCounter++;
 
             if (buildCounter == buildsLimit) {
-                return actionDone();
+                return ActionOutcome.DONE;
             }
 
-            return actionDoneCanBeDoneAgain();
+            return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
 
         } else if (squareFromToBuild.getHeight() == 0) {
 
@@ -43,11 +44,11 @@ public class PoseidonPower extends Power {
             super.build(squareWhereToBuild);
             buildCounter++;
 
-            return actionDoneCanBeDoneAgain();
+            return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
 
         } else {
             super.build(squareWhereToBuild);
-            return actionDone();
+            return ActionOutcome.DONE;
         }
 
     }

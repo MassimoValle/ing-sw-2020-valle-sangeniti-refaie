@@ -1,29 +1,26 @@
 package it.polimi.ingsw.Model.God.GodsPower;
 
-import it.polimi.ingsw.Model.Action.Action;
-import it.polimi.ingsw.Model.Action.MoveAction;
+import it.polimi.ingsw.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 
 public class ArtemisPower extends Power {
 
-    static boolean firstMove;
-    static Square startingPlace;
+    boolean firstMove = true;
+    Square startingPlace = null;
 
     public ArtemisPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
-        firstMove = true;
-        startingPlace = null;
     }
 
     @Override
-    public boolean[] move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
+    public ActionOutcome move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
 
         if (startingPlace == null) {
             super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
         } else if (startingPlace.equals(squareWhereToMove)) {
-            return actionNotDone();
+            return ActionOutcome.NOT_DONE;
         } else {
             super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
         }
@@ -33,9 +30,9 @@ public class ArtemisPower extends Power {
         if (firstMove) {
             firstMove = false;
             startingPlace = squareWhereTheWorkerIs;
-            return actionDoneCanBeDoneAgain();
+            return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
         } else {
-            return actionDone();
+            return ActionOutcome.DONE;
         }
     }
 

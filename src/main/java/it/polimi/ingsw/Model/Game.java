@@ -14,7 +14,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 
 public class Game extends Observable<Game> {
@@ -30,12 +29,14 @@ public class Game extends Observable<Game> {
     private final HashMap<Player, Message> changes = new HashMap<>();
     private HashMap<Player, Color> playerColor = new HashMap<>();
 
-    private static Game gameIntance;
+    private static Game gameInstance;
 
-    public static Game getGameIntance() {
-        return Objects.requireNonNullElseGet(gameIntance, Game::new);
+
+    public static Game getInstance() {
+        if(gameInstance ==null)
+            gameInstance = new Game();
+        return gameInstance;
     }
-
 
     public Game() {
         this.players = new ArrayList<>();
@@ -61,7 +62,7 @@ public class Game extends Observable<Game> {
     }
 
     public List<Power> getPowersInGame() {
-        ArrayList<Power> powers = new ArrayList<>();
+        List<Power> powers = new ArrayList<>();
         for (God god: chosenGodsFromDeck) {
             powers.add(god.getGodPower());
         }
@@ -198,6 +199,15 @@ public class Game extends Observable<Game> {
                 deck.toString();
     }
 
+
+
+
+
+
+    //  ####    TESTING-ONLY    ####
+    public static void resetInstance() {
+        gameInstance = new Game();
+    }
 }
 
 

@@ -71,7 +71,7 @@ public class MoveAction implements Action {
      */
     private boolean godsPowerActive() {
         boolean result = false;
-        ArrayList<Power> powersInGame = (ArrayList<Power>) Game.getGameIntance().getPowersInGame();
+        ArrayList<Power> powersInGame = (ArrayList<Power>) Game.getInstance().getPowersInGame();
         for (Power godPower: powersInGame) {
             if (godPower.canPreventsFromPerformingAction() && godPower.checkIfActionNotPermitted(this)) {
                  result = true;

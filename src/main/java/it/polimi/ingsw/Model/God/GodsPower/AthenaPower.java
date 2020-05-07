@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Model.God.GodsPower;
 
+import it.polimi.ingsw.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Model.Action.MoveAction;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Map.Square;
@@ -16,8 +17,9 @@ public class AthenaPower extends Power {
     }
 
     @Override
-    public boolean[] move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
-        int a = Game.getGameIntance().getGameMap().getSquare(positionWhereToMove).getHeight();
+    public ActionOutcome move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
+
+        int a = squareWhereTheWorkerIs.getHeight();
         int b = squareWhereToMove.getHeight();
         if (b - a == 1) {
             hasGoneUp = true;
