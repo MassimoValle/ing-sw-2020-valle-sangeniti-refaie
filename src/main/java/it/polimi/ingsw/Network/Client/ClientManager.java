@@ -6,12 +6,15 @@ import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.*;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Requests.ChoseGodsRequest;
 import it.polimi.ingsw.Network.Message.Requests.PickGodRequest;
 import it.polimi.ingsw.Network.Message.Requests.PlaceWorkerRequest;
 import it.polimi.ingsw.Network.Message.Requests.Request;
+import it.polimi.ingsw.Network.Message.Responses.DeckResponse;
+import it.polimi.ingsw.Network.Message.Responses.PickGodResponse;
+import it.polimi.ingsw.Network.Message.Responses.PlaceWorkerResponse;
 import it.polimi.ingsw.Network.Message.Responses.Response;
 
 import java.awt.*;
@@ -59,8 +62,8 @@ public class ClientManager implements ClientManagerListener{
 
         printMessageFromServer((Response) message);
 
-        if(message.getMessageContent() != null) {
-            switch (message.getMessageContent()){
+        if(((Response) message).getResponseContent() != null) {
+            switch (((Response) message).getResponseContent()){
 
                 case LOGIN:
                     if(message.getMessageStatus() == MessageStatus.OK) return;
@@ -71,27 +74,29 @@ public class ClientManager implements ClientManagerListener{
                     chooseNumPlayers();
                     break;
 
-                case GODS_CHOSE:
-                    //chooseGodFromDeck((Response) message);
+                case CHOOSE_GODS:
+                    chooseGodFromDeck((DeckResponse) message);
                     break;
 
                 case PICK_GOD:
-                    pickGod((Response) message);
+                    pickGod((PickGodResponse) message);
                     break;
 
                 case PLACE_WORKER:
-                    placeWorker((Response) message);
+                    placeWorker((PlaceWorkerResponse) message);
                     break;
 
-                case YOUR_TURN:
+                case START_TURN:
                     break;
-                case WORKER_CHOSEN:
+                case CHOOSE_WORKER:
                     break;
-                case WORKER_MOVED:
+                case MOVE_WORKER:
                     break;
-                case PLAYERS_HAS_BUILT:
+                case BUILD:
                     break;
                 case END_TURN:
+                    break;
+                case PLAYER_WON:
                     break;
                 default: CHECK:
                     printMessageFromServer((Response) message);
@@ -130,7 +135,7 @@ public class ClientManager implements ClientManagerListener{
 
             try {
                 Client.sendMessage(
-                        new Request(username, Dispatcher.SETUP_GAME, MessageContent.LOGIN, MessageStatus.OK, username)
+                        new Request(username, Dispatcher.SETUP_GAME, RequestContent.LOGIN, MessageStatus.OK, username)
                 );
             }catch (IOException e){
                 e.printStackTrace();
@@ -147,19 +152,22 @@ public class ClientManager implements ClientManagerListener{
 
         try {
             Client.sendMessage(
-                    new Request(username, Dispatcher.SETUP_GAME, MessageContent.NUM_PLAYER, MessageStatus.OK, input)
+                    new Request(username, Dispatcher.SETUP_GAME, RequestContent.NUM_PLAYER, MessageStatus.OK, input)
             );
         }catch (IOException e){
             e.printStackTrace();
         }
     }
 
-    private void chooseGodFromDeck(Response response){
-        Deck deck = null;// = (Deck) response.getObject();
+    private void chooseGodFromDeck(DeckResponse response){
+
+        Deck deck = response.getDeck();
         int howMany = Integer.parseInt(response.getGameManagerSays());
 
         consoleOut.println(deck.toString());
         ArrayList<God> godChoosen = new ArrayList<>();
+
+        consoleOut.println("choose " + howMany + " index:");
 
         for (int i = 0; i < howMany; i++) {
             int index = Integer.parseInt(consoleIn.nextLine());
@@ -167,9 +175,11 @@ public class ClientManager implements ClientManagerListener{
         }
 
         try {
+
             Client.sendMessage(
                     new ChoseGodsRequest(username, godChoosen)
             );
+
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -177,9 +187,9 @@ public class ClientManager implements ClientManagerListener{
 
     }
 
-    private void pickGod(Response message) {
+    private void pickGod(PickGodResponse message) {
 
-        ArrayList<God> hand = null; // = message.getObject();
+        ArrayList<God> hand = message.getGods();
 
         consoleOut.println(hand.toString());
 
@@ -200,7 +210,11 @@ public class ClientManager implements ClientManagerListener{
 
     }
 
-    private void placeWorker(Response message) {
+    private void placeWorker(PlaceWorkerResponse message) {
+
+        consoleOut.println("MY WORKER: ");
+        message.getWorker().toString();
+
         consoleOut.print("row: ");
         int row = Integer.parseInt(consoleIn.nextLine());
         consoleOut.println();
@@ -209,12 +223,11 @@ public class ClientManager implements ClientManagerListener{
         int col = Integer.parseInt(consoleIn.nextLine());
         consoleOut.println();
 
-        Worker w = new Worker(1, Color.BLUE);
         Position p = new Position(row, col);
 
         try {
             Client.sendMessage(
-                    new PlaceWorkerRequest(username, w, p)
+                    new PlaceWorkerRequest(username, message.getWorker(), p)
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -236,7 +249,7 @@ public class ClientManager implements ClientManagerListener{
     // test
     private void printMessageFromServer(Response message){
         String out = "#### [SERVER] ####\n";
-        out += "Message content: " + message.getMessageContent() + "\n";
+        out += "Message content: " + message.getResponseContent() + "\n";
         out += "Message status: " + message.getMessageStatus() + "\n";
         out += "Message value: " + message.getGameManagerSays() + "\n";
         out += "________________\n";

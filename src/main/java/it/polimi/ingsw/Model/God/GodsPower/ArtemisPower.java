@@ -5,7 +5,9 @@ import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 
-public class ArtemisPower extends Power {
+import java.io.Serializable;
+
+public class ArtemisPower extends Power implements Serializable {
 
     boolean firstMove = true;
     Square startingPlace = null;

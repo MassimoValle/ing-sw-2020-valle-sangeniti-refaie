@@ -1,6 +1,8 @@
 package it.polimi.ingsw.Model.God.GodsPower;
 
-public class PrometheusPower extends Power {
+import java.io.Serializable;
+
+public class PrometheusPower extends Power implements Serializable {
 
     public PrometheusPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);

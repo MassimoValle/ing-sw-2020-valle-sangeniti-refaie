@@ -1,7 +1,9 @@
 package it.polimi.ingsw.Model;
 
+import it.polimi.ingsw.Controller.TurnManager;
 import it.polimi.ingsw.Model.Map.GameMap;
 import it.polimi.ingsw.Model.Player.Player;
+import it.polimi.ingsw.Model.Player.Worker;
 
 /**
  * La classe outcome dovrà avere al suo interno tutte le informazioni necessarie per capire se il player ha vinto o no
@@ -23,8 +25,13 @@ public class Outcome {
     }
 
 
-    public boolean playerHasWon() {
-        //Controlli da fare qua
-        return false;
+    public boolean playerHasWon(Worker activeWorker) {
+
+        if(!activeWorker.getColor().equals(player.getColor())) return false;
+
+        int height = gameMap.getSquareHeight(activeWorker.getWorkerPosition());
+
+        return height == 3;
+
     }
 }

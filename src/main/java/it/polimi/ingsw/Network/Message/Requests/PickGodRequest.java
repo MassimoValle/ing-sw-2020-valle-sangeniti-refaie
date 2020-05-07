@@ -2,8 +2,7 @@ package it.polimi.ingsw.Network.Message.Requests;
 
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
-import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 
 public class PickGodRequest extends Request {
 
@@ -11,7 +10,7 @@ public class PickGodRequest extends Request {
 
     public PickGodRequest(String messageSender, God pickedGod) {
 
-        super(messageSender, Dispatcher.SETUP_GAME, MessageContent.PICK_GOD);
+        super(messageSender, Dispatcher.SETUP_GAME, RequestContent.PICKED_GOD);
         this.pickedGod = pickedGod;
 
     }

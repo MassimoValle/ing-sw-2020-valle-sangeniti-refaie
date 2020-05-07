@@ -2,8 +2,7 @@ package it.polimi.ingsw.Network.Message.Requests;
 
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
-import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 
 public class BuildRequest extends Request {
 
@@ -11,7 +10,7 @@ public class BuildRequest extends Request {
 
     public BuildRequest(String messageSender, Position positionWhereToBuildOn) {
 
-        super(messageSender, Dispatcher.TURN, MessageContent.BUILD);
+        super(messageSender, Dispatcher.TURN, RequestContent.BUILD);
         this.positionWhereToBuildOn = positionWhereToBuildOn;
 
     }

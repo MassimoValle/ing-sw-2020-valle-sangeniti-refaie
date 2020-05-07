@@ -5,7 +5,9 @@ import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 
-public class ApolloPower extends Power {
+import java.io.Serializable;
+
+public class ApolloPower extends Power implements Serializable {
 
     public ApolloPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);

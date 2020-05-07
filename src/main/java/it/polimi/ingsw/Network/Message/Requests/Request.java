@@ -1,8 +1,8 @@
 package it.polimi.ingsw.Network.Message.Requests;
 
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
+import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 
 /**
@@ -11,22 +11,26 @@ import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 public class Request extends Message {
 
     private final Dispatcher messageDispatcher;
+    private RequestContent requestContent;
     private String clientManagerSays;
 
-    public Request(String messageSender, Dispatcher messageDispatcher, MessageContent messageContent, MessageStatus messageStatus) {
-        super(messageSender, messageContent, messageStatus);
+    public Request(String messageSender, Dispatcher messageDispatcher, RequestContent requestContent, MessageStatus messageStatus) {
+        super(messageSender, messageStatus);
+        this.requestContent = requestContent;
         this.messageDispatcher = messageDispatcher;
     }
 
-    public Request(String messageSender, Dispatcher messageDispatcher, MessageContent messageContent) {
-        super(messageSender, messageContent);
+    public Request(String messageSender, Dispatcher messageDispatcher, RequestContent requestContent) {
+        super(messageSender);
+        this.requestContent = requestContent;
         this.messageDispatcher = messageDispatcher;
     }
 
 
 
-    public Request(String messageSender, Dispatcher messageDispatcher, MessageContent messageContent, MessageStatus messageStatus, String clientManagerSays) {
-        super(messageSender, messageContent, messageStatus);
+    public Request(String messageSender, Dispatcher messageDispatcher, RequestContent requestContent, MessageStatus messageStatus, String clientManagerSays) {
+        super(messageSender, messageStatus);
+        this.requestContent = requestContent;
         this.messageDispatcher = messageDispatcher;
         this.clientManagerSays = clientManagerSays;
     }
@@ -39,5 +43,9 @@ public class Request extends Message {
 
     public String getClientManagerSays() {
         return clientManagerSays;
+    }
+
+    public RequestContent getRequestContent() {
+        return requestContent;
     }
 }

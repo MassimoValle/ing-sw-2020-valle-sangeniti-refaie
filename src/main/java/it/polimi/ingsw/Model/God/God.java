@@ -2,7 +2,9 @@ package it.polimi.ingsw.Model.God;
 
 import it.polimi.ingsw.Model.God.GodsPower.Power;
 
-public class God {
+import java.io.Serializable;
+
+public class God implements Serializable {
 
     private String godName;
     private String godDescription;

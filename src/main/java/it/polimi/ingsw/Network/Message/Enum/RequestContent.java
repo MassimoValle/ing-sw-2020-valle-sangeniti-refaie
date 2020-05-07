@@ -1,15 +1,14 @@
 package it.polimi.ingsw.Network.Message.Enum;
 
 //Enumerations that indicates in what state of the connection the message is sent
-public enum MessageContent {
-    //FIRST_CONNECTION,
-    //CONNECTION_RESPONSE,
+public enum RequestContent {
+
     LOGIN,
     NUM_PLAYER, // per la lobbysize
 
-    GODS_CHOSE, // godLikePlayer
-    PICK_GOD,   // ogni giocatore si piglia un god
-    PLACE_WORKER,
+    CHOSEN_GODS, // godLikePlayer
+    PICKED_GOD,   // ogni giocatore si piglia un god
+    PLACED_WORKER,
 
     //inizio turno
     STARTING_TURN,
@@ -23,13 +22,5 @@ public enum MessageContent {
     //fine turno
     END_TURN,
 
-
-
-    YOUR_TURN,
-    WORKER_CHOSEN,
-    WORKER_MOVED,
-    PLAYERS_HAS_BUILT,
-    CHECK,
-    PLAYER_WON,
-    ;
+    CHECK;
 }

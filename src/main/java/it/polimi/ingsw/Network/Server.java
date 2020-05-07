@@ -3,8 +3,9 @@ package it.polimi.ingsw.Network;
 import it.polimi.ingsw.Controller.MasterController;
 import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Player.Player;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
+import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
 import it.polimi.ingsw.Network.Message.Requests.Request;
 import it.polimi.ingsw.Network.Message.Responses.Response;
 import it.polimi.ingsw.View.RemoteView;
@@ -140,9 +141,9 @@ public class Server {
 
 
     // handle message
-    public void handleMessage(Request message, Connection connection) {
+    public synchronized void handleMessage(Request message, Connection connection) {
 
-        switch (message.getMessageContent()){
+        switch (message.getRequestContent()){
             case LOGIN -> checkLogin(message, connection);
             case NUM_PLAYER -> setLobbySize(message);
 
@@ -162,7 +163,7 @@ public class Server {
     // lobby size
     public void askLobbySize(Connection connection){
         connection.sendMessage(
-                new Response("[SERVER]", MessageContent.NUM_PLAYER, MessageStatus.OK, "Lobby size?")
+                new Response("[SERVER]", ResponseContent.NUM_PLAYER, MessageStatus.OK, "Lobby size?")
         );
     }
 
@@ -176,11 +177,11 @@ public class Server {
 
 
     // login
-    private void checkLogin(Request message, Connection connection) {
+    private synchronized void checkLogin(Request message, Connection connection) {
 
         if (message.getMessageStatus() == MessageStatus.ERROR) {
             connection.sendMessage(
-                    new Response("[SERVER]", MessageContent.LOGIN, MessageStatus.CLIENT_ERROR, "Errore nel server")
+                    new Response("[SERVER]", ResponseContent.LOGIN, MessageStatus.CLIENT_ERROR, "Errore nel server")
             );
         }
 
@@ -198,11 +199,11 @@ public class Server {
     }
 
     // Check if there is a client with same name
-    public void login(String username, Connection connection) {
+    public synchronized void login(String username, Connection connection) {
         //UserName taken
         if( clientsConnected.containsKey(username) ) {
             connection.sendMessage(
-                    new Response("[SERVER]", MessageContent.LOGIN, MessageStatus.ERROR, "Username taken")
+                    new Response("[SERVER]", ResponseContent.LOGIN, MessageStatus.ERROR, "Username taken")
             );
         } else {
             registerClient(username, connection);
@@ -210,7 +211,7 @@ public class Server {
     }
 
     // Register client in clientsConnected
-    public void registerClient(String username, Connection connection){
+    public synchronized void registerClient(String username, Connection connection){
 
         connection.setName(username);
         clientsConnected.put(username, connection);
@@ -218,7 +219,7 @@ public class Server {
         System.out.println("CLIENT REGISTRATO: " + username);
 
         connection.sendMessage(
-                new Response("[SERVER]", MessageContent.LOGIN, MessageStatus.OK, "Connected! Ready to play!")
+                new Response("[SERVER]", ResponseContent.LOGIN, MessageStatus.OK, "Connected! Ready to play!")
         );
 
         lobby();

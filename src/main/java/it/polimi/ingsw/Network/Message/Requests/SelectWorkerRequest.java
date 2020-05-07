@@ -3,8 +3,7 @@ package it.polimi.ingsw.Network.Message.Requests;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
-import it.polimi.ingsw.Network.Message.Enum.MessageContent;
-import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 
 public class SelectWorkerRequest extends Request {
 
@@ -14,7 +13,7 @@ public class SelectWorkerRequest extends Request {
 
 
     public SelectWorkerRequest(String messageSender,  Worker workerToSelect, Position workerToSelectPosition) {
-        super(messageSender, Dispatcher.TURN, MessageContent.SELECT_WORKER);
+        super(messageSender, Dispatcher.TURN, RequestContent.SELECT_WORKER);
         this.workerToSelect = workerToSelect;
         this.workerToSelectPosition = workerToSelectPosition;
     }
@@ -22,7 +21,7 @@ public class SelectWorkerRequest extends Request {
 
     //Used in case Worker hasn't been placed yet
     public SelectWorkerRequest(String messageSender,  Worker workerToSelect) {
-        super(messageSender, Dispatcher.TURN, MessageContent.SELECT_WORKER);
+        super(messageSender, Dispatcher.TURN, RequestContent.SELECT_WORKER);
         this.workerToSelect = workerToSelect;
     }
 
