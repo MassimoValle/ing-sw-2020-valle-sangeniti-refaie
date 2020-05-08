@@ -91,10 +91,8 @@ public class Player {
         return newWorker;
     }
 
-    @Override
-    public String toString() {
-        return "Player Name: " + this.playerName.toUpperCase();
-    }
+
+    //public String toString() { return "Player Name: " + this.playerName.toUpperCase(); }
 
     public boolean godAssigned() {
         if (playerGod != null )
@@ -108,6 +106,21 @@ public class Player {
                 return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+
+        if (playerGod == null) {
+            return "\n" + playerName + "\n" +
+                    " " +
+                    playerWorkers.toString() + "\n";
+        }
+
+        return "\n" + playerName + "\n" +
+                "God: " + playerGod.getGodName() +
+                " " +
+                playerWorkers.toString() + "\n";
     }
 }
 

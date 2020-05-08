@@ -192,11 +192,16 @@ public class Game extends Observable<Game> {
 
 
 
-    @Override
-    public String toString() {
-        return players.toString() +
-                gameMap.toString() +
-                deck.toString();
+
+    public void printGameInfo() {
+        if (getPlayers().size() == 0) {
+            System.out.println("The game hasn't started yet");
+            return;
+        }
+        System.out.println("[GAME INFO]\n" +
+                "This is a " + getPlayers().size() + " player match.\n" +
+                "PLAYERS:\n" + players.toString());
+        gameMap.printBoard();
     }
 
 

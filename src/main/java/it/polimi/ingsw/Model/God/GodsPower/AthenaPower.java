@@ -18,6 +18,7 @@ public class AthenaPower extends Power {
 
     @Override
     public ActionOutcome move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
+        hasGoneUp = false;
 
         int a = squareWhereTheWorkerIs.getHeight();
         int b = squareWhereToMove.getHeight();

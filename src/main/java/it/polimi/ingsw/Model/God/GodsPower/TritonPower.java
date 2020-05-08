@@ -1,15 +1,43 @@
 package it.polimi.ingsw.Model.God.GodsPower;
 
+import it.polimi.ingsw.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
 
-import java.io.Serializable;
+public class TritonPower extends Power {
 
-public class TritonPower extends Power implements Serializable {
+    static boolean firstMove;
+    static Square startingPlace;
+
+
 
     public TritonPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
+        firstMove = true;
+        startingPlace = null;
+    }
+
+    @Override
+    public ActionOutcome move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
+
+            if(startingPlace == null){
+                super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
+            } else if (startingPlace.equals(squareWhereToMove)) {
+                if (positionWhereToMove.isPerimetral()) {
+                    super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
+                    firstMove = true;
+                } else return ActionOutcome.NOT_DONE;
+            }
+
+            if(firstMove) {
+                firstMove = false;
+                startingPlace = squareWhereToMove;
+                return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
+            } else {
+                return ActionOutcome.DONE;
+            }
     }
 
 }
+

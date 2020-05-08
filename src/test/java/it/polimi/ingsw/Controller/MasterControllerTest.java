@@ -32,8 +32,8 @@ public class MasterControllerTest {
 
 
 
-        player1 = new Player("nome1");
-        player2 = new Player("nome2");
+        player1 = new Player("Simone");
+        player2 = new Player("Massimo");
         Game.getInstance().addPlayer(player1);
         Game.getInstance().addPlayer(player2);
 
@@ -54,7 +54,9 @@ public class MasterControllerTest {
 
 
     @Test
-    public void macthTestFromScratch() {
+    public void matchTestFromScratch() {
+
+        game.printGameInfo();
 
         ArrayList<God> godsChosen = new ArrayList<>();
 
@@ -164,7 +166,7 @@ public class MasterControllerTest {
                 new EndTurnRequest(player2.getPlayerName())
         );
 
-        game.getGameMap().printBoard();
+        game.printGameInfo();
 
 
     }

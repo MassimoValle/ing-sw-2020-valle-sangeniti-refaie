@@ -9,13 +9,14 @@ import java.io.Serializable;
 
 public class ArtemisPower extends Power implements Serializable {
 
-    boolean firstMove = true;
-    Square startingPlace = null;
+    private boolean firstMove;
+    private Square startingPlace = null;
 
     private ActionOutcome outcome;
 
     public ArtemisPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
+        this.firstMove = true;
     }
 
     @Override
@@ -36,6 +37,9 @@ public class ArtemisPower extends Power implements Serializable {
         } else {
             outcome = super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
             if (outcome == ActionOutcome.DONE) {
+                //resetto
+                firstMove = true;
+                startingPlace = null;
                 return ActionOutcome.DONE;
             } else {
                 return ActionOutcome.NOT_DONE;
@@ -44,10 +48,4 @@ public class ArtemisPower extends Power implements Serializable {
 
     }
 
-    @Override
-    public ActionOutcome build(Square squareWhereToBuild) {
-        startingPlace = null;
-        firstMove = true;
-        return super.build(squareWhereToBuild);
-    }
 }

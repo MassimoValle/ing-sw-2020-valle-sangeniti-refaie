@@ -3,6 +3,7 @@ package it.polimi.ingsw.Model.God.GodsPower;
 import it.polimi.ingsw.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Model.Action.Action;
 import it.polimi.ingsw.Model.Action.BuildAction;
+import it.polimi.ingsw.Model.Action.BuildDomeAction;
 import it.polimi.ingsw.Model.Action.MoveAction;
 import it.polimi.ingsw.Model.God.PowerType;
 import it.polimi.ingsw.Model.Map.Square;
@@ -63,6 +64,18 @@ public abstract class Power implements Serializable, GodsChecker {
             return ActionOutcome.NOT_DONE;
         }
 
+    }
+
+    public ActionOutcome buildDome(Square squareWhereToBuild) {
+
+        Action buildDomeAction = new BuildDomeAction(squareWhereToBuild);
+
+        if (buildDomeAction.isValid()) {
+            buildDomeAction.doAction();
+            return ActionOutcome.DONE;
+        } else {
+            return ActionOutcome.NOT_DONE;
+        }
     }
 
 

@@ -144,8 +144,9 @@ public class Position {
 
     @Override
     public String toString() {
-        return "Position: " + this.getRow() + " , " + this.getColumn();
+        return "( " + this.getRow() + " , " + this.getColumn() + " )";
         }
 
 
-}
+    }
+
