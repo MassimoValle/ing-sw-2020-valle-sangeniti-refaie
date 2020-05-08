@@ -11,7 +11,7 @@ public class PlaceWorkerRequest extends Request{
     private final Position positionToPlaceWorker;
 
     public PlaceWorkerRequest(String messageSender, Worker workerToPlace, Position positionToPlaceWorker) {
-        super(messageSender, Dispatcher.SETUP_GAME, RequestContent.PLACED_WORKER);
+        super(messageSender, Dispatcher.SETUP_GAME, RequestContent.PLACE_WORKER);
 
         this.workerToPlace = workerToPlace;
         this.positionToPlaceWorker = positionToPlaceWorker;

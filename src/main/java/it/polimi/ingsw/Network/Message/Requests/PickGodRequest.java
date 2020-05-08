@@ -10,12 +10,16 @@ public class PickGodRequest extends Request {
 
     public PickGodRequest(String messageSender, God pickedGod) {
 
-        super(messageSender, Dispatcher.SETUP_GAME, RequestContent.PICKED_GOD);
+        super(messageSender, Dispatcher.SETUP_GAME, RequestContent.PICK_GOD);
         this.pickedGod = pickedGod;
 
     }
 
     public God getPickedGod() {
         return this.pickedGod;
+    }
+
+    public God getGod() {
+        return pickedGod;
     }
 }

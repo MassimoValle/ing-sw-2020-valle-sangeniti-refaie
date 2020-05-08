@@ -18,8 +18,6 @@ public class MasterController {
 
     private static Game gameInstance;
 
-    public static PossibleGameState gameState;
-
 
 
 

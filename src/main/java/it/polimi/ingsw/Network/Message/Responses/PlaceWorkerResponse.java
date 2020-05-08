@@ -9,8 +9,8 @@ public class PlaceWorkerResponse extends Response{
 
     private Worker worker;
 
-    public PlaceWorkerResponse(String messageSender, MessageStatus messageStatus, String gameManagerSays, Worker worker) {
-        super(messageSender, ResponseContent.PLACE_WORKER, messageStatus, gameManagerSays);
+    public PlaceWorkerResponse(String messageSender, String gameManagerSays, Worker worker) {
+        super(messageSender, ResponseContent.PLACE_WORKER, MessageStatus.OK, gameManagerSays);
         this.worker = worker;
     }
 

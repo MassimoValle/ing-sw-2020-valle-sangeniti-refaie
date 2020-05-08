@@ -28,7 +28,7 @@ public class Player {
     public Player(String playerName) {
         this.playerName = playerName;
         this.playerWorkers = new ArrayList<>();
-        for (int i = 0; i < numWorker; i++) { this.playerWorkers.add(new Worker(i, color)); }   // 2 workers
+        for (int i = 0; i < numWorker; i++) { this.playerWorkers.add(new Worker(i)); }   // 2 workers
     }
 
     /**
@@ -53,6 +53,8 @@ public class Player {
 
     public void setColor(Color color) {
         this.color = color;
+        this.getPlayerWorkers().get(0).setColor(color);
+        this.getPlayerWorkers().get(1).setColor(color);
     }
 
     public Color getColor() {
@@ -84,7 +86,7 @@ public class Player {
      * @return the worker
      */
     public Worker addNewWorker() {
-        Worker newWorker = new Worker(getPlayerWorkers().size() + 1, this.color);
+        Worker newWorker = new Worker(getPlayerWorkers().size() + 1);
         getPlayerWorkers().add(newWorker);
         return newWorker;
     }

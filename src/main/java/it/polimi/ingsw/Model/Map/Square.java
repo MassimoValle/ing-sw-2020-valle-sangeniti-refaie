@@ -3,7 +3,9 @@ package it.polimi.ingsw.Model.Map;
 import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Model.Building.*;
 import it.polimi.ingsw.Model.Player.Worker;
+import org.tempura.console.util.Ansi;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Square {
@@ -127,23 +129,43 @@ public class Square {
 
         if (getHeight() != 0) {
             if (hasDome()) {
-                return "D";
+                return "O";
             }
         }
 
 
         switch (getHeight()) {
-            case 0 -> ret = "0";
+            case 0 -> ret = "";
             case 1 -> ret = "1";
             case 2 -> ret = "2";
             case 3 -> ret = "3";
-            case 4 -> ret = "4";
         }
 
         if (workerOnSquare != null){
-            ret += "X";
+            ret += addWorkerColor(workerOnSquare);
+            if (getHeight() != 0)
+                return ret;
+            //ret += "X";
         }
+        ret += "\t";
         return ret;
+    }
+
+    private String addWorkerColor(Worker workerOnSquare) {
+
+        final String ANSI_RESET = "\u001B[0m";
+
+        Color color = workerOnSquare.getColor();
+        String str = "";
+        if (Color.RED.equals(color)) {
+            str = Ansi.RED.concat(" W" + ANSI_RESET);
+        } else if (Color.BLUE.equals(color)) {
+            str = Ansi.BLUE.concat(" W" + ANSI_RESET);
+        } else if (Color.GREEN.equals(color)) {
+            str = Ansi.BLUE.concat(" W" + ANSI_RESET);
+        }
+
+        return str;
     }
 
 

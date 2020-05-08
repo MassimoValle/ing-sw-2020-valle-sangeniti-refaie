@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Controller;
 
 import it.polimi.ingsw.Model.Game;
+import it.polimi.ingsw.Model.God.Deck;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Player;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 public class MasterControllerTest {
 
     MasterController masterController;
-    SetUpGameManager setUpGameManager;
     Player player1, player2;
     Game game;
 
@@ -30,243 +30,146 @@ public class MasterControllerTest {
         Game.resetInstance();
         game = Game.getInstance();
 
+
+
         player1 = new Player("nome1");
         player2 = new Player("nome2");
         Game.getInstance().addPlayer(player1);
         Game.getInstance().addPlayer(player2);
 
         masterController = new MasterController(game, player1);
-        setUpGameManager = masterController._getSetUpGameController();
     }
 
 
     @Test
     public void checkDispatcher() {
-        Request request = new Request(player1.getPlayerName(), Dispatcher.SETUP_GAME, RequestContent.CHECK, MessageStatus.OK);
+        Request request = new Request(player2.getPlayerName(), Dispatcher.SETUP_GAME, RequestContent.CHECK, MessageStatus.OK);
         masterController.dispatcher(request);
+        assertEquals(Dispatcher.SETUP_GAME, request.getMessageDispatcher());
 
-        //request = new Request(player.getPlayerName(), Dispatcher.TURN, MessageContent.CHECK, MessageStatus.OK);
-        //superMegaController.dispatcher(request);
+        request = new Request(player1.getPlayerName(), Dispatcher.TURN, RequestContent.CHECK, MessageStatus.OK);
+        masterController.dispatcher(request);
+        assertEquals(Dispatcher.TURN, request.getMessageDispatcher());
     }
 
 
     @Test
-    public void ArtemisPowerTest() {
+    public void macthTestFromScratch() {
 
-        String pl1 = player1.getPlayerName();
-        String pl2 = player2.getPlayerName();
+        ArrayList<God> godsChosen = new ArrayList<>();
 
-        assertEquals(2, masterController.getGameInstance().getNumberOfPlayers());
+        godsChosen.add(Deck.getInstance().getGod(0));
+        godsChosen.add(Deck.getInstance().getGod(1));
+
+        //il godlike player (player1) invia i god scelti
+        masterController.dispatcher(
+                new ChoseGodsRequest(player1.getPlayerName(), godsChosen)
+        );
+
+        int i=0;
+        for (God god: game.getChosenGodsFromDeck()) {
+            assertEquals(god, godsChosen.get(i));
+            i++;
+        }
+
+        //player2 sceglie il suo god
+        masterController.dispatcher(
+                new PickGodRequest(player2.getPlayerName(), Deck.getInstance().getGod(0))
+        );
+
+        assertEquals(Deck.getInstance().getGod(0), player2.getPlayerGod());
 
 
-        //Aggiungo i god alla partita
-        ArrayList<God> chosenGod = new ArrayList<>();
-        chosenGod.add(game.getDeck().getGod(0));
-        chosenGod.add(game.getDeck().getGod(1));
-        game.setChosenGodsFromDeck(chosenGod);
+        //player1 sceglie il suo god
+        masterController.dispatcher(
+                new PickGodRequest(player1.getPlayerName(), Deck.getInstance().getGod(1))
+        );
 
-        //assegno i god ai rispettivi giocatori
-        player1.setPlayerGod(chosenGod.get(0));
-        game.getChosenGodsFromDeck().get(0).setAssigned(true);
-        player2.setPlayerGod(chosenGod.get(1));
-        game.getChosenGodsFromDeck().get(1).setAssigned(true);
+        assertEquals(Deck.getInstance().getGod(1), player1.getPlayerGod());
 
-        //giocatore 1 piazza il primo worker
-        Worker w1pl1 = player1.getPlayerWorkers().get(0);
-        Square sq22 = game.getGameMap().getSquare(new Position(2, 2));
 
-        w1pl1.setPosition(new Position(2, 2));
-        sq22.setWorkerOn(w1pl1);
-        w1pl1.setPlaced(true);
 
-        //giocatore 2 piazza il primo worker
-        Worker w1pl2 = player2.getPlayerWorkers().get(0);
-        Square sq32 = game.getGameMap().getSquare(new Position(3, 2));
+        //player2 piazza i suoi god
+        masterController.dispatcher(
+                new PlaceWorkerRequest(player2.getPlayerName(), player2.getPlayerWorkers().get(0), new Position(0,0) )
+        );
 
-        w1pl2.setPosition(new Position(3, 2));
-        sq32.setWorkerOn(w1pl2);
-        w1pl2.setPlaced(true);
+        assertTrue(game.getGameMap().getSquare(0,0).hasWorkerOn());
+        assertEquals(game.getGameMap().getWorkerOnSquare(0,0), player2.getPlayerWorkers().get(0));
 
-        //giocatore 1 piazza il secondo worker
-        Worker w2pl1 = player1.getPlayerWorkers().get(1);
-        Square sq23 = game.getGameMap().getSquare(new Position(2, 3));
 
-        w2pl1.setPosition(new Position(2, 3));
-        sq23.setWorkerOn(w2pl1);
-        w2pl1.setPlaced(true);
+        masterController.dispatcher(
+                new PlaceWorkerRequest(player2.getPlayerName(), player2.getPlayerWorkers().get(1), new Position(0,1) )
+        );
 
-        //giocatore 2 piazza il seoondo worker
-        Worker w2pl2 = player2.getPlayerWorkers().get(1);
-        Square sq33 = game.getGameMap().getSquare(new Position(3, 3));
+        assertTrue(game.getGameMap().getSquare(0,1).hasWorkerOn());
+        assertEquals(game.getGameMap().getWorkerOnSquare(0,1), player2.getPlayerWorkers().get(1));
 
-        w2pl2.setPosition(new Position(3, 3));
-        sq33.setWorkerOn(w2pl2);
-        w2pl2.setPlaced(true);
+
+        //player1 piazza i suoi god
+        masterController.dispatcher(
+                new PlaceWorkerRequest(player1.getPlayerName(), player1.getPlayerWorkers().get(0), new Position(2,0) )
+        );
+
+        assertTrue(game.getGameMap().getSquare(2,0).hasWorkerOn());
+        assertEquals(game.getGameMap().getWorkerOnSquare(2,0), player1.getPlayerWorkers().get(0));
+
+        masterController.dispatcher(
+                new PlaceWorkerRequest(player1.getPlayerName(), player1.getPlayerWorkers().get(1), new Position(2,1) )
+        );
+
+        assertTrue(game.getGameMap().getSquare(2,1).hasWorkerOn());
+        assertEquals(game.getGameMap().getWorkerOnSquare(2,1), player1.getPlayerWorkers().get(1));
 
         game.getGameMap().printBoard();
 
-        masterController._getActionManager().setGameState(PossibleGameState.START_ROUND);
-        masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
-        masterController._getTurnManager().nextTurn(player1);
 
 
-        //Tocca al player1
-        //seleziona un worker...
+        //turno del player 2
         masterController.dispatcher(
-                new SelectWorkerRequest(pl1, w1pl1)
-        );
-        //lo muovo...
-        masterController.dispatcher(
-                new MoveRequest(pl1, new Position(1, 2))
-        );
-        //e costruisco
-        masterController.dispatcher(
-                new BuildRequest(pl1, new Position(0, 2))
-        );
-        //passo il turno
-        masterController.dispatcher(
-                new EndTurnRequest(pl1)
+                new SelectWorkerRequest(player2.getPlayerName(), player2.getPlayerWorkers().get(1))
         );
 
-        game.getGameMap().printBoard();
-
-        //Tocca al player2
         masterController.dispatcher(
-                new SelectWorkerRequest(pl2, w1pl2)
-        );
-        //lo muovo la prima volta
-        masterController.dispatcher(
-                new MoveRequest(pl2, new Position(4, 2))
+                new MoveRequest(player2.getPlayerName(), new Position(0,2))
         );
 
-        //muovo la seconda volta
         masterController.dispatcher(
-                new MoveRequest(pl2, new Position(4,3))
+                new BuildRequest(player2.getPlayerName(), new Position(0,3))
         );
-        //costruisco
+
         masterController.dispatcher(
-                new BuildRequest(pl2, new Position(4, 4))
+                new EndTurnRequest(player2.getPlayerName())
         );
-        //passo il turno
+
+        //turno del player1
         masterController.dispatcher(
-                new EndTurnRequest(pl1)
+                new SelectWorkerRequest(player1.getPlayerName(), player1.getPlayerWorkers().get(1))
+        );
+
+        masterController.dispatcher(
+                new MoveRequest(player1.getPlayerName(), new Position(2,2))
+        );
+
+        //il player 2 avendo arthemis puo decidere di muoversi ancora, ma deve specificare al servere che invece vuole costruire
+        masterController.dispatcher(
+                new EndMoveRequest(player1.getPlayerName())
+        );
+
+        masterController.dispatcher(
+                new BuildRequest(player1.getPlayerName(), new Position(2,3))
+        );
+
+        masterController.dispatcher(
+                new EndTurnRequest(player2.getPlayerName())
         );
 
         game.getGameMap().printBoard();
+
 
     }
 
 
-    public void PoseidonPowerTest() {
-
-        String pl1 = player1.getPlayerName();
-        String pl2 = player2.getPlayerName();
-
-        assertEquals(2, masterController.getGameInstance().getNumberOfPlayers());
-
-
-        //Aggiungo i god alla partita
-        ArrayList<God> chosenGod = new ArrayList<>();
-        chosenGod.add(game.getDeck().getGod(12));
-        chosenGod.add(game.getDeck().getGod(13));
-        game.setChosenGodsFromDeck(chosenGod);
-
-        //assegno i god ai rispettivi giocatori
-        player1.setPlayerGod(chosenGod.get(0));
-        game.getChosenGodsFromDeck().get(0).setAssigned(true);
-        player2.setPlayerGod(chosenGod.get(1));
-        game.getChosenGodsFromDeck().get(1).setAssigned(true);
-
-        //giocatore 1 piazza il primo worker
-        Worker w1pl1 = player1.getPlayerWorkers().get(0);
-        Square sq22 = game.getGameMap().getSquare(new Position(2, 2));
-
-        w1pl1.setPosition(new Position(2, 2));
-        sq22.setWorkerOn(w1pl1);
-        w1pl1.setPlaced(true);
-
-        //giocatore 2 piazza il primo worker
-        Worker w1pl2 = player2.getPlayerWorkers().get(0);
-        Square sq32 = game.getGameMap().getSquare(new Position(3, 2));
-
-        w1pl2.setPosition(new Position(3, 2));
-        sq32.setWorkerOn(w1pl2);
-        w1pl2.setPlaced(true);
-
-        //giocatore 1 piazza il secondo worker
-        Worker w2pl1 = player1.getPlayerWorkers().get(1);
-        Square sq23 = game.getGameMap().getSquare(new Position(2, 3));
-
-        w2pl1.setPosition(new Position(2, 3));
-        sq23.setWorkerOn(w2pl1);
-        w2pl1.setPlaced(true);
-
-        //giocatore 2 piazza il seoondo worker
-        Worker w2pl2 = player2.getPlayerWorkers().get(1);
-        Square sq33 = game.getGameMap().getSquare(new Position(3, 3));
-
-        w2pl2.setPosition(new Position(3, 3));
-        sq33.setWorkerOn(w2pl2);
-        w2pl2.setPlaced(true);
-
-        game.getGameMap().printBoard();
-
-        masterController._getActionManager().setGameState(PossibleGameState.START_ROUND);
-        masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
-        masterController._getTurnManager().nextTurn(player1);
-
-
-        //Tocca al player1
-        //seleziona un worker...
-        masterController.dispatcher(
-                new SelectWorkerRequest(pl1, w1pl1)
-        );
-        //lo muovo...
-        masterController.dispatcher(
-                new MoveRequest(pl1, new Position(1, 2))
-        );
-        //e costruisco
-        masterController.dispatcher(
-                new BuildRequest(pl1, new Position(0, 2))
-        );
-        masterController.dispatcher(
-                new BuildRequest(pl1, new Position(0, 1))
-        );
-        //passo il turno
-        masterController.dispatcher(
-                new EndTurnRequest(pl1)
-        );
-
-        game.getGameMap().printBoard();
-
-        //Tocca al player2
-        masterController.dispatcher(
-                new SelectWorkerRequest(pl2, w1pl2)
-        );
-        //lo muovo la prima volta
-        masterController.dispatcher(
-                new MoveRequest(pl2, new Position(4, 2))
-        );
-
-        masterController.dispatcher(
-                new EndMoveRequest(pl2)
-        );
- /*       //muovo la seconda volta
-        superMegaController.dispatcher(
-                new MoveRequest(pl2, new Position(4,3))
-        );*/
-        //costruisco
-        masterController.dispatcher(
-                new BuildRequest(pl2, new Position(4, 3))
-        );
-        //passo il turno
-        masterController.dispatcher(
-                new EndTurnRequest(pl1)
-        );
-
-        game.getGameMap().printBoard();
-
-    }
     @Test
     public void AthenaPowerTest() {
 
@@ -360,6 +263,7 @@ public class MasterControllerTest {
         masterController.dispatcher(
                 new EndMoveRequest(pl2)
         );
+
         masterController.dispatcher(
                 new BuildRequest(pl2, new Position(4, 3))
         );
@@ -398,19 +302,25 @@ public class MasterControllerTest {
         masterController.dispatcher(
                 new MoveRequest(pl2, new Position(4, 3))
         );
+        //La move request da error perchè athena nel turno precedente è salita
+        //di conseguenza sono costretto a muovere in un altra posizine
+        masterController.dispatcher(
+                new MoveRequest(pl2, new Position(3, 2))
+        );
 
         masterController.dispatcher(
                 new EndMoveRequest(pl2)
         );
         masterController.dispatcher(
-                new BuildRequest(pl2, new Position(4, 3))
+                new BuildRequest(pl2, new Position(3, 1))
         );
         //passo il turno
         masterController.dispatcher(
                 new EndTurnRequest(pl2)
         );
 
-
+        game.getGameMap().printBoard();
+        //FUNZIONAAAAA
     }
 
 }

@@ -33,7 +33,7 @@ public class Game extends Observable<Game> {
 
 
     public static Game getInstance() {
-        if(gameInstance ==null)
+        if(gameInstance == null)
             gameInstance = new Game();
         return gameInstance;
     }
@@ -204,9 +204,17 @@ public class Game extends Observable<Game> {
 
 
 
+
+
+
+
+
+
+
+
     //  ####    TESTING-ONLY    ####
     public static void resetInstance() {
-        gameInstance = new Game();
+        gameInstance = null;
     }
 }
 

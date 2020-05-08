@@ -10,6 +10,8 @@ public class Worker {
     
     //Numero del worker
     private int workersNumber;
+
+
     private Color color;
 
     private boolean isBlocked;
@@ -24,14 +26,13 @@ public class Worker {
     private List<Position> adjacentPosition;
 
 
-    public Worker(int workersNumber, Color color) {
+    public Worker(int workersNumber) {
         this.height = 0;
         this.workerPosition = null;
         this.workersNumber = workersNumber;
         this.isBlocked = false;
         this.placed = false;
         this.selected = false;
-        this.color = color;
     }
 
     public Position getWorkerPosition() {
@@ -67,6 +68,9 @@ public class Worker {
         return placed;
     }
 
+    public void setColor(Color color) {
+        this.color = color;
+    }
 
     /**
      * Update the {@link Worker#workerPosition}

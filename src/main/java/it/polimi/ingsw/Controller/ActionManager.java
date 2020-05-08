@@ -8,7 +8,6 @@ import it.polimi.ingsw.Model.Outcome;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
-import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
 import it.polimi.ingsw.Network.Message.Requests.*;
 import it.polimi.ingsw.Network.Message.Responses.Response;
@@ -29,7 +28,10 @@ public class ActionManager {
     public ActionManager(Game game, TurnManager turnManager) {
         this.gameInstance = game;
         this.turnManager = turnManager;
-        this.gameState = MasterController.gameState;
+
+        // TODO
+        //  UTILIZZARE 2 GAMESTATE DISTINTI? UNO PER LA FASE DI SETUP E UNO PER QUELLA DI GIOCO?
+        this.gameState = PossibleGameState.START_ROUND;
     }
 
 
@@ -42,9 +44,11 @@ public class ActionManager {
      */
     public Response handleRequest(Request request){
 
+        Player requestSender = gameInstance.searchPlayerByName(request.getMessageSender());
+
         //Controllo che il player sia nel suo turno
         if(!isYourTurn(request.getMessageSender())) { //The player who sent the request isn't the playerActive
-            return MasterController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getMessageSender()), ResponseContent.CHECK, "It's not your turn!");
+            return MasterController.buildNegativeResponse(requestSender, ResponseContent.NOT_YOUR_TURN, "It's not your turn!");
         }
 
         return switch (request.getRequestContent()) {
@@ -140,7 +144,7 @@ public class ActionManager {
 
         //action hasn't been done
         if (actionOutcome == ActionOutcome.NOT_DONE) {
-            return MasterController.buildNegativeResponse(activePlayer, request.getMessageContent(), "You cannot move here!");
+            return MasterController.buildNegativeResponse(activePlayer, ResponseContent.MOVE_WORKER, "You cannot move here!");
         }
 
 
@@ -270,7 +274,7 @@ public class ActionManager {
         }
 
         if (!turnManager.activePlayerHasBuilt()) {
-            //QUESTO BLOCCO NON DOVREBBE MAI ESSERE RAGGIUNGIBILE PERCHÈ SE IL GAME STATE È BUILD ALLORAVUOL DIRE CHE HO COSTRUITO
+            //QUESTO BLOCCO NON DOVREBBE MAI ESSERE RAGGIUNGIBILE PERCHÈ SE IL GAME STATE È BUILD ALLORA VUOL DIRE CHE HO COSTRUITO
             return MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "You must build at least once");
         }
 
@@ -280,7 +284,7 @@ public class ActionManager {
         turnManager.updateTurnState(gameState);
         activePlayer = turnManager.getActivePlayer();
         gameState = PossibleGameState.START_ROUND;
-        return MasterController.buildPositiveResponse(activePlayer, ResponseContent.START_TURN, "Turn ending");
+        return MasterController.buildPositiveResponse(activePlayer, ResponseContent.START_TURN, "It's your turn!");
 
     }
 

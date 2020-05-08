@@ -3,7 +3,6 @@ package it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Model.God.Deck;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Player.Position;
-import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.*;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
 import it.polimi.ingsw.Network.Message.Enum.RequestContent;
@@ -12,12 +11,11 @@ import it.polimi.ingsw.Network.Message.Requests.ChoseGodsRequest;
 import it.polimi.ingsw.Network.Message.Requests.PickGodRequest;
 import it.polimi.ingsw.Network.Message.Requests.PlaceWorkerRequest;
 import it.polimi.ingsw.Network.Message.Requests.Request;
-import it.polimi.ingsw.Network.Message.Responses.DeckResponse;
+import it.polimi.ingsw.Network.Message.Responses.ShowDeckResponse;
 import it.polimi.ingsw.Network.Message.Responses.PickGodResponse;
 import it.polimi.ingsw.Network.Message.Responses.PlaceWorkerResponse;
 import it.polimi.ingsw.Network.Message.Responses.Response;
 
-import java.awt.*;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -74,8 +72,8 @@ public class ClientManager implements ClientManagerListener{
                     chooseNumPlayers();
                     break;
 
-                case CHOOSE_GODS:
-                    chooseGodFromDeck((DeckResponse) message);
+                case SHOW_DECK:
+                    chooseGodFromDeck((ShowDeckResponse) message);
                     break;
 
                 case PICK_GOD:
@@ -88,7 +86,7 @@ public class ClientManager implements ClientManagerListener{
 
                 case START_TURN:
                     break;
-                case CHOOSE_WORKER:
+                case SELECT_WORKER:
                     break;
                 case MOVE_WORKER:
                     break;
@@ -159,15 +157,18 @@ public class ClientManager implements ClientManagerListener{
         }
     }
 
-    private void chooseGodFromDeck(DeckResponse response){
+    private void chooseGodFromDeck(ShowDeckResponse response){
 
-        Deck deck = response.getDeck();
-        int howMany = Integer.parseInt(response.getGameManagerSays());
+        Deck deck = Deck.getInstance();
+        String serverSays = response.getGameManagerSays();
+        int howMany = response.getHowMany();
 
         consoleOut.println(deck.toString());
         ArrayList<God> godChoosen = new ArrayList<>();
 
-        consoleOut.println("choose " + howMany + " index:");
+        consoleOut.println("choose " + serverSays + " index:");
+
+        //FIX
 
         for (int i = 0; i < howMany; i++) {
             int index = Integer.parseInt(consoleIn.nextLine());

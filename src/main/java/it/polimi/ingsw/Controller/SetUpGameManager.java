@@ -7,11 +7,9 @@ import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Position;
-import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
-import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
 import it.polimi.ingsw.Network.Message.Requests.*;
-import it.polimi.ingsw.Network.Message.Responses.DeckResponse;
+import it.polimi.ingsw.Network.Message.Responses.ShowDeckResponse;
 import it.polimi.ingsw.Network.Message.Responses.PickGodResponse;
 import it.polimi.ingsw.Network.Message.Responses.PlaceWorkerResponse;
 
@@ -32,13 +30,14 @@ public class SetUpGameManager {
 
     private int playerLoop = 0; // temporary var loop for player iteration
 
+    private PossibleGameState setupGameState;
 
 
 
 
     public SetUpGameManager(Game game, Player activePlayer){
 
-        MasterController.gameState = PossibleGameState.GAME_INIT;
+        this.setupGameState = PossibleGameState.GAME_INIT;
 
         this.gameInstance = game;
         this.activePlayer = activePlayer;
@@ -56,11 +55,13 @@ public class SetUpGameManager {
      */
     public void notifyTheGodLikePlayer(Player godLikePlayer) {
 
-        MasterController.gameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
+        int howManyPlayers = gameInstance.getNumberOfPlayers();
+
+        setupGameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
 
         //Notifico al player in questione che deve scegliere i god
-        DeckResponse deckResponse = new DeckResponse(godLikePlayer.getPlayerName(), MessageStatus.OK, ""+gameInstance.getPlayers().size(), gameInstance.getDeck());
-        gameInstance.putInChanges(godLikePlayer, deckResponse);
+        ShowDeckResponse showDeckResponse = new ShowDeckResponse(godLikePlayer.getPlayerName(), "Let's choose " + howManyPlayers + " GODS!", howManyPlayers);
+        gameInstance.putInChanges(godLikePlayer, showDeckResponse);
 
     }
 
@@ -74,7 +75,7 @@ public class SetUpGameManager {
     public void assignGodToPlayer(Player player, God god) {
         player.setPlayerGod(god);
         god.setAssigned(true);
-        MasterController.gameState = PossibleGameState.ASSIGNING_GOD;
+        setupGameState = PossibleGameState.ASSIGNING_GOD;
     }
 
 
@@ -123,9 +124,9 @@ public class SetUpGameManager {
         }
 
         switch (request.getRequestContent()) {
-            case CHOSEN_GODS -> handleGodsChosen((ChoseGodsRequest) request);
-            case PICKED_GOD -> handleGodAssignment((AssignGodRequest) request);
-            case PLACED_WORKER -> handlePlaceWorkerAction((PlaceWorkerRequest) request);
+            case CHOSE_GODS -> handleChooseGods((ChoseGodsRequest) request);
+            case PICK_GOD -> handlePickGod((PickGodRequest) request);
+            case PLACE_WORKER -> handlePlaceWorker((PlaceWorkerRequest) request);
             default -> MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "Something went wrong!");
         }
     }
@@ -136,25 +137,31 @@ public class SetUpGameManager {
      *
      * @param request the request sent by the client
      */
-    private void handleGodsChosen(ChoseGodsRequest request) {
+    private void handleChooseGods(ChoseGodsRequest request) {
 
-        if(MasterController.gameState != PossibleGameState.GODLIKE_PLAYER_MOMENT){
+        Player requestSender = gameInstance.searchPlayerByName(request.getMessageSender());
+
+        //verifico che è il momento del godlike player
+        if(setupGameState != PossibleGameState.GODLIKE_PLAYER_MOMENT){
+            MasterController.buildNegativeResponse(requestSender, ResponseContent.CHOOSE_GODS, "It's not the time to chose the gods");
             return;
         }
 
+        //verifico che il nunmero di gods scelti sia corretto
         if(request.getChosenGods().size() != gameInstance.getPlayers().size()){
-            MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "Troppi pochi gods");
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHOOSE_GODS, "You sent the wrong number of gods! Try again!");
             return;
         }
 
         gameInstance.setChosenGodsFromDeck(request.getChosenGods());
+        MasterController.buildPositiveResponse(requestSender, ResponseContent.CHOOSE_GODS, "Gods selected!");
 
         //Turno del giocatore successivo
         activePlayer = nextPlayer();
-        MasterController.gameState = PossibleGameState.ASSIGNING_GOD;
+        setupGameState = PossibleGameState.ASSIGNING_GOD;
 
         // response: scegli un god
-        PickGodResponse pickGodResponse = new PickGodResponse(activePlayer.getPlayerName(), MessageStatus.OK, "Pick a god", (ArrayList<God>) gameInstance.getChosenGodsFromDeck());
+        PickGodResponse pickGodResponse = new PickGodResponse(activePlayer.getPlayerName(), "Pick a god", (ArrayList<God>) gameInstance.getChosenGodsFromDeck());
         gameInstance.putInChanges(activePlayer, pickGodResponse);
 
     }
@@ -164,30 +171,35 @@ public class SetUpGameManager {
      *
      * @param request the request sent by the client who own
      */
-    private void handleGodAssignment(AssignGodRequest request) {
+    private void handlePickGod(PickGodRequest request) {
 
-        if(MasterController.gameState != PossibleGameState.ASSIGNING_GOD){
+
+        if(setupGameState != PossibleGameState.ASSIGNING_GOD){
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.PICK_GOD, "It's not the time to pick a god");
             return;
         }
 
-        //turnManager.updateTurnState(PossibleGameState.ASSIGNING_GOD);
 
         assignGodToPlayer(activePlayer, request.getGod());
+
+        MasterController.buildPositiveResponse(activePlayer, ResponseContent.PICK_GOD, "You chose!");
+
+
 
         activePlayer = nextPlayer();
         playerLoop++;
 
         if(playerLoop < gameInstance.getPlayers().size()) {
-            PickGodResponse pickGodResponse = new PickGodResponse(activePlayer.getPlayerName(), MessageStatus.OK, "Pick a god", (ArrayList<God>) gameInstance.getChosenGodsFromDeck());
+            PickGodResponse pickGodResponse = new PickGodResponse(activePlayer.getPlayerName(), "Pick a god", (ArrayList<God>) gameInstance.getChosenGodsFromDeck());
             gameInstance.putInChanges(activePlayer, pickGodResponse);
         }
         else {
 
-            PlaceWorkerResponse placeWorkerResponse = new PlaceWorkerResponse(activePlayer.getPlayerName(), MessageStatus.OK, "place yout worker!", activePlayer.getPlayerWorkers().get(0));
+            PlaceWorkerResponse placeWorkerResponse = new PlaceWorkerResponse(activePlayer.getPlayerName(), "Place your worker!", activePlayer.getPlayerWorkers().get(0));
             gameInstance.putInChanges(activePlayer, placeWorkerResponse);
 
             playerLoop = 0;
-            MasterController.gameState = PossibleGameState.FILLING_BOARD;
+            setupGameState = PossibleGameState.FILLING_BOARD;
 
         }
     }
@@ -197,9 +209,10 @@ public class SetUpGameManager {
      *
      * @param request the request sent by the client
      */
-    private void handlePlaceWorkerAction(PlaceWorkerRequest request) {
+    private void handlePlaceWorker(PlaceWorkerRequest request) {
 
-        if(MasterController.gameState != PossibleGameState.FILLING_BOARD){
+        if(setupGameState != PossibleGameState.FILLING_BOARD){
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.PICK_GOD, "It's not the time to place a worker!");
             return;
         }
 
@@ -215,26 +228,31 @@ public class SetUpGameManager {
 
             placeWorkerAction.doAction();
 
+            MasterController.buildPositiveResponse(activePlayer, ResponseContent.PLACE_WORKER, "Worker placed!");
+
             if(activePlayer.areWorkersPlaced()) {   // se activePlayer ha già posizionato 2 worker
+
+                MasterController.buildPositiveResponse(activePlayer, ResponseContent.PLACE_WORKER, "All workers are placed");
 
                 activePlayer = nextPlayer();
                 playerLoop++;
 
+
                 if(playerLoop >= gameInstance.getPlayers().size()){
-                    MasterController.buildPositiveResponse(activePlayer, ResponseContent.CHOOSE_WORKER, "Select a worker!");
-                    MasterController.gameState = PossibleGameState.START_ROUND;
+                    MasterController.buildPositiveResponse(activePlayer, ResponseContent.SELECT_WORKER, "Select a worker!");
+                    setupGameState = PossibleGameState.START_ROUND;
                     playerLoop = 0;
                     return;
                 }
 
             }
 
-            PlaceWorkerResponse placeWorkerResponse = new PlaceWorkerResponse(activePlayer.getPlayerName(), MessageStatus.OK, "place yout worker!", activePlayer.getPlayerWorkers().get(1));
+            PlaceWorkerResponse placeWorkerResponse = new PlaceWorkerResponse(activePlayer.getPlayerName(), "Place your worker!", activePlayer.getPlayerWorkers().get(1));
             gameInstance.putInChanges(activePlayer, placeWorkerResponse);
 
         }
         else
-            MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "Errore nel posizionamento del worker");
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.PLACE_WORKER, "Errore nel posizionamento del worker");
 
     }
 
@@ -245,7 +263,7 @@ public class SetUpGameManager {
 
     // handler con check e javadoc
 
-    /**
+    /*
      * It handles the {@link ChoseGodsRequest} when the {@link PossibleGameState#GODLIKE_PLAYER_MOMENT}
      *
      * @param request the request sent by the client
@@ -263,7 +281,7 @@ public class SetUpGameManager {
         return buildPositiveResponse("Gods selected!");
     }*/
 
-    /**
+    /*
      * It handles the {@link PickGodRequest} when the {@link PossibleGameState#ASSIGNING_GOD}
      *
      * @param request the request sent by the client
@@ -287,7 +305,7 @@ public class SetUpGameManager {
         return buildPositiveResponse("God picked up!");
     }*/
 
-    /**
+    /*
      * It handle the {@link PlaceWorkerRequest} by a player that can be sent to Server after the {@link SelectWorkerRequest}
      * It's called only in {@link PossibleGameState#FILLING_BOARD} whe the players have to place their workers yet
      *
@@ -337,6 +355,14 @@ public class SetUpGameManager {
 
 
     // test
+
+    public PossibleGameState getSetupGameState() {
+        return setupGameState;
+    }
+
+    public void setSetupGameState(PossibleGameState gameState) {
+        setupGameState = gameState;
+    }
 
     /*
     public void _addPlayerToCurrentGame(String username) {

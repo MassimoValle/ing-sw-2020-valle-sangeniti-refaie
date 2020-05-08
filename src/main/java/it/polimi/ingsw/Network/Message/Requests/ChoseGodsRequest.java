@@ -11,7 +11,7 @@ public class ChoseGodsRequest extends Request {
     private final ArrayList<God> chosenGod;
 
     public ChoseGodsRequest(String messageSender, ArrayList<God> chosenGod) {
-        super(messageSender, Dispatcher.SETUP_GAME, RequestContent.CHOSEN_GODS);
+        super(messageSender, Dispatcher.SETUP_GAME, RequestContent.CHOSE_GODS);
         this.chosenGod = chosenGod;
     }
 

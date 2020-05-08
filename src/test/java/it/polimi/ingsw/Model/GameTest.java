@@ -16,7 +16,8 @@ public class GameTest {
 
     @Before
     public void initClass() {
-        game = new Game();
+        Game.resetInstance();
+        game = Game.getInstance();
     }
 
     @Test
@@ -35,7 +36,7 @@ public class GameTest {
 
     @Test
     public void playersListIsEmpty() {
-        assertEquals(game.getPlayers().size(), 0);
+        assertEquals(0, game.getPlayers().size());
     }
 
     @Test

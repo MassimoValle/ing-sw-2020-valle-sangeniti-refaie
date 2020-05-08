@@ -11,8 +11,8 @@ public class PickGodResponse extends Response{
 
     private ArrayList<God> gods;
 
-    public PickGodResponse(String messageSender, MessageStatus messageStatus, String gameManagerSays, ArrayList<God> gods) {
-        super(messageSender, ResponseContent.PICK_GOD, messageStatus, gameManagerSays);
+    public PickGodResponse(String messageSender, String gameManagerSays, ArrayList<God> gods) {
+        super(messageSender, ResponseContent.PICK_GOD, MessageStatus.OK, gameManagerSays);
         this.gods = gods;
     }
 

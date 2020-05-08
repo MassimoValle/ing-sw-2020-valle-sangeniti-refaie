@@ -34,9 +34,6 @@ public class AthenaPower extends Power {
 
     @Override
     public boolean checkIfActionNotPermitted(MoveAction moveAction) {
-        if (hasGoneUp && moveAction.oldPositionSquare.getHeight() - moveAction.newPositionSquare.getHeight() < 0) {
-            return true;
-        }
-        return false;
+        return hasGoneUp && moveAction.oldPositionSquare.getHeight() - moveAction.newPositionSquare.getHeight() < 0;
     }
 }

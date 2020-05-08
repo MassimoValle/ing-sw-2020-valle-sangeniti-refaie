@@ -43,6 +43,10 @@ public class GameMap {
        return getBoard()[pos.getRow()][pos.getColumn()];
     }
 
+    public Square getSquare(int row, int col) {
+        return getBoard()[row][col];
+    }
+
     /**
      * Gets worker on square.
      *
@@ -51,6 +55,10 @@ public class GameMap {
      */
     public Worker getWorkerOnSquare(Position position) {
        return getSquare(position).getWorkerOnSquare();
+    }
+
+    public Worker getWorkerOnSquare(int row, int col) {
+        return getSquare(row, col).getWorkerOnSquare();
     }
 
     /**
@@ -124,9 +132,7 @@ public class GameMap {
      * @return boolean
      */
     public boolean isPositionValid(Position position){
-       if (isPositionOnMapReal(position) && isPositionFree(position))
-           return true;
-       return false;
+        return isPositionOnMapReal(position) && isPositionFree(position);
     }
 
 
@@ -158,12 +164,13 @@ public class GameMap {
      */
     public void printBoard() {
        String string = "";
+       string = string.concat("_________________________________________\n");
        for (int i=0; i<ROWS; i++) {
            for ( int j=0; j<COLUMNS; j++) {
                string = string.concat("|"+ board[i][j].toString() + "\t");
            }
            string = string.concat("|\n");
-
+           string = string.concat("_________________________________________\n");
        }
         System.out.println(string);
     }
@@ -186,23 +193,19 @@ public class GameMap {
      * @return boolean
      */
     public boolean isPositionOnMapReal(Position position){
-        if ( position.getColumn() < 0 || position.getColumn() >= COLUMNS ||
-                position.getRow() < 0 || position.getRow() >= ROWS)
-            return false;
-        return true;
+        return position.getColumn() >= 0 && position.getColumn() < COLUMNS &&
+                position.getRow() >= 0 && position.getRow() < ROWS;
     }
 
     /**
-     * Check if a {@link Square square} in {@link Position position} has someone else's worker on.
+     * Check if a {@link Square square} in {@link Position position} has a worker on.
      *
      * @param position - the position we want to know if it is free
      *
      * @return boolean
      */
     public boolean isPositionFree(Position position){
-        if (board[position.getRow()][position.getColumn()].hasWorkerOn())
-            return false;
-        return true;
+        return !board[position.getRow()][position.getColumn()].hasWorkerOn();
     }
 
 }

@@ -29,7 +29,7 @@ public class SquareTest {
     public void getWorkerOnSquare(){
         assertNull(square.getWorkerOnSquare());
 
-        Worker worker1 = new Worker(0, Color.RED);
+        Worker worker1 = new Worker(0);
         square.setWorkerOn (worker1);
         assertEquals(worker1, square.getWorkerOnSquare());
 
@@ -40,14 +40,14 @@ public class SquareTest {
     @Test
     public void hasWorkerOnSquare(){
         assertFalse(square.hasWorkerOn());
-        Worker worker1 = new Worker(0, Color.RED);
+        Worker worker1 = new Worker(0);
         square.setWorkerOn (worker1);
         assertTrue(square.hasWorkerOn());
     }
 
     @Test
     public void checkIfBuilt() throws DomePresentException {
-        Worker worker1 = new Worker(0, Color.RED);
+        Worker worker1 = new Worker(0);
 
         assertEquals(0, square.getHeight());
         assertFalse(square.hasBeenBuiltOver());
