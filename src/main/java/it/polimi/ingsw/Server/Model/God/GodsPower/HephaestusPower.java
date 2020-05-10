@@ -5,8 +5,8 @@ import it.polimi.ingsw.Server.Model.Map.Square;
 
 public class HephaestusPower extends Power {
 
-    private boolean firstBuild;
-    private Square firstBlockBuilt;
+    private static boolean firstBuild;
+    private static Square firstBlockBuilt;
 
     public HephaestusPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);

@@ -5,8 +5,8 @@ import it.polimi.ingsw.Server.Model.Map.Square;
 
 public class DemeterPower extends Power {
 
-    static boolean firstBuild;
-    static Square firstBlockBuilt;
+    private static boolean firstBuild;
+    private static Square firstBlockBuilt;
 
 
     public DemeterPower(String powerType, String powerDescription) {
@@ -21,11 +21,11 @@ public class DemeterPower extends Power {
 
         if (firstBlockBuilt == null) {
             outcome = super.build(squareWhereToBuild);
-            if (outcome == ActionOutcome.DONE_CAN_BE_DONE_AGAIN) {
+            if (outcome == ActionOutcome.DONE) {
                 firstBuild = false;
                 firstBlockBuilt = squareWhereToBuild;
-                return outcome;
-            }
+                return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
+            } else return ActionOutcome.NOT_DONE;
 
         } else if (firstBlockBuilt.equals(squareWhereToBuild)) {
             return ActionOutcome.NOT_DONE;
@@ -41,7 +41,6 @@ public class DemeterPower extends Power {
             }
         }
 
-        //non raggiungibile
-        return outcome;
+
     }
 }

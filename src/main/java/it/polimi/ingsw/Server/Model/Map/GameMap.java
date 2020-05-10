@@ -22,7 +22,7 @@ public class GameMap {
 
        for (int i=0; i<ROWS; i++) {
            for ( int j=0; j<COLUMNS; j++)  {
-               this.board[i][j] = new Square();
+               this.board[i][j] = new Square(i,j);
            }
        }
    }
@@ -44,9 +44,11 @@ public class GameMap {
        return getBoard()[pos.getRow()][pos.getColumn()];
     }
 
+    //per test
     public Square getSquare(int row, int col) {
         return getBoard()[row][col];
     }
+
 
     /**
      * Gets worker on square.
