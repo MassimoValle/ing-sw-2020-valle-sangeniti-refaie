@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Server.Model.God.GodsPower;
 
 import it.polimi.ingsw.Model.Action.ActionOutcome;
+import it.polimi.ingsw.Model.Game;
 import it.polimi.ingsw.Model.Map.Square;
 import it.polimi.ingsw.Model.Player.Position;
 import it.polimi.ingsw.Model.Player.Worker;
@@ -9,12 +10,12 @@ import java.io.Serializable;
 
 public class MinotaurPower extends Power implements Serializable {
 
-    private static Position actualPosition;
-    private static Square backWardSquare;
+    private  Position actualPosition;
+    private  Position backWardPosition;
 
     public MinotaurPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
-        Square backWardSquare = null;
+        Position backWardPosition = null;
 
     }
 
@@ -28,12 +29,12 @@ public class MinotaurPower extends Power implements Serializable {
             //salvo il worker avversario
             Worker oppWorker = squareWhereToMove.getWorkerOnSquare();
             squareWhereToMove.freeSquare();
-            Position newPos = backWardSquare.getPosition();
             //sposto worker che ha minotauro
             super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
             //sposto worker avversario
-            super.move(oppWorker, newPos, squareWhereToMove, backWardSquare);
+            Square backWardSquare = Game.getInstance().getGameMap().getSquare(backWardPosition);
+            super.move(oppWorker, backWardPosition, squareWhereToMove, backWardSquare);
 
             return ActionOutcome.DONE;
 
@@ -44,14 +45,20 @@ public class MinotaurPower extends Power implements Serializable {
 
     }
 
-    private void findBackWardSquare(Position actualPosition, Position positionWhereToMove){
+    /**
+     *
+     * @param actualPosition
+     * @param positionWhereToMove
+     */
+
+    private void findBackWardSPosition(Position actualPosition, Position positionWhereToMove){
 
        int x1 = actualPosition.getRow();
        int x2 = positionWhereToMove.getRow();
        int y1 = actualPosition.getColumn();
        int y2 = positionWhereToMove.getColumn();
-       int x3 = backWardSquare.getRow();
-       int y3 = backWardSquare.getColumn();
+       int x3 = backWardPosition.getRow();
+       int y3 = backWardPosition.getColumn();
 
 
 
@@ -59,31 +66,46 @@ public class MinotaurPower extends Power implements Serializable {
             if (y1 < y2){
                     x3 = x2;
                     y3 = y2 + 1;
+                    backWardPosition.setRow(x3);
+                    backWardPosition.setColumn(y3);
             }else {         //y1 > y2 non ha senso vedere quando sono uguali.
                     x3 = x2;
                     y3 = y2 - 1;
-            }
+            }       backWardPosition.setRow(x3);
+                    backWardPosition.setColumn(y3);
         }else if (x1 < x2) {
             if (y1 < y2) {
                     x3 = x2 + 1;
                     y3 = y2 + 1;
+                    backWardPosition.setRow(x3);
+                    backWardPosition.setColumn(y3);
             }else if (y1 == y2){
                     x3 = x2 + 1;
                     y3 = y2;
+                    backWardPosition.setRow(x3);
+                    backWardPosition.setColumn(y3);
             }else {
                     x3 = x2 + 1;
                     y3 = y2 - 1;
+                    backWardPosition.setRow(x3);
+                    backWardPosition.setColumn(y3);
             }
         }else {
                 if(y1 < y2){
                     x3 = x2 - 1;
                     y3 = y2 + 1;
+                    backWardPosition.setRow(x3);
+                    backWardPosition.setColumn(y3);
                 }else if (y1 == y2){
                     x3 = x2 -1;
                     y3 = y2;
+                    backWardPosition.setRow(x3);
+                    backWardPosition.setColumn(y3);
                 }else {
                     x3 = x2 - 1;
                     y3 = y2 - 1;
+                    backWardPosition.setRow(x3);
+                    backWardPosition.setColumn(y3);
                 }
         }
     }
