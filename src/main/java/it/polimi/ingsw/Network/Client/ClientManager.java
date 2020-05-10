@@ -15,6 +15,7 @@ import it.polimi.ingsw.Network.Message.Responses.ShowDeckResponse;
 import it.polimi.ingsw.Network.Message.Responses.PickGodResponse;
 import it.polimi.ingsw.Network.Message.Responses.PlaceWorkerResponse;
 import it.polimi.ingsw.Network.Message.Responses.Response;
+import it.polimi.ingsw.View.Cli.CLI;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -24,6 +25,8 @@ import java.util.Scanner;
 public class ClientManager implements ClientManagerListener{
 
     private static ClientManager instance = null;
+
+    private final ClientView clientView;
 
     private static String username;
     public String getUsername() {
@@ -41,6 +44,8 @@ public class ClientManager implements ClientManagerListener{
 
         consoleIn = new Scanner(System.in);
         consoleOut = new PrintStream(System.out, true);
+
+        clientView = new CLI();
 
     }
 
@@ -110,23 +115,7 @@ public class ClientManager implements ClientManagerListener{
 
     // functions
     public String askUsername() {
-        consoleOut.print("Enter your username: ");
-
-        //Setto il nome utente
-        do {
-            if (consoleIn.hasNextLine()) {
-                String currentUsername;
-                currentUsername = consoleIn.nextLine();
-
-                username = currentUsername;
-            }
-        } while (username == null);
-
-        consoleOut.println("YOUR USERNAME: " + username);
-        //consoleOut.println("Have a nice day");
-
-        return username;
-
+        return clientView.askUserName();
     }
     public void login(){
             String username = askUsername();
@@ -142,15 +131,12 @@ public class ClientManager implements ClientManagerListener{
     }
 
     private void chooseNumPlayers(){
-        String input;
-        do{
-            consoleOut.print("lobby size [MIN: 2, MAX: 3]: ");
-            input = consoleIn.nextLine();
-        }while (!(input.equals("2") || input.equals("3")));
+
+        Integer num = clientView.askNumbOfPlayer();
 
         try {
             Client.sendMessage(
-                    new Request(username, Dispatcher.SETUP_GAME, RequestContent.NUM_PLAYER, MessageStatus.OK, input)
+                    new Request(username, Dispatcher.SETUP_GAME, RequestContent.NUM_PLAYER, MessageStatus.OK, num.toString())
             );
         }catch (IOException e){
             e.printStackTrace();
