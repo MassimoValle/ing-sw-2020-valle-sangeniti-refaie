@@ -1,9 +1,6 @@
 package it.polimi.ingsw.Network.Client;
 
-import it.polimi.ingsw.View.Cli.CLI;
-
 import java.io.IOException;
-import java.util.Scanner;
 
 public class ClientMain {
 

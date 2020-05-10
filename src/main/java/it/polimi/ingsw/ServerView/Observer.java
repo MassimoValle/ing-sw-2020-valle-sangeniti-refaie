@@ -1,4 +1,4 @@
-package it.polimi.ingsw.View;
+package it.polimi.ingsw.ServerView;
 
 public interface Observer<T> {
 

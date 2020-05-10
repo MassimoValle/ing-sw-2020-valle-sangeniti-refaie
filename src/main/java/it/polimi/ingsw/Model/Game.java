@@ -8,7 +8,7 @@ import it.polimi.ingsw.Model.Player.Player;
 import it.polimi.ingsw.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.Network.Message.Responses.Response;
-import it.polimi.ingsw.View.Observable;
+import it.polimi.ingsw.ServerView.Observable;
 
 import java.awt.*;
 import java.util.ArrayList;

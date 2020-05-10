@@ -3,6 +3,7 @@ package it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Model.God.Deck;
 import it.polimi.ingsw.Model.God.God;
 import it.polimi.ingsw.Model.Player.Position;
+import it.polimi.ingsw.Network.Client.ClientView.ClientView;
 import it.polimi.ingsw.Network.Message.*;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
 import it.polimi.ingsw.Network.Message.Enum.RequestContent;
@@ -15,7 +16,7 @@ import it.polimi.ingsw.Network.Message.Responses.ShowDeckResponse;
 import it.polimi.ingsw.Network.Message.Responses.PickGodResponse;
 import it.polimi.ingsw.Network.Message.Responses.PlaceWorkerResponse;
 import it.polimi.ingsw.Network.Message.Responses.Response;
-import it.polimi.ingsw.View.Cli.CLI;
+import it.polimi.ingsw.Network.Client.ClientView.Cli.CLI;
 
 import java.io.IOException;
 import java.io.PrintStream;

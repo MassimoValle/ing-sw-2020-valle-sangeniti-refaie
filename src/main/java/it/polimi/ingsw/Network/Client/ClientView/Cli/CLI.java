@@ -1,14 +1,7 @@
-package it.polimi.ingsw.View.Cli;
+package it.polimi.ingsw.Network.Client.ClientView.Cli;
 
-import it.polimi.ingsw.Network.Client.ClientManager;
-import it.polimi.ingsw.Network.Client.Client;
-import it.polimi.ingsw.Network.Client.ClientView;
-import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
-import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
-import it.polimi.ingsw.Network.Message.Enum.RequestContent;
-import it.polimi.ingsw.Network.Message.Requests.Request;
+import it.polimi.ingsw.Network.Client.ClientView.ClientView;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Scanner;
 

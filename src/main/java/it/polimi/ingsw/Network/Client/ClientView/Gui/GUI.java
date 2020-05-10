@@ -1,6 +1,6 @@
-package it.polimi.ingsw.View.Gui;
+package it.polimi.ingsw.Network.Client.ClientView.Gui;
 
-import it.polimi.ingsw.Network.Client.ClientView;
+import it.polimi.ingsw.Network.Client.ClientView.ClientView;
 
 public class GUI extends ClientView {
 

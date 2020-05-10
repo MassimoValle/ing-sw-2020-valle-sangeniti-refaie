@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Network.Client;
+package it.polimi.ingsw.Network.Client.ClientView;
 
 public interface ClientInterface {
 

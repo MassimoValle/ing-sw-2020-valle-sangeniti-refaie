@@ -1,4 +1,4 @@
-package it.polimi.ingsw.View;
+package it.polimi.ingsw.ServerView;
 
 import it.polimi.ingsw.Controller.TurnManager;
 import it.polimi.ingsw.Model.Game;
