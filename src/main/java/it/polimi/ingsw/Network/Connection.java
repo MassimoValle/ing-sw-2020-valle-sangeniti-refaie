@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Network;
 
+import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.Network.Message.Requests.Request;
 import it.polimi.ingsw.ServerView.Observable;
@@ -9,7 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class Connection extends Observable<String> implements Runnable {
+public class Connection extends Observable<Message> implements Runnable {
 
     private Server server;
     private Socket socket;
@@ -115,9 +116,14 @@ public class Connection extends Observable<String> implements Runnable {
         while (isActive()) {
             try {
                 synchronized (inLock) {
-                    Message message = (Message) socketIn.readObject();
+                    Request message = (Request) socketIn.readObject();
 
-                    server.handleMessage((Request) message, this);
+                    if(message.getRequestContent() != RequestContent.LOGIN ||
+                        message.getRequestContent() != RequestContent.NUM_PLAYER)
+                        notify(message);
+
+
+                    server.handleMessage(message, this);
                 }
             } catch (IOException | ClassNotFoundException e) {
                 System.err.println(e.getMessage());

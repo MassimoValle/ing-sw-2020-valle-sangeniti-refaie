@@ -12,9 +12,9 @@ import it.polimi.ingsw.Network.Message.Responses.WonResponse;
 
 public class MasterController {
 
-    private final SetUpGameManager setUpGameManager;
+    private static SetUpGameManager setUpGameManager;
     private final TurnManager turnManager;
-    private final ActionManager actionManager;
+    private static ActionManager actionManager;
 
     private static Game gameInstance;
 
@@ -43,7 +43,7 @@ public class MasterController {
      *
      * @param request the request sent by the client
      */
-    public void dispatcher(Request request){
+    public static void dispatcher(Request request){
 
         switch (request.getMessageDispatcher()) {
             case SETUP_GAME -> setUpGameManager.handleMessage(request);

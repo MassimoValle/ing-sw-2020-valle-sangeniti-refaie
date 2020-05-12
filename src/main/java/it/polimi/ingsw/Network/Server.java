@@ -147,15 +147,15 @@ public class Server {
             case NUM_PLAYER -> setLobbySize(message);
 
             //Everything else is handled by the SuperMegaController
-            default -> handleControllerMessage(message);
+            //default -> handleControllerMessage(message);
         }
 
     }
 
-    private void handleControllerMessage(Request message) {
+    /*private void handleControllerMessage(Request message) {
 
         masterController.dispatcher(message);
-    }
+    }*/
 
 
 
