@@ -1,14 +1,12 @@
 package it.polimi.ingsw.Model.Map;
 
-import it.polimi.ingsw.Controller.PossibleGameState;
 import it.polimi.ingsw.Exceptions.DomePresentException;
-import it.polimi.ingsw.Model.Game;
-import it.polimi.ingsw.Model.Player.Position;
-import it.polimi.ingsw.Model.Player.Worker;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
+import it.polimi.ingsw.Server.Model.Player.Position;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.*;
 import java.util.List;
 
 import static org.junit.Assert.*;

@@ -1,8 +1,7 @@
 package it.polimi.ingsw.Network.Message.Responses;
 
-import it.polimi.ingsw.Model.God.God;
+import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
-import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
 
 import java.util.ArrayList;

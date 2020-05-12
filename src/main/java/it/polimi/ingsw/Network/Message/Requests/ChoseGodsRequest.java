@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Network.Message.Requests;
 
-import it.polimi.ingsw.Model.God.God;
+import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
 import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 

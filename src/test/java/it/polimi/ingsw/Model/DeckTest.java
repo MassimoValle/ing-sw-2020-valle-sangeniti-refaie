@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Model;
 
-import it.polimi.ingsw.Model.God.Deck;
+import it.polimi.ingsw.Server.Model.God.Deck;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

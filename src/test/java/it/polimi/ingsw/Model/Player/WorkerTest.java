@@ -1,11 +1,10 @@
 package it.polimi.ingsw.Model.Player;
 
-import it.polimi.ingsw.Model.Game;
-import it.polimi.ingsw.Model.Map.GameMap;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
+import it.polimi.ingsw.Server.Model.Player.Position;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.awt.*;
 
 import static org.junit.Assert.*;
 

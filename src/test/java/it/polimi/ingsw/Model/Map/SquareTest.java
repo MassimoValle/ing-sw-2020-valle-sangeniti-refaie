@@ -1,17 +1,14 @@
 package it.polimi.ingsw.Model.Map;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
-import it.polimi.ingsw.Model.Building.Dome;
-import it.polimi.ingsw.Model.Building.LevelOneBlock;
-import it.polimi.ingsw.Model.Building.LevelThreeBlock;
-import it.polimi.ingsw.Model.Building.LevelTwoBlock;
-import it.polimi.ingsw.Model.Player.Position;
-import it.polimi.ingsw.Model.Player.Worker;
+import it.polimi.ingsw.Server.Model.Building.Dome;
+import it.polimi.ingsw.Server.Model.Building.LevelOneBlock;
+import it.polimi.ingsw.Server.Model.Building.LevelThreeBlock;
+import it.polimi.ingsw.Server.Model.Building.LevelTwoBlock;
+import it.polimi.ingsw.Server.Model.Map.Square;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.theories.suppliers.TestedOn;
-
-import java.awt.*;
 
 import static org.junit.Assert.*;
 

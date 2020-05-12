@@ -1,4 +1,4 @@
-package org.tempura.console.util;
+package it.polimi.ingsw.Utility;
 
 import java.util.ArrayList;
 import java.util.Collections;

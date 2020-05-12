@@ -1,6 +1,5 @@
 package it.polimi.ingsw.Network;
 
-import it.polimi.ingsw.Model.God.Deck;
 import org.junit.BeforeClass;
 
 import java.io.IOException;

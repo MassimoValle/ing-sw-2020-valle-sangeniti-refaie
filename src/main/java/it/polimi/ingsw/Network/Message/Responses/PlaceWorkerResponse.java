@@ -1,7 +1,6 @@
 package it.polimi.ingsw.Network.Message.Responses;
 
-import it.polimi.ingsw.Model.Player.Worker;
-import it.polimi.ingsw.Network.Message.Enum.RequestContent;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
 

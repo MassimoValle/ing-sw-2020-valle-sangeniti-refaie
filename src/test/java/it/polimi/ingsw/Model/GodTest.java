@@ -1,8 +1,7 @@
 package it.polimi.ingsw.Model;
 
-import it.polimi.ingsw.Model.God.God;
-import it.polimi.ingsw.Model.God.GodsPower.ApolloPower;
-import it.polimi.ingsw.Model.God.GodsPower.Power;
+import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.God.GodsPower.ApolloPower;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

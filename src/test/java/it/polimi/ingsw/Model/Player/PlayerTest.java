@@ -1,7 +1,7 @@
 package it.polimi.ingsw.Model.Player;
 
-import it.polimi.ingsw.Model.Game;
-import org.junit.After;
+import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import org.junit.Before;
 import org.junit.Test;
 

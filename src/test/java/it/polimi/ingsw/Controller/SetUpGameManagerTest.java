@@ -1,15 +1,15 @@
 package it.polimi.ingsw.Controller;
 
-import it.polimi.ingsw.Model.Game;
-import it.polimi.ingsw.Model.God.Deck;
-import it.polimi.ingsw.Model.God.God;
-import it.polimi.ingsw.Model.God.GodsPower.ApolloPower;
-import it.polimi.ingsw.Model.Player.Player;
-import it.polimi.ingsw.Model.Player.Position;
-import it.polimi.ingsw.Model.Player.Worker;
-import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
-import it.polimi.ingsw.Network.Message.Enum.RequestContent;
-import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Server.Controller.MasterController;
+import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
+import it.polimi.ingsw.Server.Controller.SetUpGameManager;
+import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.God.Deck;
+import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.God.GodsPower.ApolloPower;
+import it.polimi.ingsw.Server.Model.Player.Player;
+import it.polimi.ingsw.Server.Model.Player.Position;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Requests.*;
 import org.junit.Before;
 import org.junit.Ignore;
