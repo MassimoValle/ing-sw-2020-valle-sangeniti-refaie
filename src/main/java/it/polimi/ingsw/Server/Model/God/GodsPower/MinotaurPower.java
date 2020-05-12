@@ -1,16 +1,18 @@
 package it.polimi.ingsw.Server.Model.God.GodsPower;
 
-import it.polimi.ingsw.Model.Action.ActionOutcome;
-import it.polimi.ingsw.Model.Game;
-import it.polimi.ingsw.Model.Map.Square;
-import it.polimi.ingsw.Model.Player.Position;
-import it.polimi.ingsw.Model.Player.Worker;
+
+
+import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
+import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.Map.Square;
+import it.polimi.ingsw.Server.Model.Player.Position;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.io.Serializable;
 
 public class MinotaurPower extends Power implements Serializable {
 
-    private  Position actualPosition;
+    private Position actualPosition;
     private  Position backWardPosition;
 
     public MinotaurPower(String powerType, String powerDescription) {

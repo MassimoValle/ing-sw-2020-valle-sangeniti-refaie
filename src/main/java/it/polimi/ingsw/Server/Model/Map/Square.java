@@ -2,6 +2,7 @@ package it.polimi.ingsw.Server.Model.Map;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Server.Model.Building.*;
+import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Utility.*;
 
@@ -13,11 +14,16 @@ public class Square {
     //To keep trace of worker is on the square
     private Worker workerOnSquare;
     private ArrayList<Block> tower;
+    private final int row;
+    private final int column;
 
 
-    public Square() {
+    public Square(int row, int column ) {
         tower = null;
         this.workerOnSquare = null;
+        this.row = row;
+        this.column = column;
+
     }
 
     public Worker getWorkerOnSquare() {
@@ -34,6 +40,9 @@ public class Square {
         else
             return tower.size();
     }
+
+    public int getRow() {return this.row;}
+    public int getColumn() {return this.column;}
 
     public boolean hasWorkerOn() {
         return workerOnSquare != null;
@@ -74,6 +83,12 @@ public class Square {
      */
     public void freeSquare() {
         this.workerOnSquare = null;
+    }
+
+
+
+    public Position getPosition() {
+        return new Position(this.row, this.column);
     }
 
 

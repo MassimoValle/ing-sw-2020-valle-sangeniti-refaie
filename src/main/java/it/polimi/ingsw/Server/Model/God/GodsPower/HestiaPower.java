@@ -1,7 +1,9 @@
 package it.polimi.ingsw.Server.Model.God.GodsPower;
 
-import it.polimi.ingsw.Model.Action.ActionOutcome;
-import it.polimi.ingsw.Model.Map.Square;
+
+
+import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
+import it.polimi.ingsw.Server.Model.Map.Square;
 
 import java.io.Serializable;
 
