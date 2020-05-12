@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Network;
 
 import it.polimi.ingsw.Client.Controller.ClientManager;
+import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Message.*;
 
 import java.io.*;
@@ -25,11 +26,11 @@ public class Client {
 
 
 
-    public Client(String ip, int port){
+    public Client(String ip, int port, ClientView clientView){
         this.ip = ip;
         this.port = port;
 
-        clientManager = ClientManager.getInstance();
+        clientManager = new ClientManager(clientView);
 
     }
 

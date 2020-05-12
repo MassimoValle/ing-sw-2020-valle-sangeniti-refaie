@@ -26,14 +26,9 @@ import java.util.Scanner;
 
 public class ClientManager implements ClientManagerListener {
 
-    private static ClientManager instance = null;
-
     private final ClientView clientView;
 
     private static String username;
-    public String getUsername() {
-        return username;
-    }
 
     private final Scanner consoleIn;
     private final PrintStream consoleOut;
@@ -42,22 +37,15 @@ public class ClientManager implements ClientManagerListener {
 
 
 
-    private ClientManager(){
+    public ClientManager(ClientView clientView){
 
         consoleIn = new Scanner(System.in);
         consoleOut = new PrintStream(System.out, true);
 
-        clientView = new CLI();
+        this.clientView = clientView;
 
     }
 
-    public static synchronized ClientManager getInstance() {
-
-        if (instance == null) {
-            instance = new ClientManager();
-        }
-        return instance;
-    }
 
 
 
@@ -120,15 +108,15 @@ public class ClientManager implements ClientManagerListener {
         return clientView.askUserName();
     }
     public void login(){
-            String username = askUsername();
+        username = askUsername();
 
-            try {
-                Client.sendMessage(
-                        new Request(username, Dispatcher.SETUP_GAME, RequestContent.LOGIN, MessageStatus.OK, username)
-                );
-            }catch (IOException e){
-                e.printStackTrace();
-            }
+        try {
+            Client.sendMessage(
+                    new Request(username, Dispatcher.SETUP_GAME, RequestContent.LOGIN, MessageStatus.OK, username)
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
 
     }
 

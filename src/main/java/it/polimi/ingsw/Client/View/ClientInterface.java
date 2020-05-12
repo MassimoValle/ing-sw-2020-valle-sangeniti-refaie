@@ -2,6 +2,11 @@ package it.polimi.ingsw.Client.View;
 
 public interface ClientInterface {
 
+
+    void start();
+
+    String askIpAddress();
+
     String askUserName();
 
     int askNumbOfPlayer();

@@ -9,6 +9,16 @@ public class GUI extends ClientView {
     }
 
     @Override
+    public void start() {
+
+    }
+
+    @Override
+    public String askIpAddress() {
+        return null;
+    }
+
+    @Override
     public String askUserName() {
         return null;
     }

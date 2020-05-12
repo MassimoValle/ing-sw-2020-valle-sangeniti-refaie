@@ -1,7 +1,9 @@
 package it.polimi.ingsw.Client.View.Cli;
 
 import it.polimi.ingsw.Client.View.ClientView;
+import it.polimi.ingsw.Network.Client;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Scanner;
 
@@ -14,6 +16,34 @@ public class CLI extends ClientView {
         consoleIn = new Scanner(System.in);
         consoleOut = new PrintStream(System.out, true);
 
+    }
+
+
+    @Override
+    public void start() {
+
+        String ip = askIpAddress();
+
+        Client client = new Client(ip, 8080, this);
+
+        try {
+            client.run();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public String askIpAddress() {
+        consoleOut.print("IP Address: ");
+
+        String ip = consoleIn.nextLine();
+
+        if (ip.equals(""))
+            return "localhost";
+
+        return ip;
     }
 
 
