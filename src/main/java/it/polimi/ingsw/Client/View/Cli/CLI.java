@@ -2,9 +2,15 @@ package it.polimi.ingsw.Client.View.Cli;
 
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Client;
+import it.polimi.ingsw.Network.Message.Responses.Response;
+import it.polimi.ingsw.Server.Model.God.Deck;
+import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Player.Position;
+import javafx.beans.property.StringProperty;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class CLI extends ClientView {
@@ -77,22 +83,68 @@ public class CLI extends ClientView {
     }
 
     @Override
-    public void showDeck() {
+    public ArrayList<God> selectGodsFromDeck(int howMany, String serverSays) {
 
+        Deck deck = Deck.getInstance();
+        consoleOut.println(deck.toString());
+
+
+        ArrayList<God> godChoosen = new ArrayList<>();
+
+        consoleOut.print("choose " + serverSays + " index: ");
+
+        //FIX
+
+        for (int i = 0; i < howMany; i++) {
+            int index = Integer.parseInt(consoleIn.nextLine());
+            godChoosen.add(deck.getGod(index));
+        }
+
+        return godChoosen;
+    }
+
+
+    @Override
+    public God pickFromChosenGods(ArrayList<God> hand) {
+        consoleOut.println(hand.toString());
+
+        consoleOut.print("select index: ");
+        int index = Integer.parseInt(consoleIn.nextLine());
+
+        return hand.get(index);
     }
 
     @Override
-    public void showChosenGods() {
+    public Position placeWorker(String worker) {
+        consoleOut.print("MY WORKER: ");
+        consoleOut.println(worker);
 
+        consoleOut.print("row: ");
+        int row = Integer.parseInt(consoleIn.nextLine());
+        consoleOut.println();
+
+        consoleOut.print("col: ");
+        int col = Integer.parseInt(consoleIn.nextLine());
+        consoleOut.println();
+
+        return new Position(row, col);
     }
 
     @Override
-    public void pickFromChosenGods() {
+    public void debug(Response response) {
+
+        printMessageFromServer(response);
 
     }
 
-    @Override
-    public void placeWorker() {
 
+    private void printMessageFromServer(Response message){
+        String out = "#### [SERVER] ####\n";
+        out += "Message content: " + message.getResponseContent() + "\n";
+        out += "Message status: " + message.getMessageStatus() + "\n";
+        out += "Message value: " + message.getGameManagerSays() + "\n";
+        out += "________________\n";
+
+        consoleOut.println(out);
     }
 }
