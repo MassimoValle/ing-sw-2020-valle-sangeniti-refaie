@@ -66,7 +66,11 @@ public class ClientManager implements ClientManagerListener {
                     break;
 
                 case PICK_GOD:
-                    pickGod((PickGodResponse) message);
+                    if(message instanceof PickGodResponse)
+                        pickGod((PickGodResponse) message);
+                    else
+                        // god confirm
+                        System.out.println(((Response) message).getGameManagerSays());
                     break;
 
                 case PLACE_WORKER:

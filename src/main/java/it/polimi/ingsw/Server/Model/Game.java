@@ -143,6 +143,13 @@ public class Game extends Observable<Game> {
     }
 
 
+    public void removeGodChosen(God godSelected){
+
+        chosenGodsFromDeck.removeIf(god -> god.equals(godSelected));
+
+    }
+
+
     /**
      * It checks if every {@link Player} has placed its workers
      *

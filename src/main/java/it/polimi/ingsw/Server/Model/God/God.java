@@ -40,6 +40,22 @@ public class God implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof God)) {
+            return false;
+        }
+
+        return  this.godName.equals(((God) o).godName); /*&&
+                this.godDescription.equals(((God) o).godDescription) &&
+                this.godPower.equals(((God) o).godPower);*/
+    }
+
+    @Override
     public String toString() {
         String string = "";
         string = string.concat("\nName: " + this.getGodName());

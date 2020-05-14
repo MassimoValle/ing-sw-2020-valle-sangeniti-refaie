@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class PickGodResponse extends Response{
 
-    private ArrayList<God> gods;
+    private final ArrayList<God> gods;
 
     public PickGodResponse(String messageSender, String gameManagerSays, ArrayList<God> gods) {
         super(messageSender, ResponseContent.PICK_GOD, MessageStatus.OK, gameManagerSays);

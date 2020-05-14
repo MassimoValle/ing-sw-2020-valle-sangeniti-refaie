@@ -75,6 +75,7 @@ public class SetUpGameManager {
      */
     public void assignGodToPlayer(Player player, God god) {
         player.setPlayerGod(god);
+        gameInstance.removeGodChosen(god);
         god.setAssigned(true);
         setupGameState = PossibleGameState.ASSIGNING_GOD;
     }
@@ -183,7 +184,7 @@ public class SetUpGameManager {
 
         assignGodToPlayer(activePlayer, request.getGod());
 
-        MasterController.buildPositiveResponse(activePlayer, ResponseContent.PICK_GOD, "You chose!");
+        MasterController.buildPositiveResponse(activePlayer, ResponseContent.PICK_GOD, "confirm!");
 
 
 
