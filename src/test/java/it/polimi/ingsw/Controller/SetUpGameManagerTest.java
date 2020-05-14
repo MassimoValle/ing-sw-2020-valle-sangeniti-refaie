@@ -103,7 +103,7 @@ public class SetUpGameManagerTest {
         setUpGameManager.setSetupGameState(PossibleGameState.FILLING_BOARD);
         Worker worker = new Worker(1);
         Position position = new Position(1, 1);
-        Request request = new PlaceWorkerRequest(activePlayer.getPlayerName(), worker, position);
+        Request request = new PlaceWorkerRequest(activePlayer.getPlayerName(), worker.getWorkersNumber(), position);
 
         setUpGameManager.handleMessage(request);
 
@@ -146,11 +146,11 @@ public class SetUpGameManagerTest {
         Position position1 = new Position(idx, idx);
         Position position2 = new Position(idx, idx+1);
 
-        Request request1 = new PlaceWorkerRequest(activePlayer.getPlayerName(), workers.get(0), position1);
+        Request request1 = new PlaceWorkerRequest(activePlayer.getPlayerName(), workers.get(0).getWorkersNumber(), position1);
         setUpGameManager.handleMessage(request1);
         assertEquals(game.getGameMap().getWorkerOnSquare(position1), workers.get(0));
 
-        Request request2 = new PlaceWorkerRequest(activePlayer.getPlayerName(), workers.get(1), position2);
+        Request request2 = new PlaceWorkerRequest(activePlayer.getPlayerName(), workers.get(1).getWorkersNumber(), position2);
         setUpGameManager.handleMessage(request2);
         assertEquals(game.getGameMap().getWorkerOnSquare(position2), workers.get(1));
 
@@ -218,7 +218,7 @@ public class SetUpGameManagerTest {
 
         //player1 piazza i suoi god
         masterController.dispatcher(
-                new PlaceWorkerRequest(players.get(1).getPlayerName(), players.get(1).getPlayerWorkers().get(0), new Position(0,0) )
+                new PlaceWorkerRequest(players.get(1).getPlayerName(), players.get(1).getPlayerWorkers().get(0).getWorkersNumber(), new Position(0,0) )
         );
 
         assertTrue(game.getGameMap().getSquare(0,0).hasWorkerOn());
@@ -226,7 +226,7 @@ public class SetUpGameManagerTest {
 
 
         masterController.dispatcher(
-                new PlaceWorkerRequest(players.get(1).getPlayerName(), players.get(1).getPlayerWorkers().get(1), new Position(0,1) )
+                new PlaceWorkerRequest(players.get(1).getPlayerName(), players.get(1).getPlayerWorkers().get(1).getWorkersNumber(), new Position(0,1) )
         );
 
         assertTrue(game.getGameMap().getSquare(0,1).hasWorkerOn());
@@ -235,14 +235,14 @@ public class SetUpGameManagerTest {
 
         //player2 piazza i suoi god
         masterController.dispatcher(
-                new PlaceWorkerRequest(players.get(2).getPlayerName(), players.get(2).getPlayerWorkers().get(0), new Position(2,0) )
+                new PlaceWorkerRequest(players.get(2).getPlayerName(), players.get(2).getPlayerWorkers().get(0).getWorkersNumber(), new Position(2,0) )
         );
 
         assertTrue(game.getGameMap().getSquare(2,0).hasWorkerOn());
         assertEquals(game.getGameMap().getWorkerOnSquare(2,0), players.get(2).getPlayerWorkers().get(0));
 
         masterController.dispatcher(
-                new PlaceWorkerRequest(players.get(2).getPlayerName(), players.get(2).getPlayerWorkers().get(1), new Position(2,1) )
+                new PlaceWorkerRequest(players.get(2).getPlayerName(), players.get(2).getPlayerWorkers().get(1).getWorkersNumber(), new Position(2,1) )
         );
 
         assertTrue(game.getGameMap().getSquare(2,1).hasWorkerOn());
@@ -252,14 +252,14 @@ public class SetUpGameManagerTest {
 
         //player3 piazza i suoi god
         masterController.dispatcher(
-                new PlaceWorkerRequest(players.get(0).getPlayerName(), players.get(0).getPlayerWorkers().get(0), new Position(4,0) )
+                new PlaceWorkerRequest(players.get(0).getPlayerName(), players.get(0).getPlayerWorkers().get(0).getWorkersNumber(), new Position(4,0) )
         );
 
         assertTrue(game.getGameMap().getSquare(4,0).hasWorkerOn());
         assertEquals(game.getGameMap().getWorkerOnSquare(4,0), players.get(0).getPlayerWorkers().get(0));
 
         masterController.dispatcher(
-                new PlaceWorkerRequest(players.get(0).getPlayerName(), players.get(0).getPlayerWorkers().get(1), new Position(4,1) )
+                new PlaceWorkerRequest(players.get(0).getPlayerName(), players.get(0).getPlayerWorkers().get(1).getWorkersNumber(), new Position(4,1) )
         );
 
         assertTrue(game.getGameMap().getSquare(4,1).hasWorkerOn());

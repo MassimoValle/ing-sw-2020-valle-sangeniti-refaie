@@ -7,10 +7,10 @@ import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 
 public class PlaceWorkerRequest extends Request{
 
-    private final Worker workerToPlace;
+    private final Integer workerToPlace;
     private final Position positionToPlaceWorker;
 
-    public PlaceWorkerRequest(String messageSender, Worker workerToPlace, Position positionToPlaceWorker) {
+    public PlaceWorkerRequest(String messageSender, Integer workerToPlace, Position positionToPlaceWorker) {
         super(messageSender, Dispatcher.SETUP_GAME, RequestContent.PLACE_WORKER);
 
         this.workerToPlace = workerToPlace;
@@ -18,7 +18,7 @@ public class PlaceWorkerRequest extends Request{
 
     }
 
-    public Worker getWorkerToPlace() {
+    public Integer getWorkerToPlace() {
         return this.workerToPlace;
     }
 

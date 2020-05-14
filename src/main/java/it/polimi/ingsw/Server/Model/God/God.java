@@ -6,9 +6,9 @@ import java.io.Serializable;
 
 public class God implements Serializable {
 
-    private String godName;
-    private String godDescription;
-    private Power godPower;
+    private final String godName;
+    private final String godDescription;
+    private final Power godPower;
 
     //if one God is assigned to one player
     private boolean assigned;

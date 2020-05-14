@@ -28,7 +28,7 @@ public class ClientMain {
                 "Welcome to santorini!\n" +
                 "What would you like to play with?\n" +
                 "1) CLI\n" +
-                "2) GUII\n" );
+                "2) GUI\n" );
 
 
         int choice = 0;

@@ -95,7 +95,7 @@ public class MasterControllerTest {
 
         //player2 piazza i suoi god
         masterController.dispatcher(
-                new PlaceWorkerRequest(player2.getPlayerName(), player2.getPlayerWorkers().get(0), new Position(0,0) )
+                new PlaceWorkerRequest(player2.getPlayerName(), player2.getPlayerWorkers().get(0).getWorkersNumber(), new Position(0,0) )
         );
 
         assertTrue(game.getGameMap().getSquare(0,0).hasWorkerOn());
@@ -103,7 +103,7 @@ public class MasterControllerTest {
 
 
         masterController.dispatcher(
-                new PlaceWorkerRequest(player2.getPlayerName(), player2.getPlayerWorkers().get(1), new Position(0,1) )
+                new PlaceWorkerRequest(player2.getPlayerName(), player2.getPlayerWorkers().get(1).getWorkersNumber(), new Position(0,1) )
         );
 
         assertTrue(game.getGameMap().getSquare(0,1).hasWorkerOn());
@@ -112,14 +112,14 @@ public class MasterControllerTest {
 
         //player1 piazza i suoi god
         masterController.dispatcher(
-                new PlaceWorkerRequest(player1.getPlayerName(), player1.getPlayerWorkers().get(0), new Position(2,0) )
+                new PlaceWorkerRequest(player1.getPlayerName(), player1.getPlayerWorkers().get(0).getWorkersNumber(), new Position(2,0) )
         );
 
         assertTrue(game.getGameMap().getSquare(2,0).hasWorkerOn());
         assertEquals(game.getGameMap().getWorkerOnSquare(2,0), player1.getPlayerWorkers().get(0));
 
         masterController.dispatcher(
-                new PlaceWorkerRequest(player1.getPlayerName(), player1.getPlayerWorkers().get(1), new Position(2,1) )
+                new PlaceWorkerRequest(player1.getPlayerName(), player1.getPlayerWorkers().get(1).getWorkersNumber(), new Position(2,1) )
         );
 
         assertTrue(game.getGameMap().getSquare(2,1).hasWorkerOn());

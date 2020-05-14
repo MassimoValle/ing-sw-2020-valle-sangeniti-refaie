@@ -93,23 +93,33 @@ public class CLI extends ClientView {
 
         consoleOut.print("choose " + serverSays + " index: ");
 
-        //FIX
+
+        int index;
 
         for (int i = 0; i < howMany; i++) {
-            int index = Integer.parseInt(consoleIn.nextLine());
+
+            do{
+                index = Integer.parseInt(consoleIn.nextLine());
+            }while (index >= deck.size());
+
             godChoosen.add(deck.getGod(index));
         }
 
         return godChoosen;
     }
 
-
     @Override
     public God pickFromChosenGods(ArrayList<God> hand) {
-        consoleOut.println(hand.toString());
 
-        consoleOut.print("select index: ");
-        int index = Integer.parseInt(consoleIn.nextLine());
+        consoleOut.println(hand.toString());
+        int index;
+
+        do {
+
+            consoleOut.print("select index: ");
+            index = Integer.parseInt(consoleIn.nextLine());
+
+        }while (index >= hand.size());
 
         return hand.get(index);
     }

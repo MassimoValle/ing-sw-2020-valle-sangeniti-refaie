@@ -1,7 +1,6 @@
 package it.polimi.ingsw.Client.View;
 
 import it.polimi.ingsw.Network.Message.Responses.Response;
-import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Player.Position;
 

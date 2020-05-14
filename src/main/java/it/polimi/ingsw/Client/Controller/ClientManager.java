@@ -1,7 +1,6 @@
 package it.polimi.ingsw.Client.Controller;
 
 import it.polimi.ingsw.Network.Client;
-import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Client.View.ClientView;
@@ -17,12 +16,9 @@ import it.polimi.ingsw.Network.Message.Responses.ShowDeckResponse;
 import it.polimi.ingsw.Network.Message.Responses.PickGodResponse;
 import it.polimi.ingsw.Network.Message.Responses.PlaceWorkerResponse;
 import it.polimi.ingsw.Network.Message.Responses.Response;
-import it.polimi.ingsw.Client.View.Cli.CLI;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class ClientManager implements ClientManagerListener {
 
@@ -32,11 +28,10 @@ public class ClientManager implements ClientManagerListener {
 
 
 
-
-
     public ClientManager(ClientView clientView){
 
         this.clientView = clientView;
+
 
     }
 
@@ -62,19 +57,33 @@ public class ClientManager implements ClientManagerListener {
                     break;
 
                 case SHOW_DECK:
-                    chooseGodFromDeck((ShowDeckResponse) message);
+
+                    if(message instanceof ShowDeckResponse)
+                        chooseGodFromDeck((ShowDeckResponse) message);
+                    else
+                        // confirm
+                        System.out.println(((Response) message).getGameManagerSays());
+
                     break;
 
                 case PICK_GOD:
+
                     if(message instanceof PickGodResponse)
                         pickGod((PickGodResponse) message);
                     else
-                        // god confirm
+                        // confirm
                         System.out.println(((Response) message).getGameManagerSays());
+
                     break;
 
                 case PLACE_WORKER:
-                    placeWorker((PlaceWorkerResponse) message);
+
+                    if(message instanceof PlaceWorkerResponse)
+                        placeWorker((PlaceWorkerResponse) message);
+                    else
+                        // confirm
+                        System.out.println(((Response) message).getGameManagerSays());
+
                     break;
 
                 case START_TURN:
