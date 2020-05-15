@@ -17,6 +17,8 @@ public enum ResponseContent {
     START_TURN ("The player is notified that his turn is starting"),
     SELECT_WORKER ("The player has to selesct a worker and get a response"),
 
+    POWER_BUTTON ("The player clicked the power button"),
+
     MOVE_WORKER ("The player has to move and get a response"),
     BUILD ("The player has to built and get a response"),
 

@@ -62,6 +62,11 @@ public class Game extends Observable<Game> {
         return chosenGodsFromDeck;
     }
 
+    /**
+     * Gets the Gods' powers from the game.
+     *
+     * @return the Gods' powers
+     */
     public List<Power> getPowersInGame() {
         List<Power> powers = new ArrayList<>();
         for (God god: chosenGodsFromDeck) {

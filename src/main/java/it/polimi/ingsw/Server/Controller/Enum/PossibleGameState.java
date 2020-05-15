@@ -8,6 +8,7 @@ public enum PossibleGameState {
     FILLING_BOARD ("Every player has to select & place its workers on the board"),
     START_ROUND("The turn has just started"),
     WORKER_SELECTED ("The player has selected the worker to place/move"),
+    BUILD_BEFORE ("The player has the ability to build before moving"),
     WORKER_MOVED ("The player has moved, if he hasn't any extra abilities, now must build"),
     BUILT ("The player has built"),
     PLAYER_TURN_ENDING ("End of player turn")
