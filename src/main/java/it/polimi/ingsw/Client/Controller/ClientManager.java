@@ -197,12 +197,11 @@ public class ClientManager implements ClientManagerListener {
 
         ArrayList<God> hand = message.getGods();
 
-        God picked = clientView.pickFromChosenGods(hand);
-        this.god = picked;
+        this.god = clientView.pickFromChosenGods(hand);
 
         try {
             Client.sendMessage(
-                    new PickGodRequest(username, picked)
+                    new PickGodRequest(username, this.god)
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -226,10 +225,10 @@ public class ClientManager implements ClientManagerListener {
 
     private void selectWorker(SelectWorkerResponse respose){
 
-        workerSelected = clientView.selectWorker();
+        this.workerSelected = clientView.selectWorker();
         try {
             Client.sendMessage(
-                    new SelectWorkerRequest(username, workerSelected)
+                    new SelectWorkerRequest(username, this.workerSelected)
             );
         }catch (IOException e){
             e.printStackTrace();

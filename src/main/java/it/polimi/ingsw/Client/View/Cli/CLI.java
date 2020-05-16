@@ -51,7 +51,6 @@ public class CLI extends ClientView {
         return ip;
     }
 
-
     @Override
     public String askUserName() {
 
@@ -215,6 +214,8 @@ public class CLI extends ClientView {
     }
 
 
+
+    // test
     private void printMessageFromServer(Response message){
         String out = "#### [SERVER] ####\n";
         out += "Message content: " + message.getResponseContent() + "\n";
