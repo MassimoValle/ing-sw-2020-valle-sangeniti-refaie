@@ -6,7 +6,6 @@ import it.polimi.ingsw.Network.Message.Responses.*;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Client.View.ClientView;
-import it.polimi.ingsw.Network.Message.*;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
 import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
@@ -19,9 +18,10 @@ public class ClientManager implements ClientManagerListener {
     private final ClientView clientView;
 
     private static String username;
-    private God god;
+    private God myGod;
 
     private Integer workerSelected;
+    private boolean myTurn;
 
 
 
@@ -84,9 +84,15 @@ public class ClientManager implements ClientManagerListener {
                     break;
 
                 case START_TURN:
+
+                    System.out.println(message.getGameManagerSays());
+                    this.myTurn = true;
+
                     break;
 
                 case SELECT_WORKER:
+
+                    if(!myTurn) break;
 
                     if(message instanceof SelectWorkerResponse)
                         selectWorker((SelectWorkerResponse) message);
@@ -98,6 +104,8 @@ public class ClientManager implements ClientManagerListener {
 
                 case MOVE_WORKER:
 
+                    if(!myTurn) break;
+
                     if(message instanceof MoveResponse)
                         moveWorker((MoveResponse) message);
                     else
@@ -108,6 +116,8 @@ public class ClientManager implements ClientManagerListener {
 
                 case BUILD:
 
+                    if(!myTurn) break;
+
                     if(message instanceof BuildResponse)
                         build((BuildResponse) message);
                     else
@@ -117,6 +127,10 @@ public class ClientManager implements ClientManagerListener {
                     break;
 
                 case END_TURN:
+
+                    System.out.println(message.getGameManagerSays());
+                    this.myTurn = false;
+
                     break;
 
                 case PLAYER_WON:
@@ -146,6 +160,12 @@ public class ClientManager implements ClientManagerListener {
         return clientView.askUserName();
 
     }
+
+
+
+
+
+
     public void login(){
 
         username = askUsername();
@@ -197,11 +217,11 @@ public class ClientManager implements ClientManagerListener {
 
         ArrayList<God> hand = message.getGods();
 
-        this.god = clientView.pickFromChosenGods(hand);
+        this.myGod = clientView.pickFromChosenGods(hand);
 
         try {
             Client.sendMessage(
-                    new PickGodRequest(username, this.god)
+                    new PickGodRequest(username, this.myGod)
             );
         }catch (IOException e){
             e.printStackTrace();
