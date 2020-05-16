@@ -7,12 +7,12 @@ import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 
 public class SelectWorkerRequest extends Request {
 
-    private final Worker workerToSelect;
+    private final Integer workerToSelect;
     private Position workerToSelectPosition;
 
 
 
-    public SelectWorkerRequest(String messageSender,  Worker workerToSelect, Position workerToSelectPosition) {
+    public SelectWorkerRequest(String messageSender,  Integer workerToSelect, Position workerToSelectPosition) {
         super(messageSender, Dispatcher.TURN, RequestContent.SELECT_WORKER);
         this.workerToSelect = workerToSelect;
         this.workerToSelectPosition = workerToSelectPosition;
@@ -20,12 +20,12 @@ public class SelectWorkerRequest extends Request {
 
 
     //Used in case Worker hasn't been placed yet
-    public SelectWorkerRequest(String messageSender,  Worker workerToSelect) {
+    public SelectWorkerRequest(String messageSender,  Integer workerToSelect) {
         super(messageSender, Dispatcher.TURN, RequestContent.SELECT_WORKER);
         this.workerToSelect = workerToSelect;
     }
 
-    public Worker getWorkerToSelect() {
+    public Integer getWorkerToSelect() {
         return this.workerToSelect;
     }
 

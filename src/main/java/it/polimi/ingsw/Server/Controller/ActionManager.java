@@ -82,7 +82,8 @@ public class ActionManager {
             }
 
 
-        Worker workerFromRequest = request.getWorkerToSelect();
+        Integer index = request.getWorkerToSelect();
+        Worker workerFromRequest = activePlayer.getPlayerWorkers().get(index);
 
         //When a handleSelectWorkerRequest occurs the activeWorker in the turn must be set tu null
         //or has to be the other player's worker

@@ -131,7 +131,7 @@ public class MasterControllerTest {
 
         //turno del player 2
         masterController.dispatcher(
-                new SelectWorkerRequest(player2.getPlayerName(), player2.getPlayerWorkers().get(1))
+                new SelectWorkerRequest(player2.getPlayerName(), 1)
         );
 
         masterController.dispatcher(
@@ -148,7 +148,7 @@ public class MasterControllerTest {
 
         //turno del player1
         masterController.dispatcher(
-                new SelectWorkerRequest(player1.getPlayerName(), player1.getPlayerWorkers().get(1))
+                new SelectWorkerRequest(player1.getPlayerName(), 1)
         );
 
         masterController.dispatcher(
@@ -238,7 +238,7 @@ public class MasterControllerTest {
         //Tocca al player1
         //seleziona un worker...
         masterController.dispatcher(
-                new SelectWorkerRequest(pl1, w1pl1)
+                new SelectWorkerRequest(pl1, w1pl1.getWorkersNumber())
         );
         //lo muovo...
         masterController.dispatcher(
@@ -257,7 +257,7 @@ public class MasterControllerTest {
 
         //Tocca al player2
         masterController.dispatcher(
-                new SelectWorkerRequest(pl2, w1pl2)
+                new SelectWorkerRequest(pl2, w1pl2.getWorkersNumber())
         );
         //lo muovo
         masterController.dispatcher(
@@ -281,7 +281,7 @@ public class MasterControllerTest {
         // 2 TUNRO PLAYER ATHENA
         //seleziona un worker...
         masterController.dispatcher(
-                new SelectWorkerRequest(pl1, w1pl1)
+                new SelectWorkerRequest(pl1, w1pl1.getWorkersNumber())
         );
         //lo muovo...
         masterController.dispatcher(
@@ -300,7 +300,7 @@ public class MasterControllerTest {
 
         //Tocca al player2
         masterController.dispatcher(
-                new SelectWorkerRequest(pl2, w1pl2)
+                new SelectWorkerRequest(pl2, w1pl2.getWorkersNumber())
         );
         //lo muovo la prima volta
         masterController.dispatcher(

@@ -23,6 +23,14 @@ public interface ClientInterface {
 
     Position placeWorker(String worker);
 
+    int selectWorker();
+
+    Position moveWorker(ArrayList<Position> nearlyPosValid);
+
+    Position build(ArrayList<Position> possiblePosToBuild);
+
+    void win(boolean winner);
+
     void debug(Response response);
 
 

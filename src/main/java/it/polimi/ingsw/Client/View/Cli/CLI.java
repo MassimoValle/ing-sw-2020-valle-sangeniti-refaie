@@ -6,7 +6,6 @@ import it.polimi.ingsw.Network.Message.Responses.Response;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Player.Position;
-import javafx.beans.property.StringProperty;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -138,6 +137,74 @@ public class CLI extends ClientView {
         consoleOut.println();
 
         return new Position(row, col);
+    }
+
+    @Override
+    public int selectWorker() {
+        int worker;
+        do{
+            worker = Integer.parseInt(consoleIn.nextLine());
+
+        }while (worker > 1);
+
+        return worker;
+    }
+
+    @Override
+    public Position moveWorker(ArrayList<Position> nearlyPosValid) {
+
+        Position p;
+
+        nearlyPosValid.forEach(Position::toString);
+
+        do {
+            consoleOut.print("row: ");
+            int row = Integer.parseInt(consoleIn.nextLine());
+            consoleOut.println();
+
+            consoleOut.print("col: ");
+            int col = Integer.parseInt(consoleIn.nextLine());
+            consoleOut.println();
+
+            p = new Position(row, col);
+        }while (!nearlyPosValid.contains(p));
+
+        return p;
+
+    }
+
+    @Override
+    public Position build(ArrayList<Position> possiblePosToBuild) {
+
+        Position p;
+
+        possiblePosToBuild.forEach(Position::toString);
+
+        do {
+            consoleOut.print("row: ");
+            int row = Integer.parseInt(consoleIn.nextLine());
+            consoleOut.println();
+
+            consoleOut.print("col: ");
+            int col = Integer.parseInt(consoleIn.nextLine());
+            consoleOut.println();
+
+            p = new Position(row, col);
+        }while (!possiblePosToBuild.contains(p));
+
+        return p;
+
+    }
+
+    @Override
+    public void win(boolean imWinner) {
+        consoleOut.println("#############");
+
+        if(imWinner)
+            consoleOut.println("YOU WIN");
+        else consoleOut.println("YOU LOSE");
+
+        consoleOut.println("#############");
     }
 
     @Override

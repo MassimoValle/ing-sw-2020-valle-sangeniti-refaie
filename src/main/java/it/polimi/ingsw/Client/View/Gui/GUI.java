@@ -49,6 +49,26 @@ public class GUI extends ClientView {
     }
 
     @Override
+    public int selectWorker() {
+        return 0;
+    }
+
+    @Override
+    public Position moveWorker(ArrayList<Position> nearlyPosValid) {
+        return null;
+    }
+
+    @Override
+    public Position build(ArrayList<Position> possiblePosToBuild) {
+        return null;
+    }
+
+    @Override
+    public void win(boolean winner) {
+
+    }
+
+    @Override
     public void debug(Response response) {
 
     }
