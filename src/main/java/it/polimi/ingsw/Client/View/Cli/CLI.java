@@ -173,6 +173,20 @@ public class CLI extends ClientView {
     }
 
     @Override
+    public boolean askMoveAgain() {
+        consoleOut.print("Vuoi muovere ancora?");
+        consoleOut.print("1) sì");
+        consoleOut.print("2) no (passo alla fase di build)");
+        int input;
+
+        do{
+            input = Integer.parseInt(consoleIn.nextLine());
+        }while (input != 1 && input != 2);
+
+        return input == 1;
+    }
+
+    @Override
     public Position build(ArrayList<Position> possiblePosToBuild) {
 
         Position p;
@@ -193,6 +207,20 @@ public class CLI extends ClientView {
 
         return p;
 
+    }
+
+    @Override
+    public boolean askBuildAgain() {
+        consoleOut.print("Vuoi costruire ancora?");
+        consoleOut.print("1) sì");
+        consoleOut.print("2) no (passo il turno)");
+        int input;
+
+        do{
+            input = Integer.parseInt(consoleIn.nextLine());
+        }while (input != 1 && input != 2);
+
+        return input == 1;
     }
 
     @Override

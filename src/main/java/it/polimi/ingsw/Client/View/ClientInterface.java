@@ -27,7 +27,11 @@ public interface ClientInterface {
 
     Position moveWorker(ArrayList<Position> nearlyPosValid);
 
+    boolean askMoveAgain();
+
     Position build(ArrayList<Position> possiblePosToBuild);
+
+    boolean askBuildAgain();
 
     void win(boolean winner);
 

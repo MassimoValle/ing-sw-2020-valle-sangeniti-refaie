@@ -17,11 +17,16 @@ public class ClientManager implements ClientManagerListener {
 
     private final ClientView clientView;
 
+    // model
     private static String username;
     private God myGod;
 
+
+    // variabili di controllo
     private Integer workerSelected;
     private boolean myTurn;
+    private boolean powerMoveLoop = false;
+    private boolean powerBuildLoop = false;
 
 
 
@@ -258,6 +263,20 @@ public class ClientManager implements ClientManagerListener {
 
     private void moveWorker(MoveResponse response){
 
+        if(powerMoveLoop)
+            if(!clientView.askMoveAgain()){
+                try {
+                    Client.sendMessage(
+                            new EndMoveRequest(username)
+                    );
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+
+                powerMoveLoop = false;
+            }
+
+
         ArrayList<Position> nearlyPositionsValid = response.getNearlyPositions();
 
         Position position = clientView.moveWorker(nearlyPositionsValid);
@@ -270,9 +289,24 @@ public class ClientManager implements ClientManagerListener {
             e.printStackTrace();
         }
 
+        powerMoveLoop = true;
+
     }
 
     private void build(BuildResponse response){
+
+        if(powerBuildLoop)
+            if(!clientView.askBuildAgain()){
+                try {
+                    Client.sendMessage(
+                            new EndBuildRequest(username)
+                    );
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+
+                powerBuildLoop = false;
+            }
 
         ArrayList<Position> nearlyPositionsValid = response.getPossiblePosToBuild();
 
@@ -285,6 +319,8 @@ public class ClientManager implements ClientManagerListener {
         }catch (IOException e){
             e.printStackTrace();
         }
+
+        powerBuildLoop = true;
 
     }
 
