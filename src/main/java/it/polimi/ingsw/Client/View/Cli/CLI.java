@@ -142,6 +142,7 @@ public class CLI extends ClientView {
     public int selectWorker() {
         int worker;
         do{
+            consoleOut.println("Select worker to move: ");
             worker = Integer.parseInt(consoleIn.nextLine());
 
         }while (worker > 1);
@@ -154,7 +155,7 @@ public class CLI extends ClientView {
 
         Position p;
 
-        nearlyPosValid.forEach(Position::toString);
+        nearlyPosValid.forEach(consoleOut::println);
 
         do {
             consoleOut.print("row: ");
@@ -174,9 +175,9 @@ public class CLI extends ClientView {
 
     @Override
     public boolean askMoveAgain() {
-        consoleOut.print("Vuoi muovere ancora?");
-        consoleOut.print("1) sì");
-        consoleOut.print("2) no (passo alla fase di build)");
+        consoleOut.println("Vuoi muovere ancora?");
+        consoleOut.println("1) sì");
+        consoleOut.println("2) no (passo alla fase di build)\n");
         int input;
 
         do{
@@ -191,7 +192,7 @@ public class CLI extends ClientView {
 
         Position p;
 
-        possiblePosToBuild.forEach(Position::toString);
+        possiblePosToBuild.forEach(consoleOut::println);
 
         do {
             consoleOut.print("row: ");
@@ -221,6 +222,12 @@ public class CLI extends ClientView {
         }while (input != 1 && input != 2);
 
         return input == 1;
+    }
+
+    @Override
+    public void endTurn() {
+
+        consoleOut.println("\nEnding turn!");
     }
 
     @Override

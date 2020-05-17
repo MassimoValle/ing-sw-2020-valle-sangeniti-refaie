@@ -1,8 +1,13 @@
 package it.polimi.ingsw.Client.Controller;
 
 import it.polimi.ingsw.Network.Client;
+import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.Network.Message.Requests.*;
 import it.polimi.ingsw.Network.Message.Responses.*;
+import it.polimi.ingsw.Network.Message.Server.ServerRequest;
+import it.polimi.ingsw.Network.Message.Server.ServerRequests.BuildServerRequest;
+import it.polimi.ingsw.Network.Message.Server.ServerRequests.MoveWorkerServerRequest;
+import it.polimi.ingsw.Network.Message.Server.ServerRequests.SelectWorkerServerRequest;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Client.View.ClientView;
@@ -25,9 +30,9 @@ public class ClientManager implements ClientManagerListener {
     // variabili di controllo
     private Integer workerSelected;
     private boolean myTurn;
-    private boolean powerMoveLoop = false;
     private boolean powerBuildLoop = false;
 
+    ServerRequest serverRequest = null;
 
 
     public ClientManager(ClientView clientView){
@@ -41,16 +46,52 @@ public class ClientManager implements ClientManagerListener {
 
 
 
-    public void handleMessageFromServer(Response message){
+    public void handleMessageFromServer(Message serverMessage){
 
-        clientView.debug(message);
 
-        if(message.getResponseContent() != null) {
+        if (serverMessage instanceof ServerRequest) {
+            if(!myTurn) { return; }
 
-            switch (message.getResponseContent()){
+            serverRequest = (ServerRequest) serverMessage;
+
+            switch (serverRequest.getContent()) {
+
+                case SELECT_WORKER -> {
+
+                    selectWorker();
+                    break;
+                }
+
+                case MOVE_WORKER -> {
+
+                    moveWorker((MoveWorkerServerRequest) serverRequest);
+                    break;
+                }
+
+                case BUILD -> {
+                    build((BuildServerRequest) serverRequest);
+                    break;
+                }
+
+                case END_TURN -> {
+                    endTurn();
+                    break;
+                }
+
+            }
+            return;
+        }
+
+
+
+        Response serverResponse = (Response) serverMessage;
+
+        if(serverResponse.getResponseContent() != null) {
+
+            switch (serverResponse.getResponseContent()){
 
                 case LOGIN:
-                    if(message.getMessageStatus() == MessageStatus.OK) return;
+                    if(serverResponse.getMessageStatus() == MessageStatus.OK) return;
                     else login();
                     break;
 
@@ -60,50 +101,54 @@ public class ClientManager implements ClientManagerListener {
 
                 case SHOW_DECK:
 
-                    if(message instanceof ShowDeckResponse)
-                        chooseGodFromDeck((ShowDeckResponse) message);
+                    if(serverResponse instanceof ShowDeckResponse)
+                        chooseGodFromDeck((ShowDeckResponse) serverResponse);
                     else
                         // confirm
-                        System.out.println(message.getGameManagerSays());
+                        System.out.println(serverResponse.getGameManagerSays());
 
                     break;
 
                 case PICK_GOD:
 
-                    if(message instanceof PickGodResponse)
-                        pickGod((PickGodResponse) message);
+                    if(serverResponse instanceof PickGodResponse)
+                        pickGod((PickGodResponse) serverResponse);
                     else
                         // confirm
-                        System.out.println(message.getGameManagerSays());
+                        System.out.println(serverResponse.getGameManagerSays());
 
                     break;
 
                 case PLACE_WORKER:
 
-                    if(message instanceof PlaceWorkerResponse)
-                        placeWorker((PlaceWorkerResponse) message);
+                    if(serverResponse instanceof PlaceWorkerResponse)
+                        placeWorker((PlaceWorkerResponse) serverResponse);
                     else
                         // confirm
-                        System.out.println(message.getGameManagerSays());
+                        System.out.println(serverResponse.getGameManagerSays());
 
                     break;
 
                 case START_TURN:
 
-                    System.out.println(message.getGameManagerSays());
+                    System.out.println(serverResponse.getGameManagerSays());
                     this.myTurn = true;
 
                     break;
 
                 case SELECT_WORKER:
 
-                    if(!myTurn) break;
+                    MessageStatus status = serverResponse.getMessageStatus();
 
-                    if(message instanceof SelectWorkerResponse)
-                        selectWorker((SelectWorkerResponse) message);
-                    else
-                        // confirm
-                        System.out.println(message.getGameManagerSays());
+                    if (status == MessageStatus.ERROR) {
+                        System.out.println(serverResponse.getGameManagerSays());
+                        System.out.println();
+                        selectWorker();
+                        break;
+
+                    }
+
+                    System.out.println(serverResponse.getGameManagerSays());
 
                     break;
 
@@ -111,52 +156,72 @@ public class ClientManager implements ClientManagerListener {
 
                     if(!myTurn) break;
 
-                    if(message instanceof MoveResponse)
-                        moveWorker((MoveResponse) message);
-                    else
-                        // confirm
-                        System.out.println(message.getGameManagerSays());
+                    System.out.println(serverResponse.getGameManagerSays());
 
                     break;
+
+                case MOVE_WORKER_AGAIN:
+
+                    if(!clientView.askMoveAgain()){
+                        try {
+                            Client.sendMessage(
+                                    new EndMoveRequest(username)
+                            );
+                        }catch (IOException e){
+                            e.printStackTrace();
+                        }
+                    }
+
+                    moveWorker((MoveWorkerServerRequest) serverRequest);
+                    break;
+
 
                 case BUILD:
 
                     if(!myTurn) break;
 
-                    if(message instanceof BuildResponse)
-                        build((BuildResponse) message);
-                    else
-                        // confirm
-                        System.out.println(message.getGameManagerSays());
+                    System.out.println(serverResponse.getGameManagerSays());
 
                     break;
 
+                case BUILD_AGAIN:
+
+                    if(!clientView.askBuildAgain()) {
+                        try {
+                            Client.sendMessage(
+                                    new EndTurnRequest(username)
+                            );
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    build((BuildServerRequest) serverRequest);
+
+
+
                 case END_TURN:
 
-                    System.out.println(message.getGameManagerSays());
-                    this.myTurn = false;
+                    System.out.println(serverResponse.getGameManagerSays());
 
                     break;
 
                 case PLAYER_WON:
 
-                    if(message instanceof WonResponse)
-                        win((WonResponse) message);
+                    if(serverResponse instanceof WonResponse)
+                        win((WonResponse) serverResponse);
                     else
                         // confirm
-                        System.out.println(message.getGameManagerSays());
+                        System.out.println(serverResponse.getGameManagerSays());
 
                     break;
                 default: CHECK:
-                    clientView.debug(message);
+                    clientView.debug(serverResponse);
                     break;
             }
         }
 
     }
-
-
-
 
 
     // functions
@@ -248,7 +313,7 @@ public class ClientManager implements ClientManagerListener {
 
     }
 
-    private void selectWorker(SelectWorkerResponse respose){
+    private void selectWorker(){
 
         this.workerSelected = clientView.selectWorker();
         try {
@@ -261,21 +326,7 @@ public class ClientManager implements ClientManagerListener {
 
     }
 
-    private void moveWorker(MoveResponse response){
-
-        if(powerMoveLoop)
-            if(!clientView.askMoveAgain()){
-                try {
-                    Client.sendMessage(
-                            new EndMoveRequest(username)
-                    );
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
-
-                powerMoveLoop = false;
-            }
-
+    private void moveWorker(MoveWorkerServerRequest response){
 
         ArrayList<Position> nearlyPositionsValid = response.getNearlyPositions();
 
@@ -289,26 +340,11 @@ public class ClientManager implements ClientManagerListener {
             e.printStackTrace();
         }
 
-        powerMoveLoop = true;
-
     }
 
-    private void build(BuildResponse response){
+    private void build(BuildServerRequest serverRequest){
 
-        if(powerBuildLoop)
-            if(!clientView.askBuildAgain()){
-                try {
-                    Client.sendMessage(
-                            new EndBuildRequest(username)
-                    );
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
-
-                powerBuildLoop = false;
-            }
-
-        ArrayList<Position> nearlyPositionsValid = response.getPossiblePosToBuild();
+        ArrayList<Position> nearlyPositionsValid = serverRequest.getPossiblePlaceToBuildOn();
 
         Position position = clientView.build(nearlyPositionsValid);
 
@@ -320,7 +356,19 @@ public class ClientManager implements ClientManagerListener {
             e.printStackTrace();
         }
 
-        powerBuildLoop = true;
+    }
+
+    private void endTurn() {
+        this.myTurn = false;
+        clientView.endTurn();
+
+        try {
+            Client.sendMessage(
+                    new EndTurnRequest(username)
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
 
     }
 

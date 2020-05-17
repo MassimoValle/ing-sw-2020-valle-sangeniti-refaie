@@ -168,12 +168,11 @@ public class Game extends Observable<Game> {
 
     /**
      * It put the {@link Response} to the relative {@link Player} in the {@link Game#changes} HashMap
-     *
-     * @param player the player to whom the answer is intended
-     * @param response the response that must be sent to the player
+     *  @param player the player to whom the answer is intended
+     * @param serverMessage the response that must be sent to the player
      */
-    public void putInChanges(Player player, Response response) {
-        changes.put(player, response);
+    public void putInChanges(Player player, Message serverMessage) {
+        changes.put(player, serverMessage);
 
         //sendUpdateToEveryone();
 
@@ -195,6 +194,12 @@ public class Game extends Observable<Game> {
     public Message notifyPlayer(Player player) {
         Message x = changes.get(player);
         System.out.println("message taken by " + player.getPlayerName());
+
+        {
+            //testing only
+            gameMap.printBoard();
+        }
+
         return x;
     }
 

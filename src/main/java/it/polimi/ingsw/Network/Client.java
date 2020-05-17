@@ -23,7 +23,7 @@ public class Client {
     private final String ip;
     private final int port;
 
-    private static LinkedList<Response> queue;
+    private static LinkedList<Message> queue;
 
     private static ObjectInputStream socketIn;
     private static ObjectOutputStream socketOut;
@@ -87,9 +87,9 @@ public class Client {
     }
 
     public static void receiveMessage() throws IOException{
-        Response received;
+        Message received;
         try {
-            received = (Response) socketIn.readObject();
+            received = (Message) socketIn.readObject();
 
             queue.add(received);
 

@@ -1,5 +1,11 @@
 package it.polimi.ingsw.Server.Controller;
 
+import it.polimi.ingsw.Network.Message.Server.ServerRequest;
+import it.polimi.ingsw.Network.Message.Server.ServerRequestContent;
+import it.polimi.ingsw.Network.Message.Server.ServerRequests.BuildServerRequest;
+import it.polimi.ingsw.Network.Message.Server.ServerRequests.EndTurnServerRequest;
+import it.polimi.ingsw.Network.Message.Server.ServerRequests.MoveWorkerServerRequest;
+import it.polimi.ingsw.Network.Message.Server.ServerRequests.SelectWorkerServerRequest;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
@@ -7,6 +13,11 @@ import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
 import it.polimi.ingsw.Network.Message.Requests.Request;
 import it.polimi.ingsw.Network.Message.Responses.Response;
 import it.polimi.ingsw.Network.Message.Responses.WonResponse;
+import it.polimi.ingsw.Server.Model.Player.Position;
+import it.polimi.ingsw.Server.Model.Player.Worker;
+import javafx.geometry.Pos;
+
+import java.util.ArrayList;
 
 
 public class MasterController {
@@ -57,18 +68,49 @@ public class MasterController {
 
     // FIXME: da decidere se tenere qui
 
+    public static ServerRequest buildServerRequest(Player player, ServerRequestContent content, Worker activeWorker) {
+
+            switch (content) {
+                case SELECT_WORKER -> {
+                    ServerRequest selectWorkerServerRequest = new SelectWorkerServerRequest();
+                    gameInstance.putInChanges(player, selectWorkerServerRequest);
+                    return selectWorkerServerRequest;
+                }
+                case MOVE_WORKER -> {
+                    ArrayList<Position> nearlyPosition = gameInstance.getGameMap().getReachableAdjacentPlaces(activeWorker.getWorkerPosition());
+                    ServerRequest moveWorkerServerRequest = new MoveWorkerServerRequest(nearlyPosition);
+                    gameInstance.putInChanges(player, moveWorkerServerRequest);
+                    return moveWorkerServerRequest;
+                }
+                case BUILD -> {
+                    ArrayList<Position> possiblePlaceToBuild = gameInstance.getGameMap().getPlacesWhereYouCanBuildOn(activeWorker.getWorkerPosition());
+                    ServerRequest buildServerRequest = new BuildServerRequest(possiblePlaceToBuild);
+                    gameInstance.putInChanges(player, buildServerRequest);
+                    return buildServerRequest;
+                }
+                default -> { //END TURN
+                    ServerRequest endTurnServerRequest = new EndTurnServerRequest();
+                    gameInstance.putInChanges(player, endTurnServerRequest);
+                    return endTurnServerRequest;
+                }
+            }
+
+    }
+
     /**
      * Build negative response.
      *
      * @param gameManagerSays the message from the Game Manager
      * @return the response
      */
-    public static Response buildNegativeResponse(Player player, ResponseContent responseContent, String gameManagerSays) {
+    public static void buildNegativeResponse(Player player, ResponseContent responseContent, String gameManagerSays) {
 
-        Response res = new Response(player.getPlayerName(), responseContent, MessageStatus.ERROR, gameManagerSays);
+        MessageStatus status = MessageStatus.ERROR;
+
+        Response res = new Response(player.getPlayerName(), responseContent, status, gameManagerSays);
         gameInstance.putInChanges(player, res);
 
-        return res;
+        //return res;
 
     }
 
@@ -80,7 +122,9 @@ public class MasterController {
      */
     public static Response buildPositiveResponse(Player player, ResponseContent responseContent, String gameManagerSays) {
 
-        Response res = new Response(player.getPlayerName(), responseContent, MessageStatus.OK, gameManagerSays);
+        MessageStatus status = MessageStatus.OK;
+
+        Response res = new Response(player.getPlayerName(), responseContent, status, gameManagerSays);
         gameInstance.putInChanges(player, res);
 
         return res;

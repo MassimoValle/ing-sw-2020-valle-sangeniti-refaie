@@ -59,8 +59,23 @@ public class GUI extends ClientView {
     }
 
     @Override
+    public boolean askMoveAgain() {
+        return false;
+    }
+
+    @Override
     public Position build(ArrayList<Position> possiblePosToBuild) {
         return null;
+    }
+
+    @Override
+    public boolean askBuildAgain() {
+        return false;
+    }
+
+    @Override
+    public void endTurn() {
+
     }
 
     @Override

@@ -33,6 +33,8 @@ public interface ClientInterface {
 
     boolean askBuildAgain();
 
+    void endTurn();
+
     void win(boolean winner);
 
     void debug(Response response);
