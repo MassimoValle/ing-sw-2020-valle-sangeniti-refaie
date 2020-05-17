@@ -82,7 +82,7 @@ public class Worker {
 
     @Override
     public String toString() {
-        return "\nWorker " + (workersNumber+1)  + "si trova in " + workerPosition;
+        return "\nWorker " + (workersNumber+1)  + " si trova in " + workerPosition;
     }
 
 }

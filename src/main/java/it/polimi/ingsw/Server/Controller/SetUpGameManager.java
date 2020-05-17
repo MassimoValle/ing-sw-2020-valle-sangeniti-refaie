@@ -13,6 +13,7 @@ import it.polimi.ingsw.Network.Message.Requests.*;
 import it.polimi.ingsw.Network.Message.Responses.ShowDeckResponse;
 import it.polimi.ingsw.Network.Message.Responses.PickGodResponse;
 import it.polimi.ingsw.Network.Message.Responses.PlaceWorkerResponse;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,7 @@ public class SetUpGameManager {
     private int currentPlayer;
 
     private int playerLoop = 0; // temporary var loop for player iteration
+    private Integer workerNum = 0;
 
     private PossibleGameState setupGameState;
 
@@ -75,6 +77,7 @@ public class SetUpGameManager {
      */
     public void assignGodToPlayer(Player player, God god) {
         player.setPlayerGod(god);
+        gameInstance.removeGodChosen(god);
         god.setAssigned(true);
         setupGameState = PossibleGameState.ASSIGNING_GOD;
     }
@@ -183,7 +186,7 @@ public class SetUpGameManager {
 
         assignGodToPlayer(activePlayer, request.getGod());
 
-        MasterController.buildPositiveResponse(activePlayer, ResponseContent.PICK_GOD, "You chose!");
+        MasterController.buildPositiveResponse(activePlayer, ResponseContent.PICK_GOD, "confirm!");
 
 
 
@@ -196,7 +199,7 @@ public class SetUpGameManager {
         }
         else {
 
-            PlaceWorkerResponse placeWorkerResponse = new PlaceWorkerResponse(activePlayer.getPlayerName(), "Place your worker!", activePlayer.getPlayerWorkers().get(0));
+            PlaceWorkerResponse placeWorkerResponse = new PlaceWorkerResponse(activePlayer.getPlayerName(), "Place your worker!", workerNum);
             gameInstance.putInChanges(activePlayer, placeWorkerResponse);
 
             playerLoop = 0;
@@ -219,13 +222,18 @@ public class SetUpGameManager {
 
         //turnManager.updateTurnState(PossibleGameState.FILLING_BOARD);
 
+        Worker worker = activePlayer.getPlayerWorkers().get(request.getWorkerToPlace());
+
         Position positionToPlaceWorker = request.getPositionToPlaceWorker();
 
         Square squareWhereToPlaceWorker = gameInstance.getGameMap().getSquare(positionToPlaceWorker);
 
-        Action placeWorkerAction = new PlaceWorkerAction(request.getWorkerToPlace(), positionToPlaceWorker, squareWhereToPlaceWorker);
+        Action placeWorkerAction = new PlaceWorkerAction(worker, positionToPlaceWorker, squareWhereToPlaceWorker);
 
         if (placeWorkerAction.isValid()) {
+
+            workerNum++;
+            if(workerNum > 1) workerNum = 0;
 
             placeWorkerAction.doAction();
 
@@ -239,6 +247,7 @@ public class SetUpGameManager {
                 playerLoop++;
 
 
+                // quando tutti hanno finito di piazzare i workers
                 if(playerLoop >= gameInstance.getPlayers().size()){
                     MasterController.buildPositiveResponse(activePlayer, ResponseContent.SELECT_WORKER, "Select a worker!");
                     setupGameState = PossibleGameState.START_ROUND;
@@ -248,12 +257,18 @@ public class SetUpGameManager {
 
             }
 
-            PlaceWorkerResponse placeWorkerResponse = new PlaceWorkerResponse(activePlayer.getPlayerName(), "Place your worker!", activePlayer.getPlayerWorkers().get(1));
+            PlaceWorkerResponse placeWorkerResponse = new PlaceWorkerResponse(activePlayer.getPlayerName(), "Place your worker!", workerNum);
             gameInstance.putInChanges(activePlayer, placeWorkerResponse);
 
+
+
         }
-        else
+        else {
             MasterController.buildNegativeResponse(activePlayer, ResponseContent.PLACE_WORKER, "Errore nel posizionamento del worker");
+
+            PlaceWorkerResponse placeWorkerResponse = new PlaceWorkerResponse(activePlayer.getPlayerName(), "Place your worker!", workerNum);
+            gameInstance.putInChanges(activePlayer, placeWorkerResponse);
+        }
 
     }
 

@@ -11,19 +11,20 @@ import java.util.ArrayList;
 
 public class Square {
 
-    //To keep trace of worker is on the square
-    private Worker workerOnSquare;
-    private ArrayList<Block> tower;
     private final int row;
     private final int column;
 
+    //To keep trace of worker is on the square
+    private Worker workerOnSquare;
+    private ArrayList<Block> tower;
 
-    public Square(int row, int column ) {
-        tower = null;
+
+
+    public Square(int row, int column) {
+        this.tower = null;
         this.workerOnSquare = null;
         this.row = row;
         this.column = column;
-
     }
 
     public Worker getWorkerOnSquare() {
@@ -57,6 +58,10 @@ public class Square {
         return tower != null;
     }
 
+    public Position getPosition() {
+        return new Position(this.row, this.column);
+    }
+
     public boolean hasDome(){
 
         if (tower == null) return false;
@@ -85,11 +90,6 @@ public class Square {
         this.workerOnSquare = null;
     }
 
-
-
-    public Position getPosition() {
-        return new Position(this.row, this.column);
-    }
 
 
     /**

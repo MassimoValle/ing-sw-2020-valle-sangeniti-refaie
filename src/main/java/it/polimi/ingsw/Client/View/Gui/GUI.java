@@ -1,11 +1,26 @@
 package it.polimi.ingsw.Client.View.Gui;
 
 import it.polimi.ingsw.Client.View.ClientView;
+import it.polimi.ingsw.Network.Message.Responses.Response;
+import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Player.Position;
+
+import java.util.ArrayList;
 
 public class GUI extends ClientView {
 
     public GUI(){
 
+    }
+
+    @Override
+    public void start() {
+
+    }
+
+    @Override
+    public String askIpAddress() {
+        return null;
     }
 
     @Override
@@ -19,22 +34,22 @@ public class GUI extends ClientView {
     }
 
     @Override
-    public void showDeck() {
-
+    public ArrayList<God> selectGodsFromDeck(int howMany, String serverSays) {
+        return null;
     }
 
     @Override
-    public void showChosenGods() {
-
+    public God pickFromChosenGods(ArrayList<God> hand) {
+        return null;
     }
 
     @Override
-    public void pickFromChosenGods() {
-
+    public Position placeWorker(String worker) {
+        return null;
     }
 
     @Override
-    public void placeWorker() {
+    public void debug(Response response) {
 
     }
 }

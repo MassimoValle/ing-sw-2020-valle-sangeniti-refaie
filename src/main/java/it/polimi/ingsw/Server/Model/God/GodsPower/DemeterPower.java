@@ -5,14 +5,12 @@ import it.polimi.ingsw.Server.Model.Map.Square;
 
 public class DemeterPower extends Power {
 
-    private static boolean firstBuild;
-    private static Square firstBlockBuilt;
+    private boolean firstBuild = true;
+    private Square firstBlockBuilt = null;
 
 
     public DemeterPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
-        firstBuild = true;
-        firstBlockBuilt = null;
     }
 
     @Override
@@ -40,7 +38,6 @@ public class DemeterPower extends Power {
                 return ActionOutcome.NOT_DONE;
             }
         }
-
 
     }
 }

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.Client.Controller;
 
 import it.polimi.ingsw.Network.Client;
-import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Client.View.ClientView;
@@ -17,47 +16,25 @@ import it.polimi.ingsw.Network.Message.Responses.ShowDeckResponse;
 import it.polimi.ingsw.Network.Message.Responses.PickGodResponse;
 import it.polimi.ingsw.Network.Message.Responses.PlaceWorkerResponse;
 import it.polimi.ingsw.Network.Message.Responses.Response;
-import it.polimi.ingsw.Client.View.Cli.CLI;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class ClientManager implements ClientManagerListener {
-
-    private static ClientManager instance = null;
 
     private final ClientView clientView;
 
     private static String username;
-    public String getUsername() {
-        return username;
-    }
-
-    private final Scanner consoleIn;
-    private final PrintStream consoleOut;
 
 
 
+    public ClientManager(ClientView clientView){
 
+        this.clientView = clientView;
 
-    private ClientManager(){
-
-        consoleIn = new Scanner(System.in);
-        consoleOut = new PrintStream(System.out, true);
-
-        clientView = new CLI();
 
     }
 
-    public static synchronized ClientManager getInstance() {
-
-        if (instance == null) {
-            instance = new ClientManager();
-        }
-        return instance;
-    }
 
 
 
@@ -65,7 +42,7 @@ public class ClientManager implements ClientManagerListener {
 
     public void handleMessageFromServer(Message message){
 
-        printMessageFromServer((Response) message);
+        clientView.debug((Response) message);
 
         if(((Response) message).getResponseContent() != null) {
             switch (((Response) message).getResponseContent()){
@@ -80,15 +57,33 @@ public class ClientManager implements ClientManagerListener {
                     break;
 
                 case SHOW_DECK:
-                    chooseGodFromDeck((ShowDeckResponse) message);
+
+                    if(message instanceof ShowDeckResponse)
+                        chooseGodFromDeck((ShowDeckResponse) message);
+                    else
+                        // confirm
+                        System.out.println(((Response) message).getGameManagerSays());
+
                     break;
 
                 case PICK_GOD:
-                    pickGod((PickGodResponse) message);
+
+                    if(message instanceof PickGodResponse)
+                        pickGod((PickGodResponse) message);
+                    else
+                        // confirm
+                        System.out.println(((Response) message).getGameManagerSays());
+
                     break;
 
                 case PLACE_WORKER:
-                    placeWorker((PlaceWorkerResponse) message);
+
+                    if(message instanceof PlaceWorkerResponse)
+                        placeWorker((PlaceWorkerResponse) message);
+                    else
+                        // confirm
+                        System.out.println(((Response) message).getGameManagerSays());
+
                     break;
 
                 case START_TURN:
@@ -104,7 +99,7 @@ public class ClientManager implements ClientManagerListener {
                 case PLAYER_WON:
                     break;
                 default: CHECK:
-                    printMessageFromServer((Response) message);
+                    clientView.debug((Response) message);
                     break;
             }
         }
@@ -117,18 +112,21 @@ public class ClientManager implements ClientManagerListener {
 
     // functions
     public String askUsername() {
+
         return clientView.askUserName();
+
     }
     public void login(){
-            String username = askUsername();
 
-            try {
-                Client.sendMessage(
-                        new Request(username, Dispatcher.SETUP_GAME, RequestContent.LOGIN, MessageStatus.OK, username)
-                );
-            }catch (IOException e){
-                e.printStackTrace();
-            }
+        username = askUsername();
+
+        try {
+            Client.sendMessage(
+                    new Request(username, Dispatcher.SETUP_GAME, RequestContent.LOGIN, MessageStatus.OK, username)
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -143,25 +141,15 @@ public class ClientManager implements ClientManagerListener {
         }catch (IOException e){
             e.printStackTrace();
         }
+
     }
 
     private void chooseGodFromDeck(ShowDeckResponse response){
 
-        Deck deck = Deck.getInstance();
-        String serverSays = response.getGameManagerSays();
         int howMany = response.getHowMany();
+        String serverSays = response.getGameManagerSays();
 
-        consoleOut.println(deck.toString());
-        ArrayList<God> godChoosen = new ArrayList<>();
-
-        consoleOut.println("choose " + serverSays + " index:");
-
-        //FIX
-
-        for (int i = 0; i < howMany; i++) {
-            int index = Integer.parseInt(consoleIn.nextLine());
-            godChoosen.add(deck.getGod(index));
-        }
+        ArrayList<God> godChoosen = clientView.selectGodsFromDeck(howMany, serverSays);
 
         try {
 
@@ -173,19 +161,13 @@ public class ClientManager implements ClientManagerListener {
             e.printStackTrace();
         }
 
-
     }
 
     private void pickGod(PickGodResponse message) {
 
         ArrayList<God> hand = message.getGods();
 
-        consoleOut.println(hand.toString());
-
-        int index = Integer.parseInt(consoleIn.nextLine());
-
-        God picked = hand.get(index);
-
+        God picked = clientView.pickFromChosenGods(hand);
 
         try {
             Client.sendMessage(
@@ -195,24 +177,11 @@ public class ClientManager implements ClientManagerListener {
             e.printStackTrace();
         }
 
-
-
     }
 
     private void placeWorker(PlaceWorkerResponse message) {
 
-        consoleOut.println("MY WORKER: ");
-        message.getWorker().toString();
-
-        consoleOut.print("row: ");
-        int row = Integer.parseInt(consoleIn.nextLine());
-        consoleOut.println();
-
-        consoleOut.print("col: ");
-        int col = Integer.parseInt(consoleIn.nextLine());
-        consoleOut.println();
-
-        Position p = new Position(row, col);
+        Position p = clientView.placeWorker(message.getWorker().toString());
 
         try {
             Client.sendMessage(
@@ -230,19 +199,4 @@ public class ClientManager implements ClientManagerListener {
 
     @Override
     public void update(Response response) { }
-
-
-
-
-
-    // test
-    private void printMessageFromServer(Response message){
-        String out = "#### [SERVER] ####\n";
-        out += "Message content: " + message.getResponseContent() + "\n";
-        out += "Message status: " + message.getMessageStatus() + "\n";
-        out += "Message value: " + message.getGameManagerSays() + "\n";
-        out += "________________\n";
-
-        consoleOut.println(out);
-    }
 }

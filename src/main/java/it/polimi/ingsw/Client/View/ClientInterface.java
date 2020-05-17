@@ -1,18 +1,29 @@
 package it.polimi.ingsw.Client.View;
 
+import it.polimi.ingsw.Network.Message.Responses.Response;
+import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Player.Position;
+
+import java.util.ArrayList;
+
 public interface ClientInterface {
+
+
+    void start();
+
+    String askIpAddress();
 
     String askUserName();
 
     int askNumbOfPlayer();
 
-    void showDeck();
+    ArrayList<God> selectGodsFromDeck(int howMany, String serverSays);
 
-    void showChosenGods();
+    God pickFromChosenGods(ArrayList<God> hand);
 
-    void pickFromChosenGods();
+    Position placeWorker(String worker);
 
-    void placeWorker();
+    void debug(Response response);
 
 
 }

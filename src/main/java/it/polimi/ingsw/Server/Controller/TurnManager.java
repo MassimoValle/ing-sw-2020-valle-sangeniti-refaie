@@ -137,6 +137,10 @@ public class TurnManager {
                 updatePlayerState(PossiblePlayerState.WORKER_MOVED);
                 break;
 
+            case BUILD_BEFORE:
+                updatePlayerState(PossiblePlayerState.POWER_BUTTON);
+                break;
+
             case BUILT:
                 updatePlayerState(PossiblePlayerState.BUILT);
                 break;

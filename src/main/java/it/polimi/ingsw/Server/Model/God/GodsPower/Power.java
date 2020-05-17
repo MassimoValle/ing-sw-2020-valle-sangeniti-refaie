@@ -89,4 +89,13 @@ public abstract class Power implements Serializable, GodsChecker {
     public boolean checkIfActionNotPermitted(MoveAction moveAction) {
         return false;
     }
+
+    @Override
+    public boolean canBuildBeforeMoving(Worker workerSelected) {
+        return false;
+    }
+
+    @Override
+    public void setBuildBefore() {
+    }
 }

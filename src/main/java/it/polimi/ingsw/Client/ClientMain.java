@@ -1,36 +1,55 @@
 package it.polimi.ingsw.Client;
 
+import it.polimi.ingsw.Client.View.Cli.CLI;
+import it.polimi.ingsw.Client.View.ClientView;
+import it.polimi.ingsw.Client.View.Gui.GUI;
 import it.polimi.ingsw.Network.Client;
 
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Scanner;
 
 public class ClientMain {
 
+    private static final Scanner consoleIn = new Scanner(System.in);
+    private static final PrintStream consoleOut = new PrintStream(System.out, true);
+
     public static void main(String[] args) {
 
-        Client client1 = new Client("localhost", 8080);
+        ClientView clientView = welcome();
 
-        /*Scanner in = new Scanner(System.in);
-        boolean doIt = true;
+        clientView.start();
 
-        while (doIt) {
-            System.out.println("CLI or GUI?");
+    }
 
-            switch (in.nextLine().toUpperCase()) {
-                case "CLI":
-                    CLI cli = new CLI(client1);
-                    doIt = false;
-                    break;
-                case "GUI": // GUI gui = new GUI(client1); break;
-                    doIt = false;
+    private static ClientView welcome() {
+
+        consoleOut.println("\n" +
+                "Welcome to santorini!\n" +
+                "What would you like to play with?\n" +
+                "1) CLI\n" +
+                "2) GUI\n" );
+
+
+        int choice = 0;
+        ClientView clientView = null;
+
+        do {
+
+            if (consoleIn.hasNextLine()) {
+                choice = Integer.parseInt(consoleIn.nextLine());
+
+                if (choice == 1) {
+                    clientView =  new CLI();
+                } else if (choice == 2) {
+                    clientView =  new GUI();
+                }
 
             }
-        }*/
-        try {
-            client1.run();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+
+        } while (clientView == null);
+
+        return clientView;
 
     }
 }

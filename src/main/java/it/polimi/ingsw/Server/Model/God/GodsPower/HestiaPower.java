@@ -1,22 +1,17 @@
 package it.polimi.ingsw.Server.Model.God.GodsPower;
 
-
-
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Map.Square;
 
-import java.io.Serializable;
 
-public class HestiaPower extends Power implements Serializable {
+public class HestiaPower extends Power {
 
-    static boolean firstBuild;
+    private boolean firstBuild = true;
 
     public HestiaPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
         firstBuild = true;
     }
-
-
 
 
     @Override
@@ -32,9 +27,9 @@ public class HestiaPower extends Power implements Serializable {
             } else return ActionOutcome.NOT_DONE;
 
         } else if(!squareWhereToBuild.getPosition().isPerimetral()){        //firstBuild = false
-                  outcome = super.build(squareWhereToBuild);
-                  return ActionOutcome.DONE;
-            } else return ActionOutcome.NOT_DONE; //cannot build because square is perimetral
+            outcome = super.build(squareWhereToBuild);
+            return ActionOutcome.DONE;
+        } else return ActionOutcome.NOT_DONE; //cannot build because square is perimetral
 
     }
 }

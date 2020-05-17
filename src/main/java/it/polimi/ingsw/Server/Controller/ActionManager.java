@@ -4,6 +4,7 @@ import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Action.*;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Outcome;
 import it.polimi.ingsw.Server.Model.Player.Player;
@@ -25,13 +26,12 @@ public class ActionManager {
 
     private ActionOutcome actionOutcome;
 
+    private Player requestSender;
 
     public ActionManager(Game game, TurnManager turnManager) {
         this.gameInstance = game;
         this.turnManager = turnManager;
 
-        // TODO
-        //  UTILIZZARE 2 GAMESTATE DISTINTI? UNO PER LA FASE DI SETUP E UNO PER QUELLA DI GIOCO?
         this.gameState = PossibleGameState.START_ROUND;
     }
 
@@ -45,7 +45,7 @@ public class ActionManager {
      */
     public Response handleRequest(Request request){
 
-        Player requestSender = gameInstance.searchPlayerByName(request.getMessageSender());
+        requestSender = gameInstance.searchPlayerByName(request.getMessageSender());
 
         //Controllo che il player sia nel suo turno
         if(!isYourTurn(request.getMessageSender())) { //The player who sent the request isn't the playerActive
@@ -54,6 +54,8 @@ public class ActionManager {
 
         return switch (request.getRequestContent()) {
             case SELECT_WORKER -> handleSelectWorkerAction((SelectWorkerRequest) request);
+
+            case POWER_BUTTON -> handlePowerButton((PowerButtonRequest) request);
 
             case MOVE -> handleMoveAction((MoveRequest) request);
             case END_MOVE -> handleEndMoveAction((EndMoveRequest) request);
@@ -64,6 +66,29 @@ public class ActionManager {
             case END_TURN -> handleEndTurnAction((EndTurnRequest) request);
             default -> MasterController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getMessageSender()), ResponseContent.CHECK, "Must never be reached!");
         };
+    }
+
+     private Response handlePowerButton(PowerButtonRequest request) {
+        Player activePlayer = turnManager.getActivePlayer();
+        Worker activeWorker = turnManager.getActiveWorker();
+
+        //controllo che il giocatore abbia un worker attivo
+        if (turnManager.getActiveWorker() == null) {
+            return MasterController.buildNegativeResponse(activePlayer, ResponseContent.POWER_BUTTON, "Please, select a worker first");
+        }
+
+        Power godPower = activePlayer.getPlayerGod().getGodPower();
+
+        //Controllo se mi permette di costruire prima di muovere
+        if (godPower.canBuildBeforeMoving(activeWorker)) {
+            godPower.setBuildBefore();
+            gameState = PossibleGameState.BUILD_BEFORE;
+            turnManager.updateTurnState(PossibleGameState.BUILD_BEFORE);
+            return MasterController.buildPositiveResponse(activePlayer, ResponseContent.POWER_BUTTON, "You can build first!");
+
+        }
+
+        return MasterController.buildNegativeResponse(activePlayer, ResponseContent.POWER_BUTTON, "You are not allowed!");
     }
 
     /**
@@ -134,12 +159,9 @@ public class ActionManager {
         Worker activeWorker = turnManager.getActiveWorker();
         Position positionWhereToMove = request.getSenderMovePosition();
         God playerGod = activePlayer.getPlayerGod();
-
         Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getWorkerPosition());
         Square squareWhereToMove = gameInstance.getGameMap().getSquare(positionWhereToMove);
 
-
-        //ESEGUO LA MOSSA E METTO L'ESITO IN moveOutcome
         actionOutcome = playerGod.getGodPower().move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
 
@@ -148,13 +170,19 @@ public class ActionManager {
             return MasterController.buildNegativeResponse(activePlayer, ResponseContent.MOVE_WORKER, "You cannot move here!");
         }
 
+        //controllo che il giocatore con la mossa appena eseguita abbia vinto
+        if (actionOutcome == ActionOutcome.WINNING_MOVE) {
+            return MasterController.buildWonResponse(activePlayer, "YOU WON!");
+        }
+
 
         //L'azione è stata eseguita quindi l'aggiungo alla lista nel turn manager
         turnManager.addActionPerformed(new MoveAction(playerGod.getGodPower(), activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove));
 
+
         //vado a contrllare se con questa mossa l'activePlayer ha vinto (sono salito da un livello 2 a un livello 3)
         if (playerHasWon(activePlayer)) {
-            return MasterController.buildWonResponse(activePlayer,"Hai vinto!");
+            return MasterController.buildWonResponse(activePlayer,"YOU WON!");
         }
 
         //action can not be performed again
@@ -202,7 +230,7 @@ public class ActionManager {
     Response handleBuildAction(BuildRequest request) {
         Player activePlayer = turnManager.getActivePlayer();
 
-        if (gameState != PossibleGameState.WORKER_MOVED) {
+        if (!(gameState == PossibleGameState.WORKER_MOVED || gameState == PossibleGameState.BUILD_BEFORE) ) {
             return MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot build!");
         }
 
@@ -210,9 +238,6 @@ public class ActionManager {
         Position positionWhereToBuild = request.getPositionWhereToBuild();
         Square squareWhereToBuild = gameInstance.getGameMap().getSquare(positionWhereToBuild);
 
-        //actionInfo[0] value used to see if the action requested has been done
-        //actionInfo[1] value used to see if the action can be performed again
-        boolean[] actionInfo;
 
         actionOutcome = playerGod.getGodPower().build(squareWhereToBuild);
 
@@ -226,6 +251,14 @@ public class ActionManager {
         turnManager.addActionPerformed(new BuildAction(squareWhereToBuild));
 
         if (actionOutcome == ActionOutcome.DONE) {
+
+            if (gameState == PossibleGameState.BUILD_BEFORE) {
+                gameState = PossibleGameState.WORKER_SELECTED;
+                turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
+                MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Now you can move!");
+            }
+
+
             //action can not be performed again
             gameState = PossibleGameState.BUILT;
             turnManager.updateTurnState(PossibleGameState.BUILT);
@@ -297,10 +330,7 @@ public class ActionManager {
      * @return true if he is the turn owner, false otherwise
      */
     private boolean isYourTurn(String username) {
-        if ( !turnManager.getActivePlayer().getPlayerName().equals(username) )
-            return false;
-        else
-            return true;
+        return turnManager.getActivePlayer().getPlayerName().equals(username);
     }
 
 

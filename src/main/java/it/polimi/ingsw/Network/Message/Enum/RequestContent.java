@@ -13,6 +13,8 @@ public enum RequestContent {
     //inizio turno
     SELECT_WORKER ("The player wants to select one of his worker"),
 
+    POWER_BUTTON ("When the player wants to trigger his God's power"),
+
     //movimento
     MOVE ("The player wants to move his worker"),
     END_MOVE ("The player wants to stop moving"),
