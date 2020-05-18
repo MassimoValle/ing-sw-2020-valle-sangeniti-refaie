@@ -10,8 +10,8 @@ import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.Network.Message.Server.Responses.Response;
 import it.polimi.ingsw.Server.View.Observable;
+import javafx.scene.paint.Color;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

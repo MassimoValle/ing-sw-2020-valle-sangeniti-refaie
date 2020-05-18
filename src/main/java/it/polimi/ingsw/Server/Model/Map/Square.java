@@ -5,8 +5,8 @@ import it.polimi.ingsw.Server.Model.Building.*;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Utility.*;
+import javafx.scene.paint.Color;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class Square {

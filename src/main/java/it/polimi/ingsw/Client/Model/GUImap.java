@@ -1,15 +1,14 @@
 package it.polimi.ingsw.Client.Model;
 
-import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import javafx.scene.image.Image;
 
-public class ClientMap extends GameMap {
+public class GUImap extends CLIclientMap {
 
-    public ClientMap(){
+    public GUImap(){
         board = new Square[COLUMNS][ROWS];
 
-        String basePath = "Resources/imgs/board/";
+        String basePath = "/imgs/board/";
 
         for (int i=0; i<ROWS; i++) {
 
@@ -23,4 +22,7 @@ public class ClientMap extends GameMap {
             }
         }
     }
+
+
+
 }

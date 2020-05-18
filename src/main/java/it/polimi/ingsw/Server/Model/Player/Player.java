@@ -1,8 +1,8 @@
 package it.polimi.ingsw.Server.Model.Player;
 
 import it.polimi.ingsw.Server.Model.God.God;
+import javafx.scene.paint.Color;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

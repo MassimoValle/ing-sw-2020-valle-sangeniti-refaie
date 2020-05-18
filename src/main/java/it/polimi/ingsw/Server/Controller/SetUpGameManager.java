@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Server.Controller;
 
 import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
+import it.polimi.ingsw.Network.Message.Enum.UpdateType;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Action.Action;
 import it.polimi.ingsw.Server.Model.Action.PlaceWorkerAction;
@@ -201,6 +202,8 @@ public class SetUpGameManager {
         }
         else {
 
+            MasterController.sendListOfPlayer();
+
             PlaceWorkerResponse placeWorkerResponse = new PlaceWorkerResponse(activePlayer.getPlayerName(), "Place your worker!", workerNum);
             gameInstance.putInChanges(activePlayer, placeWorkerResponse);
 
@@ -240,6 +243,8 @@ public class SetUpGameManager {
             placeWorkerAction.doAction();
 
             MasterController.buildPositiveResponse(activePlayer, ResponseContent.PLACE_WORKER, "Worker placed!");
+            //MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.PLACE, positionToPlaceWorker, worker.getWorkersNumber());
+
 
             if(activePlayer.areWorkersPlaced()) {   // se activePlayer ha già posizionato 2 worker
 

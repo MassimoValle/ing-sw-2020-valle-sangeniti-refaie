@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Server.Model.Player;
 
-import java.awt.*;
+import javafx.scene.paint.Color;
+
 import java.util.List;
 
 public class Worker {

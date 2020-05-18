@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Server.Controller;
 
-import it.polimi.ingsw.Network.Message.ClientRequests.EndTurnRequest;
+import it.polimi.ingsw.Network.Message.Enum.UpdateType;
 import it.polimi.ingsw.Network.Message.Server.Responses.*;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.ServerRequest;
 import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
@@ -8,6 +8,8 @@ import it.polimi.ingsw.Network.Message.Server.ServerRequests.BuildServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.EndTurnServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.MoveWorkerServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.SelectWorkerServerRequest;
+import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateBoardMessage;
+import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdatePlayersMessage;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
@@ -171,6 +173,23 @@ public class MasterController {
         //da notificare a tutti gli altri giocatori che un player ha vinto --> fine partita
 
         return res;
+    }
+
+    public static void updateClients(String player, UpdateType updateType, Position position, Integer workerIndex){
+
+        UpdateBoardMessage updateMessage =  new UpdateBoardMessage(player, updateType, position, workerIndex);
+        gameInstance.putInChanges(gameInstance.searchPlayerByName(player), updateMessage);
+
+    }
+
+    public static void sendListOfPlayer(){
+
+        for(Player player : gameInstance.getPlayers()) {
+            UpdatePlayersMessage updatePlayersMessage = new UpdatePlayersMessage("SERVER", player.getPlayerName(),
+                    player.getPlayerGod(), player.getColor());
+
+            gameInstance.putInChanges(player, updatePlayersMessage);
+        }
     }
 
     //      ####    TESTING-ONLY    ####

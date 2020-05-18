@@ -11,11 +11,11 @@ import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.ClientRequests.*;
+import javafx.scene.paint.Color;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

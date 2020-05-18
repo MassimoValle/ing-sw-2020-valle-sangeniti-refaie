@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Client.Controller;
 
-import it.polimi.ingsw.Client.Model.ClientMap;
+import it.polimi.ingsw.Client.Model.BabyGame;
 import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.Network.Message.ClientRequests.*;
@@ -8,6 +8,9 @@ import it.polimi.ingsw.Network.Message.Server.Responses.*;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.ServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.BuildServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.MoveWorkerServerRequest;
+import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateBoardMessage;
+import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateMessage;
+import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdatePlayersMessage;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
@@ -15,17 +18,18 @@ import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
 import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Server.View.Observable;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ClientManager {
+public class ClientManager extends Observable<UpdateBoardMessage> {
 
-    private final ClientView clientView;
+    public static ClientView clientView = null;
 
     // model
     private Player me;
-    private ClientMap clientMap;
+    private BabyGame babyGame;
 
     // variabili di controllo
     private Integer workerSelected;
@@ -41,6 +45,8 @@ public class ClientManager {
 
         this.clientView = clientView;
 
+        this.addObserver(new ClientBoardUpdate());
+
     }
 
 
@@ -50,6 +56,15 @@ public class ClientManager {
 
     public void handleMessageFromServer(Message serverMessage){
 
+        if(serverMessage instanceof UpdateMessage){
+
+            if(serverMessage instanceof UpdateBoardMessage)
+                notify((UpdateBoardMessage) serverMessage);
+
+            if(serverMessage instanceof UpdatePlayersMessage){
+                babyGame.addPlayers((UpdatePlayersMessage) serverMessage);
+            }
+        }
 
         //se è il server a chiedere al client di compiere una determinata azione
         // allora riceverà una ServerRequest
@@ -275,6 +290,7 @@ public class ClientManager {
         return clientView.askUserName();
 
     }
+
 
 
 
