@@ -154,12 +154,12 @@ public class GameMap {
         ArrayList<Position> placesWhereToMove;
         placesWhereToMove = getReachableAdjacentPlaces(worker.getWorkerPosition());
 
-        if (placesWhereToMove.size() == 0) return true;
+        if (placesWhereToMove.isEmpty()) return true;
 
 
         for (Position position: placesWhereToMove ) {
             ArrayList<Position> placesWhereYouCanBuildOn = getPlacesWhereYouCanBuildOn(position);
-            if (placesWhereYouCanBuildOn.size() != 0) return false;
+            if (!placesWhereYouCanBuildOn.isEmpty()) return false;
         }
 
         return true;

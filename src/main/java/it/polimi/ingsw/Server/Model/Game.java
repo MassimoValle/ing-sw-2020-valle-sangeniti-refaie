@@ -147,11 +147,23 @@ public class Game extends Observable<Game> {
         return a;
     }
 
+    public List<God> getUnassignedGods() {
+        List<God> unassignedGod = new ArrayList<>();
 
-    public void removeGodChosen(God godSelected){
+        for(God god: chosenGodsFromDeck)
+            if (!god.isAssigned()) {
+                unassignedGod.add(god);
+            }
 
-        chosenGodsFromDeck.removeIf(god -> god.equals(godSelected));
+        return unassignedGod;
+    }
 
+    public void setGodAssigned(God godAssigned) {
+        for(God god: chosenGodsFromDeck) {
+            if (god.equals(godAssigned)) {
+                god.setAssigned(true);
+            }
+        }
     }
 
 
@@ -239,6 +251,7 @@ public class Game extends Observable<Game> {
     public static void resetInstance() {
         gameInstance = null;
     }
+
 }
 
 

@@ -78,7 +78,8 @@ public class SetUpGameManager {
      */
     public void assignGodToPlayer(Player player, God god) {
         player.setPlayerGod(god);
-        gameInstance.removeGodChosen(god);
+        //gameInstance.removeGodChosen(god);
+        gameInstance.setGodAssigned(god);
         god.setAssigned(true);
         setupGameState = PossibleGameState.ASSIGNING_GOD;
     }
@@ -195,7 +196,7 @@ public class SetUpGameManager {
         playerLoop++;
 
         if(playerLoop < gameInstance.getPlayers().size()) {
-            PickGodResponse pickGodResponse = new PickGodResponse(activePlayer.getPlayerName(), "Pick a god", (ArrayList<God>) gameInstance.getChosenGodsFromDeck());
+            PickGodResponse pickGodResponse = new PickGodResponse(activePlayer.getPlayerName(), "Pick a god", (ArrayList<God>) gameInstance.getUnassignedGods());
             gameInstance.putInChanges(activePlayer, pickGodResponse);
         }
         else {
