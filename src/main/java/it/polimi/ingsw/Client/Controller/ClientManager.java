@@ -2,12 +2,11 @@ package it.polimi.ingsw.Client.Controller;
 
 import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.Requests.*;
-import it.polimi.ingsw.Network.Message.Responses.*;
-import it.polimi.ingsw.Network.Message.Server.ServerRequest;
+import it.polimi.ingsw.Network.Message.ClientRequests.*;
+import it.polimi.ingsw.Network.Message.Server.Responses.*;
+import it.polimi.ingsw.Network.Message.Server.ServerRequests.ServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.BuildServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.MoveWorkerServerRequest;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.SelectWorkerServerRequest;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Client.View.ClientView;
@@ -18,7 +17,7 @@ import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ClientManager implements ClientManagerListener {
+public class ClientManager {
 
     private final ClientView clientView;
 
@@ -30,8 +29,10 @@ public class ClientManager implements ClientManagerListener {
     // variabili di controllo
     private Integer workerSelected;
     private boolean myTurn;
-    private boolean powerBuildLoop = false;
+    private boolean canMoveAgain = false;
+    private boolean canBuildAgain = false;
 
+    //la richiesta corrente che il client sta gestendo
     ServerRequest serverRequest = null;
 
 
@@ -49,42 +50,48 @@ public class ClientManager implements ClientManagerListener {
     public void handleMessageFromServer(Message serverMessage){
 
 
+        //se è il server a chiedere al client di compiere una determinata azione
+        // allora riceverà una ServerRequest
         if (serverMessage instanceof ServerRequest) {
-            if(!myTurn) { return; }
 
             serverRequest = (ServerRequest) serverMessage;
 
             switch (serverRequest.getContent()) {
-
-                case SELECT_WORKER -> {
-
-                    selectWorker();
-                    break;
-                }
+                case SELECT_WORKER -> selectWorker();
 
                 case MOVE_WORKER -> {
 
+                    if (canMoveAgain && !clientView.wantMoveAgain()) {
+                        canMoveAgain = false;
+                        sendEndMoveRequest();
+                        break;
+                    }
+
+                    //TODO: da controllare sul client se ha la possibilità di fare una PowerButtonRequest
                     moveWorker((MoveWorkerServerRequest) serverRequest);
-                    break;
                 }
 
                 case BUILD -> {
+
+                    if (canBuildAgain && !clientView.wantBuildAgain()) {
+                        sendEndBuildRequest();
+                        break;
+                    }
+
                     build((BuildServerRequest) serverRequest);
-                    break;
                 }
 
-                case END_TURN -> {
-                    endTurn();
-                    break;
-                }
 
+                case END_TURN -> endTurn();
             }
+
             return;
         }
 
 
 
         Response serverResponse = (Response) serverMessage;
+        MessageStatus responseStatus = serverResponse.getResponseStatus();
 
         if(serverResponse.getResponseContent() != null) {
 
@@ -138,71 +145,88 @@ public class ClientManager implements ClientManagerListener {
 
                 case SELECT_WORKER:
 
-                    MessageStatus status = serverResponse.getMessageStatus();
+                    Response selectWorkerResponse = (SelectWorkerResponse) serverResponse;
 
-                    if (status == MessageStatus.ERROR) {
-                        System.out.println(serverResponse.getGameManagerSays());
-                        System.out.println();
+                    if (responseStatus == MessageStatus.ERROR) {
+                        clientView.errorWhileSelectingWorker(selectWorkerResponse.getGameManagerSays());
                         selectWorker();
                         break;
-
                     }
 
-                    System.out.println(serverResponse.getGameManagerSays());
+                    clientView.workerSelectedSuccessfully();
 
                     break;
 
                 case MOVE_WORKER:
 
-                    if(!myTurn) break;
+                    MoveWorkerResponse moveWorkerResponse = (MoveWorkerResponse) serverResponse;
 
-                    System.out.println(serverResponse.getGameManagerSays());
+                    if (responseStatus == MessageStatus.ERROR) {
+                        clientView.errorWhileMovingWorker(moveWorkerResponse.getGameManagerSays());
+                        moveWorker((MoveWorkerServerRequest) serverRequest);
+                        break;
+                    }
+
+                    this.canMoveAgain = false;
+                    clientView.workerMovedSuccessfully();
 
                     break;
 
                 case MOVE_WORKER_AGAIN:
 
-                    if(!clientView.askMoveAgain()){
-                        try {
-                            Client.sendMessage(
-                                    new EndMoveRequest(username)
-                            );
-                        }catch (IOException e){
-                            e.printStackTrace();
-                        }
-                    }
+                    this.canMoveAgain = true;
+                    clientView.printCanMoveAgain(serverResponse.getGameManagerSays());
 
-                    moveWorker((MoveWorkerServerRequest) serverRequest);
                     break;
 
+                case END_MOVE:
+
+                    if (responseStatus == MessageStatus.ERROR) {
+                        clientView.endMoveRequestError(serverResponse.getGameManagerSays());
+                        break;
+                    }
+
+                    clientView.endMovingPhase(serverResponse.getGameManagerSays());
+
+                    break;
 
                 case BUILD:
 
-                    if(!myTurn) break;
+                    BuildResponse buildResponse = (BuildResponse) serverResponse;
 
-                    System.out.println(serverResponse.getGameManagerSays());
+                    if (responseStatus == MessageStatus.ERROR) {
+                        clientView.errorWhileBuilding(buildResponse.getGameManagerSays());
+                        build((BuildServerRequest) serverRequest);
+                        break;
+                    }
+
+                    this.canBuildAgain = false;
+                    clientView.builtSuccessfully();
 
                     break;
 
                 case BUILD_AGAIN:
 
-                    if(!clientView.askBuildAgain()) {
-                        try {
-                            Client.sendMessage(
-                                    new EndTurnRequest(username)
-                            );
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                    this.canBuildAgain = true;
+                    clientView.printCanBuildAgain(serverResponse.getGameManagerSays());
+
+                    break;
+
+                case END_BUILD:
+
+                    if (responseStatus == MessageStatus.ERROR) {
+                        clientView.endBuildRequestError(serverResponse.getGameManagerSays());
+                        break;
                     }
 
-                    build((BuildServerRequest) serverRequest);
+                    clientView.endBuildingPhase(serverResponse.getGameManagerSays());
 
+                    break;
 
 
                 case END_TURN:
 
-                    System.out.println(serverResponse.getGameManagerSays());
+                    //clientView.endingTurn();
 
                     break;
 
@@ -221,6 +245,26 @@ public class ClientManager implements ClientManagerListener {
             }
         }
 
+    }
+
+    private void sendEndMoveRequest() {
+        try {
+            Client.sendMessage(
+                    new EndMoveRequest(username)
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void sendEndBuildRequest() {
+        try {
+            Client.sendMessage(
+                    new EndBuildRequest(username)
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -267,9 +311,10 @@ public class ClientManager implements ClientManagerListener {
     private void chooseGodFromDeck(ShowDeckResponse response){
 
         int howMany = response.getHowMany();
-        String serverSays = response.getGameManagerSays();
 
-        ArrayList<God> godChoosen = clientView.selectGodsFromDeck(howMany, serverSays);
+        clientView.showDeck();
+
+        ArrayList<God> godChoosen = clientView.selectGods(howMany);
 
         try {
 
@@ -316,6 +361,7 @@ public class ClientManager implements ClientManagerListener {
     private void selectWorker(){
 
         this.workerSelected = clientView.selectWorker();
+
         try {
             Client.sendMessage(
                     new SelectWorkerRequest(username, this.workerSelected)
@@ -377,9 +423,4 @@ public class ClientManager implements ClientManagerListener {
     }
 
 
-
-
-
-    @Override
-    public void update(Response response) { }
 }

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.Client.View.Gui;
 
 import it.polimi.ingsw.Client.View.ClientView;
-import it.polimi.ingsw.Network.Message.Responses.Response;
+import it.polimi.ingsw.Network.Message.Server.Responses.Response;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Player.Position;
 
@@ -34,9 +34,15 @@ public class GUI extends ClientView {
     }
 
     @Override
-    public ArrayList<God> selectGodsFromDeck(int howMany, String serverSays) {
+    public void showDeck() {
+
+    }
+
+    @Override
+    public ArrayList<God> selectGods(int howMany) {
         return null;
     }
+
 
     @Override
     public God pickFromChosenGods(ArrayList<God> hand) {
@@ -54,13 +60,48 @@ public class GUI extends ClientView {
     }
 
     @Override
+    public void errorWhileSelectingWorker(String gameManagerSays) {
+
+    }
+
+    @Override
+    public void workerSelectedSuccessfully() {
+
+    }
+
+    @Override
     public Position moveWorker(ArrayList<Position> nearlyPosValid) {
         return null;
     }
 
     @Override
-    public boolean askMoveAgain() {
+    public void errorWhileMovingWorker(String gameManagerSays) {
+
+    }
+
+    @Override
+    public boolean wantMoveAgain() {
         return false;
+    }
+
+    @Override
+    public void printCanMoveAgain(String gameManagaerSays) {
+
+    }
+
+    @Override
+    public void workerMovedSuccessfully() {
+
+    }
+
+    @Override
+    public void endMoveRequestError(String gameManagerSays) {
+
+    }
+
+    @Override
+    public void endMovingPhase(String gameManagerSays) {
+
     }
 
     @Override
@@ -69,8 +110,33 @@ public class GUI extends ClientView {
     }
 
     @Override
-    public boolean askBuildAgain() {
+    public boolean wantBuildAgain() {
         return false;
+    }
+
+    @Override
+    public void printCanBuildAgain(String gameManagerSays) {
+
+    }
+
+    @Override
+    public void errorWhileBuilding(String gameManagerSays) {
+
+    }
+
+    @Override
+    public void builtSuccessfully() {
+
+    }
+
+    @Override
+    public void endBuildRequestError(String gameManagerSays) {
+
+    }
+
+    @Override
+    public void endBuildingPhase(String gameManagerSays) {
+
     }
 
     @Override

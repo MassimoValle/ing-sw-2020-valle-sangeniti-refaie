@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Network.Message.Server;
+package it.polimi.ingsw.Network.Message.Enum;
 
 public enum ServerRequestContent {
     SELECT_WORKER,

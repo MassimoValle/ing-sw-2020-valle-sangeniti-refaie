@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Client.View;
 
-import it.polimi.ingsw.Network.Message.Responses.Response;
+import it.polimi.ingsw.Network.Message.Server.Responses.Response;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Player.Position;
 
@@ -17,7 +17,9 @@ public interface ClientInterface {
 
     int askNumbOfPlayer();
 
-    ArrayList<God> selectGodsFromDeck(int howMany, String serverSays);
+    void showDeck();
+
+    ArrayList<God> selectGods(int howMany);
 
     God pickFromChosenGods(ArrayList<God> hand);
 
@@ -25,13 +27,42 @@ public interface ClientInterface {
 
     int selectWorker();
 
+    void errorWhileSelectingWorker(String gameManagerSays);
+
+    void workerSelectedSuccessfully();
+
     Position moveWorker(ArrayList<Position> nearlyPosValid);
 
-    boolean askMoveAgain();
+    void errorWhileMovingWorker(String gameManagerSays);
+
+    /**
+     * Ask the player if he wants to move again
+     *
+     * @return the boolean
+     */
+    boolean wantMoveAgain();
+
+    void printCanMoveAgain(String gameManagaerSays);
+
+    void workerMovedSuccessfully();
+
+    void endMoveRequestError(String gameManagerSays);
+
+    void endMovingPhase(String gameManagerSays);
 
     Position build(ArrayList<Position> possiblePosToBuild);
 
-    boolean askBuildAgain();
+    boolean wantBuildAgain();
+
+    void printCanBuildAgain(String gameManagerSays);
+
+    void errorWhileBuilding(String gameManagerSays);
+
+    void builtSuccessfully();
+
+    void endBuildRequestError(String gameManagerSays);
+
+    void endBuildingPhase(String gameManagerSays);
 
     void endTurn();
 

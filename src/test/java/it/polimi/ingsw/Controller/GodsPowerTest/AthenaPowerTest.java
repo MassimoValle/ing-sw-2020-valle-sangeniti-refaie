@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
-import it.polimi.ingsw.Network.Message.Requests.*;
+import it.polimi.ingsw.Network.Message.ClientRequests.*;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Game;
@@ -102,7 +102,7 @@ public class AthenaPowerTest {
         //Tocca al player1
         //seleziona un worker...
         masterController.dispatcher(
-                new SelectWorkerRequest(pl1, w1pl1)
+                new SelectWorkerRequest(pl1, 0)
         );
         //lo muovo...
         masterController.dispatcher(
@@ -121,7 +121,7 @@ public class AthenaPowerTest {
 
         //Tocca al player2
         masterController.dispatcher(
-                new SelectWorkerRequest(pl2, w1pl2)
+                new SelectWorkerRequest(pl2, 0)
         );
         //lo muovo
         masterController.dispatcher(
@@ -145,7 +145,7 @@ public class AthenaPowerTest {
         // 2 TUNRO PLAYER ATHENA
         //seleziona un worker...
         masterController.dispatcher(
-                new SelectWorkerRequest(pl1, w1pl1)
+                new SelectWorkerRequest(pl1, 0)
         );
         //lo muovo...
         masterController.dispatcher(
@@ -164,7 +164,7 @@ public class AthenaPowerTest {
 
         //Tocca al player2
         masterController.dispatcher(
-                new SelectWorkerRequest(pl2, w1pl2)
+                new SelectWorkerRequest(pl2, 0)
         );
         //lo muovo la prima volta
         masterController.dispatcher(

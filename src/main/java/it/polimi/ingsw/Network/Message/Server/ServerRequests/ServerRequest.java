@@ -1,7 +1,7 @@
-package it.polimi.ingsw.Network.Message.Server;
+package it.polimi.ingsw.Network.Message.Server.ServerRequests;
 
+import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.Requests.Request;
 
 public class ServerRequest extends Message {
 

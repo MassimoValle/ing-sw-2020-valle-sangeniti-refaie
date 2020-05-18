@@ -5,7 +5,7 @@ import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Network.Connection;
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.Requests.Request;
+import it.polimi.ingsw.Network.Message.ClientRequests.Request;
 
 public class RemoteView extends View {
 

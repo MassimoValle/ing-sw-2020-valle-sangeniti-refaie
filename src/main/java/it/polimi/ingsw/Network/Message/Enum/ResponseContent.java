@@ -21,9 +21,11 @@ public enum ResponseContent {
 
     MOVE_WORKER ("The player has to move and get a response"),
     MOVE_WORKER_AGAIN ("The player can decide either to move or to stop moving and start building"),
+    END_MOVE ("The player decides to stop moving and start building"),
 
     BUILD ("The player has to built and get a response"),
     BUILD_AGAIN ("The player can decide either to build or to end his turn"),
+    END_BUILD ("The player decides to stop from building"),
 
     END_TURN ("The player has finished his turn"),
     PLAYER_WON ("The player has won"),

@@ -10,11 +10,12 @@ import it.polimi.ingsw.Server.Model.God.GodsPower.ApolloPower;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
-import it.polimi.ingsw.Network.Message.Requests.*;
+import it.polimi.ingsw.Network.Message.ClientRequests.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,12 +103,14 @@ public class SetUpGameManagerTest {
 
         setUpGameManager.setSetupGameState(PossibleGameState.FILLING_BOARD);
         Worker worker = new Worker(1);
+        worker.setColor(Color.RED);
         Position position = new Position(1, 1);
         Request request = new PlaceWorkerRequest(activePlayer.getPlayerName(), worker.getWorkersNumber(), position);
 
         setUpGameManager.handleMessage(request);
 
-        assertEquals(game.getGameMap().getWorkerOnSquare(position), worker);
+        assertEquals(Color.RED, game.getGameMap().getWorkerOnSquare(position).getColor());
+        assertEquals(1, game.getGameMap().getWorkerOnSquare(position).getWorkersNumber());
     }
 
     @Ignore

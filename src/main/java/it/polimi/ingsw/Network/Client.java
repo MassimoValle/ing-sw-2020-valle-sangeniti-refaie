@@ -3,16 +3,12 @@ package it.polimi.ingsw.Network;
 import it.polimi.ingsw.Client.Controller.ClientManager;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Message.*;
-import it.polimi.ingsw.Network.Message.Requests.Request;
-import it.polimi.ingsw.Network.Message.Responses.Response;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
-import java.util.concurrent.ArrayBlockingQueue;
 
 public class Client {
 

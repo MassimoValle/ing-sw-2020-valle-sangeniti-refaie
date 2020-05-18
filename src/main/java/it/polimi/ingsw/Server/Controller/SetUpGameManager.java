@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Server.Controller;
 
-import it.polimi.ingsw.Network.Message.Server.ServerRequestContent;
+import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Action.Action;
 import it.polimi.ingsw.Server.Model.Action.PlaceWorkerAction;
@@ -10,10 +10,10 @@ import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
-import it.polimi.ingsw.Network.Message.Requests.*;
-import it.polimi.ingsw.Network.Message.Responses.ShowDeckResponse;
-import it.polimi.ingsw.Network.Message.Responses.PickGodResponse;
-import it.polimi.ingsw.Network.Message.Responses.PlaceWorkerResponse;
+import it.polimi.ingsw.Network.Message.ClientRequests.*;
+import it.polimi.ingsw.Network.Message.Server.Responses.ShowDeckResponse;
+import it.polimi.ingsw.Network.Message.Server.Responses.PickGodResponse;
+import it.polimi.ingsw.Network.Message.Server.Responses.PlaceWorkerResponse;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.util.ArrayList;
@@ -252,11 +252,7 @@ public class SetUpGameManager {
                 if(playerLoop >= gameInstance.getPlayers().size()){
                     //inizia il tuo turno
                     MasterController.buildPositiveResponse(activePlayer, ResponseContent.START_TURN, "It's your turn");
-
-                    //
                     MasterController.buildServerRequest(activePlayer, ServerRequestContent.SELECT_WORKER, null);
-
-                    //MasterController.buildPositiveResponse(activePlayer, ResponseContent.SELECT_WORKER, "Select a worker!");
                     setupGameState = PossibleGameState.START_ROUND;
                     playerLoop = 0;
                     return;
