@@ -8,10 +8,10 @@ import java.util.ArrayList;
 
 public class GameMap {
 
-    public final int COLUMNS = 5;
-    public final int ROWS = 5;
+    protected final int COLUMNS = 5;
+    protected final int ROWS = 5;
 
-    private Square[][] board;
+    protected Square[][] board;
 
 
 

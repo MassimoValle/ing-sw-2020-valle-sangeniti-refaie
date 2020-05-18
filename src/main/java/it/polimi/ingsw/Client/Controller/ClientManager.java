@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Client.Controller;
 
+import it.polimi.ingsw.Client.Model.ClientMap;
 import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.Network.Message.ClientRequests.*;
@@ -8,6 +9,7 @@ import it.polimi.ingsw.Network.Message.Server.ServerRequests.ServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.BuildServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.MoveWorkerServerRequest;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
@@ -22,9 +24,8 @@ public class ClientManager {
     private final ClientView clientView;
 
     // model
-    private static String username;
-    private God myGod;
-
+    private Player me;
+    private ClientMap clientMap;
 
     // variabili di controllo
     private Integer workerSelected;
@@ -250,7 +251,7 @@ public class ClientManager {
     private void sendEndMoveRequest() {
         try {
             Client.sendMessage(
-                    new EndMoveRequest(username)
+                    new EndMoveRequest(me.getPlayerName())
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -260,7 +261,7 @@ public class ClientManager {
     private void sendEndBuildRequest() {
         try {
             Client.sendMessage(
-                    new EndBuildRequest(username)
+                    new EndBuildRequest(me.getPlayerName())
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -282,11 +283,11 @@ public class ClientManager {
 
     public void login(){
 
-        username = askUsername();
+        me = new Player(askUsername());
 
         try {
             Client.sendMessage(
-                    new Request(username, Dispatcher.SETUP_GAME, RequestContent.LOGIN, MessageStatus.OK, username)
+                    new Request(me.getPlayerName(), Dispatcher.SETUP_GAME, RequestContent.LOGIN, MessageStatus.OK, me.getPlayerName())
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -300,7 +301,7 @@ public class ClientManager {
 
         try {
             Client.sendMessage(
-                    new Request(username, Dispatcher.SETUP_GAME, RequestContent.NUM_PLAYER, MessageStatus.OK, num.toString())
+                    new Request(me.getPlayerName(), Dispatcher.SETUP_GAME, RequestContent.NUM_PLAYER, MessageStatus.OK, num.toString())
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -319,7 +320,7 @@ public class ClientManager {
         try {
 
             Client.sendMessage(
-                    new ChoseGodsRequest(username, godChoosen)
+                    new ChoseGodsRequest(me.getPlayerName(), godChoosen)
             );
 
         }catch (IOException e){
@@ -332,11 +333,12 @@ public class ClientManager {
 
         ArrayList<God> hand = message.getGods();
 
-        this.myGod = clientView.pickFromChosenGods(hand);
+        God myGod = clientView.pickFromChosenGods(hand);
+        me.setPlayerGod(myGod);
 
         try {
             Client.sendMessage(
-                    new PickGodRequest(username, this.myGod)
+                    new PickGodRequest(me.getPlayerName(), myGod)
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -350,7 +352,7 @@ public class ClientManager {
 
         try {
             Client.sendMessage(
-                    new PlaceWorkerRequest(username, message.getWorker(), p)
+                    new PlaceWorkerRequest(me.getPlayerName(), message.getWorker(), p)
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -364,7 +366,7 @@ public class ClientManager {
 
         try {
             Client.sendMessage(
-                    new SelectWorkerRequest(username, this.workerSelected)
+                    new SelectWorkerRequest(me.getPlayerName(), this.workerSelected)
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -380,7 +382,7 @@ public class ClientManager {
 
         try {
             Client.sendMessage(
-                    new MoveRequest(username, position)
+                    new MoveRequest(me.getPlayerName(), position)
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -396,7 +398,7 @@ public class ClientManager {
 
         try {
             Client.sendMessage(
-                    new BuildRequest(username, position)
+                    new BuildRequest(me.getPlayerName(), position)
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -410,7 +412,7 @@ public class ClientManager {
 
         try {
             Client.sendMessage(
-                    new EndTurnRequest(username)
+                    new EndTurnRequest(me.getPlayerName())
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -419,7 +421,7 @@ public class ClientManager {
     }
 
     private void win(WonResponse response){
-        clientView.win(response.getGameManagerSays().equals(username));
+        clientView.win(response.getGameManagerSays().equals(me.getPlayerName()));
     }
 
 
