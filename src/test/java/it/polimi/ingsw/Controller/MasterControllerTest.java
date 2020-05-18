@@ -131,7 +131,7 @@ public class MasterControllerTest {
 
         //turno del player 2
         masterController.dispatcher(
-                new SelectWorkerRequest(player2.getPlayerName(), player2.getPlayerWorkers().get(1))
+                new SelectWorkerRequest(player2.getPlayerName(), 1)
         );
 
         masterController.dispatcher(
@@ -148,7 +148,7 @@ public class MasterControllerTest {
 
         //turno del player1
         masterController.dispatcher(
-                new SelectWorkerRequest(player1.getPlayerName(), player1.getPlayerWorkers().get(1))
+                new SelectWorkerRequest(player1.getPlayerName(), 1)
         );
 
         masterController.dispatcher(

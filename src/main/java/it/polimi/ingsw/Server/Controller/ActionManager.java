@@ -1,5 +1,7 @@
 package it.polimi.ingsw.Server.Controller;
 
+import it.polimi.ingsw.Network.Message.Message;
+import it.polimi.ingsw.Network.Message.Server.ServerRequestContent;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Action.*;
 import it.polimi.ingsw.Server.Model.Game;
@@ -13,6 +15,9 @@ import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
 import it.polimi.ingsw.Network.Message.Requests.*;
 import it.polimi.ingsw.Network.Message.Responses.Response;
+
+import javax.swing.text.MutableAttributeSet;
+import java.util.spi.AbstractResourceBundleProvider;
 
 /**
  * The ActionManager handles every request sent by a client to perform an action
@@ -43,16 +48,17 @@ public class ActionManager {
      * @param request the request sent by the client
      * @return positive/negative response if the client can perform action requested
      */
-    public Response handleRequest(Request request){
+    public void handleRequest(Request request){
 
         requestSender = gameInstance.searchPlayerByName(request.getMessageSender());
 
         //Controllo che il player sia nel suo turno
         if(!isYourTurn(request.getMessageSender())) { //The player who sent the request isn't the playerActive
-            return MasterController.buildNegativeResponse(requestSender, ResponseContent.NOT_YOUR_TURN, "It's not your turn!");
+            MasterController.buildNegativeResponse(requestSender, ResponseContent.NOT_YOUR_TURN, "It's not your turn!");
+            return;
         }
 
-        return switch (request.getRequestContent()) {
+        switch (request.getRequestContent()) {
             case SELECT_WORKER -> handleSelectWorkerAction((SelectWorkerRequest) request);
 
             case POWER_BUTTON -> handlePowerButton((PowerButtonRequest) request);
@@ -65,6 +71,8 @@ public class ActionManager {
 
             case END_TURN -> handleEndTurnAction((EndTurnRequest) request);
             default -> MasterController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getMessageSender()), ResponseContent.CHECK, "Must never be reached!");
+
+
         };
     }
 
@@ -99,15 +107,17 @@ public class ActionManager {
      * @param request the request sent by the client
      * @return positive/negative response if the client can perform action requested
      */
-    Response handleSelectWorkerAction(SelectWorkerRequest request) {
+    void handleSelectWorkerAction(SelectWorkerRequest request) {
         Player activePlayer = turnManager.getActivePlayer();
 
         if ( gameState != PossibleGameState.START_ROUND && gameState != PossibleGameState.WORKER_SELECTED) {
-                return MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot select a worker!");
+                MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot select a worker!");
+                return;
             }
 
 
-        Worker workerFromRequest = request.getWorkerToSelect();
+        Integer index = request.getWorkerToSelect();
+        Worker workerFromRequest = activePlayer.getPlayerWorkers().get(index);
 
         //When a handleSelectWorkerRequest occurs the activeWorker in the turn must be set tu null
         //or has to be the other player's worker
@@ -115,7 +125,8 @@ public class ActionManager {
 
         //You get into this statement only if the activeWorker is own by someone else.
         if (activeWorker != null && !(activeWorker == activePlayer.getPlayerWorkers().get(0) || activeWorker == activePlayer.getPlayerWorkers().get(1))) {
-                return MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "There's something wrong with the worker selection");
+                MasterController.buildNegativeResponse(activePlayer, ResponseContent.SELECT_WORKER, "There's something wrong with the worker selection");
+                return;
             }
 
         Action selectWorkerAction = new SelectWorkerAction(workerFromRequest);
@@ -130,16 +141,20 @@ public class ActionManager {
             }
             else {
                 //worker is stuck
-                return MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "Worker stuck!");
+                MasterController.buildNegativeResponse(activePlayer, ResponseContent.SELECT_WORKER, "Worker stuck!");
+                return;
             }
         } else {
-            return MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot select this worker!");
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.SELECT_WORKER, "You cannot select this worker!");
+            return;
         }
 
         turnManager.setActiveWorker(workerFromRequest);
         gameState = PossibleGameState.WORKER_SELECTED;
         turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
-        return MasterController.buildPositiveResponse(activePlayer, ResponseContent.MOVE_WORKER, "Worker Selected!");
+        MasterController.buildPositiveResponse(activePlayer, ResponseContent.SELECT_WORKER, "Worker Selected!");
+        MasterController.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, turnManager.getActiveWorker());
+
     }
 
     /**
@@ -149,11 +164,12 @@ public class ActionManager {
      * @param request the request sent by the client
      * @return positive/negative response if the client can perform action requested
      */
-    Response handleMoveAction(MoveRequest request) {
+    void handleMoveAction(MoveRequest request) {
         Player activePlayer = turnManager.getActivePlayer();
 
         if (gameState != PossibleGameState.WORKER_SELECTED) {
-            return MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot move!");
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot move!");
+            return;
         }
 
         Worker activeWorker = turnManager.getActiveWorker();
@@ -167,7 +183,8 @@ public class ActionManager {
 
         //action hasn't been done
         if (actionOutcome == ActionOutcome.NOT_DONE) {
-            return MasterController.buildNegativeResponse(activePlayer, ResponseContent.MOVE_WORKER, "You cannot move here!");
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.MOVE_WORKER, "You cannot move here!");
+            return;
         }
 
         //controllo che il giocatore con la mossa appena eseguita abbia vinto
@@ -182,40 +199,45 @@ public class ActionManager {
 
         //vado a contrllare se con questa mossa l'activePlayer ha vinto (sono salito da un livello 2 a un livello 3)
         if (playerHasWon(activePlayer)) {
-            return MasterController.buildWonResponse(activePlayer,"YOU WON!");
+            MasterController.buildWonResponse(activePlayer,"Hai vinto!");
+            return;
         }
 
         //action can not be performed again
         if (actionOutcome == ActionOutcome.DONE) {
             gameState = PossibleGameState.WORKER_MOVED;
             turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
-            return MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Worker Moved!");
+            MasterController.buildPositiveResponse(activePlayer, ResponseContent.MOVE_WORKER, "Worker Moved!");
+            MasterController.buildServerRequest(activePlayer, ServerRequestContent.BUILD, activeWorker);
         } else {    //action  can be performed again
-            //add the action done to the List inside the turn manager
             gameState = PossibleGameState.WORKER_SELECTED;
             turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
-            return MasterController.buildPositiveResponse(activePlayer, ResponseContent.MOVE_WORKER, "Worker Moved! Worker has an extra move! You can choose to move again or to build!");
+
+            MasterController.buildPositiveResponse(activePlayer, ResponseContent.MOVE_WORKER_AGAIN, "Worker Moved! Worker has an extra move! You can choose to move again or to build!");
+            //MasterController.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, activeWorker);
         }
 
     }
 
 
-    private Response handleEndMoveAction(EndMoveRequest request) {
+    private void handleEndMoveAction(EndMoveRequest request) {
         Player activePlayer = turnManager.getActivePlayer();
 
         if (gameState != PossibleGameState.WORKER_SELECTED && gameState != PossibleGameState.WORKER_MOVED) {
-            return MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You must move at least once!");
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You must move at least once!");
+            return;
         }
 
         //Sei sei arrivato qua vuol dire che hai sei in WORKER_MOVED, adesso controllo che hai costruito almeno una volta
         if ( !turnManager.activePlayerHasMoved() ) {
-            return MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You have to move at least once");
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You have to move at least once");
+            return;
         }
 
 
         gameState = PossibleGameState.WORKER_MOVED;
         turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
-        return MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Ora puoi costruire");
+        MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Ora puoi costruire");
     }
 
     /**
@@ -227,24 +249,25 @@ public class ActionManager {
      *
      *  in case of SOME GOD'S POWERS it can be called also when the {@link PossibleGameState#WORKER_SELECTED}
      */
-    Response handleBuildAction(BuildRequest request) {
+    void handleBuildAction(BuildRequest request) {
         Player activePlayer = turnManager.getActivePlayer();
 
-        if (!(gameState == PossibleGameState.WORKER_MOVED || gameState == PossibleGameState.BUILD_BEFORE) ) {
-            return MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot build!");
+        if (gameState != PossibleGameState.WORKER_MOVED) {
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot build!");
+            return;
         }
 
         God playerGod = activePlayer.getPlayerGod();
         Position positionWhereToBuild = request.getPositionWhereToBuild();
         Square squareWhereToBuild = gameInstance.getGameMap().getSquare(positionWhereToBuild);
 
-
         actionOutcome = playerGod.getGodPower().build(squareWhereToBuild);
 
 
         if (actionOutcome == ActionOutcome.NOT_DONE) {
             //action hasn't been done
-            return MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot build here!");
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.BUILD, "You cannot build here!");
+            return;
         }
 
         //L'azione è stata eseguita
@@ -260,56 +283,63 @@ public class ActionManager {
 
 
             //action can not be performed again
-            gameState = PossibleGameState.BUILT;
+            gameState = PossibleGameState.PLAYER_TURN_ENDING;
             turnManager.updateTurnState(PossibleGameState.BUILT);
-            return MasterController.buildPositiveResponse(turnManager.getActivePlayer(), ResponseContent.END_TURN, "Built!");
+            MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Built!");
+            MasterController.buildServerRequest(activePlayer, ServerRequestContent.END_TURN, null);
+
         } else {
             //action  can be performed again
             gameState = PossibleGameState.WORKER_MOVED;
             turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
-            return MasterController.buildPositiveResponse(turnManager.getActivePlayer(), ResponseContent.BUILD, "Built! Worker has an extra built!");
+            MasterController.buildPositiveResponse(turnManager.getActivePlayer(), ResponseContent.BUILD_AGAIN, "Built! Worker has an extra built!");
         }
     }
 
 
 
-    private Response handleEndBuildAction(EndBuildRequest request) {
+    private void handleEndBuildAction(EndBuildRequest request) {
         Player activePlayer = turnManager.getActivePlayer();
 
         if (gameState != PossibleGameState.WORKER_MOVED) {
-            return MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You must build at least once!");
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You must build at least once!");
+            return;
         }
 
         //Sei sei arrivato qua vuol dire che hai sei in WORKER_MOVED, adesso controllo che hai costruito almeno una volta
         if ( !turnManager.activePlayerHasBuilt() ) {
-            return MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You have to build at least once");
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You have to build at least once");
+            return;
         }
 
         gameState = PossibleGameState.BUILT;
         turnManager.updateTurnState(PossibleGameState.BUILT);
         gameState = PossibleGameState.PLAYER_TURN_ENDING;
-        return MasterController.buildPositiveResponse(turnManager.getActivePlayer(), ResponseContent.END_TURN, "Devi passare il turno!");
+        MasterController.buildPositiveResponse(turnManager.getActivePlayer(), ResponseContent.END_TURN, "Devi passare il turno!");
     }
 
-    private Response handleEndTurnAction(EndTurnRequest request) {
+    private void handleEndTurnAction(EndTurnRequest request) {
         Player activePlayer = turnManager.getActivePlayer();
 
         //TODO this code must be revisited
         if (gameState == PossibleGameState.WORKER_MOVED && !turnManager.activePlayerHasBuilt()) {
-            return MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot end your turn, you must build first");
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot end your turn, you must build first");
+            return;
         }
 
         if (gameState != PossibleGameState.BUILT) {
             if (gameState != PossibleGameState.PLAYER_TURN_ENDING) {
                 if (gameState != PossibleGameState.WORKER_MOVED) {
-                    return MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot end your turn");
+                    MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot end your turn");
+                    return;
                 }
             }
         }
 
         if (!turnManager.activePlayerHasBuilt()) {
             //QUESTO BLOCCO NON DOVREBBE MAI ESSERE RAGGIUNGIBILE PERCHÈ SE IL GAME STATE È BUILD ALLORA VUOL DIRE CHE HO COSTRUITO
-            return MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "You must build at least once");
+            MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "You must build at least once");
+            return;
         }
 
         //aggiorno lo stato del controller e notifico al player che
@@ -318,7 +348,8 @@ public class ActionManager {
         turnManager.updateTurnState(gameState);
         activePlayer = turnManager.getActivePlayer();
         gameState = PossibleGameState.START_ROUND;
-        return MasterController.buildPositiveResponse(activePlayer, ResponseContent.START_TURN, "It's your turn!");
+        MasterController.buildPositiveResponse(activePlayer, ResponseContent.START_TURN, "It's your turn!");
+        MasterController.buildServerRequest(activePlayer, ServerRequestContent.SELECT_WORKER, null);
 
     }
 

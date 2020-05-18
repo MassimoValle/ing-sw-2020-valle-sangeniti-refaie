@@ -15,17 +15,21 @@ public enum ResponseContent {
     PLACE_WORKER ("The player has to place his worker and get a response"),
 
     START_TURN ("The player is notified that his turn is starting"),
-    SELECT_WORKER ("The player has to selesct a worker and get a response"),
+    SELECT_WORKER ("The player has to select a worker and get a response"),
 
     POWER_BUTTON ("The player clicked the power button"),
 
     MOVE_WORKER ("The player has to move and get a response"),
+    MOVE_WORKER_AGAIN ("The player can decide either to move or to stop moving and start building"),
+
     BUILD ("The player has to built and get a response"),
+    BUILD_AGAIN ("The player can decide either to build or to end his turn"),
 
     END_TURN ("The player has finished his turn"),
     PLAYER_WON ("The player has won"),
 
-    CHECK ("Not sure where this should be really used");
+    CHECK ("Not sure where this should be really used"),
+    GAME_SERIALIZED ("...");
 
     private final String description;
     private final RequestContent follows;

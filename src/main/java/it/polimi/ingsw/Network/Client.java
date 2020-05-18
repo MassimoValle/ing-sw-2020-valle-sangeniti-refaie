@@ -3,6 +3,8 @@ package it.polimi.ingsw.Network;
 import it.polimi.ingsw.Client.Controller.ClientManager;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Message.*;
+import it.polimi.ingsw.Network.Message.Requests.Request;
+import it.polimi.ingsw.Network.Message.Responses.Response;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -21,7 +23,7 @@ public class Client {
     private final String ip;
     private final int port;
 
-    private static LinkedList queue;
+    private static LinkedList<Message> queue;
 
     private static ObjectInputStream socketIn;
     private static ObjectOutputStream socketOut;
@@ -92,7 +94,7 @@ public class Client {
             queue.add(received);
 
             if(!queue.isEmpty())
-                clientManager.handleMessageFromServer(received);
+                clientManager.handleMessageFromServer(queue.pop());
 
         } catch (ClassNotFoundException e){
             e.printStackTrace();

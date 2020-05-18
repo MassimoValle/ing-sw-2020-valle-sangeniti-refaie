@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Server.Controller;
 
+import it.polimi.ingsw.Network.Message.Server.ServerRequestContent;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Action.Action;
 import it.polimi.ingsw.Server.Model.Action.PlaceWorkerAction;
@@ -249,7 +250,13 @@ public class SetUpGameManager {
 
                 // quando tutti hanno finito di piazzare i workers
                 if(playerLoop >= gameInstance.getPlayers().size()){
-                    MasterController.buildPositiveResponse(activePlayer, ResponseContent.SELECT_WORKER, "Select a worker!");
+                    //inizia il tuo turno
+                    MasterController.buildPositiveResponse(activePlayer, ResponseContent.START_TURN, "It's your turn");
+
+                    //
+                    MasterController.buildServerRequest(activePlayer, ServerRequestContent.SELECT_WORKER, null);
+
+                    //MasterController.buildPositiveResponse(activePlayer, ResponseContent.SELECT_WORKER, "Select a worker!");
                     setupGameState = PossibleGameState.START_ROUND;
                     playerLoop = 0;
                     return;
