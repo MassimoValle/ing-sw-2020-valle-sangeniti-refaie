@@ -95,8 +95,8 @@ public class Deck extends ArrayList<God> implements Serializable {
             case "Hestia" :
                 return new God(godName, godDescription, new HestiaPower(godPowerType, godPowerDescription));
 
-            case "Poseidon" :
-                return new God(godName, godDescription, new PoseidonPower(godPowerType, godPowerDescription));
+            case "Zeus" :
+                return new God(godName, godDescription, new ZeusPower(godPowerType, godPowerDescription));
 
             case "Triton" :
                 return new God(godName, godDescription, new TritonPower(godPowerType, godPowerDescription));

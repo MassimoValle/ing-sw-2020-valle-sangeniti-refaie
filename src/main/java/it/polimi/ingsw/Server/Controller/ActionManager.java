@@ -73,6 +73,13 @@ public class ActionManager {
         };
     }
 
+
+    /**
+     * If one {@link Player} has a {@link God} that let him use some 'special' {@link Power}
+     * than this method handles the {@link PowerButtonRequest}
+     *
+     * @param request - the request sent by the client
+     */
      private void handlePowerButton(PowerButtonRequest request) {
         Player activePlayer = turnManager.getActivePlayer();
         Worker activeWorker = turnManager.getActiveWorker();
@@ -205,7 +212,7 @@ public class ActionManager {
 
         //vado a contrllare se con questa mossa l'activePlayer ha vinto (sono salito da un livello 2 a un livello 3)
         if (playerHasWon(activePlayer)) {
-            MasterController.buildWonResponse(activePlayer,"Hai vinto!");
+            MasterController.buildWonResponse(activePlayer,"YOU WON!");
             return;
         }
 
