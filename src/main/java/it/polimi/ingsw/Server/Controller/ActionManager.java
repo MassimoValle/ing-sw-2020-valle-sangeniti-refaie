@@ -270,7 +270,7 @@ public class ActionManager {
         Player activePlayer = turnManager.getActivePlayer();
         Worker activeWorker = turnManager.getActiveWorker();
 
-        if (gameState != PossibleGameState.WORKER_MOVED) {
+        if (gameState != PossibleGameState.WORKER_MOVED && gameState != PossibleGameState.BUILD_BEFORE) {
             MasterController.buildNegativeResponse(activePlayer, responseContent, "You cannot build!");
             return;
         }
@@ -299,6 +299,8 @@ public class ActionManager {
                 gameState = PossibleGameState.WORKER_SELECTED;
                 turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
                 MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Now you can move!");
+                MasterController.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, activeWorker);
+                return;
             }
 
 

@@ -4,7 +4,6 @@ import it.polimi.ingsw.Network.Message.ClientRequests.MoveRequest;
 import it.polimi.ingsw.Network.Message.ClientRequests.SelectWorkerRequest;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Controller.MasterController;
-import it.polimi.ingsw.Server.Model.Action.MoveAction;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.Square;
@@ -14,7 +13,6 @@ import it.polimi.ingsw.Server.Model.Player.Worker;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.swing.text.MutableAttributeSet;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
