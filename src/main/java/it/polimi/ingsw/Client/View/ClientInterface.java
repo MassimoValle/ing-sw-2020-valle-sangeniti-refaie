@@ -2,6 +2,7 @@ package it.polimi.ingsw.Client.View;
 
 import it.polimi.ingsw.Network.Message.Server.Responses.Response;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 
@@ -80,5 +81,5 @@ public interface ClientInterface {
 
     void debug(Response response);
 
-
+    void showMap(GameMap clientMap);
 }

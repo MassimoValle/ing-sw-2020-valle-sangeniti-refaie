@@ -1,10 +1,6 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
-
-import it.polimi.ingsw.Network.Message.ClientRequests.BuildRequest;
-import it.polimi.ingsw.Network.Message.ClientRequests.EndTurnRequest;
-import it.polimi.ingsw.Network.Message.ClientRequests.MoveRequest;
-import it.polimi.ingsw.Network.Message.ClientRequests.SelectWorkerRequest;
+import it.polimi.ingsw.Network.Message.ClientRequests.*;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Game;
@@ -20,22 +16,17 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-
-public class ApolloPowerTest {
-
+public class TritonPowerTest {
 
     MasterController masterController;
     Player player1, player2;
     Game game;
-
-
 
     @Before
     public void setUp() {
 
         Game.resetInstance();
         game = Game.getInstance();
-
 
         player1 = new Player("Simone");
         player2 = new Player("Massimo");
@@ -46,7 +37,7 @@ public class ApolloPowerTest {
     }
 
     @Test
-    public void ApolloPower() {
+    public void TritonPowerTest() {
 
         String pl1 = player1.getPlayerName();
         String pl2 = player2.getPlayerName();
@@ -57,7 +48,7 @@ public class ApolloPowerTest {
         //Aggiungo i god alla partita
         ArrayList<God> chosenGod = new ArrayList<>();
         chosenGod.add(game.getDeck().getGod(0));
-        chosenGod.add(game.getDeck().getGod(1));
+        chosenGod.add(game.getDeck().getGod(13));
         game.setChosenGodsFromDeck(chosenGod);
 
         //assegno i god ai rispettivi giocatori
@@ -75,14 +66,6 @@ public class ApolloPowerTest {
         sq22.setWorkerOn(w1pl1);
         w1pl1.setPlaced(true);
 
-        //giocatore 1 piazza il secondo worker
-        Worker w2pl1 = player1.getPlayerWorkers().get(1);
-        Square sq23 = game.getGameMap().getSquare(new Position(2, 3));
-
-        w2pl1.setPosition(new Position(2, 3));
-        sq23.setWorkerOn(w2pl1);
-        w2pl1.setPlaced(true);
-
         //giocatore 2 piazza il primo worker
         Worker w1pl2 = player2.getPlayerWorkers().get(0);
         Square sq32 = game.getGameMap().getSquare(new Position(3, 2));
@@ -91,6 +74,13 @@ public class ApolloPowerTest {
         sq32.setWorkerOn(w1pl2);
         w1pl2.setPlaced(true);
 
+        //giocatore 1 piazza il secondo worker
+        Worker w2pl1 = player1.getPlayerWorkers().get(1);
+        Square sq23 = game.getGameMap().getSquare(new Position(2, 3));
+
+        w2pl1.setPosition(new Position(2, 3));
+        sq23.setWorkerOn(w2pl1);
+        w2pl1.setPlaced(true);
 
         //giocatore 2 piazza il seoondo worker
         Worker w2pl2 = player2.getPlayerWorkers().get(1);
@@ -106,46 +96,80 @@ public class ApolloPowerTest {
         masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
         masterController._getTurnManager().nextTurn(player1);
 
-
-
-        //tocca al player1
-        //seleziona un worker...
-        MasterController.dispatcher( new SelectWorkerRequest(pl1, 0) );
-
-        //test potere di apollo quando i 2 worker sono sullo stesso livello
-        MasterController.dispatcher(new MoveRequest(pl1, new Position(3,3)));
-        assertEquals(game.getGameMap().getWorkerOnSquare(3,3), w1pl1);
-        assertEquals(game.getGameMap().getWorkerOnSquare(2,2), w2pl2);
         game.getGameMap().printBoard();
 
-        //player1 costruisce
-        MasterController.dispatcher(new BuildRequest(pl1, new Position(4, 2)));
-        assertEquals(1, game.getGameMap().getSquare(4, 2).getHeight());
+        MasterController.dispatcher(
+                new SelectWorkerRequest(pl1, 0)
+        );
+
+        MasterController.dispatcher(
+                new MoveRequest(pl1, new Position(1,2))
+        );
+
+        MasterController.dispatcher(
+                new BuildRequest(pl1, new Position(0,2))
+        );
+
+        MasterController.dispatcher(
+                new EndTurnRequest(pl1)
+        );
+
+        //player 2 con tritone
+        MasterController.dispatcher(
+                new SelectWorkerRequest(pl2, 1)
+        );
+
+        MasterController.dispatcher(
+                new MoveRequest(pl2, new Position(4,3))
+        );
+
+        MasterController.dispatcher(
+                new MoveRequest(pl2, new Position(4,4))
+        );
+
+        MasterController.dispatcher(
+                new MoveRequest(pl2, new Position(3,4))
+        );
+
+        MasterController.dispatcher(
+                new MoveRequest(pl2, new Position(2,4))
+        );
+
+        MasterController.dispatcher(
+                new MoveRequest(pl2, new Position(1,4))
+        );
+
+/*
+
+        //check if moving inside the perimeter won't allow me to move again
+
+        MasterController.dispatcher(
+                new MoveRequest(pl2, new Position(1,3))
+        );
+
+        MasterController.dispatcher(
+                new MoveRequest(pl2, new Position(0,3))
+        );
+
+        //it works, this code is commented but it's better to create multiple test method to check every behavior
+*/
+
+        //this checks if I can stop from moving on the perimeter
+        MasterController.dispatcher(
+                new EndMoveRequest(pl2)
+        );
+
+        MasterController.dispatcher(
+                new BuildRequest(pl2, new Position(0,4))
+        );
+
+        MasterController.dispatcher(
+                new EndTurnRequest(pl2)
+        );
+
+
         game.getGameMap().printBoard();
-
-        //player 1 passa il turno
-        MasterController.dispatcher(new EndTurnRequest(pl1));
-
-        //player 2 seleziona worker
-        MasterController.dispatcher(new SelectWorkerRequest(pl2, 1));
-        game.getGameMap().printBoard();
-
-        //player 2 muove
-        MasterController.dispatcher(new MoveRequest(pl2, new Position(4, 2)));
-        assertEquals(game.getGameMap().getWorkerOnSquare(4,2), w2pl2);
-        game.getGameMap().printBoard();
-
-
-
-
-
 
     }
 
-
-
-
 }
-
-
-

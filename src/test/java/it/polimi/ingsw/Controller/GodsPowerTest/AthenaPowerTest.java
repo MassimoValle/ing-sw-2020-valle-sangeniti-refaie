@@ -102,7 +102,7 @@ public class AthenaPowerTest {
         //Tocca al player1
         //seleziona un worker...
         MasterController.dispatcher(
-                new SelectWorkerRequest(pl1, w1pl1)
+                new SelectWorkerRequest(pl1, 0)
         );
         //lo muovo...
         masterController.dispatcher(

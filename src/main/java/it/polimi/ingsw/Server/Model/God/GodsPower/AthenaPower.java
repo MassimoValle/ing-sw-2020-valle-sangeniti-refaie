@@ -9,7 +9,7 @@ import it.polimi.ingsw.Server.Model.Player.Worker;
 public class AthenaPower extends Power {
 
 
-   private static boolean hasGoneUp;
+    private static boolean hasGoneUp;
 
     public AthenaPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);

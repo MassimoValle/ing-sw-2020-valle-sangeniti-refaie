@@ -2,6 +2,7 @@ package it.polimi.ingsw.Server.Model.Action;
 
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
@@ -39,12 +40,11 @@ public class MoveAction implements Action {
     @Override
     public boolean isValid() {
 
-        //if some God Power is active that prevent you from doing this move
-        if(godsPowerActive(godsPowerPerformingAction) || newPositionSquare.hasWorkerOn()) {
-            return false;
-        }
+        GameMap map = Game.getInstance().getGameMap();
+        int heightDifference = map.getDifferenceInAltitude(oldPositionSquare.getPosition(), newPositionSquare.getPosition());
 
-        return true;
+        //if some God Power is active that prevent you from doing this move
+        return !godsPowerActive(godsPowerPerformingAction) && !newPositionSquare.hasWorkerOn() && heightDifference >= -1;
     }
 
 
@@ -76,7 +76,7 @@ public class MoveAction implements Action {
 
         ArrayList<Power> powersInGame = (ArrayList<Power>) Game.getInstance().getPowersInGame();
         for (Power godPower: powersInGame) {
-            if (godPower!= godsPowerPerformingAction && godPower.canPreventsFromPerformingAction() && godPower.checkIfActionNotPermitted(this)) {
+            if (!godPower.equals(godsPowerPerformingAction) && godPower.canPreventsFromPerformingAction() && godPower.checkIfActionNotPermitted(this)) {
                  return true;
             }
         }
