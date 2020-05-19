@@ -128,7 +128,13 @@ public class ActionManager {
                 return;
             }
 
-        Action selectWorkerAction = new SelectWorkerAction(workerFromRequest);
+        Action selectWorkerAction = new SelectWorkerAction(workerFromRequest, requestSender);
+
+        if (!selectWorkerAction.isValid() ) {
+            MasterController.buildNegativeResponse(activePlayer, responseContent, "You cannot select this worker!");
+            return;
+        }
+
 
         if (!workerFromRequest.isPlaced()) {
             //worker is not placed yet
