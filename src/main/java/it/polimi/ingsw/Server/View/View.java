@@ -16,12 +16,12 @@ public abstract class View extends Observable<TurnManager> implements Observer<G
         return player;
     }
 
-    protected abstract void showGame(Game game);
+    protected abstract void sendMessage(Game game);
 
 
     @Override
     public void update(Game message) {
-        showGame(message);
+        sendMessage(message);
     }
 }
 

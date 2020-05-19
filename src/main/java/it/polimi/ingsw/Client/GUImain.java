@@ -1,5 +1,8 @@
-package it.polimi.ingsw.Client.View.Gui;
+package it.polimi.ingsw.Client;
 
+import it.polimi.ingsw.Client.View.Cli.CLI;
+import it.polimi.ingsw.Client.View.ClientView;
+import it.polimi.ingsw.Client.View.Gui.GUI;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.application.Application;
@@ -8,10 +11,15 @@ import javafx.stage.Stage;
 
 
 
-public class GuiMain extends Application {
+public class GUImain extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+
+        ClientView clientView = new GUI();
+        clientView.start();
+
+
 
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/mainView.fxml"));
 
@@ -26,7 +34,4 @@ public class GuiMain extends Application {
         Application.launch(args);
     }
 
-    /*public GUI(){
-
-    }*/
 }

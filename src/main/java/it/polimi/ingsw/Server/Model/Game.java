@@ -5,13 +5,14 @@ import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
+import it.polimi.ingsw.Server.Model.Player.ColorEnum;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.Responses.Response;
+import it.polimi.ingsw.Network.Message.Server.Responses.Response;
 import it.polimi.ingsw.Server.View.Observable;
+import javafx.scene.paint.Color;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,9 +27,9 @@ public class Game extends Observable<Game> {
     private List<God> chosenGodsFromDeck;
     private GameMap gameMap;
 
-    private List<Color> colorAvailable = new ArrayList<Color>();
+    private List<ColorEnum> colorAvailable = new ArrayList<>();
     private final HashMap<Player, Message> changes = new HashMap<>();
-    private HashMap<Player, Color> playerColor = new HashMap<>();
+    private HashMap<Player, ColorEnum> playerColor = new HashMap<>();
 
     private static Game gameInstance;
 
@@ -83,9 +84,9 @@ public class Game extends Observable<Game> {
 
 
     private void initColorAvailable() {
-        colorAvailable.add(Color.RED);
-        colorAvailable.add(Color.BLUE);
-        colorAvailable.add(Color.GREEN);
+        colorAvailable.add(ColorEnum.RED);
+        colorAvailable.add(ColorEnum.BLUE);
+        colorAvailable.add(ColorEnum.GREEN);
     }
 
     /**
@@ -147,11 +148,23 @@ public class Game extends Observable<Game> {
         return a;
     }
 
+    public List<God> getUnassignedGods() {
+        List<God> unassignedGod = new ArrayList<>();
 
-    public void removeGodChosen(God godSelected){
+        for(God god: chosenGodsFromDeck)
+            if (!god.isAssigned()) {
+                unassignedGod.add(god);
+            }
 
-        chosenGodsFromDeck.removeIf(god -> god.equals(godSelected));
+        return unassignedGod;
+    }
 
+    public void setGodAssigned(God godAssigned) {
+        for(God god: chosenGodsFromDeck) {
+            if (god.equals(godAssigned)) {
+                god.setAssigned(true);
+            }
+        }
     }
 
 
@@ -173,16 +186,16 @@ public class Game extends Observable<Game> {
 
     /**
      * It put the {@link Response} to the relative {@link Player} in the {@link Game#changes} HashMap
-     *
-     * @param player the player to whom the answer is intended
-     * @param response the response that must be sent to the player
+     *  @param player the player to whom the answer is intended
+     * @param serverMessage the response that must be sent to the player
      */
-    public void putInChanges(Player player, Response response) {
-        changes.put(player, response);
+    public void putInChanges(Player player, Message serverMessage) {
+        changes.put(player, serverMessage);
 
         //sendUpdateToEveryone();
 
         notify(this);
+        changes.remove(player, serverMessage);
     }
 
     private void sendUpdateToEveryone() {
@@ -200,6 +213,12 @@ public class Game extends Observable<Game> {
     public Message notifyPlayer(Player player) {
         Message x = changes.get(player);
         System.out.println("message taken by " + player.getPlayerName());
+
+        {
+            //testing only
+            gameMap.printBoard();
+        }
+
         return x;
     }
 
@@ -234,6 +253,7 @@ public class Game extends Observable<Game> {
     public static void resetInstance() {
         gameInstance = null;
     }
+
 }
 
 

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Server.Model.Action;
 
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
 
@@ -9,9 +10,11 @@ import it.polimi.ingsw.Server.Model.Player.Worker;
 public class SelectWorkerAction implements Action{
 
     private Worker workerToSelect;
+    private Player player;
 
-    public SelectWorkerAction(Worker workerToSelect) {
+    public SelectWorkerAction(Worker workerToSelect, Player activePlayer) {
         this.workerToSelect = workerToSelect;
+        this.player = activePlayer;
     }
 
     /**
@@ -21,9 +24,7 @@ public class SelectWorkerAction implements Action{
      */
     @Override
     public boolean isValid() {
-
-        return true;
-
+        return workerToSelect.getColor().equals(player.getColor());
     }
 
     /**

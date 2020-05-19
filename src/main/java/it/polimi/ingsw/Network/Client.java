@@ -5,12 +5,10 @@ import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Message.*;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
-import java.util.concurrent.ArrayBlockingQueue;
 
 public class Client {
 
@@ -21,7 +19,7 @@ public class Client {
     private final String ip;
     private final int port;
 
-    private static LinkedList queue;
+    private static LinkedList<Message> queue;
 
     private static ObjectInputStream socketIn;
     private static ObjectOutputStream socketOut;
@@ -92,7 +90,7 @@ public class Client {
             queue.add(received);
 
             if(!queue.isEmpty())
-                clientManager.handleMessageFromServer(received);
+                clientManager.handleMessageFromServer(queue.pop());
 
         } catch (ClassNotFoundException e){
             e.printStackTrace();

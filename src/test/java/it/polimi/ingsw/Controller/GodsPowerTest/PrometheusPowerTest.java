@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
-import it.polimi.ingsw.Network.Message.Requests.*;
+import it.polimi.ingsw.Network.Message.ClientRequests.*;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Game;
@@ -99,7 +99,7 @@ public class PrometheusPowerTest {
         masterController._getTurnManager().nextTurn(player1);
 
         MasterController.dispatcher(
-                new SelectWorkerRequest(pl1, w1pl1)
+                new SelectWorkerRequest(pl1, 0)
         );
 
         MasterController.dispatcher(

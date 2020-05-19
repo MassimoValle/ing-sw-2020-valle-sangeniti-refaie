@@ -8,10 +8,10 @@ import java.util.ArrayList;
 
 public class GameMap {
 
-    public final int COLUMNS = 5;
-    public final int ROWS = 5;
+    protected final int COLUMNS = 5;
+    protected final int ROWS = 5;
 
-    private Square[][] board;
+    protected Square[][] board;
 
 
 
@@ -156,12 +156,12 @@ public class GameMap {
         ArrayList<Position> placesWhereToMove;
         placesWhereToMove = getReachableAdjacentPlaces(worker.getWorkerPosition());
 
-        if (placesWhereToMove.size() == 0) return true;
+        if (placesWhereToMove.isEmpty()) return true;
 
 
         for (Position position: placesWhereToMove ) {
             ArrayList<Position> placesWhereYouCanBuildOn = getPlacesWhereYouCanBuildOn(position);
-            if (placesWhereYouCanBuildOn.size() != 0) return false;
+            if (!placesWhereYouCanBuildOn.isEmpty()) return false;
         }
 
         return true;

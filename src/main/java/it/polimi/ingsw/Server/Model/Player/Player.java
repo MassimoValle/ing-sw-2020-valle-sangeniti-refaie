@@ -1,8 +1,8 @@
 package it.polimi.ingsw.Server.Model.Player;
 
 import it.polimi.ingsw.Server.Model.God.God;
+import javafx.scene.paint.Color;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +12,7 @@ public class Player {
     private God playerGod;                      /** God card chosen by the player */
     private List<Worker> playerWorkers;         /** List of workers assigned to the player */
     private int numWorker = 2;                  /** Number of workers per player */
-    private Color color;
+    private ColorEnum color;
 
     //private LastTurnAction[] lastTurnActions;
 
@@ -51,13 +51,13 @@ public class Player {
     }
 
 
-    public void setColor(Color color) {
+    public void setColor(ColorEnum color) {
         this.color = color;
         this.getPlayerWorkers().get(0).setColor(color);
         this.getPlayerWorkers().get(1).setColor(color);
     }
 
-    public Color getColor() {
+    public ColorEnum getColor() {
         return color;
     }
 
@@ -122,5 +122,33 @@ public class Player {
                 " " +
                 playerWorkers.toString() + "\n";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+
+        if (!(obj instanceof Player)) {
+            return false;
+        }
+
+        Player player = (Player) obj;
+
+        return playerName.equals(player.playerName) &&
+                playerGod == player.playerGod &&
+                playerWorkers == player.playerWorkers &&
+                color == player.color;
+    }
+
+    public String printInfoInCLi() {
+
+        return "\n" + playerName + "\n" +
+                "God: " + playerGod.getGodName() ;
+
+    }
+
+
 }
 

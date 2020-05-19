@@ -7,10 +7,12 @@ import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.God.GodsPower.ApolloPower;
+import it.polimi.ingsw.Server.Model.Player.ColorEnum;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
-import it.polimi.ingsw.Network.Message.Requests.*;
+import it.polimi.ingsw.Network.Message.ClientRequests.*;
+import javafx.scene.paint.Color;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -102,12 +104,14 @@ public class SetUpGameManagerTest {
 
         setUpGameManager.setSetupGameState(PossibleGameState.FILLING_BOARD);
         Worker worker = new Worker(1);
+        worker.setColor(ColorEnum.RED);
         Position position = new Position(1, 1);
         Request request = new PlaceWorkerRequest(activePlayer.getPlayerName(), worker.getWorkersNumber(), position);
 
         setUpGameManager.handleMessage(request);
 
-        assertEquals(game.getGameMap().getWorkerOnSquare(position), worker);
+        assertEquals(ColorEnum.RED, game.getGameMap().getWorkerOnSquare(position).getColor());
+        assertEquals(1, game.getGameMap().getWorkerOnSquare(position).getWorkersNumber());
     }
 
     @Ignore

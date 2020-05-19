@@ -4,7 +4,7 @@ import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 
 import java.io.Serializable;
 
-public class Message implements Serializable {
+public abstract class Message implements Serializable {
     private final String messageSender;
     private MessageStatus messageStatus;
 

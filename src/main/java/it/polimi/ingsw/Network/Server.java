@@ -5,8 +5,8 @@ import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
-import it.polimi.ingsw.Network.Message.Requests.Request;
-import it.polimi.ingsw.Network.Message.Responses.Response;
+import it.polimi.ingsw.Network.Message.ClientRequests.Request;
+import it.polimi.ingsw.Network.Message.Server.Responses.Response;
 import it.polimi.ingsw.Server.View.RemoteView;
 
 import java.io.IOException;

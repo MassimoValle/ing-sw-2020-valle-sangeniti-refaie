@@ -2,11 +2,12 @@ package it.polimi.ingsw.Server.Model.Map;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Server.Model.Building.*;
+import it.polimi.ingsw.Server.Model.Player.ColorEnum;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Utility.*;
+import javafx.scene.paint.Color;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class Square {
@@ -170,13 +171,13 @@ public class Square {
 
         final String ANSI_RESET = "\u001B[0m";
 
-        Color color = workerOnSquare.getColor();
+        ColorEnum color = workerOnSquare.getColor();
         String str = "";
-        if (Color.RED.equals(color)) {
+        if (ColorEnum.RED.equals(color)) {
             str = Ansi.RED.concat(" W" + ANSI_RESET);
-        } else if (Color.BLUE.equals(color)) {
+        } else if (ColorEnum.BLUE.equals(color)) {
             str = Ansi.BLUE.concat(" W" + ANSI_RESET);
-        } else if (Color.GREEN.equals(color)) {
+        } else if (ColorEnum.GREEN.equals(color)) {
             str = Ansi.BLUE.concat(" W" + ANSI_RESET);
         }
 

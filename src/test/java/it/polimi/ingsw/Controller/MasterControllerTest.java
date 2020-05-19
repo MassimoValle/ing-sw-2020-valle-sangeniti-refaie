@@ -1,18 +1,15 @@
 package it.polimi.ingsw.Controller;
 
 import it.polimi.ingsw.Server.Controller.MasterController;
-import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
-import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
-import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
 import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
-import it.polimi.ingsw.Network.Message.Requests.*;
+import it.polimi.ingsw.Network.Message.ClientRequests.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -131,7 +128,7 @@ public class MasterControllerTest {
 
         //turno del player 2
         masterController.dispatcher(
-                new SelectWorkerRequest(player2.getPlayerName(), player2.getPlayerWorkers().get(1))
+                new SelectWorkerRequest(player2.getPlayerName(), 1)
         );
 
         masterController.dispatcher(
@@ -150,7 +147,7 @@ public class MasterControllerTest {
 
         //turno del player1
         masterController.dispatcher(
-                new SelectWorkerRequest(player1.getPlayerName(), player1.getPlayerWorkers().get(1))
+                new SelectWorkerRequest(player1.getPlayerName(), 1)
         );
 
         masterController.dispatcher(
