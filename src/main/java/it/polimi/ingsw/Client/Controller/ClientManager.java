@@ -12,6 +12,7 @@ import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateBoardMessage;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateMessage;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdatePlayersMessage;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Client.View.ClientView;
@@ -62,6 +63,7 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
         if(serverMessage instanceof UpdateMessage){
 
+
             if (!myTurn) {
                 clientView.someoneElseDoingStuff();
             }
@@ -71,12 +73,14 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
             if(serverMessage instanceof UpdatePlayersMessage){
                 babyGame.addPlayers((UpdatePlayersMessage) serverMessage);
-                Set<Player> players = BabyGame.getInstance().players;
+                Set<Player> players = babyGame.players;
                 clientView.showAllPlayersInGame(players);
+                updateMyInfo();
             }
 
 
-            babyGame.clientMap.printBoard();
+
+            clientView.showMap(getGameMap());
 
             return;
         }
@@ -93,7 +97,7 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
                 case MOVE_WORKER -> {
 
                     if (canMoveAgain && !clientView.wantMoveAgain()) {
-                        canMoveAgain = false;
+                        //canMoveAgain = false;
                         sendEndMoveRequest();
                         break;
                     }
@@ -143,7 +147,7 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
                         chooseGodFromDeck((ShowDeckResponse) serverResponse);
                     else
                         // confirm
-                        System.out.println(serverResponse.getGameManagerSays());
+                        //System.out.println(serverResponse.getGameManagerSays());
 
                     break;
 
@@ -153,7 +157,7 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
                         pickGod((PickGodResponse) serverResponse);
                     else
                         // confirm
-                        System.out.println(serverResponse.getGameManagerSays());
+                        //System.out.println(serverResponse.getGameManagerSays());
 
                     break;
 
@@ -163,7 +167,7 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
                         placeWorker((PlaceWorkerResponse) serverResponse);
                     else
                         // confirm
-                        clientView.workerPlacedSuccesfully(serverResponse.getGameManagerSays());
+                        //clientView.workerPlacedSuccesfully(serverResponse.getGameManagerSays());
 
                     break;
 
@@ -284,6 +288,14 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
     }
 
+    /**
+     * Update {@link Player} 'me' with the real info
+     */
+    private void updateMyInfo() {
+        if (babyGame.getPlayerByName(me.getPlayerName()) != null)
+            me = babyGame.getPlayerByName(me.getPlayerName());
+    }
+
     // functions
     private String askUsername() {
 
@@ -386,7 +398,7 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
     private void moveWorker(MoveWorkerServerRequest response){
 
-        ArrayList<Position> nearlyPositionsValid = response.getNearlyPositions();
+        ArrayList<Position> nearlyPositionsValid = me.getPlayerWorkers().get(workerSelected).getWorkerPosition().getAdjacentPlaces();
 
         Position position = clientView.moveWorker(nearlyPositionsValid);
 
@@ -454,5 +466,8 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
         clientView.win(response.getGameManagerSays().equals(me.getPlayerName()));
     }
 
+    private GameMap getGameMap() {
+        return babyGame.clientMap;
+    }
 
 }

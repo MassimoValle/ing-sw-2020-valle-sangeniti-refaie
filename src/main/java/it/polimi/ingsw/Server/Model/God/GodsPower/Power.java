@@ -7,6 +7,7 @@ import it.polimi.ingsw.Server.Model.Action.BuildDomeAction;
 import it.polimi.ingsw.Server.Model.Action.MoveAction;
 import it.polimi.ingsw.Server.Model.God.PowerType;
 import it.polimi.ingsw.Server.Model.Map.Square;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
@@ -97,5 +98,23 @@ public abstract class Power implements Serializable, GodsChecker {
 
     @Override
     public void setBuildBefore() {
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+
+        if (!(obj instanceof Power)) {
+            return false;
+        }
+
+        Power power = (Power) obj;
+
+        return powerDescription.equals(power.getPowerDescription()) &&
+                powerType.equals(power.getPowerType());
     }
 }

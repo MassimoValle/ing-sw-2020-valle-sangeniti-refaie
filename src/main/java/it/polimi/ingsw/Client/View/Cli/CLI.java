@@ -6,6 +6,7 @@ import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.Server.Responses.Response;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 
@@ -32,12 +33,14 @@ public class CLI extends ClientView {
 
         String ip = askIpAddress();
 
+
         Client client = new Client(ip, 8080, this);
 
         try {
             client.run();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
+            start();
         }
     }
 
@@ -433,7 +436,10 @@ public class CLI extends ClientView {
 
     }
 
-
+    @Override
+    public void showMap(GameMap clientMap) {
+        clientMap.printBoard();
+    }
 
     // test
     private void printMessageFromServer(Response message){

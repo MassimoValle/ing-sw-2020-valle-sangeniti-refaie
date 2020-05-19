@@ -73,6 +73,13 @@ public class ActionManager {
         };
     }
 
+
+    /**
+     * If one {@link Player} has a {@link God} that let him use some 'special' {@link Power}
+     * than this method handles the {@link PowerButtonRequest}
+     *
+     * @param request - the request sent by the client
+     */
      private void handlePowerButton(PowerButtonRequest request) {
         Player activePlayer = turnManager.getActivePlayer();
         Worker activeWorker = turnManager.getActiveWorker();
@@ -128,7 +135,13 @@ public class ActionManager {
                 return;
             }
 
-        Action selectWorkerAction = new SelectWorkerAction(workerFromRequest);
+        Action selectWorkerAction = new SelectWorkerAction(workerFromRequest, requestSender);
+
+        if (!selectWorkerAction.isValid() ) {
+            MasterController.buildNegativeResponse(activePlayer, responseContent, "You cannot select this worker!");
+            return;
+        }
+
 
         if (!workerFromRequest.isPlaced()) {
             //worker is not placed yet
@@ -205,7 +218,7 @@ public class ActionManager {
 
         //vado a contrllare se con questa mossa l'activePlayer ha vinto (sono salito da un livello 2 a un livello 3)
         if (playerHasWon(activePlayer)) {
-            MasterController.buildWonResponse(activePlayer,"Hai vinto!");
+            MasterController.buildWonResponse(activePlayer,"YOU WON!");
             return;
         }
 
@@ -263,7 +276,7 @@ public class ActionManager {
         Player activePlayer = turnManager.getActivePlayer();
         Worker activeWorker = turnManager.getActiveWorker();
 
-        if (gameState != PossibleGameState.WORKER_MOVED) {
+        if (gameState != PossibleGameState.WORKER_MOVED && gameState != PossibleGameState.BUILD_BEFORE) {
             MasterController.buildNegativeResponse(activePlayer, responseContent, "You cannot build!");
             return;
         }
@@ -292,6 +305,8 @@ public class ActionManager {
                 gameState = PossibleGameState.WORKER_SELECTED;
                 turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
                 MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Now you can move!");
+                MasterController.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, activeWorker);
+                return;
             }
 
 

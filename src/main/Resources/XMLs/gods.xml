@@ -98,10 +98,10 @@
 
     <god>
         <id>13</id>
-        <name>Poseidon</name>
-        <description>God of the Sea</description>
-        <powerType>End of Your Turn</powerType>
-        <powerDescription>If your unmoved Worker is on the ground level, it may build up to three times.</powerDescription>
+        <name>Zeus</name>
+        <description>God of the Sky</description>
+        <powerType>Your build</powerType>
+        <powerDescription>Your worker may build a block under itself.</powerDescription>
     </god>
 
     <god>

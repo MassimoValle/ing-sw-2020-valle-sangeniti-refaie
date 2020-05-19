@@ -6,7 +6,7 @@ import javafx.scene.image.Image;
 public class GUImap extends CLIclientMap {
 
     public GUImap(){
-        board = new Square[COLUMNS][ROWS];
+        board = new PumpedSquare[COLUMNS][ROWS];
 
         String basePath = "/imgs/board/";
 

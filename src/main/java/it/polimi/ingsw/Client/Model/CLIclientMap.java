@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Client.Model;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
+import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
@@ -42,13 +43,28 @@ public class CLIclientMap extends GameMap {
         }
     }
 
-    private void moveWorker(Worker worker, Position position){
+    private void moveWorker(Worker worker, Position positionWhereToMove){
 
-        this.getSquare(worker.getWorkerPosition()).freeSquare();
-        worker.setPosition(position);
+        Square startingSquare = getSquare(worker.getWorkerPosition());
+        Square squareWhereToMove = getSquare(positionWhereToMove);
+        Worker workerOnSquareWhereToMove = null;
 
-        Square square = this.getSquare(position);
-        square.setWorkerOn(worker);
+        //this handles the apollo swap client side
+        if(squareWhereToMove.hasWorkerOn()) {
+            workerOnSquareWhereToMove = squareWhereToMove.getWorkerOnSquare();
+            //move atomica da fare sempre
+            startingSquare.freeSquare();
+            worker.setPosition(positionWhereToMove);
+            squareWhereToMove.setWorkerOn(worker);
+            startingSquare.setWorkerOn(workerOnSquareWhereToMove);
+            workerOnSquareWhereToMove.setPosition(startingSquare.getPosition());
+            return;
+        }
+
+        //move atomica da fare sempre
+        startingSquare.freeSquare();
+        worker.setPosition(positionWhereToMove);
+        squareWhereToMove.setWorkerOn(worker);
 
     }
 
@@ -62,17 +78,5 @@ public class CLIclientMap extends GameMap {
 
     }
 
-    public void printBoard() {
-        String string = "";
-        string = string.concat("\t0"+"       1"+"       2"+"       3"+"       4");
-        string = string.concat("\n_________________________________________\n");
-        for (int i=0; i<ROWS; i++) {
-            for ( int j=0; j<COLUMNS; j++) {
-                string = string.concat("|"+ board[i][j].toString() + "\t");
-            }
-            string = string.concat("|" + "  " + i +"\n");
-            string = string.concat("_________________________________________\n");
-        }
-        System.out.println(string);
-    }
+
 }
