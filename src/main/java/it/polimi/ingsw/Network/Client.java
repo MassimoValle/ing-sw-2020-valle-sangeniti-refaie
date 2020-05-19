@@ -120,23 +120,17 @@ public class Client {
         
     }
 
-    public void startConnection() {
+    public void startConnection() throws  IOException{
 
-        try{
-            socket = new Socket(ip, port);
-            System.out.println("Connection established");
+        socket = new Socket(ip, port);
+        System.out.println("Connection established");
 
-            socket.setKeepAlive(true);
-            //ping();
+        socket.setKeepAlive(true);
+        //ping();
 
-            socketOut = new ObjectOutputStream(socket.getOutputStream());
-            socketIn = new ObjectInputStream(socket.getInputStream());
+        socketOut = new ObjectOutputStream(socket.getOutputStream());
+        socketIn = new ObjectInputStream(socket.getInputStream());
 
-
-        } catch (IOException ex) {
-            System.out.println("Impossible to connect to " + ip + port);
-            ex.printStackTrace();
-        }
     }
 
 
