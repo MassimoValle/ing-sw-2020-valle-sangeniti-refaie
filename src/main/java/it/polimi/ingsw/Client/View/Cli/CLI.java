@@ -32,12 +32,14 @@ public class CLI extends ClientView {
 
         String ip = askIpAddress();
 
+
         Client client = new Client(ip, 8080, this);
 
         try {
             client.run();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
+            start();
         }
     }
 
