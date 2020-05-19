@@ -5,6 +5,7 @@ import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
+import it.polimi.ingsw.Server.Model.Player.ColorEnum;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Message;
@@ -26,9 +27,9 @@ public class Game extends Observable<Game> {
     private List<God> chosenGodsFromDeck;
     private GameMap gameMap;
 
-    private List<Color> colorAvailable = new ArrayList<Color>();
+    private List<ColorEnum> colorAvailable = new ArrayList<>();
     private final HashMap<Player, Message> changes = new HashMap<>();
-    private HashMap<Player, Color> playerColor = new HashMap<>();
+    private HashMap<Player, ColorEnum> playerColor = new HashMap<>();
 
     private static Game gameInstance;
 
@@ -83,9 +84,9 @@ public class Game extends Observable<Game> {
 
 
     private void initColorAvailable() {
-        colorAvailable.add(Color.RED);
-        colorAvailable.add(Color.BLUE);
-        colorAvailable.add(Color.GREEN);
+        colorAvailable.add(ColorEnum.RED);
+        colorAvailable.add(ColorEnum.BLUE);
+        colorAvailable.add(ColorEnum.GREEN);
     }
 
     /**
@@ -194,6 +195,7 @@ public class Game extends Observable<Game> {
         //sendUpdateToEveryone();
 
         notify(this);
+        changes.remove(player, serverMessage);
     }
 
     private void sendUpdateToEveryone() {

@@ -6,12 +6,13 @@ import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdatePlayersMessage
 import it.polimi.ingsw.Server.Model.Player.Player;
 import javafx.scene.paint.Color;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class BabyGame {
 
     public CLIclientMap clientMap;
-    public Set<Player> players;
+    public Set<Player> players = new HashSet<>();
 
     private static BabyGame instance = null;
 
@@ -30,7 +31,7 @@ public class BabyGame {
 
     public void addPlayers(UpdatePlayersMessage serverMessage){
 
-        Player player = new Player(serverMessage.getMessageSender());
+        Player player = new Player(serverMessage.getName());
         player.setPlayerGod(serverMessage.getGod());
         player.setColor(serverMessage.getColor());
 

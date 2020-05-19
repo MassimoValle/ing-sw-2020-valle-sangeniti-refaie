@@ -177,18 +177,32 @@ public class MasterController {
 
     public static void updateClients(String player, UpdateType updateType, Position position, Integer workerIndex){
 
-        UpdateBoardMessage updateMessage =  new UpdateBoardMessage(player, updateType, position, workerIndex);
-        gameInstance.putInChanges(gameInstance.searchPlayerByName(player), updateMessage);
+        for(Player playerToSendUpdate: gameInstance.getPlayers()) {
+            UpdateBoardMessage updateMessage =  new UpdateBoardMessage(player, updateType, position, workerIndex);
+            gameInstance.putInChanges(playerToSendUpdate, updateMessage);
+        }
+
+
 
     }
 
     public static void sendListOfPlayer(){
 
-        for(Player player : gameInstance.getPlayers()) {
-            UpdatePlayersMessage updatePlayersMessage = new UpdatePlayersMessage("SERVER", player.getPlayerName(),
-                    player.getPlayerGod(), player.getColor());
+        for(Player playerToSendUpdate : gameInstance.getPlayers()) {
 
-            gameInstance.putInChanges(player, updatePlayersMessage);
+            for (Player player : gameInstance.getPlayers()) {
+
+                UpdatePlayersMessage updatePlayersMessage = new UpdatePlayersMessage(
+
+                        player.getPlayerName(),
+                        player.getPlayerGod(),
+                        player.getColor()
+
+                );
+
+                gameInstance.putInChanges(playerToSendUpdate, updatePlayersMessage);
+            }
+
         }
     }
 

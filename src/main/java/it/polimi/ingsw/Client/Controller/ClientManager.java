@@ -22,6 +22,7 @@ import it.polimi.ingsw.Server.View.Observable;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
 
 public class ClientManager extends Observable<UpdateBoardMessage> {
 
@@ -45,7 +46,8 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
         this.clientView = clientView;
 
-        this.addObserver(new ClientBoardUpdate());
+        this.addObserver(new ClientBoardUpdater());
+        babyGame = BabyGame.getInstance();
 
     }
 
@@ -56,14 +58,27 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
     public void handleMessageFromServer(Message serverMessage){
 
+
+
         if(serverMessage instanceof UpdateMessage){
+
+            if (!myTurn) {
+                clientView.someoneElseDoingStuff();
+            }
 
             if(serverMessage instanceof UpdateBoardMessage)
                 notify((UpdateBoardMessage) serverMessage);
 
             if(serverMessage instanceof UpdatePlayersMessage){
                 babyGame.addPlayers((UpdatePlayersMessage) serverMessage);
+                Set<Player> players = BabyGame.getInstance().players;
+                clientView.showAllPlayersInGame(players);
             }
+
+
+            babyGame.clientMap.printBoard();
+
+            return;
         }
 
         //se è il server a chiedere al client di compiere una determinata azione
@@ -105,7 +120,7 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
         }
 
 
-
+        assert serverMessage instanceof Response;
         Response serverResponse = (Response) serverMessage;
         MessageStatus responseStatus = serverResponse.getResponseStatus();
 
@@ -148,20 +163,21 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
                         placeWorker((PlaceWorkerResponse) serverResponse);
                     else
                         // confirm
-                        System.out.println(serverResponse.getGameManagerSays());
+                        clientView.workerPlacedSuccesfully(serverResponse.getGameManagerSays());
 
                     break;
 
                 case START_TURN:
 
-                    System.out.println(serverResponse.getGameManagerSays());
+                    clientView.startingTurn(serverResponse.getGameManagerSays());
                     this.myTurn = true;
 
                     break;
 
                 case SELECT_WORKER:
 
-                    Response selectWorkerResponse = (SelectWorkerResponse) serverResponse;
+                    assert serverResponse instanceof SelectWorkerResponse;
+                    SelectWorkerResponse selectWorkerResponse = (SelectWorkerResponse) serverResponse;
 
                     if (responseStatus == MessageStatus.ERROR) {
                         clientView.errorWhileSelectingWorker(selectWorkerResponse.getGameManagerSays());
@@ -175,6 +191,7 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
                 case MOVE_WORKER:
 
+                    assert serverResponse instanceof MoveWorkerResponse;
                     MoveWorkerResponse moveWorkerResponse = (MoveWorkerResponse) serverResponse;
 
                     if (responseStatus == MessageStatus.ERROR) {
@@ -189,6 +206,8 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
                     break;
 
                 case MOVE_WORKER_AGAIN:
+
+                    clientView.workerMovedSuccessfully();
 
                     this.canMoveAgain = true;
                     clientView.printCanMoveAgain(serverResponse.getGameManagerSays());
@@ -222,6 +241,8 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
                     break;
 
                 case BUILD_AGAIN:
+
+                    clientView.builtSuccessfully();
 
                     this.canBuildAgain = true;
                     clientView.printCanBuildAgain(serverResponse.getGameManagerSays());
@@ -263,39 +284,12 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
     }
 
-    private void sendEndMoveRequest() {
-        try {
-            Client.sendMessage(
-                    new EndMoveRequest(me.getPlayerName())
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
-    private void sendEndBuildRequest() {
-        try {
-            Client.sendMessage(
-                    new EndBuildRequest(me.getPlayerName())
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
-
     // functions
     private String askUsername() {
 
         return clientView.askUserName();
 
     }
-
-
-
-
-
-
 
     public void login(){
 
@@ -406,6 +400,16 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
     }
 
+    private void sendEndMoveRequest() {
+        try {
+            Client.sendMessage(
+                    new EndMoveRequest(me.getPlayerName())
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
     private void build(BuildServerRequest serverRequest){
 
         ArrayList<Position> nearlyPositionsValid = serverRequest.getPossiblePlaceToBuildOn();
@@ -420,6 +424,16 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
             e.printStackTrace();
         }
 
+    }
+
+    private void sendEndBuildRequest() {
+        try {
+            Client.sendMessage(
+                    new EndBuildRequest(me.getPlayerName())
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     private void endTurn() {

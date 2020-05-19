@@ -8,9 +8,11 @@ public class UpdateBoardMessage extends UpdateMessage {
     private final UpdateType updateType;
     private final Position position;
     private final Integer workerIndex;
+    private final String playerName;
 
-    public UpdateBoardMessage(String player, UpdateType updateType, Position position, Integer workerIndex){
-        super(player);
+    public UpdateBoardMessage(String playerName, UpdateType updateType, Position position, Integer workerIndex){
+        super();
+        this.playerName = playerName;
         this.updateType = updateType;
         this.position = position;
         this.workerIndex = workerIndex;
@@ -26,5 +28,9 @@ public class UpdateBoardMessage extends UpdateMessage {
 
     public Integer getWorkerIndex() {
         return workerIndex;
+    }
+
+    public String getPlayerName() {
+        return playerName;
     }
 }

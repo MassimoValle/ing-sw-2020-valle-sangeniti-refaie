@@ -6,7 +6,7 @@ import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateBoardMessage;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.View.Observer;
 
-public class ClientBoardUpdate implements Observer<UpdateBoardMessage>{
+public class ClientBoardUpdater implements Observer<UpdateBoardMessage>{
 
         BabyGame babyGame = BabyGame.getInstance();
         CLIclientMap map = babyGame.clientMap;
@@ -14,7 +14,7 @@ public class ClientBoardUpdate implements Observer<UpdateBoardMessage>{
         @Override
         public void update(UpdateBoardMessage message) {
 
-            String playerName = message.getMessageSender();
+            String playerName = message.getPlayerName();
             Integer worker = message.getWorkerIndex();
             Position position = message.getPosition();
 

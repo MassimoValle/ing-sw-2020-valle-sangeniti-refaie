@@ -1,16 +1,19 @@
 package it.polimi.ingsw.Client.View.Cli;
 
+import it.polimi.ingsw.Client.Model.BabyGame;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.Server.Responses.Response;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Set;
 
 public class CLI extends ClientView {
 
@@ -36,7 +39,6 @@ public class CLI extends ClientView {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
     }
 
     @Override
@@ -141,18 +143,44 @@ public class CLI extends ClientView {
             int n = i+1;
             consoleOut.println( "\n" + n + hand.get(i).toString());
         }
-        int index;
+
+        int index = 0;
 
         do {
-
             consoleOut.println("Pick up yor God:");
             consoleOut.println(">>>");
-            index = Integer.parseInt(consoleIn.nextLine());
-            consoleOut.println();
 
-        }while (index <= 0 && index > hand.size() + 1);
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    index = Integer.parseInt(entered);
+
+                    if (index < 1 || index > hand.size()) {
+                        consoleOut.println("You must select one of the available gods");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
+
+        }while (index <= 0 || index > hand.size() );
 
         return hand.get(index - 1);
+    }
+
+    @Override
+    public void showAllPlayersInGame(Set<Player> playerSet) {
+
+        consoleOut.println("\nYou are playing against: ");
+        for (Player player: playerSet) {
+            consoleOut.println(player.printInfoInCLi() + "\n");
+        }
+        consoleOut.println();
+
     }
 
     @Override
@@ -170,6 +198,20 @@ public class CLI extends ClientView {
         consoleOut.println();
 
         return new Position(row, col);
+    }
+
+    @Override
+    public void workerPlacedSuccesfully(String gameManagerSays) {
+
+        consoleOut.println(gameManagerSays);
+        consoleOut.println();
+    }
+
+    @Override
+    public void startingTurn(String gameManagerSays) {
+
+        consoleOut.println(gameManagerSays);
+        consoleOut.println();
     }
 
     @Override
@@ -363,6 +405,14 @@ public class CLI extends ClientView {
     public void endTurn() {
 
         consoleOut.println("\nEnding turn!");
+    }
+
+    @Override
+    public void someoneElseDoingStuff() {
+
+        consoleOut.println("It's not your turn\n" +
+                "Updating board..." +
+                "\n");
     }
 
     @Override

@@ -10,7 +10,7 @@ public class Worker {
     private int workersNumber;
 
 
-    private Color color;
+    private ColorEnum color;
 
     private boolean isBlocked;
     private int height;
@@ -41,7 +41,7 @@ public class Worker {
         return workersNumber;
     }
 
-    public Color getColor() {
+    public ColorEnum getColor() {
         return color;
     }
 
@@ -66,7 +66,7 @@ public class Worker {
         return placed;
     }
 
-    public void setColor(Color color) {
+    public void setColor(ColorEnum color) {
         this.color = color;
     }
 

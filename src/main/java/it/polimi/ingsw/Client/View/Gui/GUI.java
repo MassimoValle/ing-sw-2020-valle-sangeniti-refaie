@@ -3,9 +3,11 @@ package it.polimi.ingsw.Client.View.Gui;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Message.Server.Responses.Response;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class GUI extends ClientView {
 
@@ -50,8 +52,23 @@ public class GUI extends ClientView {
     }
 
     @Override
+    public void showAllPlayersInGame(Set<Player> playerSet) {
+
+    }
+
+    @Override
     public Position placeWorker(String worker) {
         return null;
+    }
+
+    @Override
+    public void workerPlacedSuccesfully(String gameManagerSays) {
+
+    }
+
+    @Override
+    public void startingTurn(String gameManagerSays) {
+
     }
 
     @Override
@@ -141,6 +158,11 @@ public class GUI extends ClientView {
 
     @Override
     public void endTurn() {
+
+    }
+
+    @Override
+    public void someoneElseDoingStuff() {
 
     }
 

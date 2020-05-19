@@ -2,6 +2,7 @@ package it.polimi.ingsw.Server.Controller;
 
 import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
+import it.polimi.ingsw.Network.Message.Enum.UpdateType;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Action.*;
 import it.polimi.ingsw.Server.Model.Game;
@@ -192,6 +193,8 @@ public class ActionManager {
         //L'azione è stata eseguita quindi l'aggiungo alla lista nel turn manager
         turnManager.addActionPerformed(new MoveAction(playerGod.getGodPower(), activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove));
 
+        MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.MOVE, positionWhereToMove, activeWorker.getWorkersNumber());
+
         //controllo che il giocatore con la mossa appena eseguita abbia vinto
         if (actionOutcome == ActionOutcome.WINNING_MOVE) {
             //TODO:
@@ -280,6 +283,8 @@ public class ActionManager {
 
         //L'azione è stata eseguita
         turnManager.addActionPerformed(new BuildAction(squareWhereToBuild));
+
+        MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.BUILD, positionWhereToBuild, activeWorker.getWorkersNumber());
 
         if (actionOutcome == ActionOutcome.DONE) {
 

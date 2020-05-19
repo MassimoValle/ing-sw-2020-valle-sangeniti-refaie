@@ -4,7 +4,7 @@ import it.polimi.ingsw.Network.Message.Message;
 
 public class UpdateMessage extends Message {
 
-    public UpdateMessage(String messageSender) {
-        super(messageSender);
+    public UpdateMessage() {
+        super("### SERVER ###");
     }
 }

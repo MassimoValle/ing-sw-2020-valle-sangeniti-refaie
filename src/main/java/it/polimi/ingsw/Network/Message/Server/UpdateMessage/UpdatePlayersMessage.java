@@ -1,23 +1,24 @@
 package it.polimi.ingsw.Network.Message.Server.UpdateMessage;
 
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Player.ColorEnum;
 import javafx.scene.paint.Color;
 
 
 public class UpdatePlayersMessage extends UpdateMessage{
 
     private God god;
-    private Color color;
+    private ColorEnum color;
     private String playerName;
 
-    public UpdatePlayersMessage(String messageSender, String name, God god, Color color) {
-        super(messageSender);
+    public UpdatePlayersMessage(String name, God god, ColorEnum color) {
+        super();
         this.god = god;
         this.color = color;
         this.playerName = name;
     }
 
-    public Color getColor() {
+    public ColorEnum getColor() {
         return color;
     }
 

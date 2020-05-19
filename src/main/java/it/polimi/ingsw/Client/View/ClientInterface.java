@@ -2,9 +2,11 @@ package it.polimi.ingsw.Client.View;
 
 import it.polimi.ingsw.Network.Message.Server.Responses.Response;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public interface ClientInterface {
 
@@ -23,7 +25,13 @@ public interface ClientInterface {
 
     God pickFromChosenGods(ArrayList<God> hand);
 
+    void showAllPlayersInGame(Set<Player> playerSet);
+
     Position placeWorker(String worker);
+
+    void workerPlacedSuccesfully(String gameManagerSays);
+
+    void startingTurn(String gameManagerSays);
 
     int selectWorker();
 
@@ -65,6 +73,8 @@ public interface ClientInterface {
     void endBuildingPhase(String gameManagerSays);
 
     void endTurn();
+
+    void someoneElseDoingStuff();
 
     void win(boolean winner);
 
