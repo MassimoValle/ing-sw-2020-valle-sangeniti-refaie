@@ -3,11 +3,12 @@ package it.polimi.ingsw.Server.Model.Player;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 //Posizione relativa alla board
 
-public class Position {
+public class Position implements Serializable {
 
     private int row;
     private int column;

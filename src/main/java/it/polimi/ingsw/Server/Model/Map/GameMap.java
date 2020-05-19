@@ -8,10 +8,10 @@ import java.util.ArrayList;
 
 public class GameMap {
 
-    public final int COLUMNS = 5;
-    public final int ROWS = 5;
+    protected final int COLUMNS = 5;
+    protected final int ROWS = 5;
 
-    private Square[][] board;
+    protected Square[][] board;
 
 
 
@@ -22,7 +22,7 @@ public class GameMap {
 
        for (int i=0; i<ROWS; i++) {
            for ( int j=0; j<COLUMNS; j++)  {
-               this.board[i][j] = new Square();
+               this.board[i][j] = new Square(i,j);
            }
        }
    }
@@ -154,12 +154,12 @@ public class GameMap {
         ArrayList<Position> placesWhereToMove;
         placesWhereToMove = getReachableAdjacentPlaces(worker.getWorkerPosition());
 
-        if (placesWhereToMove.size() == 0) return true;
+        if (placesWhereToMove.isEmpty()) return true;
 
 
         for (Position position: placesWhereToMove ) {
             ArrayList<Position> placesWhereYouCanBuildOn = getPlacesWhereYouCanBuildOn(position);
-            if (placesWhereYouCanBuildOn.size() != 0) return false;
+            if (!placesWhereYouCanBuildOn.isEmpty()) return false;
         }
 
         return true;
@@ -172,12 +172,13 @@ public class GameMap {
      */
     public void printBoard() {
        String string = "";
-       string = string.concat("_________________________________________\n");
-       for (int i=0; i<ROWS; i++) {
-           for ( int j=0; j<COLUMNS; j++) {
-               string = string.concat("|"+ board[i][j].toString() + "\t");
-           }
-           string = string.concat("|\n");
+        string = string.concat("\t0"+"       1"+"       2"+"       3"+"       4");
+        string = string.concat("\n_________________________________________\n");
+        for (int i=0; i<ROWS; i++) {
+            for ( int j=0; j<COLUMNS; j++) {
+                string = string.concat("|"+ board[i][j].toString() + "\t");
+            }
+            string = string.concat("|" + "  " + i +"\n");
            string = string.concat("_________________________________________\n");
        }
         System.out.println(string);

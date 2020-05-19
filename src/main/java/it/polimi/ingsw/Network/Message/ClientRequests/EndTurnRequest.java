@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Network.Message.Requests;
+package it.polimi.ingsw.Network.Message.ClientRequests;
 
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
 import it.polimi.ingsw.Network.Message.Enum.RequestContent;

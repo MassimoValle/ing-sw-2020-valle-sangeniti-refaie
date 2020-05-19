@@ -6,9 +6,9 @@ import java.io.Serializable;
 
 public class God implements Serializable {
 
-    private String godName;
-    private String godDescription;
-    private Power godPower;
+    private final String godName;
+    private final String godDescription;
+    private final Power godPower;
 
     //if one God is assigned to one player
     private boolean assigned;
@@ -37,6 +37,22 @@ public class God implements Serializable {
 
     public Power getGodPower() {
         return godPower;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof God)) {
+            return false;
+        }
+
+        return  this.godName.equals(((God) o).godName); /*&&
+                this.godDescription.equals(((God) o).godDescription) &&
+                this.godPower.equals(((God) o).godPower);*/
     }
 
     @Override

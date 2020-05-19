@@ -1,17 +1,19 @@
 package it.polimi.ingsw.Client.View.Cli;
 
+import it.polimi.ingsw.Client.Model.BabyGame;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Client;
-import it.polimi.ingsw.Network.Message.Responses.Response;
+import it.polimi.ingsw.Network.Message.Server.Responses.Response;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
-import javafx.beans.property.StringProperty;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Set;
 
 public class CLI extends ClientView {
 
@@ -37,7 +39,6 @@ public class CLI extends ClientView {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
     }
 
     @Override
@@ -51,7 +52,6 @@ public class CLI extends ClientView {
 
         return ip;
     }
-
 
     @Override
     public String askUserName() {
@@ -83,41 +83,111 @@ public class CLI extends ClientView {
     }
 
     @Override
-    public ArrayList<God> selectGodsFromDeck(int howMany, String serverSays) {
+    public void showDeck() {
+
+        consoleOut.println("\nLet's choose the gods!");
+        consoleOut.println();
 
         Deck deck = Deck.getInstance();
-        consoleOut.println(deck.toString());
 
-
-        ArrayList<God> godChoosen = new ArrayList<>();
-
-        consoleOut.print("choose " + serverSays + " index: ");
-
-        //FIX
-
-        for (int i = 0; i < howMany; i++) {
-            int index = Integer.parseInt(consoleIn.nextLine());
-            godChoosen.add(deck.getGod(index));
+        for(int i=0; i< deck.size(); i++) {
+            consoleOut.println( i+1 + deck.getGod(i).toString() + "\n");
         }
+    }
 
-        return godChoosen;
+    @Override
+    public ArrayList<God> selectGods(int howMany) {
+
+        ArrayList<God> godsChosen = new ArrayList<>();
+
+        int godsChosenNum = 0;
+
+        consoleOut.println("\ntype in the the index or the gods name you want to play with: [ONLY INDEX WORKING FOR NOW]");
+
+        do {
+            consoleOut.println(">>>");
+
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                if (entered.equals("")) {
+                    consoleOut.println("You must select gods to start the game!");
+                    break;
+                }
+
+                int n = Integer.parseInt(entered);
+
+                if (n < 1 || n > 15) {
+                    consoleOut.println("Index not valid, please insert a valid index");
+                    break;
+                }
+
+                God god = Deck.getInstance().getGod(n - 1);
+                consoleOut.println("You choose " + god.getGodName() + "!");
+                godsChosen.add(god);
+                godsChosenNum++;
+            }
+
+
+        } while (godsChosenNum != howMany);
+
+
+        return godsChosen;
     }
 
 
     @Override
     public God pickFromChosenGods(ArrayList<God> hand) {
-        consoleOut.println(hand.toString());
 
-        consoleOut.print("select index: ");
-        int index = Integer.parseInt(consoleIn.nextLine());
+        for( int i=0; i< hand.size(); i++) {
+            int n = i+1;
+            consoleOut.println( "\n" + n + hand.get(i).toString());
+        }
 
-        return hand.get(index);
+        int index = 0;
+
+        do {
+            consoleOut.println("Pick up yor God:");
+            consoleOut.println(">>>");
+
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    index = Integer.parseInt(entered);
+
+                    if (index < 1 || index > hand.size()) {
+                        consoleOut.println("You must select one of the available gods");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
+
+        }while (index <= 0 || index > hand.size() );
+
+        return hand.get(index - 1);
+    }
+
+    @Override
+    public void showAllPlayersInGame(Set<Player> playerSet) {
+
+        consoleOut.println("\nYou are playing against: ");
+        for (Player player: playerSet) {
+            consoleOut.println(player.printInfoInCLi() + "\n");
+        }
+        consoleOut.println();
+
     }
 
     @Override
     public Position placeWorker(String worker) {
-        consoleOut.print("MY WORKER: ");
-        consoleOut.println(worker);
+        int n = Integer.parseInt(worker) + 1;
+        consoleOut.println("Let's place your worker!\nWhere do you want to place it?\n");
+        consoleOut.println("(You are placing your "+ n + "° worker)");
 
         consoleOut.print("row: ");
         int row = Integer.parseInt(consoleIn.nextLine());
@@ -131,6 +201,232 @@ public class CLI extends ClientView {
     }
 
     @Override
+    public void workerPlacedSuccesfully(String gameManagerSays) {
+
+        consoleOut.println(gameManagerSays);
+        consoleOut.println();
+    }
+
+    @Override
+    public void startingTurn(String gameManagerSays) {
+
+        consoleOut.println(gameManagerSays);
+        consoleOut.println();
+    }
+
+    @Override
+    public int selectWorker() {
+        int worker;
+        do{
+            consoleOut.println("\nWhich worker do you want to move?\n" +
+                    "1 or 2?");
+
+            worker = Integer.parseInt(consoleIn.nextLine());
+
+        }while (worker != 1 && worker != 2);
+
+        return worker - 1;
+    }
+
+    @Override
+    public void workerSelectedSuccessfully() {
+
+        consoleOut.println("\nWorker selected succesfully!\n");
+    }
+
+    @Override
+    public void errorWhileSelectingWorker(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the worker you selected" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease select another worker");
+
+    }
+
+    @Override
+    public Position moveWorker(ArrayList<Position> nearlyPosValid) {
+
+        Position p;
+
+        consoleOut.println("These are all the possible position where you can move:");
+        nearlyPosValid.forEach(consoleOut::println);
+
+        do {
+            consoleOut.print("row: ");
+            int row = Integer.parseInt(consoleIn.nextLine());
+            consoleOut.println();
+
+            consoleOut.print("col: ");
+            int col = Integer.parseInt(consoleIn.nextLine());
+            consoleOut.println();
+
+            p = new Position(row, col);
+        }while (!nearlyPosValid.contains(p));
+
+        consoleOut.println("Moving onto (" + p.getRow() + "," + p.getColumn() + ")\n");
+
+        return p;
+
+    }
+
+    @Override
+    public void errorWhileMovingWorker(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the move you performed" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease move again");
+
+    }
+
+    @Override
+    public boolean wantMoveAgain() {
+        consoleOut.println("Do you want to move again?");
+        consoleOut.println("1) sì ");
+        consoleOut.println("2) no \n");
+        int input;
+
+        do{
+            input = Integer.parseInt(consoleIn.nextLine());
+        }while (input != 1 && input != 2);
+
+        return input == 1;
+    }
+
+    @Override
+    public void workerMovedSuccessfully() {
+
+        consoleOut.println("Worker moved successfully!");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void printCanMoveAgain(String gameManagerSays) {
+
+        consoleOut.println(gameManagerSays);
+        consoleOut.println();
+    }
+
+    @Override
+    public void endMoveRequestError(String gameManagerSays) {
+
+        consoleOut.println(gameManagerSays);
+        consoleOut.println();
+    }
+
+    @Override
+    public void endMovingPhase(String gameManagerSays) {
+
+        consoleOut.println(gameManagerSays);
+        consoleOut.println();
+    }
+
+
+
+    @Override
+    public Position build(ArrayList<Position> possiblePosToBuild) {
+
+        Position p;
+
+        consoleOut.println("These are all the possible position where you can build:");
+        possiblePosToBuild.forEach(consoleOut::println);
+
+        do {
+            consoleOut.print("row: ");
+            int row = Integer.parseInt(consoleIn.nextLine());
+            consoleOut.println();
+
+            consoleOut.print("col: ");
+            int col = Integer.parseInt(consoleIn.nextLine());
+            consoleOut.println();
+
+            p = new Position(row, col);
+        }while (!possiblePosToBuild.contains(p));
+
+        consoleOut.println("building onto (" + p.getRow() + "," + p.getColumn() + ")\n");
+
+        return p;
+
+    }
+
+    @Override
+    public void errorWhileBuilding(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the built you performed" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease build again");
+
+    }
+
+    @Override
+    public void builtSuccessfully() {
+
+        consoleOut.println("Built successfully!");
+        consoleOut.println();
+    }
+
+
+    @Override
+    public boolean wantBuildAgain() {
+        consoleOut.println("Do you want to build again?");
+        consoleOut.println("1) sì");
+        consoleOut.println("2) no ");
+        int input;
+
+        do{
+            input = Integer.parseInt(consoleIn.nextLine());
+        }while (input != 1 && input != 2);
+
+        return input == 1;
+    }
+
+    @Override
+    public void printCanBuildAgain(String gameManagerSays) {
+
+        consoleOut.println(gameManagerSays);
+        consoleOut.println();
+    }
+
+    @Override
+    public void endBuildRequestError(String gameManagerSays) {
+
+        consoleOut.println(gameManagerSays);
+        consoleOut.println();
+    }
+
+    @Override
+    public void endBuildingPhase(String gameManagerSays) {
+
+        consoleOut.println(gameManagerSays);
+        consoleOut.println();
+    }
+
+    @Override
+    public void endTurn() {
+
+        consoleOut.println("\nEnding turn!");
+    }
+
+    @Override
+    public void someoneElseDoingStuff() {
+
+        consoleOut.println("It's not your turn\n" +
+                "Updating board..." +
+                "\n");
+    }
+
+    @Override
+    public void win(boolean imWinner) {
+        consoleOut.println("#############");
+
+        if(imWinner)
+            consoleOut.println("YOU WIN");
+        else consoleOut.println("YOU LOSE");
+
+        consoleOut.println("#############");
+    }
+
+    @Override
     public void debug(Response response) {
 
         printMessageFromServer(response);
@@ -138,6 +434,8 @@ public class CLI extends ClientView {
     }
 
 
+
+    // test
     private void printMessageFromServer(Response message){
         String out = "#### [SERVER] ####\n";
         out += "Message content: " + message.getResponseContent() + "\n";

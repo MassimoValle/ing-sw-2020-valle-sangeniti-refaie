@@ -2,22 +2,29 @@ package it.polimi.ingsw.Server.Model.Map;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Server.Model.Building.*;
+import it.polimi.ingsw.Server.Model.Player.ColorEnum;
+import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Utility.*;
+import javafx.scene.paint.Color;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class Square {
+
+    private final int row;
+    private final int column;
 
     //To keep trace of worker is on the square
     private Worker workerOnSquare;
     private ArrayList<Block> tower;
 
 
-    public Square() {
-        tower = null;
+    public Square(int row, int column) {
+        this.tower = null;
         this.workerOnSquare = null;
+        this.row = row;
+        this.column = column;
     }
 
     public Worker getWorkerOnSquare() {
@@ -46,6 +53,10 @@ public class Square {
      */
     public boolean hasBeenBuiltOver() {
         return tower != null;
+    }
+
+    public Position getPosition() {
+        return new Position(this.row, this.column);
     }
 
     public boolean hasDome(){
@@ -155,13 +166,13 @@ public class Square {
 
         final String ANSI_RESET = "\u001B[0m";
 
-        Color color = workerOnSquare.getColor();
+        ColorEnum color = workerOnSquare.getColor();
         String str = "";
-        if (Color.RED.equals(color)) {
+        if (ColorEnum.RED.equals(color)) {
             str = Ansi.RED.concat(" W" + ANSI_RESET);
-        } else if (Color.BLUE.equals(color)) {
+        } else if (ColorEnum.BLUE.equals(color)) {
             str = Ansi.BLUE.concat(" W" + ANSI_RESET);
-        } else if (Color.GREEN.equals(color)) {
+        } else if (ColorEnum.GREEN.equals(color)) {
             str = Ansi.BLUE.concat(" W" + ANSI_RESET);
         }
 

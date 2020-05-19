@@ -5,9 +5,9 @@ import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Message.*;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 public class Client {
@@ -19,6 +19,8 @@ public class Client {
     private final String ip;
     private final int port;
 
+    private static LinkedList<Message> queue;
+
     private static ObjectInputStream socketIn;
     private static ObjectOutputStream socketOut;
 
@@ -27,8 +29,11 @@ public class Client {
 
 
     public Client(String ip, int port, ClientView clientView){
+
         this.ip = ip;
         this.port = port;
+
+        queue = new LinkedList();
 
         clientManager = new ClientManager(clientView);
 
@@ -82,7 +87,11 @@ public class Client {
         try {
             received = (Message) socketIn.readObject();
 
-            clientManager.handleMessageFromServer(received);
+            queue.add(received);
+
+            if(!queue.isEmpty())
+                clientManager.handleMessageFromServer(queue.pop());
+
         } catch (ClassNotFoundException e){
             e.printStackTrace();
         }

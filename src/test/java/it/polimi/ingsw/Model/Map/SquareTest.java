@@ -18,7 +18,7 @@ public class SquareTest {
 
     @Before
     public void initClass() {
-        square = new Square();
+        square = new Square(0,0);
     }
 
 

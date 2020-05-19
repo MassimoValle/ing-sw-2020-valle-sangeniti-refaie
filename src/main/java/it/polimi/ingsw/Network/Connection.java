@@ -2,7 +2,7 @@ package it.polimi.ingsw.Network;
 
 import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.Requests.Request;
+import it.polimi.ingsw.Network.Message.ClientRequests.Request;
 import it.polimi.ingsw.Server.View.Observable;
 
 import java.io.IOException;
