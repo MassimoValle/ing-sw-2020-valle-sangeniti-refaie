@@ -1,0 +1,13 @@
+package it.polimi.ingsw.Network.Message.Server.Responses;
+
+import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
+
+public class MoveWorkerServerResponse extends ServerResponse {
+
+
+    public MoveWorkerServerResponse(MessageStatus messageStatus, String gameManagerSays) {
+        super(ResponseContent.MOVE_WORKER, messageStatus, gameManagerSays);
+    }
+
+}

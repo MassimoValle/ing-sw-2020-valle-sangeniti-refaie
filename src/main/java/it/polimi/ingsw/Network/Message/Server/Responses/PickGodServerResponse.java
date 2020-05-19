@@ -6,12 +6,12 @@ import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
 
 import java.util.ArrayList;
 
-public class PickGodResponse extends Response{
+public class PickGodServerResponse extends ServerResponse {
 
     private final ArrayList<God> gods;
 
-    public PickGodResponse(String messageSender, String gameManagerSays, ArrayList<God> gods) {
-        super(messageSender, ResponseContent.PICK_GOD, MessageStatus.OK, gameManagerSays);
+    public PickGodServerResponse(String gameManagerSays, ArrayList<God> gods) {
+        super(ResponseContent.PICK_GOD, MessageStatus.OK, gameManagerSays);
         this.gods = gods;
     }
 

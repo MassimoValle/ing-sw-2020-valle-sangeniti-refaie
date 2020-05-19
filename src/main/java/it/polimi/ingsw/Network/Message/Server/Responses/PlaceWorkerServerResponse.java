@@ -3,12 +3,12 @@ package it.polimi.ingsw.Network.Message.Server.Responses;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
 
-public class PlaceWorkerResponse extends Response{
+public class PlaceWorkerServerResponse extends ServerResponse {
 
     private Integer worker;
 
-    public PlaceWorkerResponse(String messageSender, String gameManagerSays, int worker) {
-        super(messageSender, ResponseContent.PLACE_WORKER, MessageStatus.OK, gameManagerSays);
+    public PlaceWorkerServerResponse(String gameManagerSays, int worker) {
+        super(ResponseContent.PLACE_WORKER, MessageStatus.OK, gameManagerSays);
         this.worker = worker;
     }
 

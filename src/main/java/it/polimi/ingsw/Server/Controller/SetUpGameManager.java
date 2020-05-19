@@ -12,9 +12,9 @@ import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
 import it.polimi.ingsw.Network.Message.ClientRequests.*;
-import it.polimi.ingsw.Network.Message.Server.Responses.ShowDeckResponse;
-import it.polimi.ingsw.Network.Message.Server.Responses.PickGodResponse;
-import it.polimi.ingsw.Network.Message.Server.Responses.PlaceWorkerResponse;
+import it.polimi.ingsw.Network.Message.Server.Responses.ShowDeckServerResponse;
+import it.polimi.ingsw.Network.Message.Server.Responses.PickGodServerResponse;
+import it.polimi.ingsw.Network.Message.Server.Responses.PlaceWorkerServerResponse;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public class SetUpGameManager {
         setupGameState = PossibleGameState.GODLIKE_PLAYER_MOMENT;
 
         //Notifico al player in questione che deve scegliere i god
-        ShowDeckResponse showDeckResponse = new ShowDeckResponse(godLikePlayer.getPlayerName(), "Let's choose " + howManyPlayers + " GODS!", howManyPlayers);
+        ShowDeckServerResponse showDeckResponse = new ShowDeckServerResponse(godLikePlayer.getPlayerName(), "Let's choose " + howManyPlayers + " GODS!", howManyPlayers);
         gameInstance.putInChanges(godLikePlayer, showDeckResponse);
 
     }
@@ -168,7 +168,7 @@ public class SetUpGameManager {
         setupGameState = PossibleGameState.ASSIGNING_GOD;
 
         // response: scegli un god
-        PickGodResponse pickGodResponse = new PickGodResponse(activePlayer.getPlayerName(), "Pick a god", (ArrayList<God>) gameInstance.getChosenGodsFromDeck());
+        PickGodServerResponse pickGodResponse = new PickGodServerResponse("Pick a god", (ArrayList<God>) gameInstance.getChosenGodsFromDeck());
         gameInstance.putInChanges(activePlayer, pickGodResponse);
 
     }
@@ -197,14 +197,14 @@ public class SetUpGameManager {
         playerLoop++;
 
         if(playerLoop < gameInstance.getPlayers().size()) {
-            PickGodResponse pickGodResponse = new PickGodResponse(activePlayer.getPlayerName(), "Pick a god", (ArrayList<God>) gameInstance.getUnassignedGods());
+            PickGodServerResponse pickGodResponse = new PickGodServerResponse( "Pick a god", (ArrayList<God>) gameInstance.getUnassignedGods());
             gameInstance.putInChanges(activePlayer, pickGodResponse);
         }
         else {
 
             MasterController.sendListOfPlayer();
 
-            PlaceWorkerResponse placeWorkerResponse = new PlaceWorkerResponse(activePlayer.getPlayerName(), "Place your worker!", workerNum);
+            PlaceWorkerServerResponse placeWorkerResponse = new PlaceWorkerServerResponse("Place your worker!", workerNum);
             gameInstance.putInChanges(activePlayer, placeWorkerResponse);
 
             playerLoop = 0;
@@ -266,7 +266,7 @@ public class SetUpGameManager {
 
             }
 
-            PlaceWorkerResponse placeWorkerResponse = new PlaceWorkerResponse(activePlayer.getPlayerName(), "Place your worker!", workerNum);
+            PlaceWorkerServerResponse placeWorkerResponse = new PlaceWorkerServerResponse("Place your worker!", workerNum);
             gameInstance.putInChanges(activePlayer, placeWorkerResponse);
 
 
@@ -275,7 +275,8 @@ public class SetUpGameManager {
         else {
             MasterController.buildNegativeResponse(activePlayer, ResponseContent.PLACE_WORKER, "Errore nel posizionamento del worker");
 
-            PlaceWorkerResponse placeWorkerResponse = new PlaceWorkerResponse(activePlayer.getPlayerName(), "Place your worker!", workerNum);
+            //MasterController.buildServerRequest(activePlayer, ServerRequestContent.PLACE_WORKER, null, workerNum);
+            PlaceWorkerServerResponse placeWorkerResponse = new PlaceWorkerServerResponse("Place your worker!", workerNum);
             gameInstance.putInChanges(activePlayer, placeWorkerResponse);
         }
 

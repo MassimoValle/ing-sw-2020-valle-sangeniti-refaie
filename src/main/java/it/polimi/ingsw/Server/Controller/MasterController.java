@@ -2,12 +2,8 @@ package it.polimi.ingsw.Server.Controller;
 
 import it.polimi.ingsw.Network.Message.Enum.UpdateType;
 import it.polimi.ingsw.Network.Message.Server.Responses.*;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.ServerRequest;
+import it.polimi.ingsw.Network.Message.Server.ServerRequests.*;
 import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.BuildServerRequest;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.EndTurnServerRequest;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.MoveWorkerServerRequest;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.SelectWorkerServerRequest;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateBoardMessage;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdatePlayersMessage;
 import it.polimi.ingsw.Server.Model.Game;
@@ -76,9 +72,13 @@ public class MasterController {
      * @param content      the {@link ServerRequestContent}
      * @param activeWorker the {@link Worker} the player has to move/built with.
      */
-    public static void buildServerRequest(Player player, ServerRequestContent content, Worker activeWorker) {
+    public static void buildServerRequest(Player player, ServerRequestContent content, Worker activeWorker /*, int workerNum*/) {
 
             switch (content) {
+                case PLACE_WORKER -> {
+                    //ServerRequest placeWorkerServerRequest = new PlaceWorkerServerRequest(workerNum);
+                    //gameInstance.putInChanges(player, placeWorkerServerRequest);
+                }
                 case SELECT_WORKER -> {
                     ServerRequest selectWorkerServerRequest = new SelectWorkerServerRequest();
                     gameInstance.putInChanges(player, selectWorkerServerRequest);
@@ -102,7 +102,7 @@ public class MasterController {
     }
 
     /**
-     * Build the a {@link Response} with {@link MessageStatus#ERROR}
+     * Build the a {@link ServerResponse} with {@link MessageStatus#ERROR}
      *
      * @param gameManagerSays the message from the {@link ActionManager}
      */
@@ -115,7 +115,7 @@ public class MasterController {
     }
 
     /**
-     * Build the a {@link Response} with {@link MessageStatus#OK}
+     * Build the a {@link ServerResponse} with {@link MessageStatus#OK}
      *
      * @param gameManagerSays the message from the {@link ActionManager}
      */
@@ -134,40 +134,40 @@ public class MasterController {
         switch (content) {
             case SELECT_WORKER ->
                     gameInstance.putInChanges(player,
-                            new SelectWorkerResponse(playerName, status, gameManagerSays)
+                            new SelectWorkerServerResponse(status, gameManagerSays)
                     );
 
             case MOVE_WORKER ->
                     gameInstance.putInChanges(player,
-                            new MoveWorkerResponse(playerName, status, gameManagerSays)
+                            new MoveWorkerServerResponse(status, gameManagerSays)
                     );
             case BUILD ->
                     gameInstance.putInChanges(player,
-                            new BuildResponse(playerName, status, gameManagerSays)
+                            new BuildServerResponse(status, gameManagerSays)
                     );
             case END_MOVE ->
                     gameInstance.putInChanges(player,
-                            new EndMoveResponse(playerName, status, gameManagerSays)
+                            new EndMoveServerResponse(status, gameManagerSays)
                     );
             case END_BUILD ->
                     gameInstance.putInChanges(player,
-                            new EndBuildResponse(playerName, status, gameManagerSays));
+                            new EndBuildServerResponse(status, gameManagerSays));
             case END_TURN ->
                     gameInstance.putInChanges(player,
-                            new EndTurnResponse(playerName, status, gameManagerSays)
+                            new EndTurnServerResponse(status, gameManagerSays)
                     );
             default ->
                     gameInstance.putInChanges(player,
-                            new Response(playerName, content, status, gameManagerSays)
+                            new ServerResponse(content, status, gameManagerSays)
                     );
         }
 
     }
 
     //Fa la stessa identica cosa del buildPositiveResponse solo che invia una WonResponse
-    public static Response buildWonResponse(Player player, String gameManagerSays) {
+    public static ServerResponse buildWonResponse(Player player, String gameManagerSays) {
 
-        Response res = new WonResponse(player.getPlayerName(), gameManagerSays);
+        ServerResponse res = new WonServerResponse(gameManagerSays);
         gameInstance.putInChanges(player, res);
 
         //da notificare a tutti gli altri giocatori che un player ha vinto --> fine partita

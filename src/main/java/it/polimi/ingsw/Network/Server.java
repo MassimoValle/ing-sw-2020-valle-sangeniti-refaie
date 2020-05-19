@@ -1,12 +1,12 @@
 package it.polimi.ingsw.Network;
 
+import it.polimi.ingsw.Network.Message.Server.Responses.ServerResponse;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
 import it.polimi.ingsw.Network.Message.ClientRequests.Request;
-import it.polimi.ingsw.Network.Message.Server.Responses.Response;
 import it.polimi.ingsw.Server.View.RemoteView;
 
 import java.io.IOException;
@@ -162,7 +162,7 @@ public class Server {
     // lobby size
     public void askLobbySize(Connection connection){
         connection.sendMessage(
-                new Response("[SERVER]", ResponseContent.NUM_PLAYER, MessageStatus.OK, "Lobby size?")
+                new ServerResponse(ResponseContent.NUM_PLAYER, MessageStatus.OK, "Lobby size?")
         );
     }
 
@@ -180,7 +180,7 @@ public class Server {
 
         if (message.getMessageStatus() == MessageStatus.ERROR) {
             connection.sendMessage(
-                    new Response("[SERVER]", ResponseContent.LOGIN, MessageStatus.CLIENT_ERROR, "Errore nel server")
+                    new ServerResponse(ResponseContent.LOGIN, MessageStatus.CLIENT_ERROR, "Errore nel server")
             );
         }
 
@@ -202,7 +202,7 @@ public class Server {
         //UserName taken
         if( clientsConnected.containsKey(username) ) {
             connection.sendMessage(
-                    new Response("[SERVER]", ResponseContent.LOGIN, MessageStatus.ERROR, "Username taken")
+                    new ServerResponse(ResponseContent.LOGIN, MessageStatus.ERROR, "Username taken")
             );
         } else {
             registerClient(username, connection);
@@ -218,7 +218,7 @@ public class Server {
         System.out.println("CLIENT REGISTRATO: " + username);
 
         connection.sendMessage(
-                new Response("[SERVER]", ResponseContent.LOGIN, MessageStatus.OK, "Connected! Ready to play!")
+                new ServerResponse(ResponseContent.LOGIN, MessageStatus.OK, "Connected! Ready to play!")
         );
 
         lobby();

@@ -9,9 +9,8 @@ import it.polimi.ingsw.Server.Model.Player.ColorEnum;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.Server.Responses.Response;
+import it.polimi.ingsw.Network.Message.Server.Responses.ServerResponse;
 import it.polimi.ingsw.Server.View.Observable;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -185,7 +184,7 @@ public class Game extends Observable<Game> {
 
 
     /**
-     * It put the {@link Response} to the relative {@link Player} in the {@link Game#changes} HashMap
+     * It put the {@link ServerResponse} to the relative {@link Player} in the {@link Game#changes} HashMap
      *  @param player the player to whom the answer is intended
      * @param serverMessage the response that must be sent to the player
      */

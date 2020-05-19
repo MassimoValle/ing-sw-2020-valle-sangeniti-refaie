@@ -1,9 +1,8 @@
 package it.polimi.ingsw.Client.View.Cli;
 
-import it.polimi.ingsw.Client.Model.BabyGame;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Client;
-import it.polimi.ingsw.Network.Message.Server.Responses.Response;
+import it.polimi.ingsw.Network.Message.Server.Responses.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
@@ -430,9 +429,9 @@ public class CLI extends ClientView {
     }
 
     @Override
-    public void debug(Response response) {
+    public void debug(ServerResponse serverResponse) {
 
-        printMessageFromServer(response);
+        printMessageFromServer(serverResponse);
 
     }
 
@@ -442,7 +441,7 @@ public class CLI extends ClientView {
     }
 
     // test
-    private void printMessageFromServer(Response message){
+    private void printMessageFromServer(ServerResponse message){
         String out = "#### [SERVER] ####\n";
         out += "Message content: " + message.getResponseContent() + "\n";
         out += "Message status: " + message.getMessageStatus() + "\n";

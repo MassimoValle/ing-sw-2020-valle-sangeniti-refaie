@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Client.View;
 
-import it.polimi.ingsw.Network.Message.Server.Responses.Response;
+import it.polimi.ingsw.Network.Message.Server.Responses.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
@@ -79,7 +79,7 @@ public interface ClientInterface {
 
     void win(boolean winner);
 
-    void debug(Response response);
+    void debug(ServerResponse serverResponse);
 
     void showMap(GameMap clientMap);
 }

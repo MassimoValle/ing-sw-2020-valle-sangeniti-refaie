@@ -2,14 +2,12 @@ package it.polimi.ingsw.Client.Controller;
 
 import it.polimi.ingsw.Client.Model.BabyGame;
 import it.polimi.ingsw.Network.Client;
-import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.Network.Message.ClientRequests.*;
 import it.polimi.ingsw.Network.Message.Server.Responses.*;
+import it.polimi.ingsw.Network.Message.Server.ServerMessage;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.ServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.BuildServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.MoveWorkerServerRequest;
-import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateBoardMessage;
-import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateMessage;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdatePlayersMessage;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
@@ -19,19 +17,20 @@ import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
 import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
-import it.polimi.ingsw.Server.View.Observable;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class ClientManager extends Observable<UpdateBoardMessage> {
+public class ClientManager {
 
     public static ClientView clientView = null;
 
     // model
     private Player me;
-    private BabyGame babyGame;
+    private final BabyGame babyGame;
+
+    private final ClientBoardUpdater clientBoardUpdater;
 
     // variabili di controllo
     private Integer workerSelected;
@@ -47,7 +46,7 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
         this.clientView = clientView;
 
-        this.addObserver(new ClientBoardUpdater());
+        this.clientBoardUpdater = new ClientBoardUpdater();
         babyGame = BabyGame.getInstance();
 
     }
@@ -57,75 +56,81 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
 
 
-    public void handleMessageFromServer(Message serverMessage){
+    public void handleMessageFromServer(ServerMessage serverMessage){
 
-
-
-        if(serverMessage instanceof UpdateMessage){
-
-
-            if (!myTurn) {
-                clientView.someoneElseDoingStuff();
-            }
-
-            if(serverMessage instanceof UpdateBoardMessage)
-                notify((UpdateBoardMessage) serverMessage);
-
-            if(serverMessage instanceof UpdatePlayersMessage){
-                babyGame.addPlayers((UpdatePlayersMessage) serverMessage);
-                Set<Player> players = babyGame.players;
-                clientView.showAllPlayersInGame(players);
-                updateMyInfo();
-            }
-
-
-
-            clientView.showMap(getGameMap());
-
-            return;
+        if (!myTurn) {
+            clientView.someoneElseDoingStuff();
         }
 
-        //se è il server a chiedere al client di compiere una determinata azione
-        // allora riceverà una ServerRequest
-        if (serverMessage instanceof ServerRequest) {
+        serverMessage.updateClient(this);
 
-            serverRequest = (ServerRequest) serverMessage;
+        clientView.showMap(getGameMap());
 
-            switch (serverRequest.getContent()) {
-                case SELECT_WORKER -> selectWorker();
+    }
 
-                case MOVE_WORKER -> {
+    /**
+     * Update {@link Player} 'me' with the real info
+     */
+    private void updateMyInfo() {
+        if (babyGame.getPlayerByName(me.getPlayerName()) != null)
+            me = babyGame.getPlayerByName(me.getPlayerName());
+    }
 
-                    if (canMoveAgain && !clientView.wantMoveAgain()) {
-                        //canMoveAgain = false;
-                        sendEndMoveRequest();
-                        break;
-                    }
+    // functions
+    private String askUsername() {
 
-                    //TODO: da controllare sul client se ha la possibilità di fare una PowerButtonRequest
-                    moveWorker((MoveWorkerServerRequest) serverRequest);
-                }
+        return clientView.askUserName();
 
-                case BUILD -> {
+    }
 
-                    if (canBuildAgain && !clientView.wantBuildAgain()) {
-                        sendEndBuildRequest();
-                        break;
-                    }
+    public void login(){
 
-                    build((BuildServerRequest) serverRequest);
-                }
+        me = new Player(askUsername());
 
-
-                case END_TURN -> endTurn();
-            }
-
-            return;
+        try {
+            Client.sendMessage(
+                    new Request(me.getPlayerName(), Dispatcher.SETUP_GAME, RequestContent.LOGIN, MessageStatus.OK, me.getPlayerName())
+            );
+        }catch (IOException e){
+            e.printStackTrace();
         }
 
+    }
 
-        assert serverMessage instanceof Response;
-        Response serverResponse = (Response) serverMessage;
+    public void handleServerRequest(ServerRequest serverRequest) {
+
+        switch (serverRequest.getContent()) {
+            case SELECT_WORKER -> selectWorker();
+
+            case MOVE_WORKER -> {
+
+                if (canMoveAgain && !clientView.wantMoveAgain()) {
+                    //canMoveAgain = false;
+                    sendEndMoveRequest();
+                    break;
+                }
+
+                //TODO: da controllare sul client se ha la possibilità di fare una PowerButtonRequest
+                moveWorker((MoveWorkerServerRequest) serverRequest);
+            }
+
+            case BUILD -> {
+
+                if (canBuildAgain && !clientView.wantBuildAgain()) {
+                    sendEndBuildRequest();
+                    break;
+                }
+
+                build((BuildServerRequest) serverRequest);
+            }
+
+
+            case END_TURN -> endTurn();
+        }
+
+    }
+
+    public void handleServerResponse(ServerResponse serverResponse) {
         MessageStatus responseStatus = serverResponse.getResponseStatus();
 
         if(serverResponse.getResponseContent() != null) {
@@ -143,33 +148,33 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
                 case SHOW_DECK:
 
-                    if(serverResponse instanceof ShowDeckResponse)
-                        chooseGodFromDeck((ShowDeckResponse) serverResponse);
+                    if(serverResponse instanceof ShowDeckServerResponse)
+                        chooseGodFromDeck((ShowDeckServerResponse) serverResponse);
                     else
                         // confirm
                         //System.out.println(serverResponse.getGameManagerSays());
 
-                    break;
+                        break;
 
                 case PICK_GOD:
 
-                    if(serverResponse instanceof PickGodResponse)
-                        pickGod((PickGodResponse) serverResponse);
+                    if(serverResponse instanceof PickGodServerResponse)
+                        pickGod((PickGodServerResponse) serverResponse);
                     else
                         // confirm
                         //System.out.println(serverResponse.getGameManagerSays());
 
-                    break;
+                        break;
 
                 case PLACE_WORKER:
 
-                    if(serverResponse instanceof PlaceWorkerResponse)
-                        placeWorker((PlaceWorkerResponse) serverResponse);
+                    if(serverResponse instanceof PlaceWorkerServerResponse)
+                        placeWorker((PlaceWorkerServerResponse) serverResponse);
                     else
                         // confirm
                         //clientView.workerPlacedSuccesfully(serverResponse.getGameManagerSays());
 
-                    break;
+                        break;
 
                 case START_TURN:
 
@@ -180,8 +185,8 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
                 case SELECT_WORKER:
 
-                    assert serverResponse instanceof SelectWorkerResponse;
-                    SelectWorkerResponse selectWorkerResponse = (SelectWorkerResponse) serverResponse;
+                    assert serverResponse instanceof SelectWorkerServerResponse;
+                    SelectWorkerServerResponse selectWorkerResponse = (SelectWorkerServerResponse) serverResponse;
 
                     if (responseStatus == MessageStatus.ERROR) {
                         clientView.errorWhileSelectingWorker(selectWorkerResponse.getGameManagerSays());
@@ -195,8 +200,8 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
                 case MOVE_WORKER:
 
-                    assert serverResponse instanceof MoveWorkerResponse;
-                    MoveWorkerResponse moveWorkerResponse = (MoveWorkerResponse) serverResponse;
+                    assert serverResponse instanceof MoveWorkerServerResponse;
+                    MoveWorkerServerResponse moveWorkerResponse = (MoveWorkerServerResponse) serverResponse;
 
                     if (responseStatus == MessageStatus.ERROR) {
                         clientView.errorWhileMovingWorker(moveWorkerResponse.getGameManagerSays());
@@ -231,7 +236,7 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
                 case BUILD:
 
-                    BuildResponse buildResponse = (BuildResponse) serverResponse;
+                    BuildServerResponse buildResponse = (BuildServerResponse) serverResponse;
 
                     if (responseStatus == MessageStatus.ERROR) {
                         clientView.errorWhileBuilding(buildResponse.getGameManagerSays());
@@ -273,48 +278,18 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
                 case PLAYER_WON:
 
-                    if(serverResponse instanceof WonResponse)
-                        win((WonResponse) serverResponse);
+                    if(serverResponse instanceof WonServerResponse)
+                        win((WonServerResponse) serverResponse);
                     else
                         // confirm
                         System.out.println(serverResponse.getGameManagerSays());
 
                     break;
                 default: CHECK:
-                    clientView.debug(serverResponse);
+                clientView.debug(serverResponse);
                     break;
             }
         }
-
-    }
-
-    /**
-     * Update {@link Player} 'me' with the real info
-     */
-    private void updateMyInfo() {
-        if (babyGame.getPlayerByName(me.getPlayerName()) != null)
-            me = babyGame.getPlayerByName(me.getPlayerName());
-    }
-
-    // functions
-    private String askUsername() {
-
-        return clientView.askUserName();
-
-    }
-
-    public void login(){
-
-        me = new Player(askUsername());
-
-        try {
-            Client.sendMessage(
-                    new Request(me.getPlayerName(), Dispatcher.SETUP_GAME, RequestContent.LOGIN, MessageStatus.OK, me.getPlayerName())
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
     }
 
     private void chooseNumPlayers(){
@@ -331,7 +306,7 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
     }
 
-    private void chooseGodFromDeck(ShowDeckResponse response){
+    private void chooseGodFromDeck(ShowDeckServerResponse response){
 
         int howMany = response.getHowMany();
 
@@ -351,7 +326,7 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
     }
 
-    private void pickGod(PickGodResponse message) {
+    private void pickGod(PickGodServerResponse message) {
 
         ArrayList<God> hand = message.getGods();
 
@@ -368,7 +343,7 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
     }
 
-    private void placeWorker(PlaceWorkerResponse message) {
+    private void placeWorker(PlaceWorkerServerResponse message) {
 
         Position p = clientView.placeWorker(message.getWorker().toString());
 
@@ -462,7 +437,7 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
 
     }
 
-    private void win(WonResponse response){
+    private void win(WonServerResponse response){
         clientView.win(response.getGameManagerSays().equals(me.getPlayerName()));
     }
 
@@ -470,4 +445,14 @@ public class ClientManager extends Observable<UpdateBoardMessage> {
         return babyGame.clientMap;
     }
 
+    public void updatePlayerInfo(UpdatePlayersMessage updatePlayersMessage) {
+        babyGame.addPlayers(updatePlayersMessage);
+        Set<Player> players = babyGame.players;
+        clientView.showAllPlayersInGame(players);
+        updateMyInfo();
+    }
+
+    public ClientBoardUpdater getClientBoardUpdater() {
+        return this.clientBoardUpdater;
+    }
 }

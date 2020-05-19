@@ -6,13 +6,13 @@ import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateBoardMessage;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.View.Observer;
 
-public class ClientBoardUpdater implements Observer<UpdateBoardMessage>{
+public class ClientBoardUpdater {
 
         BabyGame babyGame = BabyGame.getInstance();
         CLIclientMap map = babyGame.clientMap;
 
-        @Override
-        public void update(UpdateBoardMessage message) {
+
+        public void boardUpdate(UpdateBoardMessage message) {
 
             String playerName = message.getPlayerName();
             Integer worker = message.getWorkerIndex();
@@ -23,6 +23,8 @@ public class ClientBoardUpdater implements Observer<UpdateBoardMessage>{
                 case MOVE -> map.moveUpdate(playerName, worker, position);
                 case BUILD -> map.buildUpdate(position);
             }
+
+
 
         }
 
