@@ -8,14 +8,8 @@ import java.util.ArrayList;
 
 public class BuildServerRequest extends ServerRequest {
 
-    private ArrayList<Position> possiblePlaceToBuildOn;
-
-    public BuildServerRequest(ArrayList<Position> possiblePlaceToBuildOn) {
+    public BuildServerRequest() {
         super(ServerRequestContent.BUILD);
-        this.possiblePlaceToBuildOn = possiblePlaceToBuildOn;
     }
 
-    public ArrayList<Position> getPossiblePlaceToBuildOn() {
-        return possiblePlaceToBuildOn;
-    }
 }

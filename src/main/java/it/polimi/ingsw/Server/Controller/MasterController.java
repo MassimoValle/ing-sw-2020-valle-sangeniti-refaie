@@ -78,22 +78,17 @@ public class MasterController {
     public static void buildServerRequest(Player player, ServerRequestContent content, Worker activeWorker) {
 
             switch (content) {
-                case PLACE_WORKER -> {
-                    //ServerRequest placeWorkerServerRequest = new PlaceWorkerServerRequest(workerNum);
-                    //gameInstance.putInChanges(player, placeWorkerServerRequest);
-                }
+                
                 case SELECT_WORKER -> {
                     ServerRequest selectWorkerServerRequest = new SelectWorkerServerRequest();
                     gameInstance.putInChanges(player, selectWorkerServerRequest);
                 }
                 case MOVE_WORKER -> {
-                    ArrayList<Position> nearlyPosition = gameInstance.getGameMap().getReachableAdjacentPlaces(activeWorker.getWorkerPosition());
-                    ServerRequest moveWorkerServerRequest = new MoveWorkerServerRequest(nearlyPosition);
+                    ServerRequest moveWorkerServerRequest = new MoveWorkerServerRequest();
                     gameInstance.putInChanges(player, moveWorkerServerRequest);
                 }
                 case BUILD -> {
-                    ArrayList<Position> possiblePlaceToBuild = gameInstance.getGameMap().getPlacesWhereYouCanBuildOn(activeWorker.getWorkerPosition());
-                    ServerRequest buildServerRequest = new BuildServerRequest(possiblePlaceToBuild);
+                    ServerRequest buildServerRequest = new BuildServerRequest();
                     gameInstance.putInChanges(player, buildServerRequest);
                 }
                 default -> { //END TURN

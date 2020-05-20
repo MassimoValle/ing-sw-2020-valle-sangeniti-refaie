@@ -60,6 +60,15 @@ public class ClientManager {
 
     }
 
+    //mette il messaggio in arrivo in current message e
+    // setta il client sul messaggio per poter fare l'azione desiderata sul client
+    private void takeMessage(ServerMessage updateServerMessage) {
+        this.currentMessage = updateServerMessage;
+        currentMessage.setClientManager(this);
+        currentMessage.update();
+
+    }
+
     public void handleServerRequest(ServerRequest serverRequest) {
         currentServerRequest = serverRequest;
 
@@ -114,16 +123,6 @@ public class ClientManager {
         }
     }
 
-
-
-    //mette il messaggio in arrivo in current message e
-    // setta il client sul messaggio per poter fare l'azione desiderata sul client
-    private void takeMessage(ServerMessage updateServerMessage) {
-        this.currentMessage = updateServerMessage;
-        currentMessage.setClientManager(this);
-        currentMessage.update();
-
-    }
 
 
     // functions
@@ -181,18 +180,6 @@ public class ClientManager {
 
     }
 
-    private void handleChooseGodsServerResponse(ChooseGodsServerResponse serverResponse) {
-
-        if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {
-            clientView.errorWhileChoosingGods(serverResponse.getGameManagerSays());
-            chooseGodFromDeck((ChooseGodsServerRequest) currentServerRequest);
-            return;
-        }
-
-        clientView.godsSelectedSuccesfully();
-
-    }
-
     private void pickGod(PickGodServerRequest serverRequest) {
 
         ArrayList<God> hand = (ArrayList<God>) serverRequest.getGods();
@@ -210,16 +197,6 @@ public class ClientManager {
 
     }
 
-    private void handlePickGodServerResponse(PickGodServerResponse serverResponse) {
-
-        if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {
-            clientView.errorWhilePickinUpGod(serverResponse.getGameManagerSays());
-            pickGod((PickGodServerRequest) currentServerRequest);
-            return;
-        }
-        clientView.godPickedUpSuccessfully();
-    }
-
     private void placeWorker(PlaceWorkerServerRequest serverRequest) {
 
         Position p = clientView.placeWorker(serverRequest.getWorker().toString());
@@ -231,18 +208,6 @@ public class ClientManager {
         }catch (IOException e){
             e.printStackTrace();
         }
-
-    }
-
-    private void handlePlaceWorkerServerResponse(PlaceWorkerServerResponse serverResponse) {
-
-        if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {
-            clientView.errorWhilePlacingYourWorker(serverResponse.getGameManagerSays());
-            placeWorker((PlaceWorkerServerRequest) currentServerRequest);
-            return;
-        }
-
-        clientView.workerPlacedSuccesfully();
 
     }
 
@@ -262,6 +227,117 @@ public class ClientManager {
         }catch (IOException e){
             e.printStackTrace();
         }
+
+    }
+
+    private void moveWorker(MoveWorkerServerRequest response){
+
+        ArrayList<Position> nearlyPositionsValid = me.getPlayerWorkers().get(workerSelected).getWorkerPosition().getAdjacentPlaces();
+
+        Position position = clientView.moveWorker(nearlyPositionsValid);
+
+        try {
+            Client.sendMessage(
+                    new MoveRequest(me.getPlayerName(), position)
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    private void sendEndMoveRequest() {
+        try {
+            Client.sendMessage(
+                    new EndMoveRequest(me.getPlayerName())
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void build(BuildServerRequest serverRequest){
+
+        Position myWorkerPosition = me.getPlayerWorkers().get(workerSelected).getWorkerPosition();
+
+        ArrayList<Position> nearlyPositionsValid = myWorkerPosition.getAdjacentPlaces();
+
+        nearlyPositionsValid.add(myWorkerPosition);
+
+        Position position = clientView.build(nearlyPositionsValid);
+
+        try {
+            Client.sendMessage(
+                    new BuildRequest(me.getPlayerName(), position)
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    private void sendEndBuildRequest() {
+        try {
+            Client.sendMessage(
+                    new EndBuildRequest(me.getPlayerName())
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void endTurn() {
+        this.myTurn = false;
+        clientView.endTurn();
+
+        try {
+            Client.sendMessage(
+                    new EndTurnRequest(me.getPlayerName())
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    private void playerWon(WonServerResponse response){
+        clientView.win(response.getGameManagerSays().equals(me.getPlayerName()));
+    }
+
+
+
+    //handler dei messaggi, utilizzare una classe apposita(???)
+    private void handleChooseGodsServerResponse(ChooseGodsServerResponse serverResponse) {
+
+        if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {
+            clientView.errorWhileChoosingGods(serverResponse.getGameManagerSays());
+            chooseGodFromDeck((ChooseGodsServerRequest) currentServerRequest);
+            return;
+        }
+
+        clientView.godsSelectedSuccesfully();
+
+    }
+
+    private void handlePickGodServerResponse(PickGodServerResponse serverResponse) {
+
+        if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {
+            clientView.errorWhilePickinUpGod(serverResponse.getGameManagerSays());
+            pickGod((PickGodServerRequest) currentServerRequest);
+            return;
+        }
+        clientView.godPickedUpSuccessfully();
+    }
+
+    private void handlePlaceWorkerServerResponse(PlaceWorkerServerResponse serverResponse) {
+
+        if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {
+            clientView.errorWhilePlacingYourWorker(serverResponse.getGameManagerSays());
+            placeWorker((PlaceWorkerServerRequest) currentServerRequest);
+            return;
+        }
+
+        clientView.workerPlacedSuccesfully();
 
     }
 
@@ -350,65 +426,12 @@ public class ClientManager {
         }
     }
 
-    private void moveWorker(MoveWorkerServerRequest response){
-
-        ArrayList<Position> nearlyPositionsValid = me.getPlayerWorkers().get(workerSelected).getWorkerPosition().getAdjacentPlaces();
-
-        Position position = clientView.moveWorker(nearlyPositionsValid);
-
-        try {
-            Client.sendMessage(
-                    new MoveRequest(me.getPlayerName(), position)
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
-    }
-
-    private void sendEndMoveRequest() {
-        try {
-            Client.sendMessage(
-                    new EndMoveRequest(me.getPlayerName())
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
     private void handleEndMoveServerResponse(EndMoveServerResponse serverResponse) {
         if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {
             clientView.endMoveRequestError(serverResponse.getGameManagerSays());
             return;
         }
         clientView.endMovingPhase(serverResponse.getGameManagerSays());
-    }
-
-
-    private void build(BuildServerRequest serverRequest){
-
-        ArrayList<Position> nearlyPositionsValid = serverRequest.getPossiblePlaceToBuildOn();
-
-        Position position = clientView.build(nearlyPositionsValid);
-
-        try {
-            Client.sendMessage(
-                    new BuildRequest(me.getPlayerName(), position)
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
-    }
-
-    private void sendEndBuildRequest() {
-        try {
-            Client.sendMessage(
-                    new EndBuildRequest(me.getPlayerName())
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
 
     private void handleEndBuildServerResponse(EndBuildServerResponse serverResponse) {
@@ -418,28 +441,6 @@ public class ClientManager {
             return;
         }
         clientView.endBuildingPhase(serverResponse.getGameManagerSays());
-    }
-
-    private void endTurn() {
-        this.myTurn = false;
-        clientView.endTurn();
-
-        try {
-            Client.sendMessage(
-                    new EndTurnRequest(me.getPlayerName())
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
-    }
-
-    private void playerWon(WonServerResponse response){
-        clientView.win(response.getGameManagerSays().equals(me.getPlayerName()));
-    }
-
-    private GameMap getGameMap() {
-        return babyGame.clientMap;
     }
 
     public void updatePlayerInfo(UpdatePlayersMessage updatePlayersMessage) {
@@ -460,5 +461,9 @@ public class ClientManager {
     public void boardUpdate(UpdateBoardMessage updateBoardMessage) {
         clientBoardUpdater.boardUpdate(updateBoardMessage);
         clientView.showMap(getGameMap());
+    }
+
+    private GameMap getGameMap() {
+        return babyGame.clientMap;
     }
 }
