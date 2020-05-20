@@ -12,7 +12,7 @@ public class ClientBoardUpdater {
         CLIclientMap map = babyGame.clientMap;
 
 
-        public void boardUpdate(UpdateBoardMessage message) {
+        void boardUpdate(UpdateBoardMessage message) {
 
             String playerName = message.getPlayerName();
             Integer worker = message.getWorkerIndex();

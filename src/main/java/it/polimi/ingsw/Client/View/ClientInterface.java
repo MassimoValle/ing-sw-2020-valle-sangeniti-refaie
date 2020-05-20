@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Client.View;
 
-import it.polimi.ingsw.Network.Message.Server.Responses.ServerResponse;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
@@ -24,15 +24,25 @@ public interface ClientInterface {
 
     ArrayList<God> selectGods(int howMany);
 
+    void errorWhileChoosingGods(String gameManagerSays);
+
+    void godsSelectedSuccesfully();
+
     God pickFromChosenGods(ArrayList<God> hand);
+
+    void errorWhilePickinUpGod(String gameManagerSays);
+
+    void godPickedUpSuccessfully();
 
     void showAllPlayersInGame(Set<Player> playerSet);
 
     Position placeWorker(String worker);
 
-    void workerPlacedSuccesfully(String gameManagerSays);
+    void errorWhilePlacingYourWorker(String gameManagerSays);
 
-    void startingTurn(String gameManagerSays);
+    void workerPlacedSuccesfully();
+
+    void startingTurn();
 
     int selectWorker();
 

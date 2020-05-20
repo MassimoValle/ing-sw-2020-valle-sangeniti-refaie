@@ -2,7 +2,7 @@ package it.polimi.ingsw.Client.View.Cli;
 
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Client;
-import it.polimi.ingsw.Network.Message.Server.Responses.ServerResponse;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
@@ -119,7 +119,7 @@ public class CLI extends ClientView {
 
                 int n = Integer.parseInt(entered);
 
-                if (n < 1 || n > 15) {
+                if (n < 1 || n >= 15) {
                     consoleOut.println("Index not valid, please insert a valid index");
                     break;
                 }
@@ -137,6 +137,22 @@ public class CLI extends ClientView {
         return godsChosen;
     }
 
+    @Override
+    public void errorWhileChoosingGods(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the Gods you selected" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease select the correct Gods");
+
+    }
+
+    @Override
+    public void godsSelectedSuccesfully() {
+
+        consoleOut.println("Gods selected successfully");
+        consoleOut.println();
+
+    }
 
     @Override
     public God pickFromChosenGods(ArrayList<God> hand) {
@@ -175,6 +191,23 @@ public class CLI extends ClientView {
     }
 
     @Override
+    public void errorWhilePickinUpGod(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the God you selected" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease select the correct God");
+
+    }
+
+    @Override
+    public void godPickedUpSuccessfully() {
+
+        consoleOut.println("God selected successfully");
+        consoleOut.println();
+
+    }
+
+    @Override
     public void showAllPlayersInGame(Set<Player> playerSet) {
 
         consoleOut.println("\nYou are playing against: ");
@@ -202,17 +235,27 @@ public class CLI extends ClientView {
         return new Position(row, col);
     }
 
-    @Override
-    public void workerPlacedSuccesfully(String gameManagerSays) {
 
-        consoleOut.println(gameManagerSays);
-        consoleOut.println();
+    @Override
+    public void errorWhilePlacingYourWorker(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the worker you wanted to place" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease try place it again");
     }
 
     @Override
-    public void startingTurn(String gameManagerSays) {
+    public void workerPlacedSuccesfully() {
 
-        consoleOut.println(gameManagerSays);
+        consoleOut.println("Worker placed successfully!");
+        consoleOut.println();
+    }
+
+
+    @Override
+    public void startingTurn() {
+
+        consoleOut.println("It's your turn!");
         consoleOut.println();
     }
 

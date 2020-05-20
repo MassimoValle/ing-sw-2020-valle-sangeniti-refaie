@@ -1,7 +1,8 @@
 package it.polimi.ingsw.Server.Controller;
 
+import it.polimi.ingsw.Network.Message.ClientRequests.ChoseGodsRequest;
 import it.polimi.ingsw.Network.Message.Enum.UpdateType;
-import it.polimi.ingsw.Network.Message.Server.Responses.*;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.*;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.*;
 import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateBoardMessage;
@@ -15,6 +16,8 @@ import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.util.ArrayList;
+
+import static it.polimi.ingsw.Network.Message.Enum.ResponseContent.MOVE_WORKER_AGAIN;
 
 
 public class MasterController {
@@ -72,7 +75,7 @@ public class MasterController {
      * @param content      the {@link ServerRequestContent}
      * @param activeWorker the {@link Worker} the player has to move/built with.
      */
-    public static void buildServerRequest(Player player, ServerRequestContent content, Worker activeWorker /*, int workerNum*/) {
+    public static void buildServerRequest(Player player, ServerRequestContent content, Worker activeWorker) {
 
             switch (content) {
                 case PLACE_WORKER -> {
@@ -129,9 +132,22 @@ public class MasterController {
 
     private static void buildResponse(Player player, ResponseContent content, MessageStatus status, String gameManagerSays) {
 
-        String playerName = player.getPlayerName();
-
         switch (content) {
+
+            case CHOOSE_GODS ->
+                    gameInstance.putInChanges(player,
+                            new ChooseGodsServerResponse(status, gameManagerSays)
+                    );
+
+            case PICK_GOD ->
+                    gameInstance.putInChanges(player,
+                            new PickGodServerResponse(status, gameManagerSays)
+                    );
+
+            case PLACE_WORKER ->
+                    gameInstance.putInChanges(player,
+                            new PlaceWorkerServerResponse(status, gameManagerSays));
+
             case SELECT_WORKER ->
                     gameInstance.putInChanges(player,
                             new SelectWorkerServerResponse(status, gameManagerSays)
@@ -141,9 +157,18 @@ public class MasterController {
                     gameInstance.putInChanges(player,
                             new MoveWorkerServerResponse(status, gameManagerSays)
                     );
+            case MOVE_WORKER_AGAIN ->
+                    gameInstance.putInChanges(player,
+                            new MoveWorkerServerResponse(ResponseContent.MOVE_WORKER_AGAIN, status, gameManagerSays)
+                    );
+
             case BUILD ->
                     gameInstance.putInChanges(player,
                             new BuildServerResponse(status, gameManagerSays)
+                    );
+            case BUILD_AGAIN ->
+                    gameInstance.putInChanges(player,
+                            new BuildServerResponse(ResponseContent.BUILD_AGAIN,status, gameManagerSays)
                     );
             case END_MOVE ->
                     gameInstance.putInChanges(player,
@@ -186,7 +211,7 @@ public class MasterController {
 
     }
 
-    public static void sendListOfPlayer(){
+    public static void sendOtherPlayersInfoToEveryone(){
 
         for(Player playerToSendUpdate : gameInstance.getPlayers()) {
 

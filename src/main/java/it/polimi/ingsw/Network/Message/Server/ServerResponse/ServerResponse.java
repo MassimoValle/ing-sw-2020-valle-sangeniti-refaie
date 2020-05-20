@@ -1,10 +1,8 @@
-package it.polimi.ingsw.Network.Message.Server.Responses;
+package it.polimi.ingsw.Network.Message.Server.ServerResponse;
 
 
-import it.polimi.ingsw.Client.Controller.ClientManager;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
-import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.Network.Message.Server.ServerMessage;
 
 public class ServerResponse extends ServerMessage {
@@ -31,7 +29,7 @@ public class ServerResponse extends ServerMessage {
     }
 
     @Override
-    public void updateClient(ClientManager clientManager) {
-        clientManager.handleServerResponse(this);
+    public void execute() {
+        super.getClientManager().handleServerResponse(this);
     }
 }

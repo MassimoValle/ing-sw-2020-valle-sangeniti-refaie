@@ -1,6 +1,8 @@
 package it.polimi.ingsw.Network;
 
-import it.polimi.ingsw.Network.Message.Server.Responses.ServerResponse;
+import it.polimi.ingsw.Network.Message.ClientRequests.LoginRequest;
+import it.polimi.ingsw.Network.Message.ClientRequests.SetPlayersRequest;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Player.Player;
@@ -112,7 +114,7 @@ public class Server {
         while(!Thread.currentThread().isInterrupted()){
             try {
                 Socket socket = serverSocket.accept();
-                newConnection(socket);//Blocking call --server code will stop here and waiting for connection
+                newConnection(socket);
 
 
             } catch (IOException e){
@@ -122,9 +124,6 @@ public class Server {
     }
 
 
-
-
-    // Create connnection, register it and execute via executor
     private void newConnection(Socket socket) {
         Connection connection = new Connection(socket, this);
         registerConnection(connection);
@@ -133,29 +132,17 @@ public class Server {
 
 
 
-
-    //Methods that has to call the GameManager to handle the request by the client
-    //(the message can be whatever)
-    //For example: the Username asked at the beginning, a place where to move, ecc
-
-
     // handle message
-    public synchronized void handleMessage(Request message, Connection connection) {
+    public synchronized void handleMessage(Request request, Connection connection) {
 
-        switch (message.getRequestContent()){
-            case LOGIN -> checkLogin(message, connection);
-            case NUM_PLAYER -> setLobbySize(message);
 
-            //Everything else is handled by the SuperMegaController
-            //default -> handleControllerMessage(message);
+        switch (request.getRequestContent()){
+            case LOGIN -> checkLogin((LoginRequest) request, connection);
+            case NUM_PLAYER -> setLobbySize((SetPlayersRequest) request);
+
         }
 
     }
-
-    /*private void handleControllerMessage(Request message) {
-
-        masterController.dispatcher(message);
-    }*/
 
 
 
@@ -166,35 +153,26 @@ public class Server {
         );
     }
 
-    private void setLobbySize(Request message) {
+    private void setLobbySize(SetPlayersRequest request) {
 
-            lobbySize = Integer.parseInt(message.getClientManagerSays());
+            lobbySize = Integer.parseInt(request.getHowMany());
             lobby();
 
     }
 
 
+    private synchronized void checkLogin(LoginRequest request, Connection connection) {
 
-    // login
-    private synchronized void checkLogin(Request message, Connection connection) {
 
-        if (message.getMessageStatus() == MessageStatus.ERROR) {
-            connection.sendMessage(
-                    new ServerResponse(ResponseContent.LOGIN, MessageStatus.CLIENT_ERROR, "Errore nel server")
-            );
+        if(connections.size() == 1) {
+            registerClient(request.getMessageSender(), connection);
+            askLobbySize(connection);
+
+        } else {
+            login(request.getMessageSender(), connection);
         }
 
-        else if ( message.getMessageStatus() == MessageStatus.OK) {
 
-            if(connections.size() == 1) {
-                registerClient(message.getMessageSender(), connection);
-                askLobbySize(connection);
-
-            } else {
-                login(message.getMessageSender(), connection);
-            }
-
-        }
     }
 
     // Check if there is a client with same name
@@ -215,7 +193,7 @@ public class Server {
         connection.setName(username);
         clientsConnected.put(username, connection);
 
-        System.out.println("CLIENT REGISTRATO: " + username);
+        System.out.println("Registered client:  " + username);
 
         connection.sendMessage(
                 new ServerResponse(ResponseContent.LOGIN, MessageStatus.OK, "Connected! Ready to play!")

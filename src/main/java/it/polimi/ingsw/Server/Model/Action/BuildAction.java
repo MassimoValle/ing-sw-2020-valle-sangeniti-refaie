@@ -20,11 +20,7 @@ public class BuildAction implements Action {
     @Override
     public boolean isValid() {
 
-        if (squareWhereToBuildOn.hasWorkerOn()) {
-            return false;
-        }
-
-        return true;
+        return !squareWhereToBuildOn.hasWorkerOn();
     }
 
     @Override

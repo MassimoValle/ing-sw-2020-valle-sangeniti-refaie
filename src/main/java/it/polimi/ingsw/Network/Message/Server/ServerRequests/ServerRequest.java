@@ -1,8 +1,6 @@
 package it.polimi.ingsw.Network.Message.Server.ServerRequests;
 
-import it.polimi.ingsw.Client.Controller.ClientManager;
 import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
-import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.Network.Message.Server.ServerMessage;
 
 public class ServerRequest extends ServerMessage {
@@ -19,7 +17,7 @@ public class ServerRequest extends ServerMessage {
     }
 
     @Override
-    public void updateClient(ClientManager clientManager) {
-        clientManager.handleServerRequest(this);
+    public void execute() {
+        super.getClientManager().handleServerRequest(this);
     }
 }

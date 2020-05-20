@@ -1,7 +1,7 @@
 package it.polimi.ingsw.Client.View.Gui;
 
 import it.polimi.ingsw.Client.View.ClientView;
-import it.polimi.ingsw.Network.Message.Server.Responses.ServerResponse;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
@@ -46,10 +46,30 @@ public class GUI extends ClientView {
         return null;
     }
 
+    @Override
+    public void errorWhileChoosingGods(String gameManagerSays) {
+
+    }
+
+    @Override
+    public void godsSelectedSuccesfully() {
+
+    }
+
 
     @Override
     public God pickFromChosenGods(ArrayList<God> hand) {
         return null;
+    }
+
+    @Override
+    public void errorWhilePickinUpGod(String gameManagerSays) {
+
+    }
+
+    @Override
+    public void godPickedUpSuccessfully() {
+
     }
 
     @Override
@@ -63,12 +83,17 @@ public class GUI extends ClientView {
     }
 
     @Override
-    public void workerPlacedSuccesfully(String gameManagerSays) {
+    public void errorWhilePlacingYourWorker(String gameManagerSays) {
 
     }
 
     @Override
-    public void startingTurn(String gameManagerSays) {
+    public void workerPlacedSuccesfully() {
+
+    }
+
+    @Override
+    public void startingTurn() {
 
     }
 

@@ -3,12 +3,10 @@ package it.polimi.ingsw.Client.Controller;
 import it.polimi.ingsw.Client.Model.BabyGame;
 import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.ClientRequests.*;
-import it.polimi.ingsw.Network.Message.Server.Responses.*;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.*;
 import it.polimi.ingsw.Network.Message.Server.ServerMessage;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.ServerRequest;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.BuildServerRequest;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.MoveWorkerServerRequest;
-import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdatePlayersMessage;
+import it.polimi.ingsw.Network.Message.Server.ServerRequests.*;
+import it.polimi.ingsw.Network.Message.Server.UpdateMessage.*;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
@@ -18,6 +16,7 @@ import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
 import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 
+import java.beans.beancontext.BeanContextServiceRevokedEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
@@ -39,7 +38,10 @@ public class ClientManager {
     private boolean canBuildAgain = false;
 
     //la richiesta corrente che il client sta gestendo
-    ServerRequest serverRequest = null;
+    ServerRequest currentServerRequest = null;
+
+    //Qualsiasi messaggio che il client riceve dal server
+    ServerMessage currentMessage = null;
 
 
     public ClientManager(ClientView clientView){
@@ -53,77 +55,35 @@ public class ClientManager {
 
 
 
-
-
-
     public void handleMessageFromServer(ServerMessage serverMessage){
 
         if (!myTurn) {
             clientView.someoneElseDoingStuff();
         }
 
-        serverMessage.updateClient(this);
+        takeMessage(serverMessage);
 
         clientView.showMap(getGameMap());
-
-    }
-
-    /**
-     * Update {@link Player} 'me' with the real info
-     */
-    private void updateMyInfo() {
-        if (babyGame.getPlayerByName(me.getPlayerName()) != null)
-            me = babyGame.getPlayerByName(me.getPlayerName());
-    }
-
-    // functions
-    private String askUsername() {
-
-        return clientView.askUserName();
-
-    }
-
-    public void login(){
-
-        me = new Player(askUsername());
-
-        try {
-            Client.sendMessage(
-                    new Request(me.getPlayerName(), Dispatcher.SETUP_GAME, RequestContent.LOGIN, MessageStatus.OK, me.getPlayerName())
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
     }
 
     public void handleServerRequest(ServerRequest serverRequest) {
+        currentServerRequest = serverRequest;
 
         switch (serverRequest.getContent()) {
+
+            case CHOOSE_GODS_SERVER_REQUEST -> chooseGodFromDeck((ChooseGodsServerRequest) serverRequest);
+
+            case PICK_GOD -> pickGod((PickGodServerRequest) serverRequest);
+
+            case PLACE_WORKER -> placeWorker((PlaceWorkerServerRequest) serverRequest);
+
+            case START_TURN -> startTurn();
+
             case SELECT_WORKER -> selectWorker();
 
-            case MOVE_WORKER -> {
+            case MOVE_WORKER -> handleMoveWorkerServerRequest((MoveWorkerServerRequest) serverRequest);
 
-                if (canMoveAgain && !clientView.wantMoveAgain()) {
-                    //canMoveAgain = false;
-                    sendEndMoveRequest();
-                    break;
-                }
-
-                //TODO: da controllare sul client se ha la possibilità di fare una PowerButtonRequest
-                moveWorker((MoveWorkerServerRequest) serverRequest);
-            }
-
-            case BUILD -> {
-
-                if (canBuildAgain && !clientView.wantBuildAgain()) {
-                    sendEndBuildRequest();
-                    break;
-                }
-
-                build((BuildServerRequest) serverRequest);
-            }
-
+            case BUILD -> handleBuildServerRequest((BuildServerRequest) serverRequest);
 
             case END_TURN -> endTurn();
         }
@@ -136,7 +96,6 @@ public class ClientManager {
         if(serverResponse.getResponseContent() != null) {
 
             switch (serverResponse.getResponseContent()){
-
                 case LOGIN:
                     if(serverResponse.getMessageStatus() == MessageStatus.OK) return;
                     else login();
@@ -146,40 +105,46 @@ public class ClientManager {
                     chooseNumPlayers();
                     break;
 
-                case SHOW_DECK:
+                case CHOOSE_GODS:
 
-                    if(serverResponse instanceof ShowDeckServerResponse)
-                        chooseGodFromDeck((ShowDeckServerResponse) serverResponse);
-                    else
-                        // confirm
-                        //System.out.println(serverResponse.getGameManagerSays());
+                    ChooseGodsServerResponse chooseGodsServerResponse = (ChooseGodsServerResponse) serverResponse;
 
+                    if (responseStatus == MessageStatus.ERROR) {
+                        clientView.errorWhileChoosingGods(chooseGodsServerResponse.getGameManagerSays());
+                        chooseGodFromDeck((ChooseGodsServerRequest) currentServerRequest);
                         break;
+                    }
+
+                    clientView.godsSelectedSuccesfully();
+
+                    break;
 
                 case PICK_GOD:
 
-                    if(serverResponse instanceof PickGodServerResponse)
-                        pickGod((PickGodServerResponse) serverResponse);
-                    else
-                        // confirm
-                        //System.out.println(serverResponse.getGameManagerSays());
+                    PickGodServerResponse pickGodServerResponse = (PickGodServerResponse) serverResponse;
 
+                    if (responseStatus == MessageStatus.ERROR) {
+                        clientView.errorWhilePickinUpGod(pickGodServerResponse.getGameManagerSays());
+                        pickGod((PickGodServerRequest) currentServerRequest);
                         break;
+                    }
+
+                    clientView.godPickedUpSuccessfully();
+
+                    break;
+
 
                 case PLACE_WORKER:
 
-                    if(serverResponse instanceof PlaceWorkerServerResponse)
-                        placeWorker((PlaceWorkerServerResponse) serverResponse);
-                    else
-                        // confirm
-                        //clientView.workerPlacedSuccesfully(serverResponse.getGameManagerSays());
+                    PlaceWorkerServerResponse placeWorkerServerResponse = (PlaceWorkerServerResponse) serverResponse;
 
+                    if (responseStatus == MessageStatus.ERROR) {
+                        clientView.errorWhilePlacingYourWorker(serverResponse.getGameManagerSays());
+                        placeWorker((PlaceWorkerServerRequest) currentServerRequest);
                         break;
+                    }
 
-                case START_TURN:
-
-                    clientView.startingTurn(serverResponse.getGameManagerSays());
-                    this.myTurn = true;
+                    clientView.workerPlacedSuccesfully();
 
                     break;
 
@@ -199,29 +164,10 @@ public class ClientManager {
                     break;
 
                 case MOVE_WORKER:
-
-                    assert serverResponse instanceof MoveWorkerServerResponse;
-                    MoveWorkerServerResponse moveWorkerResponse = (MoveWorkerServerResponse) serverResponse;
-
-                    if (responseStatus == MessageStatus.ERROR) {
-                        clientView.errorWhileMovingWorker(moveWorkerResponse.getGameManagerSays());
-                        moveWorker((MoveWorkerServerRequest) serverRequest);
-                        break;
-                    }
-
-                    this.canMoveAgain = false;
-                    clientView.workerMovedSuccessfully();
-
-                    break;
-
                 case MOVE_WORKER_AGAIN:
-
-                    clientView.workerMovedSuccessfully();
-
-                    this.canMoveAgain = true;
-                    clientView.printCanMoveAgain(serverResponse.getGameManagerSays());
-
+                    handleMoveWorkerServerResponse((MoveWorkerServerResponse) serverResponse);
                     break;
+
 
                 case END_MOVE:
 
@@ -229,33 +175,12 @@ public class ClientManager {
                         clientView.endMoveRequestError(serverResponse.getGameManagerSays());
                         break;
                     }
-
                     clientView.endMovingPhase(serverResponse.getGameManagerSays());
-
                     break;
 
                 case BUILD:
-
-                    BuildServerResponse buildResponse = (BuildServerResponse) serverResponse;
-
-                    if (responseStatus == MessageStatus.ERROR) {
-                        clientView.errorWhileBuilding(buildResponse.getGameManagerSays());
-                        build((BuildServerRequest) serverRequest);
-                        break;
-                    }
-
-                    this.canBuildAgain = false;
-                    clientView.builtSuccessfully();
-
-                    break;
-
                 case BUILD_AGAIN:
-
-                    clientView.builtSuccessfully();
-
-                    this.canBuildAgain = true;
-                    clientView.printCanBuildAgain(serverResponse.getGameManagerSays());
-
+                    handleBuildServerResponse((BuildServerResponse) serverResponse);
                     break;
 
                 case END_BUILD:
@@ -264,17 +189,9 @@ public class ClientManager {
                         clientView.endBuildRequestError(serverResponse.getGameManagerSays());
                         break;
                     }
-
                     clientView.endBuildingPhase(serverResponse.getGameManagerSays());
-
                     break;
 
-
-                case END_TURN:
-
-                    //clientView.endingTurn();
-
-                    break;
 
                 case PLAYER_WON:
 
@@ -285,6 +202,7 @@ public class ClientManager {
                         System.out.println(serverResponse.getGameManagerSays());
 
                     break;
+
                 default: CHECK:
                 clientView.debug(serverResponse);
                     break;
@@ -292,13 +210,24 @@ public class ClientManager {
         }
     }
 
-    private void chooseNumPlayers(){
+    //mette il messaggio in arrivo in current message e
+    // setta il client sul messaggio per poter fare l'azione desiderata sul client
+    private void takeMessage(ServerMessage updateServerMessage) {
+        this.currentMessage = updateServerMessage;
+        currentMessage.setClientManager(this);
+        currentMessage.update();
 
-        Integer num = clientView.askNumbOfPlayer();
+    }
+
+
+    // functions
+    public void login(){
+
+        me = new Player(askUsername());
 
         try {
             Client.sendMessage(
-                    new Request(me.getPlayerName(), Dispatcher.SETUP_GAME, RequestContent.NUM_PLAYER, MessageStatus.OK, num.toString())
+                    new LoginRequest(me.getPlayerName())
             );
         }catch (IOException e){
             e.printStackTrace();
@@ -306,9 +235,30 @@ public class ClientManager {
 
     }
 
-    private void chooseGodFromDeck(ShowDeckServerResponse response){
+    private String askUsername() {
 
-        int howMany = response.getHowMany();
+        return clientView.askUserName();
+
+    }
+
+
+    private void chooseNumPlayers(){
+
+        Integer num = clientView.askNumbOfPlayer();
+
+        try {
+            Client.sendMessage(
+                    new SetPlayersRequest(me.getPlayerName(), Dispatcher.SETUP_GAME, RequestContent.NUM_PLAYER, num.toString())
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    private void chooseGodFromDeck(ChooseGodsServerRequest serverRequest){
+
+        int howMany = serverRequest.getHowMany();
 
         clientView.showDeck();
 
@@ -326,9 +276,9 @@ public class ClientManager {
 
     }
 
-    private void pickGod(PickGodServerResponse message) {
+    private void pickGod(PickGodServerRequest serverRequest) {
 
-        ArrayList<God> hand = message.getGods();
+        ArrayList<God> hand = (ArrayList<God>) serverRequest.getGods();
 
         God myGod = clientView.pickFromChosenGods(hand);
         me.setPlayerGod(myGod);
@@ -343,18 +293,23 @@ public class ClientManager {
 
     }
 
-    private void placeWorker(PlaceWorkerServerResponse message) {
+    private void placeWorker(PlaceWorkerServerRequest serverRequest) {
 
-        Position p = clientView.placeWorker(message.getWorker().toString());
+        Position p = clientView.placeWorker(serverRequest.getWorker().toString());
 
         try {
             Client.sendMessage(
-                    new PlaceWorkerRequest(me.getPlayerName(), message.getWorker(), p)
+                    new PlaceWorkerRequest(me.getPlayerName(), serverRequest.getWorker(), p)
             );
         }catch (IOException e){
             e.printStackTrace();
         }
 
+    }
+
+    private void startTurn() {
+        clientView.startingTurn();
+        this.myTurn = true;
     }
 
     private void selectWorker(){
@@ -369,6 +324,80 @@ public class ClientManager {
             e.printStackTrace();
         }
 
+    }
+
+    private void handleMoveWorkerServerRequest(MoveWorkerServerRequest serverRequest) {
+        if (canMoveAgain && !clientView.wantMoveAgain()) {
+            sendEndMoveRequest();
+            return;
+        }
+
+        //TODO: da controllare sul client se ha la possibilità di fare una PowerButtonRequest
+        moveWorker(serverRequest);
+    }
+
+    private void handleMoveWorkerServerResponse(MoveWorkerServerResponse serverResponse) {
+
+        switch (serverResponse.getResponseContent()) {
+
+            case MOVE_WORKER -> {
+
+                if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {
+                    clientView.errorWhileMovingWorker(serverResponse.getGameManagerSays());
+                    moveWorker((MoveWorkerServerRequest) currentServerRequest);
+                    break;
+                }
+
+                this.canMoveAgain = false;
+                clientView.workerMovedSuccessfully();
+
+            }
+
+            case MOVE_WORKER_AGAIN -> {
+
+                clientView.workerMovedSuccessfully();
+                this.canMoveAgain = true;
+                clientView.printCanMoveAgain(serverResponse.getGameManagerSays());
+
+            }
+        }
+    }
+
+    private void handleBuildServerRequest(BuildServerRequest serverRequest) {
+
+        if (canBuildAgain && !clientView.wantBuildAgain()) {
+            sendEndBuildRequest();
+            return;
+        }
+
+        build(serverRequest);
+
+    }
+
+    private void handleBuildServerResponse(BuildServerResponse serverResponse) {
+
+        switch (serverResponse.getResponseContent()) {
+
+            case BUILD -> {
+
+                if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {
+                    clientView.errorWhileBuilding(serverResponse.getGameManagerSays());
+                    build((BuildServerRequest) currentServerRequest);
+                    break;
+                }
+
+                this.canBuildAgain = false;
+                clientView.builtSuccessfully();
+            }
+
+            case BUILD_AGAIN -> {
+
+                clientView.builtSuccessfully();
+                this.canBuildAgain = true;
+                clientView.printCanBuildAgain(serverResponse.getGameManagerSays());
+            }
+
+        }
     }
 
     private void moveWorker(MoveWorkerServerRequest response){
@@ -452,7 +481,15 @@ public class ClientManager {
         updateMyInfo();
     }
 
-    public ClientBoardUpdater getClientBoardUpdater() {
-        return this.clientBoardUpdater;
+    /**
+     * Update {@link Player} 'me' with the real info
+     */
+    private void updateMyInfo() {
+        if (babyGame.getPlayerByName(me.getPlayerName()) != null)
+            me = babyGame.getPlayerByName(me.getPlayerName());
+    }
+
+    public void boardUpdate(UpdateBoardMessage updateBoardMessage) {
+        clientBoardUpdater.boardUpdate(updateBoardMessage);
     }
 }

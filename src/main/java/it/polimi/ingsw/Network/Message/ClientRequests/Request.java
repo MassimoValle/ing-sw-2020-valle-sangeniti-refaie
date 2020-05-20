@@ -12,7 +12,6 @@ public class Request extends Message {
 
     private final Dispatcher messageDispatcher;
     private RequestContent requestContent;
-    private String clientManagerSays;
 
     public Request(String messageSender, Dispatcher messageDispatcher, RequestContent requestContent, MessageStatus messageStatus) {
         super(messageSender, messageStatus);
@@ -27,23 +26,10 @@ public class Request extends Message {
     }
 
 
-
-    public Request(String messageSender, Dispatcher messageDispatcher, RequestContent requestContent, MessageStatus messageStatus, String clientManagerSays) {
-        super(messageSender, messageStatus);
-        this.requestContent = requestContent;
-        this.messageDispatcher = messageDispatcher;
-        this.clientManagerSays = clientManagerSays;
-    }
-
-
     public Dispatcher getMessageDispatcher() {
         return messageDispatcher;
     }
 
-
-    public String getClientManagerSays() {
-        return clientManagerSays;
-    }
 
     public RequestContent getRequestContent() {
         return requestContent;

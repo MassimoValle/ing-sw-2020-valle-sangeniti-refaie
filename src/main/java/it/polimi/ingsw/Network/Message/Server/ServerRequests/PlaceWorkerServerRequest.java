@@ -11,7 +11,7 @@ public class PlaceWorkerServerRequest extends ServerRequest{
         this.workNum = workNum;
     }
 
-    public Integer getWorkNum(){
+    public Integer getWorker(){
         return workNum;
     }
 }

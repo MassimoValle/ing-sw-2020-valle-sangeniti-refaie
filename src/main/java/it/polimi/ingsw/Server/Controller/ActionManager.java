@@ -3,6 +3,7 @@ package it.polimi.ingsw.Server.Controller;
 import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
 import it.polimi.ingsw.Network.Message.Enum.UpdateType;
+import it.polimi.ingsw.Network.Message.Server.ServerRequests.StartTurnServerRequest;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Action.*;
 import it.polimi.ingsw.Server.Model.Game;
@@ -381,7 +382,9 @@ public class ActionManager {
         turnManager.updateTurnState(gameState);
         activePlayer = turnManager.getActivePlayer();
         gameState = PossibleGameState.START_ROUND;
-        MasterController.buildPositiveResponse(activePlayer, ResponseContent.START_TURN, "It's your turn!");
+        StartTurnServerRequest startTurnServerRequest = new StartTurnServerRequest();
+        gameInstance.putInChanges(activePlayer, startTurnServerRequest);
+        //MasterController.buildPositiveResponse(activePlayer, ResponseContent.START_TURN, "It's your turn!");
         MasterController.buildServerRequest(activePlayer, ServerRequestContent.SELECT_WORKER, null);
 
     }

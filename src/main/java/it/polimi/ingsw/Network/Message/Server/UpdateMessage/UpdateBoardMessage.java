@@ -1,6 +1,5 @@
 package it.polimi.ingsw.Network.Message.Server.UpdateMessage;
 
-import it.polimi.ingsw.Client.Controller.ClientManager;
 import it.polimi.ingsw.Network.Message.Enum.UpdateType;
 import it.polimi.ingsw.Server.Model.Player.Position;
 
@@ -36,7 +35,7 @@ public class UpdateBoardMessage extends UpdateMessage {
     }
 
     @Override
-    public void updateClient(ClientManager clientManager) {
-        clientManager.getClientBoardUpdater().boardUpdate(this);
+    public void execute() {
+        super.getClientManager().boardUpdate(this);
     }
 }

@@ -3,7 +3,6 @@ package it.polimi.ingsw.Network.Message.Server.UpdateMessage;
 import it.polimi.ingsw.Client.Controller.ClientManager;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Player.ColorEnum;
-import javafx.scene.paint.Color;
 
 
 public class UpdatePlayersMessage extends UpdateMessage{
@@ -34,7 +33,7 @@ public class UpdatePlayersMessage extends UpdateMessage{
     }
 
     @Override
-    public void updateClient(ClientManager clientManager) {
-        clientManager.updatePlayerInfo(this);
+    public void execute() {
+        super.getClientManager().updatePlayerInfo(this);
     }
 }
