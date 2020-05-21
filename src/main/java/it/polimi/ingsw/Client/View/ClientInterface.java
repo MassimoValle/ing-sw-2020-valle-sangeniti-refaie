@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Client.View;
 
+import it.polimi.ingsw.Client.Controller.PossibleClientAction;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
@@ -7,6 +8,7 @@ import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public interface ClientInterface {
@@ -49,6 +51,12 @@ public interface ClientInterface {
     void errorWhileSelectingWorker(String gameManagerSays);
 
     void workerSelectedSuccessfully();
+
+    PossibleClientAction choseActionToPerform(List<PossibleClientAction> possibleActions);
+
+    void errorWhileActivatingPower(String gameManagerSays);
+
+    void powerActivated(God god);
 
     Position moveWorker(ArrayList<Position> nearlyPosValid);
 

@@ -3,10 +3,13 @@ package it.polimi.ingsw.Client.Controller;
 import it.polimi.ingsw.Client.Model.BabyGame;
 import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.ClientRequests.*;
+import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.*;
 import it.polimi.ingsw.Network.Message.Server.ServerMessage;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.*;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.*;
+import it.polimi.ingsw.Server.Model.Action.BuildDomeAction;
+import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
@@ -18,11 +21,23 @@ import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+/**
+ * The type Client manager.
+ */
 public class ClientManager {
 
+    /**
+     * The constant clientView.
+     */
     public static ClientView clientView = null;
+
+    /**
+     * The Client state.
+     */
+    PossibleClientState clientState;
 
     // model
     private Player me;
@@ -32,28 +47,49 @@ public class ClientManager {
 
     // variabili di controllo
     private Integer workerSelected;
-    private boolean myTurn;
+    private boolean myTurn = false;
     private boolean canMoveAgain = false;
     private boolean canBuildAgain = false;
+    private boolean playerHasBuilt = false;
+    private boolean playerHasMoved = false;
+    private boolean powerUsed = false;
+    private int workerPlaced = 0;
+    private boolean workersPlaced = false;
 
-    //la richiesta corrente che il client sta gestendo
+
+    /**
+     * The Current server request.
+     */
+//la richiesta corrente che il client sta gestendo
     ServerRequest currentServerRequest = null;
 
-    //Qualsiasi messaggio che il client riceve dal server
+    /**
+     * The Current message.
+     */
+//Qualsiasi messaggio che il client riceve dal server
     ServerMessage currentMessage = null;
 
 
+    /**
+     * Instantiates a new Client manager.
+     *
+     * @param clientView the client view
+     */
     public ClientManager(ClientView clientView){
 
         this.clientView = clientView;
 
         this.clientBoardUpdater = new ClientBoardUpdater();
         babyGame = BabyGame.getInstance();
-
+        clientState = PossibleClientState.LOGIN;
     }
 
 
-
+    /**
+     * Call the {@link ClientManager#takeMessage(ServerMessage)} and execute the instructions inside the message
+     *
+     * @param serverMessage the server message
+     */
     public void handleMessageFromServer(ServerMessage serverMessage){
 
         takeMessage(serverMessage);
@@ -69,6 +105,11 @@ public class ClientManager {
 
     }
 
+    /**
+     * Whenever a {@link ServerRequest} is received by the client it will be handled by this method
+     *
+     * @param serverRequest the server request
+     */
     public void handleServerRequest(ServerRequest serverRequest) {
         currentServerRequest = serverRequest;
 
@@ -93,14 +134,22 @@ public class ClientManager {
 
     }
 
+    /**
+     * It handles the {@link ServerResponse} from the Server based on previous {@link Request} by the client
+     *
+     * @param serverResponse the server response
+     */
     public void handleServerResponse(ServerResponse serverResponse) {
         MessageStatus responseStatus = serverResponse.getResponseStatus();
+        ResponseContent responseContent = serverResponse.getResponseContent();
 
-        if(serverResponse.getResponseContent() != null) {
+        if(responseContent != null) {
 
-            switch (serverResponse.getResponseContent()){
+            switch (responseContent){
                 case LOGIN -> {
-                    if(serverResponse.getMessageStatus() == MessageStatus.OK) return;
+                    if(responseStatus == MessageStatus.OK) {
+                        clientState = PossibleClientState.LOGIN_DONE;
+                    }
                     else login();
                 }
 
@@ -111,6 +160,8 @@ public class ClientManager {
                 case PLACE_WORKER -> handlePlaceWorkerServerResponse((PlaceWorkerServerResponse) serverResponse);
 
                 case SELECT_WORKER -> handleSelectWorkerServerResponse((SelectWorkerServerResponse) serverResponse);
+
+                case POWER_BUTTON -> handlePowerButtonServerResponse((PowerButtonServerResponse) serverResponse);
 
                 case MOVE_WORKER, MOVE_WORKER_AGAIN -> handleMoveWorkerServerResponse((MoveWorkerServerResponse) serverResponse);
                 case END_MOVE -> handleEndMoveServerResponse((EndMoveServerResponse) serverResponse);
@@ -123,9 +174,41 @@ public class ClientManager {
         }
     }
 
+    /**
+     * It check if the {@link PowerButtonRequest} previously sent by the player was correct or not
+     *
+     * @param serverResponse the server response
+     */
+    private void handlePowerButtonServerResponse(PowerButtonServerResponse serverResponse) {
+
+        if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {
+
+            clientView.errorWhileActivatingPower(serverResponse.getGameManagerSays());
+
+            if (clientState == PossibleClientState.MOVING_WORKER) {
+                handleMoveWorkerServerRequest((MoveWorkerServerRequest) currentServerRequest);
+                return;
+            }
 
 
-    // functions
+            if (clientState == PossibleClientState.BUILDING) {
+                handleBuildServerRequest((BuildServerRequest) currentServerRequest);
+                return;
+            }
+        }
+
+        powerUsed = true;
+        God playerGod = me.getPlayerGod();
+        clientView.powerActivated(playerGod);
+        clientState = PossibleClientState.POWER_ACTIVATED;
+
+    }
+
+
+    /**
+     * Ask a name and send a {@link LoginRequest} to the Server
+     */
+
     public void login(){
 
         me = new Player(askUsername());
@@ -140,6 +223,11 @@ public class ClientManager {
 
     }
 
+    /**
+     * Ask a username to the player
+     *
+     * @return the username chosen
+     */
     private String askUsername() {
 
         return clientView.askUserName();
@@ -147,6 +235,8 @@ public class ClientManager {
     }
 
     private void chooseNumPlayers(){
+
+        clientState = PossibleClientState.SETTING_UP_PLAYERS;
 
         Integer num = clientView.askNumbOfPlayer();
 
@@ -158,9 +248,15 @@ public class ClientManager {
             e.printStackTrace();
         }
 
+        //Possibile dividere in modo tale che il server comunichi che effettivamente
+        // ha ricevuto il messaggio e abbia settato la partita su n giocatori
+        clientState = PossibleClientState.PLAYERS_SET_UP;
+
     }
 
     private void chooseGodFromDeck(ChooseGodsServerRequest serverRequest){
+
+        clientState = PossibleClientState.CHOOSING_GODS;
 
         int howMany = serverRequest.getHowMany();
 
@@ -182,6 +278,8 @@ public class ClientManager {
 
     private void pickGod(PickGodServerRequest serverRequest) {
 
+        clientState = PossibleClientState.PICKING_UP_GOD;
+
         ArrayList<God> hand = (ArrayList<God>) serverRequest.getGods();
 
         God myGod = clientView.pickFromChosenGods(hand);
@@ -199,6 +297,8 @@ public class ClientManager {
 
     private void placeWorker(PlaceWorkerServerRequest serverRequest) {
 
+        clientState = PossibleClientState.PLACING_WORKERS;
+
         Position p = clientView.placeWorker(serverRequest.getWorker().toString());
 
         try {
@@ -212,11 +312,19 @@ public class ClientManager {
     }
 
     private void startTurn() {
+
+        playerHasMoved = false;
+        playerHasBuilt = false;
+        powerUsed = false;
         clientView.startingTurn();
         this.myTurn = true;
+
+        clientState = PossibleClientState.STARTING_TURN;
     }
 
     private void selectWorker(){
+
+        clientState = PossibleClientState.SELECTING_WORKER;
 
         this.workerSelected = clientView.selectWorker();
 
@@ -256,23 +364,34 @@ public class ClientManager {
         }
     }
 
-    private void build(BuildServerRequest serverRequest){
+    private void build(BuildServerRequest serverRequest) {
 
         Position myWorkerPosition = me.getPlayerWorkers().get(workerSelected).getWorkerPosition();
-
         ArrayList<Position> nearlyPositionsValid = myWorkerPosition.getAdjacentPlaces();
-
         nearlyPositionsValid.add(myWorkerPosition);
+
 
         Position position = clientView.build(nearlyPositionsValid);
 
+        God playerGod = me.getPlayerGod();
+        boolean isAtlas = playerGod.is("Atlas");
+
+
         try {
-            Client.sendMessage(
-                    new BuildRequest(me.getPlayerName(), position)
-            );
-        }catch (IOException e){
+            if(powerUsed && isAtlas) {
+                Client.sendMessage(
+                        new BuildDomeRequest(me.getPlayerName(), position)
+                );
+            } else {
+                Client.sendMessage(
+                        new BuildRequest(me.getPlayerName(), position)
+                );
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
+
 
     }
 
@@ -317,6 +436,7 @@ public class ClientManager {
 
         clientView.godsSelectedSuccesfully();
 
+        clientState = PossibleClientState.GODS_CHOSEN;
     }
 
     private void handlePickGodServerResponse(PickGodServerResponse serverResponse) {
@@ -327,6 +447,8 @@ public class ClientManager {
             return;
         }
         clientView.godPickedUpSuccessfully();
+
+        clientState = PossibleClientState.GOD_ASSIGNED;
     }
 
     private void handlePlaceWorkerServerResponse(PlaceWorkerServerResponse serverResponse) {
@@ -338,6 +460,12 @@ public class ClientManager {
         }
 
         clientView.workerPlacedSuccesfully();
+        workerPlaced++;
+
+        if(workerPlaced == 2) {
+            workersPlaced = true;
+            clientState = PossibleClientState.WORKERS_PLACED;
+        }
 
     }
 
@@ -350,7 +478,11 @@ public class ClientManager {
         }
 
         clientView.workerSelectedSuccessfully();
+
+        clientState = PossibleClientState.WORKER_SELECTED;
     }
+
+
 
     private void handleMoveWorkerServerRequest(MoveWorkerServerRequest serverRequest) {
         if (canMoveAgain && !clientView.wantMoveAgain()) {
@@ -358,9 +490,81 @@ public class ClientManager {
             return;
         }
 
+        clientState = PossibleClientState.MOVING_WORKER;
+
         //TODO: da controllare sul client se ha la possibilità di fare una PowerButtonRequest
-        moveWorker(serverRequest);
+
+        //Prendiamo tutte le azioni disponibili che ha il giocatore
+        ArrayList<PossibleClientAction> possibleActionList = (ArrayList<PossibleClientAction>) getPossibleActionBeforeMoving();
+
+        PossibleClientAction actionToDo;
+
+        if (possibleActionList.size() > 1) {
+            actionToDo = whatToDo(possibleActionList);
+        } else {
+            actionToDo = possibleActionList.get(0);
+        }
+
+        switch (actionToDo) {
+            case SELECT_WORKER -> selectWorker();
+            case MOVE -> moveWorker(serverRequest);
+            case POWER_BUTTON -> usePowerButton();
+        }
+
     }
+
+    /**
+     * This method provide all the {@link PossibleClientAction Actions} the player can perform when his {@link ClientManager#clientState}
+     *  is equal to {@link PossibleClientState#MOVING_WORKER} (action not done yet)
+     *
+     * @return a {@link List<PossibleClientAction> } containing all the possible actions
+     */
+    private List<PossibleClientAction> getPossibleActionBeforeMoving() {
+        List<PossibleClientAction> possibleActions = new ArrayList<>(
+                List.of(PossibleClientAction.MOVE)
+        );
+
+        if (!playerHasBuilt && !playerHasMoved) {
+            possibleActions.add(PossibleClientAction.SELECT_WORKER);
+        }
+
+        if (me.getPlayerGod().getGodPower().canUsePowerBeforeMoving() && !powerUsed)
+            possibleActions.add(PossibleClientAction.POWER_BUTTON);
+
+        return possibleActions;
+    }
+
+    /**
+     * It asks the {@link PossibleClientAction Action} the player wont to perform,
+     * it is called only when the players has two or more action to choose between
+     *
+     * @param possibleActions - {@link List<PossibleClientAction> } containing all the available action
+     * @return Action - the {@link PossibleClientAction Action} chosen by the player
+     */
+    private PossibleClientAction whatToDo(List<PossibleClientAction> possibleActions) {
+
+        return clientView.choseActionToPerform(possibleActions);
+    }
+
+
+    /**
+     * It sends a {@link PowerButtonRequest} to the server
+     */
+    private void usePowerButton() {
+
+        clientState = PossibleClientState.ACTIVATING_POWER;
+
+        try {
+            Client.sendMessage(
+                    new PowerButtonRequest(me.getPlayerName())
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
+
+
 
     private void handleMoveWorkerServerResponse(MoveWorkerServerResponse serverResponse) {
 
@@ -374,6 +578,9 @@ public class ClientManager {
                     break;
                 }
 
+                clientState = PossibleClientState.WORKER_MOVED;
+
+                this.playerHasMoved = true;
                 this.canMoveAgain = false;
                 clientView.workerMovedSuccessfully();
 
@@ -381,8 +588,11 @@ public class ClientManager {
 
             case MOVE_WORKER_AGAIN -> {
 
-                clientView.workerMovedSuccessfully();
+                clientState = PossibleClientState.WORKER_MOVED;
+
+                this.playerHasMoved = true;
                 this.canMoveAgain = true;
+                clientView.workerMovedSuccessfully();
                 clientView.printCanMoveAgain(serverResponse.getGameManagerSays());
 
             }
@@ -396,9 +606,53 @@ public class ClientManager {
             return;
         }
 
-        build(serverRequest);
+        clientState = PossibleClientState.BUILDING;
+
+        //TODO: da controllare sul client se ha la possibilità di fare una PowerButtonRequest
+
+        //Prendiamo tutte le azioni disponibili che ha il giocatore
+        ArrayList<PossibleClientAction> possibleActionList = (ArrayList<PossibleClientAction>) getPossibleActionBeforeBuilding();
+
+        PossibleClientAction actionToDo;
+
+        if (possibleActionList.size() > 1) {
+            actionToDo = whatToDo(possibleActionList);
+        } else {
+            actionToDo = possibleActionList.get(0);
+        }
+
+        switch (actionToDo) {
+            case SELECT_WORKER -> selectWorker();
+            case POWER_BUTTON -> usePowerButton();
+            case BUILD -> build(serverRequest);
+        }
+
+
 
     }
+
+    /**
+     * This method provide all the {@link PossibleClientAction Actions} the player can perform when his {@link ClientManager#clientState}
+     *  is equal to {@link PossibleClientState#BUILDING} (action not done yet)
+     *
+     * @return a {@link List<PossibleClientAction> } containing all the possible actions
+     */
+    private List<PossibleClientAction> getPossibleActionBeforeBuilding() {
+
+            List<PossibleClientAction> possibleActions = new ArrayList<>(
+                    List.of(PossibleClientAction.BUILD)
+            );
+
+            if (!playerHasMoved) {
+                possibleActions.add(PossibleClientAction.SELECT_WORKER);
+            }
+
+            if (me.getPlayerGod().getGodPower().canUsePowerBeforeBuilding() && !powerUsed)
+                possibleActions.add(PossibleClientAction.POWER_BUTTON);
+
+            return possibleActions;
+    }
+
 
     private void handleBuildServerResponse(BuildServerResponse serverResponse) {
 
@@ -412,12 +666,14 @@ public class ClientManager {
                     break;
                 }
 
+                playerHasBuilt = true;
                 this.canBuildAgain = false;
                 clientView.builtSuccessfully();
             }
 
             case BUILD_AGAIN -> {
 
+                playerHasBuilt = true;
                 clientView.builtSuccessfully();
                 this.canBuildAgain = true;
                 clientView.printCanBuildAgain(serverResponse.getGameManagerSays());
@@ -443,6 +699,11 @@ public class ClientManager {
         clientView.endBuildingPhase(serverResponse.getGameManagerSays());
     }
 
+    /**
+     * Update player info.
+     *
+     * @param updatePlayersMessage the update players message
+     */
     public void updatePlayerInfo(UpdatePlayersMessage updatePlayersMessage) {
         babyGame.addPlayers(updatePlayersMessage);
         Set<Player> players = babyGame.players;
@@ -458,6 +719,11 @@ public class ClientManager {
             me = babyGame.getPlayerByName(me.getPlayerName());
     }
 
+    /**
+     * Board update.
+     *
+     * @param updateBoardMessage the update board message
+     */
     public void boardUpdate(UpdateBoardMessage updateBoardMessage) {
         clientBoardUpdater.boardUpdate(updateBoardMessage);
         clientView.showMap(getGameMap());

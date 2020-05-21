@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Client.View.Gui;
 
+import it.polimi.ingsw.Client.Controller.PossibleClientAction;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.God;
@@ -8,6 +9,7 @@ import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class GUI extends ClientView {
@@ -109,6 +111,21 @@ public class GUI extends ClientView {
 
     @Override
     public void workerSelectedSuccessfully() {
+
+    }
+
+    @Override
+    public PossibleClientAction choseActionToPerform(List<PossibleClientAction> possibleActions) {
+        return null;
+    }
+
+    @Override
+    public void errorWhileActivatingPower(String gameManagerSays) {
+
+    }
+
+    @Override
+    public void powerActivated(God god) {
 
     }
 

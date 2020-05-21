@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Server.Controller;
 
 import it.polimi.ingsw.Network.Message.ClientRequests.ChoseGodsRequest;
+import it.polimi.ingsw.Network.Message.ClientRequests.PowerButtonRequest;
 import it.polimi.ingsw.Network.Message.Enum.UpdateType;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.*;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.*;
@@ -8,6 +9,7 @@ import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateBoardMessage;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdatePlayersMessage;
 import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
@@ -148,6 +150,10 @@ public class MasterController {
                             new SelectWorkerServerResponse(status, gameManagerSays)
                     );
 
+            case POWER_BUTTON ->
+                    gameInstance.putInChanges(player,
+                            new PowerButtonServerResponse(status, gameManagerSays)
+                    );
             case MOVE_WORKER ->
                     gameInstance.putInChanges(player,
                             new MoveWorkerServerResponse(status, gameManagerSays)
@@ -195,14 +201,12 @@ public class MasterController {
         return res;
     }
 
-    public static void updateClients(String player, UpdateType updateType, Position position, Integer workerIndex){
+    public static void updateClients(String player, UpdateType updateType, Position position, Integer workerIndex, boolean domePresent){
 
         for(Player playerToSendUpdate: gameInstance.getPlayers()) {
-            UpdateBoardMessage updateMessage =  new UpdateBoardMessage(player, updateType, position, workerIndex);
+            UpdateBoardMessage updateMessage =  new UpdateBoardMessage(player, updateType, position, workerIndex, domePresent);
             gameInstance.putInChanges(playerToSendUpdate, updateMessage);
         }
-
-
 
     }
 

@@ -44,7 +44,7 @@ public class MoveAction implements Action {
         int heightDifference = map.getDifferenceInAltitude(oldPositionSquare.getPosition(), newPositionSquare.getPosition());
 
         //if some God Power is active that prevent you from doing this move
-        return !godsPowerActive(godsPowerPerformingAction) && !newPositionSquare.hasWorkerOn() && heightDifference >= -1;
+        return !godsPowerActive(godsPowerPerformingAction) && !newPositionSquare.hasWorkerOn() && heightDifference >= -1 && !newPositionSquare.hasDome();
     }
 
 

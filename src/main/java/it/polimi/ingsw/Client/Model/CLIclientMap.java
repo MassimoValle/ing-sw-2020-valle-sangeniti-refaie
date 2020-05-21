@@ -68,10 +68,10 @@ public class CLIclientMap extends GameMap {
 
     }
 
-    public void buildUpdate(Position position) {
+    public void buildUpdate(Position position, boolean domePresent) {
 
         try {
-            getSquare(position).addBlock(false);
+            getSquare(position).addBlock(domePresent);
         }catch (DomePresentException e){
             e.printStackTrace();
         }

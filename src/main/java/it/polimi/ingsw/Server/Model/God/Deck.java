@@ -121,6 +121,16 @@ public class Deck extends ArrayList<God> implements Serializable {
         return selectedGod;
     }
 
+    public God getGodByName(String string) {
+
+        for (God god : Deck.getInstance()) {
+            if (god.getGodName().equals(string))
+                return god;
+        }
+
+        return null;
+    }
+
 
 
     //Print to screen all the gods inside the Deck

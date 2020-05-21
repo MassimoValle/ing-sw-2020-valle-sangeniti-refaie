@@ -14,4 +14,14 @@ public class AtlasPower extends Power {
         return super.buildDome(squareWhereToBuild);
     }
 
+    @Override
+    public boolean canUsePowerBeforeBuilding() {
+        return true;
+    }
+
+    @Override
+    public boolean canBuildDomeAtAnyLevel() {
+        return true;
+    }
+
 }

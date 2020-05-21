@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Client.View.Cli;
 
+import it.polimi.ingsw.Client.Controller.PossibleClientAction;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
@@ -12,6 +13,7 @@ import it.polimi.ingsw.Server.Model.Player.Position;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -277,6 +279,49 @@ public class CLI extends ClientView {
     public void workerSelectedSuccessfully() {
 
         consoleOut.println("\nWorker selected succesfully!\n");
+    }
+
+    @Override
+    public PossibleClientAction choseActionToPerform(List<PossibleClientAction> possibleActions) {
+
+        consoleOut.println("\nHere it is what you can do:");
+
+        int i = 1;
+        for (PossibleClientAction possibleClientAction : possibleActions) {
+            consoleOut.println( i +" " + possibleClientAction + "\n");
+            i++;
+        }
+
+        consoleOut.println(">>>");
+
+        int actionToDo;
+        do{
+            actionToDo = Integer.parseInt(consoleIn.nextLine());
+
+        }while (actionToDo < 0 || actionToDo > possibleActions.size());
+
+        return possibleActions.get(actionToDo - 1);
+
+    }
+
+
+    @Override
+    public void errorWhileActivatingPower(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the power you want to use" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease do a different action");
+
+    }
+
+    @Override
+    public void powerActivated(God god) {
+
+        consoleOut.println("Power activated: ");
+        consoleOut.println("Now you can: ");
+        consoleOut.println(god.getGodPower().getPowerDescription());
+        consoleOut.println();
+
     }
 
     @Override

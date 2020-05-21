@@ -21,7 +21,7 @@ public class ClientBoardUpdater {
             switch (message.getUpdateType()){
                 case PLACE -> map.placeUpdate(playerName, worker, position);
                 case MOVE -> map.moveUpdate(playerName, worker, position);
-                case BUILD -> map.buildUpdate(position);
+                case BUILD -> map.buildUpdate(position, message.isDomePresent());
             }
 
 
