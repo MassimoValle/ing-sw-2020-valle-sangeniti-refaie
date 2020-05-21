@@ -1,6 +1,5 @@
 package it.polimi.ingsw.Server.Controller;
 
-import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
 import it.polimi.ingsw.Network.Message.Enum.UpdateType;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.StartTurnServerRequest;
@@ -30,6 +29,9 @@ public class ActionManager {
     private ActionOutcome actionOutcome;
 
     private Player requestSender;
+
+    //this is setted when during someone else's turn one player wins
+    private Player winner;
 
     public ActionManager(Game game, TurnManager turnManager) {
         this.gameInstance = game;
@@ -230,7 +232,7 @@ public class ActionManager {
         }
 
         //vado a contrllare se con questa mossa l'activePlayer ha vinto (sono salito da un livello 2 a un livello 3)
-        if (playerHasWon(activePlayer)) {
+        if (playerHasWonAfterMoving(activePlayer)) {
             MasterController.buildWonResponse(activePlayer,"YOU WON!");
             return;
         }
@@ -317,6 +319,13 @@ public class ActionManager {
             turnManager.addActionPerformed(new BuildAction(squareWhereToBuild));
 
         MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.BUILD, positionWhereToBuild, activeWorker.getWorkersNumber(), request instanceof BuildDomeRequest);
+
+        //vado a contrllare se con questa mossa un qualsiasi giocatore con qualche potere particolare ha vinto
+        if (someoneHasWonAfterBuilding(activePlayer)) {
+            MasterController.buildWonResponse(winner,"YOU WON!");
+            //Da inviare anche a tutti gli altri giocatori che il winner ha vinto
+            return;
+        }
 
         if (actionOutcome == ActionOutcome.DONE) {
 
@@ -420,15 +429,32 @@ public class ActionManager {
 
 
     /**
-     * It checks if the {@link Player#getPlayerName()} has won
+     * It checks if the {@link Player#getPlayerName()} has won after performing a {@link MoveAction}
      *
      * @param player the player to check if he won
      *
      * @return true if he has won, false otherwise
      */
-    private boolean playerHasWon(Player player) {
-        Outcome outcome = new Outcome(player);
-        return outcome.playerHasWon(turnManager.getActiveWorker());
+    private boolean playerHasWonAfterMoving(Player player) {
+        Outcome outcome = new Outcome(player, gameInstance.getPowersInGame(), gameInstance.getGameMap());
+        return outcome.playerHasWonAfterMoving(turnManager.getActiveWorker());
+    }
+
+    /**
+     * It checks if some {@link Player} has won after performing a {@link MoveAction}
+     *
+     * @param player the player to check if he won
+     *
+     * @return true if he has won, false otherwise
+     */
+    private boolean someoneHasWonAfterBuilding(Player player) {
+        Outcome outcome = new Outcome(player, gameInstance.getPowersInGame(), gameInstance.getGameMap());
+        if (outcome.playerHasWonAfterBuilding(gameInstance.getGameMap())) {
+            winner = outcome.takeWinner(gameInstance.getPlayers());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //  ####    TESTING-ONLY    ####

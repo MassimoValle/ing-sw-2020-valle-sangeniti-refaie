@@ -36,7 +36,7 @@ public class mainViewController implements Initializable {
 
     //ClientGameMap clientGameMap = ClientGameMap.getIstance();
 
-    GUImap guImap = (GUImap) BabyGame.getInstance().clientMap;
+    GUImap guImap = (GUImap) BabyGame.getInstance().getClientMap();
 
 
     private void setupImageView(){

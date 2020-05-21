@@ -8,20 +8,25 @@ import it.polimi.ingsw.Server.View.Observer;
 
 public class ClientBoardUpdater {
 
-        BabyGame babyGame = BabyGame.getInstance();
-        CLIclientMap map = babyGame.clientMap;
+    BabyGame babyGame;
+    CLIclientMap clientMap;
+
+    public ClientBoardUpdater(BabyGame babyGame) {
+        this.babyGame = babyGame;
+        this.clientMap = babyGame.getClientMap();
+    }
 
 
-        void boardUpdate(UpdateBoardMessage message) {
+    void boardUpdate(UpdateBoardMessage message) {
 
             String playerName = message.getPlayerName();
             Integer worker = message.getWorkerIndex();
             Position position = message.getPosition();
 
             switch (message.getUpdateType()){
-                case PLACE -> map.placeUpdate(playerName, worker, position);
-                case MOVE -> map.moveUpdate(playerName, worker, position);
-                case BUILD -> map.buildUpdate(position, message.isDomePresent());
+                case PLACE -> clientMap.placeUpdate(playerName, worker, position, babyGame.getPlayers());
+                case MOVE -> clientMap.moveUpdate(playerName, worker, position, babyGame.getPlayers());
+                case BUILD -> clientMap.buildUpdate(position, message.isDomePresent());
             }
 
 

@@ -95,7 +95,7 @@ public interface ClientInterface {
 
     void someoneElseDoingStuff();
 
-    void win(boolean winner);
+    void youWon();
 
     void debug(ServerResponse serverResponse);
 

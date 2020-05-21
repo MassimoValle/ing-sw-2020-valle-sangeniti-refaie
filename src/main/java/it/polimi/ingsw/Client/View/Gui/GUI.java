@@ -210,7 +210,7 @@ public class GUI extends ClientView {
     }
 
     @Override
-    public void win(boolean winner) {
+    public void youWon() {
 
     }
 

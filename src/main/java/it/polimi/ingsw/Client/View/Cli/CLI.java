@@ -505,15 +505,12 @@ public class CLI extends ClientView {
                 "\n");
     }
 
+
     @Override
-    public void win(boolean imWinner) {
-        consoleOut.println("#############");
-
-        if(imWinner)
-            consoleOut.println("YOU WIN");
-        else consoleOut.println("YOU LOSE");
-
-        consoleOut.println("#############");
+    public void youWon() {
+        consoleOut.println("\t#############");
+        consoleOut.println("\t\tYOU WIN");
+        consoleOut.println("\t#############");
     }
 
     @Override
