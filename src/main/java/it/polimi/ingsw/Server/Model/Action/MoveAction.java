@@ -42,9 +42,12 @@ public class MoveAction implements Action {
 
         GameMap map = Game.getInstance().getGameMap();
         int heightDifference = map.getDifferenceInAltitude(oldPositionSquare.getPosition(), newPositionSquare.getPosition());
+        ArrayList<Position> adjacent = oldPositionSquare.getPosition().getAdjacentPlaces();
 
         //if some God Power is active that prevent you from doing this move
-        return !godsPowerActive(godsPowerPerformingAction) && !newPositionSquare.hasWorkerOn() && heightDifference >= -1 && !newPositionSquare.hasDome();
+        return !godsPowerActive(godsPowerPerformingAction) && !newPositionSquare.hasWorkerOn() &&
+                heightDifference >= -1 && !newPositionSquare.hasDome() &&
+                adjacent.contains(newPosition);
     }
 
 

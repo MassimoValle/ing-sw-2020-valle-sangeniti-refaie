@@ -329,20 +329,22 @@ public class ActionManager {
 
         if (actionOutcome == ActionOutcome.DONE) {
 
-            if (gameState == PossibleGameState.BUILD_BEFORE) {
-                gameState = PossibleGameState.WORKER_SELECTED;
-                turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
-                MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Now you can move!");
-                MasterController.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, activeWorker);
-                return;
+            switch (gameState) {
+
+                case BUILD_BEFORE -> {
+                    gameState = PossibleGameState.WORKER_SELECTED;
+                    turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
+                    MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Now you can move!");
+                    MasterController.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, activeWorker);
+                }
+
+                default -> {
+                    //action can not be performed again
+                    gameState = PossibleGameState.PLAYER_TURN_ENDING;
+                    turnManager.updateTurnState(PossibleGameState.BUILT);
+                    MasterController.buildPositiveResponse(activePlayer, responseContent, "Built!");
+                    MasterController.buildServerRequest(activePlayer, ServerRequestContent.END_TURN, null);}
             }
-
-
-            //action can not be performed again
-            gameState = PossibleGameState.PLAYER_TURN_ENDING;
-            turnManager.updateTurnState(PossibleGameState.BUILT);
-            MasterController.buildPositiveResponse(activePlayer, responseContent, "Built!");
-            MasterController.buildServerRequest(activePlayer, ServerRequestContent.END_TURN, null);
 
         } else {
             //action  can be performed again
@@ -364,7 +366,7 @@ public class ActionManager {
             return;
         }
 
-        //Sei sei arrivato qua vuol dire che hai sei in WORKER_MOVED, adesso controllo che hai costruito almeno una volta
+        //Sei sei arrivato qua vuol dire che sei in WORKER_MOVED, adesso controllo che hai costruito almeno una volta
         if ( !turnManager.activePlayerHasBuilt() ) {
             MasterController.buildNegativeResponse(activePlayer, responseContent, "You have to build at least once");
             return;
@@ -436,7 +438,7 @@ public class ActionManager {
      * @return true if he has won, false otherwise
      */
     private boolean playerHasWonAfterMoving(Player player) {
-        Outcome outcome = new Outcome(player, gameInstance.getPowersInGame(), gameInstance.getGameMap());
+        Outcome outcome = new Outcome(player, gameInstance.getPowersInGame(), gameInstance.getGameMap(), gameInstance.getPlayers());
         return outcome.playerHasWonAfterMoving(turnManager.getActiveWorker());
     }
 
@@ -448,9 +450,9 @@ public class ActionManager {
      * @return true if he has won, false otherwise
      */
     private boolean someoneHasWonAfterBuilding(Player player) {
-        Outcome outcome = new Outcome(player, gameInstance.getPowersInGame(), gameInstance.getGameMap());
+        Outcome outcome = new Outcome(player, gameInstance.getPowersInGame(), gameInstance.getGameMap(), gameInstance.getPlayers());
         if (outcome.playerHasWonAfterBuilding(gameInstance.getGameMap())) {
-            winner = outcome.takeWinner(gameInstance.getPlayers());
+            winner = outcome.getWinner();
             return true;
         } else {
             return false;

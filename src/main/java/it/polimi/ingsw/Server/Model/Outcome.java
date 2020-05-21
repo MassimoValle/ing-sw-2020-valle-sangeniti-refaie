@@ -14,14 +14,16 @@ public class Outcome {
     private final Player player;
     private final GameMap gameMap;
     private final List<Power> powersInGame;
+    private final List<Player> playersInGame;
+
+    private Player winner = null;
 
 
-    public Outcome(Player player, List<Power> powersInGame, GameMap gameMap) {
+    public Outcome(Player player, List<Power> powersInGame, GameMap gameMap, List<Player> playersInGame) {
         this.player = player;
         this.powersInGame = powersInGame;
         this.gameMap = gameMap;
-
-        //getInfo(); //Inizializzo l'oggetto con le informazioni necessarie per capire se ha vinto o no
+        this.playersInGame = playersInGame;
     }
 
 
@@ -50,7 +52,19 @@ public class Outcome {
 
 
     public boolean playerHasWonAfterBuilding(GameMap gameMap) {
-        return chronusIsPresent() && gameMap.hasAtLeastFiveFullTower();
+
+        if( chronusIsPresent() && gameMap.hasAtLeastFiveFullTower() ) {
+
+            for (Player pl: playersInGame) {
+                if (pl.getPlayerGod().is("Chronus"))
+                    winner = pl;
+            }
+
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     private boolean heraIsPresent() {
@@ -69,12 +83,7 @@ public class Outcome {
         return false;
     }
 
-    //ritorna il giocatore che ha chrono
-    public Player takeWinner(List<Player> players) {
-        for (Player pl: players) {
-            if (pl.getPlayerGod().is("Chronus"))
-                return pl;
-        }
-        return null;
+    public Player getWinner() {
+        return winner;
     }
 }
