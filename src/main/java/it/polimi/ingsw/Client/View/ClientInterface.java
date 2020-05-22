@@ -13,9 +13,6 @@ import java.util.Set;
 
 public interface ClientInterface {
 
-
-    void start();
-
     String askIpAddress();
 
     String askUserName();

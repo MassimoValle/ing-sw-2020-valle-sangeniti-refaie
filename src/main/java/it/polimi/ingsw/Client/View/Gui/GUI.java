@@ -1,35 +1,51 @@
 package it.polimi.ingsw.Client.View.Gui;
 
 import it.polimi.ingsw.Client.Controller.PossibleClientAction;
+import it.polimi.ingsw.Client.GUImain;
 import it.polimi.ingsw.Client.View.ClientView;
+import it.polimi.ingsw.Client.View.Gui.ViewControllers.AskIpAddressController;
+import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
+import it.polimi.ingsw.Server.View.Observer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class GUI extends ClientView {
 
+    private String ipAddress;
+
     public GUI(){
-
+        ipAddress = null;
     }
 
-    @Override
-    public void start() {
-
-    }
 
     @Override
     public String askIpAddress() {
+        AskIpAddressController askIpAddressController = AskIpAddressController.getInstance();
+        askIpAddressController.addObserver(new ParameterReceiver());
+
+        try {
+            GUImain.setRoot("askIpAddr");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
     public String askUserName() {
+        try {
+            GUImain.setRoot("askUsername");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -221,6 +237,38 @@ public class GUI extends ClientView {
 
     @Override
     public void showMap(GameMap clientMap) {
+
+    }
+
+    @Override
+    public synchronized void run() {
+        askIpAddress();
+
+        while (ipAddress == null){
+            try {
+                wait();
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+
+        Client client = new Client(ipAddress, 8080, this);
+
+        try {
+            client.run();
+        } catch (IOException ex) {
+            //ex.printStackTrace();
+            run();
+        }
+    }
+
+    private class ParameterReceiver implements Observer<String> {
+
+        @Override
+        public synchronized void update(String message) {
+            ipAddress = message;
+            this.notifyAll();
+        }
 
     }
 }

@@ -30,22 +30,6 @@ public class CLI extends ClientView {
 
 
     @Override
-    public void start() {
-
-        String ip = askIpAddress();
-
-
-        Client client = new Client(ip, 8080, this);
-
-        try {
-            client.run();
-        } catch (IOException ex) {
-            //ex.printStackTrace();
-            start();
-        }
-    }
-
-    @Override
     public String askIpAddress() {
         consoleOut.print("IP Address: ");
 
@@ -534,5 +518,20 @@ public class CLI extends ClientView {
         out += "________________\n";
 
         consoleOut.println(out);
+    }
+
+    @Override
+    public void run() {
+        String ip = askIpAddress();
+
+
+        Client client = new Client(ip, 8080, this);
+
+        try {
+            client.run();
+        } catch (IOException ex) {
+            //ex.printStackTrace();
+            run();
+        }
     }
 }
