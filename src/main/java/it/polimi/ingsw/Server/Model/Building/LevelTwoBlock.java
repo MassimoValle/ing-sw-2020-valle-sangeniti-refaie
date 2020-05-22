@@ -8,6 +8,4 @@ import it.polimi.ingsw.Server.Model.Player.Position;
 public class LevelTwoBlock extends Block {
 
 
-    @Override
-    void build(Position pos) { };
 }

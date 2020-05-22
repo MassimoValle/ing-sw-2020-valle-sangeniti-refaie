@@ -11,9 +11,4 @@ public class LevelOneBlock extends Block {
     public LevelOneBlock(){
         // png
     }
-    @Override
-    void build(Position pos) {
-        //TODO
-
-    };
 }

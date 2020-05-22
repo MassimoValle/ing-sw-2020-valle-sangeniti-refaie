@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class AthenaPowerTest {
 
@@ -38,7 +38,7 @@ public class AthenaPowerTest {
 
         masterController = new MasterController(game, player1);
 
-        new SetupGameUtilityClass().setup(masterController, 2,1, true );
+        new SetupGameUtilityClass().setup(masterController, 2,0, true );
 
         pl2 = player2.getPlayerName();
         pl1 = player1.getPlayerName();
@@ -47,26 +47,42 @@ public class AthenaPowerTest {
     @Test
     public void AthenaPowerTest() {
 
-        game.getGameMap().printBoard();
         //Tocca al player1
         //seleziona un worker...
+
+        assertFalse(player1.getPlayerWorkers().get(0).isSelected());
+
+
         masterController.dispatcher(
                 new SelectWorkerRequest(pl1, 0)
         );
+
+        assertTrue(player1.getPlayerWorkers().get(0).isSelected());
+
+
+
         //lo muovo...
         masterController.dispatcher(
                 new MoveRequest(pl1, new Position(1, 2))
         );
+
+        assertEquals(player1.getPlayerWorkers().get(0), game.getGameMap().getWorkerOnSquare(1,2));
+        assertTrue(game.getGameMap().getSquare(1,2).hasWorkerOn());
+        assertFalse(game.getGameMap().getSquare(1,2).hasBeenBuiltOver());
+
+
         //e costruisco
         masterController.dispatcher(
                 new BuildRequest(pl1, new Position(0, 2))
         );
+
+        assertFalse(game.getGameMap().getSquare(1,2).hasBeenBuiltOver());
+
         //passo il turno
         masterController.dispatcher(
                 new EndTurnRequest(pl1)
         );
 
-        game.getGameMap().printBoard();
 
         //Tocca al player2
         masterController.dispatcher(
@@ -78,18 +94,12 @@ public class AthenaPowerTest {
         );
 
         masterController.dispatcher(
-                new EndMoveRequest(pl2)
-        );
-
-        masterController.dispatcher(
                 new BuildRequest(pl2, new Position(4, 3))
         );
         //passo il turno
         masterController.dispatcher(
                 new EndTurnRequest(pl2)
         );
-
-        game.getGameMap().printBoard();
 
         // 2 TUNRO PLAYER ATHENA
         //seleziona un worker...
@@ -109,8 +119,6 @@ public class AthenaPowerTest {
                 new EndTurnRequest(pl1)
         );
 
-        game.getGameMap().printBoard();
-
         //Tocca al player2
         masterController.dispatcher(
                 new SelectWorkerRequest(pl2, 0)
@@ -120,28 +128,30 @@ public class AthenaPowerTest {
                 new MoveRequest(pl2, new Position(4, 3))
         );
 
+        assertFalse(game.getGameMap().getSquare(new Position(4,3)).hasWorkerOn());
+        assertEquals(new Position(4, 2), player2.getPlayerWorkers().get(0).getWorkerPosition());
 
-        game.getGameMap().printBoard();
-        //La move request da error perchè athena nel turno precedente è salita
-        //di conseguenza sono costretto a muovere in un altra posizine
+
         masterController.dispatcher(
                 new MoveRequest(pl2, new Position(3, 2))
         );
 
-        game.getGameMap().printBoard();
+        assertTrue(game.getGameMap().getSquare(new Position(3,2)).hasWorkerOn());
+        assertEquals(new Position(3, 2), player2.getPlayerWorkers().get(0).getWorkerPosition());
 
-        masterController.dispatcher(
-                new EndMoveRequest(pl2)
-        );
+
+        assertFalse(game.getGameMap().getSquare(3,1).hasBeenBuiltOver());
+
         masterController.dispatcher(
                 new BuildRequest(pl2, new Position(3, 1))
         );
+
+        assertTrue(game.getGameMap().getSquare(3,1).hasBeenBuiltOver());
+
         //passo il turno
         masterController.dispatcher(
                 new EndTurnRequest(pl2)
         );
 
-        game.getGameMap().printBoard();
-        //FUNZIONAAAAA
     }
 }
