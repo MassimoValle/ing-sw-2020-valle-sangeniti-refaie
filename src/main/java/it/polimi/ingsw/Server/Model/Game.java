@@ -1,6 +1,5 @@
 package it.polimi.ingsw.Server.Model;
 
-import it.polimi.ingsw.Client.Model.ModelSerialized;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
@@ -9,9 +8,8 @@ import it.polimi.ingsw.Server.Model.Player.ColorEnum;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.Server.Responses.Response;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.View.Observable;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -185,22 +183,15 @@ public class Game extends Observable<Game> {
 
 
     /**
-     * It put the {@link Response} to the relative {@link Player} in the {@link Game#changes} HashMap
+     * It put the {@link ServerResponse} to the relative {@link Player} in the {@link Game#changes} HashMap
      *  @param player the player to whom the answer is intended
      * @param serverMessage the response that must be sent to the player
      */
     public void putInChanges(Player player, Message serverMessage) {
         changes.put(player, serverMessage);
 
-        //sendUpdateToEveryone();
-
         notify(this);
         changes.remove(player, serverMessage);
-    }
-
-    private void sendUpdateToEveryone() {
-        ModelSerialized modelSerialized = new ModelSerialized();
-        //mandiamo a tutti questo model serialized cosi per aggiornare la loro view
     }
 
 
@@ -212,12 +203,7 @@ public class Game extends Observable<Game> {
      */
     public Message notifyPlayer(Player player) {
         Message x = changes.get(player);
-        System.out.println("message taken by " + player.getPlayerName());
-
-        {
-            //testing only
-            gameMap.printBoard();
-        }
+        System.out.println("Sent message to: " + player.getPlayerName());
 
         return x;
     }

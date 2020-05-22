@@ -5,15 +5,20 @@ import it.polimi.ingsw.Server.Model.Player.Worker;
 
 public interface GodsChecker {
 
-    public boolean checkIfActionNotPermitted(MoveAction moveAction);
+    boolean checkIfActionNotPermitted(MoveAction moveAction);
 
     //used for Athena
-    public boolean canPreventsFromPerformingAction();
+    boolean canPreventsFromPerformingAction();
 
     //used for prometheus
-    public boolean canBuildBeforeMoving(Worker workerSelected);
+    boolean canBuildBeforeMoving(Worker workerSelected);
 
+    boolean canUsePowerBeforeMoving();
+
+    boolean canUsePowerBeforeBuilding();
+
+    boolean canBuildDomeAtAnyLevel();
 
     //used for prometheus
-    public void setBuildBefore();
+    void setBuildBefore();
 }

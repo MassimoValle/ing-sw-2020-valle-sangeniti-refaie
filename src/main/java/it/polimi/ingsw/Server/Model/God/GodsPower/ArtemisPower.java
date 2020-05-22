@@ -50,4 +50,10 @@ public class ArtemisPower extends Power implements Serializable {
 
     }
 
+    @Override
+    public ActionOutcome build(Square squareWhereToBuild) {
+        firstMove = true;
+        startingPlace = null;
+        return super.build(squareWhereToBuild);
+    }
 }

@@ -55,4 +55,9 @@ public class PrometheusPower extends Power implements Serializable {
     public void setBuildBefore() {
         buildBefore = true;
     }
+
+    @Override
+    public boolean canUsePowerBeforeMoving() {
+        return true;
+    }
 }

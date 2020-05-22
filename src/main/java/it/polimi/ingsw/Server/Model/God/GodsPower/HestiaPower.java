@@ -28,6 +28,7 @@ public class HestiaPower extends Power {
 
         } else if(!squareWhereToBuild.getPosition().isPerimetral()){        //firstBuild = false
             outcome = super.build(squareWhereToBuild);
+            firstBuild = true; //resetto firstBuild
             return ActionOutcome.DONE;
         } else return ActionOutcome.NOT_DONE; //cannot build because square is perimetral
 

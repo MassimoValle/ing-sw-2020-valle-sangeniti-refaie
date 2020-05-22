@@ -96,6 +96,21 @@ public abstract class Power implements Serializable, GodsChecker {
     }
 
     @Override
+    public boolean canUsePowerBeforeMoving() {
+        return false;
+    }
+
+    @Override
+    public boolean canUsePowerBeforeBuilding() {
+        return false;
+    }
+
+    @Override
+    public boolean canBuildDomeAtAnyLevel() {
+        return false;
+    }
+
+    @Override
     public void setBuildBefore() {
     }
 

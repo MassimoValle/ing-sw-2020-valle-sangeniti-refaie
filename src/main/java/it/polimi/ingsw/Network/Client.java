@@ -3,6 +3,7 @@ package it.polimi.ingsw.Network;
 import it.polimi.ingsw.Client.Controller.ClientManager;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Message.*;
+import it.polimi.ingsw.Network.Message.Server.ServerMessage;
 
 import java.io.*;
 import java.net.Socket;
@@ -19,7 +20,7 @@ public class Client {
     private final String ip;
     private final int port;
 
-    private static LinkedList<Message> queue;
+    private static LinkedList<ServerMessage> queue;
 
     private static ObjectInputStream socketIn;
     private static ObjectOutputStream socketOut;
@@ -83,9 +84,9 @@ public class Client {
     }
 
     public static void receiveMessage() throws IOException{
-        Message received;
+        ServerMessage received;
         try {
-            received = (Message) socketIn.readObject();
+            received = (ServerMessage) socketIn.readObject();
 
             queue.add(received);
 
@@ -120,23 +121,17 @@ public class Client {
         
     }
 
-    public void startConnection() {
+    public void startConnection() throws  IOException{
 
-        try{
-            socket = new Socket(ip, port);
-            System.out.println("Connection established");
+        socket = new Socket(ip, port);
+        System.out.println("Connection established");
 
-            socket.setKeepAlive(true);
-            //ping();
+        socket.setKeepAlive(true);
+        //ping();
 
-            socketOut = new ObjectOutputStream(socket.getOutputStream());
-            socketIn = new ObjectInputStream(socket.getInputStream());
+        socketOut = new ObjectOutputStream(socket.getOutputStream());
+        socketIn = new ObjectInputStream(socket.getInputStream());
 
-
-        } catch (IOException ex) {
-            System.out.println("Impossible to connect to " + ip + port);
-            ex.printStackTrace();
-        }
     }
 
 

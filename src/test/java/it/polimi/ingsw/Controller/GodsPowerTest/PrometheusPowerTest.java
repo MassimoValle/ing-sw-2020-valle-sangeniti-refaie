@@ -125,8 +125,13 @@ public class PrometheusPowerTest {
         game.getGameMap().printBoard();
 
         MasterController.dispatcher(
-                new EndMoveRequest(pl1)
+                new EndTurnRequest(pl1)
         );
+
+        MasterController.dispatcher(
+                new SelectWorkerRequest(pl2, 0)
+        );
+
 
         game.getGameMap().printBoard();
     }

@@ -1,9 +1,9 @@
 package it.polimi.ingsw.Client.View.Cli;
 
-import it.polimi.ingsw.Client.Model.BabyGame;
+import it.polimi.ingsw.Client.Controller.PossibleClientAction;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Client;
-import it.polimi.ingsw.Network.Message.Server.Responses.Response;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
@@ -13,6 +13,7 @@ import it.polimi.ingsw.Server.Model.Player.Position;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -33,12 +34,14 @@ public class CLI extends ClientView {
 
         String ip = askIpAddress();
 
+
         Client client = new Client(ip, 8080, this);
 
         try {
             client.run();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
+            start();
         }
     }
 
@@ -118,7 +121,7 @@ public class CLI extends ClientView {
 
                 int n = Integer.parseInt(entered);
 
-                if (n < 1 || n > 15) {
+                if (n < 1 || n >= 15) {
                     consoleOut.println("Index not valid, please insert a valid index");
                     break;
                 }
@@ -136,6 +139,22 @@ public class CLI extends ClientView {
         return godsChosen;
     }
 
+    @Override
+    public void errorWhileChoosingGods(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the Gods you selected" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease select the correct Gods");
+
+    }
+
+    @Override
+    public void godsSelectedSuccesfully() {
+
+        consoleOut.println("Gods selected successfully");
+        consoleOut.println();
+
+    }
 
     @Override
     public God pickFromChosenGods(ArrayList<God> hand) {
@@ -174,6 +193,23 @@ public class CLI extends ClientView {
     }
 
     @Override
+    public void errorWhilePickinUpGod(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the God you selected" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease select the correct God");
+
+    }
+
+    @Override
+    public void godPickedUpSuccessfully() {
+
+        consoleOut.println("God selected successfully");
+        consoleOut.println();
+
+    }
+
+    @Override
     public void showAllPlayersInGame(Set<Player> playerSet) {
 
         consoleOut.println("\nYou are playing against: ");
@@ -201,17 +237,27 @@ public class CLI extends ClientView {
         return new Position(row, col);
     }
 
-    @Override
-    public void workerPlacedSuccesfully(String gameManagerSays) {
 
-        consoleOut.println(gameManagerSays);
-        consoleOut.println();
+    @Override
+    public void errorWhilePlacingYourWorker(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the worker you wanted to place" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease try place it again");
     }
 
     @Override
-    public void startingTurn(String gameManagerSays) {
+    public void workerPlacedSuccesfully() {
 
-        consoleOut.println(gameManagerSays);
+        consoleOut.println("Worker placed successfully!");
+        consoleOut.println();
+    }
+
+
+    @Override
+    public void startingTurn() {
+
+        consoleOut.println("It's your turn!");
         consoleOut.println();
     }
 
@@ -233,6 +279,49 @@ public class CLI extends ClientView {
     public void workerSelectedSuccessfully() {
 
         consoleOut.println("\nWorker selected succesfully!\n");
+    }
+
+    @Override
+    public PossibleClientAction choseActionToPerform(List<PossibleClientAction> possibleActions) {
+
+        consoleOut.println("\nHere it is what you can do:");
+
+        int i = 1;
+        for (PossibleClientAction possibleClientAction : possibleActions) {
+            consoleOut.println( i +" " + possibleClientAction + "\n");
+            i++;
+        }
+
+        consoleOut.println(">>>");
+
+        int actionToDo;
+        do{
+            actionToDo = Integer.parseInt(consoleIn.nextLine());
+
+        }while (actionToDo < 0 || actionToDo > possibleActions.size());
+
+        return possibleActions.get(actionToDo - 1);
+
+    }
+
+
+    @Override
+    public void errorWhileActivatingPower(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the power you want to use" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease do a different action");
+
+    }
+
+    @Override
+    public void powerActivated(God god) {
+
+        consoleOut.println("Power activated: ");
+        consoleOut.println("Now you can: ");
+        consoleOut.println(god.getGodPower().getPowerDescription());
+        consoleOut.println();
+
     }
 
     @Override
@@ -416,21 +505,18 @@ public class CLI extends ClientView {
                 "\n");
     }
 
+
     @Override
-    public void win(boolean imWinner) {
-        consoleOut.println("#############");
-
-        if(imWinner)
-            consoleOut.println("YOU WIN");
-        else consoleOut.println("YOU LOSE");
-
-        consoleOut.println("#############");
+    public void youWon() {
+        consoleOut.println("\t#############");
+        consoleOut.println("\t\tYOU WIN");
+        consoleOut.println("\t#############");
     }
 
     @Override
-    public void debug(Response response) {
+    public void debug(ServerResponse serverResponse) {
 
-        printMessageFromServer(response);
+        printMessageFromServer(serverResponse);
 
     }
 
@@ -440,7 +526,7 @@ public class CLI extends ClientView {
     }
 
     // test
-    private void printMessageFromServer(Response message){
+    private void printMessageFromServer(ServerResponse message){
         String out = "#### [SERVER] ####\n";
         out += "Message content: " + message.getResponseContent() + "\n";
         out += "Message status: " + message.getMessageStatus() + "\n";

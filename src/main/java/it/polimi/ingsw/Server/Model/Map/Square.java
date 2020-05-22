@@ -185,6 +185,9 @@ public class Square {
     }
 
 
+    public boolean isFull() {
+        return this.getHeight() == 4;
+    }
 }
 
 

@@ -1,17 +1,17 @@
-package it.polimi.ingsw.Network.Message.Server.Responses;
+package it.polimi.ingsw.Network.Message.Server.ServerResponse;
 
 
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
-import it.polimi.ingsw.Network.Message.Message;
+import it.polimi.ingsw.Network.Message.Server.ServerMessage;
 
-public class Response extends Message {
+public class ServerResponse extends ServerMessage {
 
     private String gameManagerSays;
     private ResponseContent responseContent;
 
-    public Response(String messageSender, ResponseContent responseContent, MessageStatus messageStatus, String gameManagerSays) {
-        super(messageSender, messageStatus);
+    public ServerResponse(ResponseContent responseContent, MessageStatus messageStatus, String gameManagerSays) {
+        super(messageStatus);
         this.responseContent = responseContent;
         this.gameManagerSays = gameManagerSays;
     }
@@ -26,5 +26,10 @@ public class Response extends Message {
 
     public MessageStatus getResponseStatus() {
         return super.getMessageStatus();
+    }
+
+    @Override
+    public void execute() {
+        super.getClientManager().handleServerResponse(this);
     }
 }

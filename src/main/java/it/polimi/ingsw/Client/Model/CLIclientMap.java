@@ -12,11 +12,9 @@ import java.util.Set;
 
 public class CLIclientMap extends GameMap {
 
-    public void placeUpdate(String playerName, Integer workerIndex, Position position){
+    public void placeUpdate(String playerName, Integer workerIndex, Position position, Set<Player> playersInGame){
 
-        Set<Player> players = BabyGame.getInstance().players;
-
-        for(Player player : players){
+        for(Player player : playersInGame){
             if(player.getPlayerName().equals(playerName)){
 
                 Worker worker = player.getPlayerWorkers().get(workerIndex);
@@ -29,11 +27,9 @@ public class CLIclientMap extends GameMap {
         }
     }
 
-    public void moveUpdate(String playerName, Integer workerIndex, Position position){
+    public void moveUpdate(String playerName, Integer workerIndex, Position position, Set<Player> playersInGame){
 
-        Set<Player> players = BabyGame.getInstance().players;
-
-        for(Player player : players){
+        for(Player player : playersInGame){
             if(player.getPlayerName().equals(playerName)){
                 Worker worker = player.getPlayerWorkers().get(workerIndex);
 
@@ -68,10 +64,10 @@ public class CLIclientMap extends GameMap {
 
     }
 
-    public void buildUpdate(Position position) {
+    public void buildUpdate(Position position, boolean domePresent) {
 
         try {
-            getSquare(position).addBlock(false);
+            getSquare(position).addBlock(domePresent);
         }catch (DomePresentException e){
             e.printStackTrace();
         }

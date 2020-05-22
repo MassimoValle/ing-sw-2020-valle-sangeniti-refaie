@@ -1,13 +1,15 @@
 package it.polimi.ingsw.Client.View.Gui;
 
+import it.polimi.ingsw.Client.Controller.PossibleClientAction;
 import it.polimi.ingsw.Client.View.ClientView;
-import it.polimi.ingsw.Network.Message.Server.Responses.Response;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class GUI extends ClientView {
@@ -46,10 +48,30 @@ public class GUI extends ClientView {
         return null;
     }
 
+    @Override
+    public void errorWhileChoosingGods(String gameManagerSays) {
+
+    }
+
+    @Override
+    public void godsSelectedSuccesfully() {
+
+    }
+
 
     @Override
     public God pickFromChosenGods(ArrayList<God> hand) {
         return null;
+    }
+
+    @Override
+    public void errorWhilePickinUpGod(String gameManagerSays) {
+
+    }
+
+    @Override
+    public void godPickedUpSuccessfully() {
+
     }
 
     @Override
@@ -63,12 +85,17 @@ public class GUI extends ClientView {
     }
 
     @Override
-    public void workerPlacedSuccesfully(String gameManagerSays) {
+    public void errorWhilePlacingYourWorker(String gameManagerSays) {
 
     }
 
     @Override
-    public void startingTurn(String gameManagerSays) {
+    public void workerPlacedSuccesfully() {
+
+    }
+
+    @Override
+    public void startingTurn() {
 
     }
 
@@ -84,6 +111,21 @@ public class GUI extends ClientView {
 
     @Override
     public void workerSelectedSuccessfully() {
+
+    }
+
+    @Override
+    public PossibleClientAction choseActionToPerform(List<PossibleClientAction> possibleActions) {
+        return null;
+    }
+
+    @Override
+    public void errorWhileActivatingPower(String gameManagerSays) {
+
+    }
+
+    @Override
+    public void powerActivated(God god) {
 
     }
 
@@ -168,12 +210,12 @@ public class GUI extends ClientView {
     }
 
     @Override
-    public void win(boolean winner) {
+    public void youWon() {
 
     }
 
     @Override
-    public void debug(Response response) {
+    public void debug(ServerResponse serverResponse) {
 
     }
 

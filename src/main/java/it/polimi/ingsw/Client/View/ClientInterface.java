@@ -1,12 +1,14 @@
 package it.polimi.ingsw.Client.View;
 
-import it.polimi.ingsw.Network.Message.Server.Responses.Response;
+import it.polimi.ingsw.Client.Controller.PossibleClientAction;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public interface ClientInterface {
@@ -24,21 +26,37 @@ public interface ClientInterface {
 
     ArrayList<God> selectGods(int howMany);
 
+    void errorWhileChoosingGods(String gameManagerSays);
+
+    void godsSelectedSuccesfully();
+
     God pickFromChosenGods(ArrayList<God> hand);
+
+    void errorWhilePickinUpGod(String gameManagerSays);
+
+    void godPickedUpSuccessfully();
 
     void showAllPlayersInGame(Set<Player> playerSet);
 
     Position placeWorker(String worker);
 
-    void workerPlacedSuccesfully(String gameManagerSays);
+    void errorWhilePlacingYourWorker(String gameManagerSays);
 
-    void startingTurn(String gameManagerSays);
+    void workerPlacedSuccesfully();
+
+    void startingTurn();
 
     int selectWorker();
 
     void errorWhileSelectingWorker(String gameManagerSays);
 
     void workerSelectedSuccessfully();
+
+    PossibleClientAction choseActionToPerform(List<PossibleClientAction> possibleActions);
+
+    void errorWhileActivatingPower(String gameManagerSays);
+
+    void powerActivated(God god);
 
     Position moveWorker(ArrayList<Position> nearlyPosValid);
 
@@ -77,9 +95,9 @@ public interface ClientInterface {
 
     void someoneElseDoingStuff();
 
-    void win(boolean winner);
+    void youWon();
 
-    void debug(Response response);
+    void debug(ServerResponse serverResponse);
 
     void showMap(GameMap clientMap);
 }
