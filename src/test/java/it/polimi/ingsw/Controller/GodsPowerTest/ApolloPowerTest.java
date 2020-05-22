@@ -1,10 +1,7 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
 
-import it.polimi.ingsw.Network.Message.ClientRequests.BuildRequest;
-import it.polimi.ingsw.Network.Message.ClientRequests.EndTurnRequest;
-import it.polimi.ingsw.Network.Message.ClientRequests.MoveRequest;
-import it.polimi.ingsw.Network.Message.ClientRequests.SelectWorkerRequest;
+import it.polimi.ingsw.Network.Message.ClientRequests.*;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Game;
@@ -19,6 +16,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 
 public class ApolloPowerTest {
@@ -107,33 +105,96 @@ public class ApolloPowerTest {
         masterController._getTurnManager().nextTurn(player1);
 
 
-
+        System.out.println("tocca al player1, primo turno");
         //tocca al player1
         //seleziona un worker...
         MasterController.dispatcher( new SelectWorkerRequest(pl1, 0) );
-
         //test potere di apollo quando i 2 worker sono sullo stesso livello
         MasterController.dispatcher(new MoveRequest(pl1, new Position(3,3)));
         assertEquals(game.getGameMap().getWorkerOnSquare(3,3), w1pl1);
         assertEquals(game.getGameMap().getWorkerOnSquare(2,2), w2pl2);
         game.getGameMap().printBoard();
-
         //player1 costruisce
         MasterController.dispatcher(new BuildRequest(pl1, new Position(4, 2)));
         assertEquals(1, game.getGameMap().getSquare(4, 2).getHeight());
         game.getGameMap().printBoard();
-
         //player 1 passa il turno
         MasterController.dispatcher(new EndTurnRequest(pl1));
 
+        System.out.println("tocca al player2");
         //player 2 seleziona worker
-        MasterController.dispatcher(new SelectWorkerRequest(pl2, 1));
+        MasterController.dispatcher(new SelectWorkerRequest(pl2, 0));
+        //player 2 muove
+        MasterController.dispatcher(new MoveRequest(pl2, new Position(3, 1)));
+        assertEquals(game.getGameMap().getWorkerOnSquare(3,1), w1pl2);
+        game.getGameMap().printBoard();
+        //player 2 muove ancora grazie ad Artemis
+        MasterController.dispatcher(new MoveRequest(pl2, new Position(4, 2)));
+        assertEquals(game.getGameMap().getWorkerOnSquare(4,2), w1pl2);
+        game.getGameMap().printBoard();
+        //player 2 costruisce
+        MasterController.dispatcher(new BuildRequest(pl2, new Position(3, 2) ));
+        assertEquals(1, game.getGameMap().getSquare(3, 2).getHeight());
+        game.getGameMap().printBoard();
+        //player 2 passa il turno
+        MasterController.dispatcher(new EndTurnRequest(pl2) );
+
+        System.out.println("tocca al player1, secondo turno");
+        //player 1 seleziona worker
+        MasterController.dispatcher(new SelectWorkerRequest(pl1, 0));
+        //player 1 muove, TEST potere apollo dal basso verso l'alto
+        MasterController.dispatcher(new MoveRequest(pl1, new Position(4, 2)));
+        game.getGameMap().printBoard();
+        //player 1 costruisce
+        MasterController.dispatcher(new BuildRequest(pl1, new Position(3,2)));
+        game.getGameMap().printBoard();
+        //player 1 passa il turno
+        MasterController.dispatcher(new EndTurnRequest(pl1) );
+
+        System.out.println("tocca al player2");
+        //player 2 seleziona worker
+        MasterController.dispatcher(new SelectWorkerRequest(pl2, 0));
+        //player 2 muove
+        MasterController.dispatcher((new MoveRequest(pl2, new Position(4,3))));
+        game.getGameMap().printBoard();
+        //plauer 2 ha artemis quindi deve fare la endMove
+        MasterController.dispatcher(new EndMoveRequest(pl2));
+        //player 2 costruisce
+        MasterController.dispatcher(new BuildRequest(pl2, new Position(3, 3)));
+        game.getGameMap().printBoard();
+        //player 2 passa il turno
+        MasterController.dispatcher(new EndTurnRequest(pl2));
+
+        System.out.println("tocca al player1, terzo turno");
+        //player 1 seleziona worker
+        MasterController.dispatcher(new SelectWorkerRequest(pl1, 0));
+        MasterController.dispatcher(new MoveRequest(pl1, new Position(3,2)));
+        game.getGameMap().printBoard();
+        MasterController.dispatcher(new BuildRequest(pl1, new Position(3,3)));
+        game.getGameMap().printBoard();
+        MasterController.dispatcher(new EndTurnRequest(pl1));
+
+        System.out.println("tocca al player2");
+        //player 2 seleziona worker
+        MasterController.dispatcher(new SelectWorkerRequest(pl2, 0));
+        MasterController.dispatcher(new MoveRequest(pl2, new Position(3,4)));
+        game.getGameMap().printBoard();
+        MasterController.dispatcher(new EndMoveRequest(pl2));
+        MasterController.dispatcher(new BuildRequest(pl2, new Position(3,3)));
+        game.getGameMap().printBoard();
+        MasterController.dispatcher(new EndTurnRequest(pl2));
+
+        System.out.println("tocca al player1, quarto turno");
+        //player1 seleziona worker
+        MasterController.dispatcher(new SelectWorkerRequest(pl1, 0));
+        MasterController.dispatcher(new MoveRequest(pl1, new Position(2,2)));
         game.getGameMap().printBoard();
 
-        //player 2 muove
-        MasterController.dispatcher(new MoveRequest(pl2, new Position(4, 2)));
-        assertEquals(game.getGameMap().getWorkerOnSquare(4,2), w2pl2);
-        game.getGameMap().printBoard();
+
+
+
+
+
 
 
 

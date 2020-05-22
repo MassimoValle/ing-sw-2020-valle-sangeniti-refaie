@@ -35,9 +35,12 @@ public class ApolloPower extends Power {
             opponentWorkerStartingSquare.freeSquare();
 
             super.move(apolloWorker, opponentWorkerPosition, apolloStartingSquare, opponentWorkerStartingSquare);
+
             super.move(opponentWorker, apolloStartingPosition, opponentWorkerStartingSquare, apolloStartingSquare);
 
             opponentWorkerStartingSquare.setWorkerOn(apolloWorker);
+            apolloStartingSquare.setWorkerOn(opponentWorker);
+
             return ActionOutcome.DONE;
 
         }

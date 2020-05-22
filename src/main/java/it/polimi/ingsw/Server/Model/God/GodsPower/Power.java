@@ -81,7 +81,6 @@ public abstract class Power implements Serializable, GodsChecker {
 
 
 
-
     public boolean canPreventsFromPerformingAction(){
         return false;
     }

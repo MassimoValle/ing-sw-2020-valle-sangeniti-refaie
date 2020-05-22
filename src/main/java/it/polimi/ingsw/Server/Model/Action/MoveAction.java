@@ -41,10 +41,11 @@ public class MoveAction implements Action {
     public boolean isValid() {
 
         GameMap map = Game.getInstance().getGameMap();
-        int heightDifference = map.getDifferenceInAltitude(oldPositionSquare.getPosition(), newPositionSquare.getPosition());
+
+        boolean reachablePlaces = map.getReachableAdjacentPlaces(oldPositionSquare.getPosition()).contains(newPosition);
 
         //if some God Power is active that prevent you from doing this move
-        return !godsPowerActive(godsPowerPerformingAction) && !newPositionSquare.hasWorkerOn() && heightDifference >= -1;
+        return !godsPowerActive(godsPowerPerformingAction) && reachablePlaces;
     }
 
 
