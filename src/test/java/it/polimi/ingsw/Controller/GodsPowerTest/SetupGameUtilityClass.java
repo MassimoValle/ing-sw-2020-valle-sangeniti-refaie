@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
+import it.polimi.ingsw.Network.Message.ClientRequests.*;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Game;
@@ -92,6 +93,43 @@ public class SetupGameUtilityClass {
         masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
         masterController._getTurnManager().nextTurn(masterController.getGameInstance().getPlayers().get(0));
 
+    }
+
+    public void selectWorker(String pl, int i) {
+        MasterController.dispatcher(
+                new SelectWorkerRequest(pl, i)
+        );
+    }
+
+    public void move(String pl, int i, int j) {
+        MasterController.dispatcher(
+                new MoveRequest(pl, new Position(i,j))
+        );
+    }
+
+    public void build(String pl, int i, int j) {
+        MasterController.dispatcher(
+                new BuildRequest(pl, new Position(i,j))
+        );
+
+    }
+
+    public void endTurn(String pl) {
+        MasterController.dispatcher(
+                new EndTurnRequest(pl)
+        );
+    }
+
+    public void endMove(String pl) {
+        MasterController.dispatcher(
+                new EndMoveRequest(pl)
+        );
+    }
+
+    public void endBuild(String pl) {
+        MasterController.dispatcher(
+                new EndBuildRequest(pl)
+        );
     }
 
 }
