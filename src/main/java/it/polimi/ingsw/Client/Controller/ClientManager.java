@@ -137,6 +137,7 @@ public class ClientManager {
 
     private void handleMoveWorkerServerRequest(MoveWorkerServerRequest serverRequest) {
         if (canMoveAgain && !clientView.wantMoveAgain()) {
+            canMoveAgain = false;
             sendEndMoveRequest();
             return;
         }
@@ -167,6 +168,7 @@ public class ClientManager {
     private void handleBuildServerRequest(BuildServerRequest serverRequest) {
 
         if (canBuildAgain && !clientView.wantBuildAgain()) {
+            canBuildAgain = false;
             sendEndBuildRequest();
             return;
         }
