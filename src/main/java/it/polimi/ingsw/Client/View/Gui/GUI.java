@@ -2,10 +2,13 @@ package it.polimi.ingsw.Client.View.Gui;
 
 import it.polimi.ingsw.Client.Controller.PossibleClientAction;
 import it.polimi.ingsw.Client.GUImain;
+import it.polimi.ingsw.Client.Model.PumpedDeck;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Client.View.Gui.ViewControllers.AskIpAddressController;
+import it.polimi.ingsw.Client.View.Gui.ViewControllers.AskUsernameController;
 import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
+import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
@@ -19,10 +22,10 @@ import java.util.Set;
 
 public class GUI extends ClientView {
 
-    private String ipAddress;
+    private String parameter;
 
     public GUI(){
-        ipAddress = null;
+        parameter = null;
     }
 
 
@@ -32,7 +35,7 @@ public class GUI extends ClientView {
         askIpAddressController.addObserver(new ParameterReceiver());
 
         try {
-            GUImain.setRoot("askIpAddr");
+            GUImain.setRoot("askIpAddr", null);
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -41,12 +44,24 @@ public class GUI extends ClientView {
 
     @Override
     public String askUserName() {
+        AskUsernameController askIpAddressController = AskUsernameController.getInstance();
+        askIpAddressController.addObserver(new ParameterReceiver());
+
         try {
-            GUImain.setRoot("askUsername");
+            GUImain.setRoot("askUsername", null);
         }catch (IOException e){
             e.printStackTrace();
         }
-        return null;
+
+        while (parameter == null){
+            try {
+                wait();
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+
+        return parameter;
     }
 
     @Override
@@ -56,6 +71,11 @@ public class GUI extends ClientView {
 
     @Override
     public void showDeck() {
+        try {
+            GUImain.setRoot("showDeck", null);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -244,7 +264,7 @@ public class GUI extends ClientView {
     public synchronized void run() {
         askIpAddress();
 
-        while (ipAddress == null){
+        while (parameter == null){
             try {
                 wait();
             }catch (InterruptedException e){
@@ -252,7 +272,7 @@ public class GUI extends ClientView {
             }
         }
 
-        Client client = new Client(ipAddress, 8080, this);
+        Client client = new Client(parameter, 8080, this);
 
         try {
             client.run();
@@ -266,7 +286,7 @@ public class GUI extends ClientView {
 
         @Override
         public synchronized void update(String message) {
-            ipAddress = message;
+            parameter = message;
             this.notifyAll();
         }
 

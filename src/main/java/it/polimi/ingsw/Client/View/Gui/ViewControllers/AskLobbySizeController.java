@@ -9,33 +9,31 @@ import javafx.scene.control.TextField;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+public class AskLobbySizeController  extends Observable<String> implements Initializable {
 
-public class AskIpAddressController extends Observable<String> implements Initializable {
+    private static AskLobbySizeController instance = null;
 
-    private static AskIpAddressController instance = null;
-
-    public static AskIpAddressController getInstance(){
+    public static AskLobbySizeController getInstance(){
         if(instance == null)
-            instance = new AskIpAddressController();
+            instance = new AskLobbySizeController();
         return instance;
     }
-
-    private String ipAddress = null;
 
     @FXML
     private TextField txtFieldIP;
 
+    private String parameter = null;
 
     @FXML
-    void getIpEvent(ActionEvent event) {
+    void getLobbySizeEvent(ActionEvent event) {
 
-        ipAddress = txtFieldIP.getText();
-        notify(ipAddress);
+        parameter = txtFieldIP.getText();
+        notify(parameter);
 
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("AskIpAddressController created!");
+        System.out.println("AskLobbySizeController created!");
     }
 }

@@ -26,7 +26,7 @@ public class Deck extends ArrayList<God> implements Serializable {
         return instance;
     }
 
-    private boolean loadXML(){
+    protected boolean loadXML(){
         File file = new File("src/main/Resources/XMLs/gods.xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
@@ -56,7 +56,7 @@ public class Deck extends ArrayList<God> implements Serializable {
         }
     }
 
-    private God createGod(String godName, String godDescription, String godPowerType, String godPowerDescription) {
+    protected God createGod(String godName, String godDescription, String godPowerType, String godPowerDescription) {
 
         switch (godName) {
             case "Apollo" :

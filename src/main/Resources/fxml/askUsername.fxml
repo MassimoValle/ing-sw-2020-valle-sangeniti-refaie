@@ -10,10 +10,10 @@
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
-            <TextField fx:id="txtFieldIP" BorderPane.alignment="CENTER" />
+            <TextField fx:id="txtFieldUsername" BorderPane.alignment="CENTER" />
          </center>
          <bottom>
-            <Button mnemonicParsing="false" onAction="#getIpEvent" text="Button" BorderPane.alignment="CENTER" />
+            <Button mnemonicParsing="false" onAction="#getUsernameEvent" text="Button" BorderPane.alignment="CENTER" />
          </bottom>
          <top>
             <Label text="USERNAME" BorderPane.alignment="CENTER" />

@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -27,7 +28,7 @@ public class GUImain extends Application {
 
         scene = new Scene(root);*/
 
-        setRoot("welcome");
+        setRoot("welcome", null);
 
         stage.setTitle("Welcome");
         stage.setScene(scene);
@@ -48,15 +49,15 @@ public class GUImain extends Application {
         myThread.start();
     }
 
-    public static void setRoot(String fxml) throws IOException {
-        Parent root = loadFXML(fxml);
+    public static void setRoot(String fxml, ResourceBundle resourceBundle) throws IOException {
+        Parent root = loadFXML(fxml, resourceBundle);
 
         if(scene == null) scene = new Scene(root);
         else scene.setRoot(root);
     }
 
-    private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader loader = new FXMLLoader(GUImain.class.getResource("/fxml/" + fxml + ".fxml"));
+    private static Parent loadFXML(String fxml, ResourceBundle resourceBundle) throws IOException {
+        FXMLLoader loader = new FXMLLoader(GUImain.class.getResource("/fxml/" + fxml + ".fxml"), resourceBundle);
         return loader.load();
     }
 

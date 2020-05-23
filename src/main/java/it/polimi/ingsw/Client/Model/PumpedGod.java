@@ -16,7 +16,7 @@ public class PumpedGod extends God {
         this.imgView  = new ImageView(img);
     }
 
-    public Image getImg() {
-        return img;
+    public ImageView getImg() {
+        return imgView;
     }
 }
