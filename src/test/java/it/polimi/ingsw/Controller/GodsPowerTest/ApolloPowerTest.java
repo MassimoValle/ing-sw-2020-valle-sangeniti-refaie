@@ -5,8 +5,11 @@ import it.polimi.ingsw.Network.Message.ClientRequests.*;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,9 +24,7 @@ public class ApolloPowerTest {
 
     MasterController masterController;
     Player player1, player2;
-    String pl1, pl2;
     Game game;
-    SetupGameUtilityClass setupUtility;
 
 
 
@@ -40,32 +41,37 @@ public class ApolloPowerTest {
         Game.getInstance().addPlayer(player2);
 
         masterController = new MasterController(game, player1);
-
-        setupUtility = new SetupGameUtilityClass();
-        setupUtility.setup(masterController, 0, 1, true);
-
-
-        pl1 = player1.getPlayerName();
-        pl2 = player2.getPlayerName();
     }
 
     @Test
     public void ApolloPower() {
 
-        game.getGameMap().printBoard();
+        String pl1 = player1.getPlayerName();
+        String pl2 = player2.getPlayerName();
 
-        setupUtility.selectWorker(pl1, 0);
-        setupUtility.move(pl1, 3, 2);
-
-        assertEquals(new Position(3, 2), player1.getPlayerWorkers().get(0).getWorkerPosition());
-        assertEquals(new Position(2, 2), player2.getPlayerWorkers().get(0).getWorkerPosition());
-
-        setupUtility.build(pl1, 4, 2);
-
-        setupUtility.endTurn(pl1);
+        assertEquals(2, masterController.getGameInstance().getNumberOfPlayers());
 
 
-        game.getGameMap().printBoard();
+        //Aggiungo i god alla partita
+        ArrayList<God> chosenGod = new ArrayList<>();
+        chosenGod.add(game.getDeck().getGod(0));
+        chosenGod.add(game.getDeck().getGod(1));
+        game.setChosenGodsFromDeck(chosenGod);
+
+        //assegno i god ai rispettivi giocatori
+        player1.setPlayerGod(chosenGod.get(0));
+        Game.getInstance().getChosenGodsFromDeck().get(0).setAssigned(true);
+        //game.getChosenGodsFromDeck().get(0).setAssigned(true);
+        player2.setPlayerGod(chosenGod.get(1));
+        game.getChosenGodsFromDeck().get(1).setAssigned(true);
+
+        //giocatore 1 piazza il primo worker
+        Worker w1pl1 = player1.getPlayerWorkers().get(0);
+        Square sq22 = game.getGameMap().getSquare(new Position(2, 2));
+
+        w1pl1.setPosition(new Position(2, 2));
+        sq22.setWorkerOn(w1pl1);
+        w1pl1.setPlaced(true);
 
         //giocatore 1 piazza il secondo worker
         Worker w2pl1 = player1.getPlayerWorkers().get(1);
@@ -79,13 +85,18 @@ public class ApolloPowerTest {
         Worker w1pl2 = player2.getPlayerWorkers().get(0);
         Square sq32 = game.getGameMap().getSquare(new Position(3, 2));
 
-        setupUtility.selectWorker(pl2, 0);
-        setupUtility.move(pl2, 1,2);
+        w1pl2.setPosition(new Position(3, 2));
+        sq32.setWorkerOn(w1pl2);
+        w1pl2.setPlaced(true);
 
 
         //giocatore 2 piazza il seoondo worker
         Worker w2pl2 = player2.getPlayerWorkers().get(1);
         Square sq33 = game.getGameMap().getSquare(new Position(3, 3));
+
+        w2pl2.setPosition(new Position(3, 3));
+        sq33.setWorkerOn(w2pl2);
+        w2pl2.setPlaced(true);
 
         game.getGameMap().printBoard();
 

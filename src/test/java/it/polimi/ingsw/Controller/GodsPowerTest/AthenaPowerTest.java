@@ -9,6 +9,7 @@ import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,10 +27,7 @@ public class AthenaPowerTest {
     @Before
     public void setUp() {
 
-        Game.resetInstance();
         game = Game.getInstance();
-
-
 
         player1 = new Player("Simone");
         player2 = new Player("Massimo");
@@ -43,6 +41,10 @@ public class AthenaPowerTest {
         pl2 = player2.getPlayerName();
         pl1 = player1.getPlayerName();
     }
+
+    @After
+    public void tearDown() {game = Game.getInstance();}
+
 
     @Test
     public void AthenaPowerTest() {
