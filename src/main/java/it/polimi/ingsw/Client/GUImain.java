@@ -19,6 +19,7 @@ public class GUImain extends Application {
 
     private static Scene scene;
     private static ClientView clientView;
+    private static FXMLLoader loader;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -57,8 +58,12 @@ public class GUImain extends Application {
     }
 
     private static Parent loadFXML(String fxml, ResourceBundle resourceBundle) throws IOException {
-        FXMLLoader loader = new FXMLLoader(GUImain.class.getResource("/fxml/" + fxml + ".fxml"), resourceBundle);
+        loader = new FXMLLoader(GUImain.class.getResource("/fxml/" + fxml + ".fxml"), resourceBundle);
         return loader.load();
+    }
+
+    public static FXMLLoader getFXMLLoader(){
+        return loader;
     }
 
 }
