@@ -2,10 +2,9 @@ package it.polimi.ingsw.Client.View.Gui;
 
 import it.polimi.ingsw.Client.Controller.PossibleClientAction;
 import it.polimi.ingsw.Client.GUImain;
-import it.polimi.ingsw.Client.Model.PumpedDeck;
 import it.polimi.ingsw.Client.View.ClientView;
-import it.polimi.ingsw.Client.View.Gui.ViewControllers.AskIpAddressController;
-import it.polimi.ingsw.Client.View.Gui.ViewControllers.AskUsernameController;
+import it.polimi.ingsw.Client.View.Gui.ViewControllers.MainViewController;
+import it.polimi.ingsw.Client.View.Gui.ViewControllers.PickGodController;
 import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.Deck;
@@ -13,39 +12,54 @@ import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
-import it.polimi.ingsw.Server.View.Observer;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 public class GUI extends ClientView {
 
-    private String parameter;
+    private ParameterListener parameterListener;
 
     public GUI(){
-        parameter = null;
+        parameterListener = ParameterListener.getInstance();
     }
 
 
     @Override
     public String askIpAddress() {
-        AskIpAddressController askIpAddressController = AskIpAddressController.getInstance();
-        askIpAddressController.addObserver(new ParameterReceiver());
 
         try {
             GUImain.setRoot("askIpAddr", null);
         }catch (IOException e){
             e.printStackTrace();
         }
-        return null;
+
+        while (ParameterListener.getParameter() == null){
+
+            synchronized (parameterListener){
+                try {
+                    parameterListener.wait();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        String ipAddress = (String) ParameterListener.getParameter();
+        parameterListener.setToNull();
+
+        return ipAddress;
     }
 
     @Override
     public String askUserName() {
-        AskUsernameController askIpAddressController = AskUsernameController.getInstance();
-        askIpAddressController.addObserver(new ParameterReceiver());
 
         try {
             GUImain.setRoot("askUsername", null);
@@ -53,20 +67,47 @@ public class GUI extends ClientView {
             e.printStackTrace();
         }
 
-        while (parameter == null){
-            try {
-                wait();
-            }catch (InterruptedException e){
-                e.printStackTrace();
+        while (ParameterListener.getParameter() == null){
+
+            synchronized (parameterListener){
+                try {
+                    parameterListener.wait();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
             }
         }
 
-        return parameter;
+        String username = (String) ParameterListener.getParameter();
+        parameterListener.setToNull();
+
+        return username;
     }
 
     @Override
     public int askNumbOfPlayer() {
-        return 0;
+
+        try {
+            GUImain.setRoot("askLobbySize", null);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        while (ParameterListener.getParameter() == null){
+
+            synchronized (parameterListener){
+                try {
+                    parameterListener.wait();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        int ret = (int) ParameterListener.getParameter();
+        parameterListener.setToNull();
+
+        return ret;
     }
 
     @Override
@@ -81,37 +122,144 @@ public class GUI extends ClientView {
 
     @Override
     public ArrayList<God> selectGods(int howMany) {
-        return null;
+        ArrayList<God> godsChosen = new ArrayList<>();
+        int godsChosenNum = 0;
+
+        do {
+
+            while (ParameterListener.getParameter() == null){
+
+                synchronized (parameterListener){
+                    try {
+                        parameterListener.wait();
+                    }catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            God god = Deck.getInstance().getGodByName((String) ParameterListener.getParameter());
+            System.out.println("You choose " + god.getGodName() + "!");
+            godsChosen.add(god);
+            godsChosenNum++;
+
+            parameterListener.setToNull();
+
+        }while (godsChosenNum < howMany);
+
+        return godsChosen;
     }
 
     @Override
     public void errorWhileChoosingGods(String gameManagerSays) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("There was a problem with the Gods you selected");
+        alert.setContentText("Game Manager says: " + gameManagerSays + "Please select the correct Gods");
 
+        alert.showAndWait();
     }
 
     @Override
     public void godsSelectedSuccesfully() {
+        Platform.runLater(this::print_godsSelectedSuccesfully);
+    }
 
+    private void print_godsSelectedSuccesfully(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("Gods selected successfully");
+
+        alert.showAndWait();
     }
 
 
     @Override
     public God pickFromChosenGods(ArrayList<God> hand) {
-        return null;
+
+        try {
+            GUImain.setRoot("pickGod", null);
+            FXMLLoader fxmlLoader = GUImain.getFXMLLoader();
+            PickGodController controller = fxmlLoader.<PickGodController>getController();
+            controller.setHand(hand);
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        while (ParameterListener.getParameter() == null){
+
+            synchronized (parameterListener){
+                try {
+                    parameterListener.wait();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        God ret = null;
+
+        String godName = (String) ParameterListener.getParameter();
+        for(God god : hand){
+            if(god.getGodName().equals(godName))
+                ret = god;
+        }
+        parameterListener.setToNull();
+
+        return ret;
     }
 
     @Override
     public void errorWhilePickinUpGod(String gameManagerSays) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("There was a problem with the God you selected");
+        alert.setContentText("Game Manager says: " + gameManagerSays + "Please select the correct God");
 
+        alert.showAndWait();
     }
 
     @Override
     public void godPickedUpSuccessfully() {
+        Platform.runLater(this::print_godPickedUpSuccessfully);
+    }
 
+    private void print_godPickedUpSuccessfully(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("God picked successfully");
+
+        alert.showAndWait();
     }
 
     @Override
     public void showAllPlayersInGame(Set<Player> playerSet) {
+
+        try {
+            GUImain.setRoot("mainView", null);
+            FXMLLoader fxmlLoader = GUImain.getFXMLLoader();
+            MainViewController controller = fxmlLoader.<MainViewController>getController();
+            controller.setPlayers(playerSet);
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        while (ParameterListener.getParameter() == null){
+
+            synchronized (parameterListener){
+                try {
+                    parameterListener.wait();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        God ret = null;
+
+        parameterListener.setToNull();
 
     }
 
@@ -262,17 +410,9 @@ public class GUI extends ClientView {
 
     @Override
     public synchronized void run() {
-        askIpAddress();
+        String ipAddress = askIpAddress();
 
-        while (parameter == null){
-            try {
-                wait();
-            }catch (InterruptedException e){
-                e.printStackTrace();
-            }
-        }
-
-        Client client = new Client(parameter, 8080, this);
+        Client client = new Client(ipAddress, 8080, this);
 
         try {
             client.run();
@@ -280,15 +420,5 @@ public class GUI extends ClientView {
             //ex.printStackTrace();
             run();
         }
-    }
-
-    private class ParameterReceiver implements Observer<String> {
-
-        @Override
-        public synchronized void update(String message) {
-            parameter = message;
-            this.notifyAll();
-        }
-
     }
 }

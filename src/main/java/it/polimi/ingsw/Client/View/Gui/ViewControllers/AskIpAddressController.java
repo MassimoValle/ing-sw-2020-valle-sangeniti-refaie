@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Client.View.Gui.ViewControllers;
 
+import it.polimi.ingsw.Client.View.Gui.ParameterListener;
 import it.polimi.ingsw.Server.View.Observable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,15 +11,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class AskIpAddressController extends Observable<String> implements Initializable {
+public class AskIpAddressController implements Initializable {
 
-    private static AskIpAddressController instance = null;
-
-    public static AskIpAddressController getInstance(){
-        if(instance == null)
-            instance = new AskIpAddressController();
-        return instance;
-    }
+    ParameterListener parameterListener = ParameterListener.getInstance();
 
     private String ipAddress = null;
 
@@ -28,10 +23,8 @@ public class AskIpAddressController extends Observable<String> implements Initia
 
     @FXML
     void getIpEvent(ActionEvent event) {
-
         ipAddress = txtFieldIP.getText();
-        notify(ipAddress);
-
+        parameterListener.setParameter(ipAddress);
     }
 
     @Override
