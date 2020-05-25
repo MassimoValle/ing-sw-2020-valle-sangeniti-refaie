@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Client.View.Gui.ViewControllers.AskLobbySizeController">
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
-            <TextField fx:id="txtFieldIP" promptText="127.0.0.1" BorderPane.alignment="CENTER" />
+            <VBox BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Da 2 a 3 giocatori" />
+                  <TextField fx:id="txtFieldLobbySize" />
+               </children>
+            </VBox>
          </center>
          <bottom>
-            <Button mnemonicParsing="false" onAction="#getLobbySizeEvent" text="Button" BorderPane.alignment="CENTER" />
+            <Button mnemonicParsing="false" onAction="#getLobbySizeEvent" text="Next --&gt;" BorderPane.alignment="CENTER" />
          </bottom>
+         <top>
+            <Label text="LOBBY SIZE" BorderPane.alignment="CENTER" />
+         </top>
       </BorderPane>
    </children>
 </AnchorPane>

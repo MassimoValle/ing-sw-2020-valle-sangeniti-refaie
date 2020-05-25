@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Client.View.Gui.ViewControllers;
 
+import it.polimi.ingsw.Client.View.Gui.ParameterListener;
 import it.polimi.ingsw.Server.View.Observable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,16 +10,9 @@ import javafx.scene.control.TextField;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AskUsernameController  extends Observable<String> implements Initializable {
+public class AskUsernameController implements Initializable {
 
-
-    private static AskUsernameController instance = null;
-
-    public static AskUsernameController getInstance(){
-        if(instance == null)
-            instance = new AskUsernameController();
-        return instance;
-    }
+    ParameterListener parameterListener = ParameterListener.getInstance();
 
     @FXML
     private TextField txtFieldUsername;
@@ -28,7 +22,7 @@ public class AskUsernameController  extends Observable<String> implements Initia
     @FXML
     void getUsernameEvent(ActionEvent event) {
         username = txtFieldUsername.getText();
-        notify(username);
+        parameterListener.setParameter(username);
     }
 
 

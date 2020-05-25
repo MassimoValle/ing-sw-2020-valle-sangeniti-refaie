@@ -188,7 +188,7 @@ public class CLI extends ClientView {
     @Override
     public void godPickedUpSuccessfully() {
 
-        consoleOut.println("God selected successfully");
+        consoleOut.println("God picked successfully");
         consoleOut.println();
 
     }

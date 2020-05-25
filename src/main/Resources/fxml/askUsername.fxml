@@ -13,7 +13,7 @@
             <TextField fx:id="txtFieldUsername" BorderPane.alignment="CENTER" />
          </center>
          <bottom>
-            <Button mnemonicParsing="false" onAction="#getUsernameEvent" text="Button" BorderPane.alignment="CENTER" />
+            <Button mnemonicParsing="false" onAction="#getUsernameEvent" text="Next --&gt;" BorderPane.alignment="CENTER" />
          </bottom>
          <top>
             <Label text="USERNAME" BorderPane.alignment="CENTER" />
