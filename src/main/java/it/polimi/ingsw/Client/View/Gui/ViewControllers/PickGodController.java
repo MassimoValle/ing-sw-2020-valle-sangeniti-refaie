@@ -4,6 +4,7 @@ import it.polimi.ingsw.Client.Model.PumpedDeck;
 import it.polimi.ingsw.Client.Model.PumpedGod;
 import it.polimi.ingsw.Client.View.Gui.ParameterListener;
 import it.polimi.ingsw.Server.Model.God.God;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
@@ -11,9 +12,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class ShowDeckController implements Initializable {
+public class PickGodController implements Initializable {
 
     @FXML
     private FlowPane godsFlowPane;
@@ -21,13 +23,30 @@ public class ShowDeckController implements Initializable {
     private String parameter = null;
 
     ParameterListener parameterListener = ParameterListener.getInstance();
+    private ArrayList<God> hand;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        System.out.println("PickGodController created!");
+    }
+    
+    public void setHand(ArrayList<God> hand){
 
-        PumpedDeck pumpedDeck = PumpedDeck.getInstance();
+        this.hand = hand;
 
-        for (God god : pumpedDeck){
+        // usato per far preparare a javafx il container prima di lavorarci
+        Platform.runLater(this::setScene);
+    }
+
+    private void setScene() {
+
+        ArrayList<God> pumpedHand = new ArrayList<>();
+
+        for (God god : hand){
+            pumpedHand.add(PumpedDeck.getInstance().getGodByName(god.getGodName()));
+        }
+
+        for (God god : pumpedHand){
             ImageView imageView = ((PumpedGod)god).getImg();
 
             imageView.setFitWidth(100);

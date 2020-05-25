@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Client.Model;
 
 import it.polimi.ingsw.Server.Model.God.Deck;
+import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.God.GodsPower.*;
 import javafx.scene.image.Image;
 
@@ -8,10 +9,10 @@ import javafx.scene.image.Image;
 public class PumpedDeck extends Deck {
 
     private static PumpedDeck instance=null;
-    private String path = "/imgs/godCards/";
+    private String path;
 
     public PumpedDeck() {
-        loadXML();
+        path = "/imgs/godCards/";
     }
 
     public static PumpedDeck getInstance() {
@@ -20,7 +21,10 @@ public class PumpedDeck extends Deck {
         return instance;
     }
 
+    @Override
     protected PumpedGod createGod(String godName, String godDescription, String godPowerType, String godPowerDescription) {
+
+        path = "/imgs/godCards/";
 
         return switch (godName) {
             case "Apollo" -> new PumpedGod(godName, godDescription, new ApolloPower(godPowerType, godPowerDescription), new Image(path + "01.png"));
@@ -39,6 +43,17 @@ public class PumpedDeck extends Deck {
             case "Triton" -> new PumpedGod(godName, godDescription, new TritonPower(godPowerType, godPowerDescription), new Image(path + "29.png"));
             default -> null;
         };
+    }
+
+    @Override
+    public PumpedGod getGodByName(String string) {
+
+        for (God god : PumpedDeck.getInstance()) {
+            if (god.getGodName().equals(string))
+                return (PumpedGod) god;
+        }
+
+        return null;
     }
 
 }
