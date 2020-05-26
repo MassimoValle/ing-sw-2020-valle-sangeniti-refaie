@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class Game extends Observable<Game> {
+public class Game extends Observable<Message> {
 
 
     private List<Player> players;
@@ -26,7 +26,6 @@ public class Game extends Observable<Game> {
     private GameMap gameMap;
 
     private List<ColorEnum> colorAvailable = new ArrayList<>();
-    private final HashMap<Player, Message> changes = new HashMap<>();
     private HashMap<Player, ColorEnum> playerColor = new HashMap<>();
 
     private static Game gameInstance;
@@ -183,30 +182,13 @@ public class Game extends Observable<Game> {
 
 
     /**
-     * It put the {@link ServerResponse} to the relative {@link Player} in the {@link Game#changes} HashMap
-     *  @param player the player to whom the answer is intended
      * @param serverMessage the response that must be sent to the player
      */
-    public void putInChanges(Player player, Message serverMessage) {
-        changes.put(player, serverMessage);
+    public void putInChanges(Message serverMessage) {
 
-        notify(this);
-        changes.remove(player, serverMessage);
+        notify(serverMessage);
     }
 
-
-    /**
-     * It notify the {@link Player} to whom the {@link Message} is intended
-     *
-     * @param player the player to whom the answer is intended
-     * @return the message that must be sent to the player
-     */
-    public Message notifyPlayer(Player player) {
-        Message x = changes.get(player);
-        System.out.println("Sent message to: " + player.getPlayerName());
-
-        return x;
-    }
 
 
 

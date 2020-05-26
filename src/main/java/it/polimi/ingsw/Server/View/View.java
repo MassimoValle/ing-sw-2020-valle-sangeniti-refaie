@@ -1,10 +1,11 @@
 package it.polimi.ingsw.Server.View;
 
+import it.polimi.ingsw.Network.Message.Message;
 import it.polimi.ingsw.Server.Controller.TurnManager;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Player.Player;
 
-public abstract class View extends Observable<TurnManager> implements Observer<Game> {
+public abstract class View extends Observable<TurnManager> implements Observer<Message> {
 
     private Player player;
 
@@ -16,11 +17,11 @@ public abstract class View extends Observable<TurnManager> implements Observer<G
         return player;
     }
 
-    protected abstract void sendMessage(Game game);
+    protected abstract void sendMessage(Message game);
 
 
     @Override
-    public void update(Game message) {
+    public void update(Message message) {
         sendMessage(message);
     }
 }
