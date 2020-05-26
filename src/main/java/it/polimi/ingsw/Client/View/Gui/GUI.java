@@ -14,21 +14,31 @@ import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 public class GUI extends ClientView {
 
-    private ParameterListener parameterListener;
+    private final boolean enaPopup = false;
+    private final boolean mainPlayer = false;
+
+    private final ParameterListener parameterListener;
 
     public GUI(){
         parameterListener = ParameterListener.getInstance();
+    }
+
+
+    private void waitingOpponents(){
+        try {
+            GUImain.setRoot("waiting", null);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -81,6 +91,9 @@ public class GUI extends ClientView {
         String username = (String) ParameterListener.getParameter();
         parameterListener.setToNull();
 
+        // se 1o player allora non fare la wait
+        waitingOpponents();
+
         return username;
     }
 
@@ -106,6 +119,9 @@ public class GUI extends ClientView {
 
         int ret = (int) ParameterListener.getParameter();
         parameterListener.setToNull();
+
+        if(!mainPlayer)
+            waitingOpponents();
 
         return ret;
     }
@@ -147,11 +163,14 @@ public class GUI extends ClientView {
 
         }while (godsChosenNum < howMany);
 
+        waitingOpponents();
+
         return godsChosen;
     }
 
     @Override
     public void errorWhileChoosingGods(String gameManagerSays) {
+        if(!enaPopup) return;
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error Dialog");
         alert.setHeaderText("There was a problem with the Gods you selected");
@@ -166,6 +185,7 @@ public class GUI extends ClientView {
     }
 
     private void print_godsSelectedSuccesfully(){
+        if(!enaPopup) return;
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information Dialog");
         alert.setHeaderText("Gods selected successfully");
@@ -180,7 +200,7 @@ public class GUI extends ClientView {
         try {
             GUImain.setRoot("pickGod", null);
             FXMLLoader fxmlLoader = GUImain.getFXMLLoader();
-            PickGodController controller = fxmlLoader.<PickGodController>getController();
+            PickGodController controller = fxmlLoader.getController();
             controller.setHand(hand);
 
         }catch (IOException e){
@@ -207,11 +227,14 @@ public class GUI extends ClientView {
         }
         parameterListener.setToNull();
 
+        waitingOpponents();
+
         return ret;
     }
 
     @Override
     public void errorWhilePickinUpGod(String gameManagerSays) {
+        if(!enaPopup) return;
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error Dialog");
         alert.setHeaderText("There was a problem with the God you selected");
@@ -226,6 +249,7 @@ public class GUI extends ClientView {
     }
 
     private void print_godPickedUpSuccessfully(){
+        if(!enaPopup) return;
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information Dialog");
         alert.setHeaderText("God picked successfully");
@@ -236,11 +260,13 @@ public class GUI extends ClientView {
     @Override
     public void showAllPlayersInGame(Set<Player> playerSet) {
 
+        // TODO
         try {
             GUImain.setRoot("mainView", null);
             FXMLLoader fxmlLoader = GUImain.getFXMLLoader();
             MainViewController controller = fxmlLoader.<MainViewController>getController();
             controller.setPlayers(playerSet);
+            controller.init();
 
         }catch (IOException e){
             e.printStackTrace();
@@ -257,7 +283,6 @@ public class GUI extends ClientView {
             }
         }
 
-        God ret = null;
 
         parameterListener.setToNull();
 

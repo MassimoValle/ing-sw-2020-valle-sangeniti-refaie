@@ -1,0 +1,89 @@
+
+/* Stile per welcome.fxml */
+
+.welcomeBackground{
+  -fx-background-image: url("../imgs/welcome.jpg");
+  -fx-background-repeat: stretch;
+  -fx-background-position: center center;
+  -fx-background-size: 100% 100%;
+
+  -fx-font-family: "Comic Sans MS";
+}
+
+.welcomeButton{
+  -fx-background-color: white;
+  -fx-border-color: black;
+  -fx-text-inner-color: black;
+  -fx-text-fill: -fx-text-inner-color;
+  -fx-text-alignment: center;
+
+  -fx-border-insets: 3px;
+}
+
+/* Stile per askIpAddr.fxml */
+
+.setupBackground{
+  -fx-background-image: url("../imgs/setup.jpg");
+  -fx-background-repeat: stretch;
+  -fx-background-position: center center;
+  -fx-background-size: 100% 100%;
+  -fx-font-family: "Comic Sans MS";
+}
+
+.setupCenter{
+  -fx-alignment: center;
+  -fx-hgap: 20;
+  -fx-font-size: 20;
+}
+
+.setupButton{
+  -fx-alignment: center;
+  -fx-font-size: 20;
+  -fx-border-insets: 3px;
+
+  -fx-background-color: white;
+  -fx-border-color: black;
+  -fx-text-inner-color: black;
+  -fx-text-fill: -fx-text-inner-color;
+  -fx-text-alignment: center;
+}
+
+.showDeckCenter{
+  -fx-padding: 10;
+  -fx-hgap: 8;
+  -fx-vgap: 8;
+}
+
+.nuvolaSpeedy{
+  -fx-background-image: url("../imgs/nuvolaSpeedy.jpg");
+}
+
+.leftCLiff{
+  -fx-background-image: url("../imgs/cliff/left.png");
+  -fx-background-repeat: stretch;
+  -fx-background-position: center center;
+  -fx-background-size: 100% 100%;
+}
+
+.topCLiff{
+  -fx-background-image: url("../imgs/cliff/top.png");
+  -fx-background-repeat: stretch;
+  -fx-background-position: center center;
+  -fx-background-size: 100% 100%;
+}
+
+.rightCLiff {
+  -fx-background-image: url("../imgs/cliff/right.png");
+  -fx-background-repeat: stretch;
+  -fx-background-position: center center;
+  -fx-background-size: 100% 100%;
+}
+
+.bottomCLiff{
+  -fx-background-image: url("../imgs/cliff/bottom.png");
+  -fx-background-repeat: stretch;
+  -fx-background-position: center center;
+  -fx-background-size: 100% 100%;
+}
+
+

@@ -20,6 +20,10 @@ public class PickGodController implements Initializable {
     @FXML
     private FlowPane godsFlowPane;
 
+    @FXML
+    private AnchorPane pickGodAnchorPane;
+
+
     private String parameter = null;
 
     ParameterListener parameterListener = ParameterListener.getInstance();
@@ -49,11 +53,12 @@ public class PickGodController implements Initializable {
         for (God god : pumpedHand){
             ImageView imageView = ((PumpedGod)god).getImg();
 
-            imageView.setFitWidth(100);
-            imageView.setFitHeight(200);
 
             AnchorPane pane = new AnchorPane(imageView);
             pane.setId(god.getGodName());
+
+            imageView.fitHeightProperty().bind(pickGodAnchorPane.heightProperty().divide(3.5));
+            imageView.fitWidthProperty().bind(pickGodAnchorPane.widthProperty().divide(4));
 
             AnchorPane.setTopAnchor(imageView, 0.0);
             AnchorPane.setLeftAnchor(imageView, 0.0);
@@ -64,7 +69,7 @@ public class PickGodController implements Initializable {
                 AnchorPane pane1 = (AnchorPane) event.getSource();
                 parameter = pane1.getId();
                 pane1.setDisable(true);
-                pane1.setOpacity(0.5);
+                pane1.setOpacity(0.7);
                 parameterListener.setParameter(parameter);
             });
 

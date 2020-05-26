@@ -20,6 +20,7 @@ public class GUImain extends Application {
     private static Scene scene;
     private static ClientView clientView;
     private static FXMLLoader loader;
+    private static Stage mystage;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -29,9 +30,14 @@ public class GUImain extends Application {
 
         scene = new Scene(root);*/
 
+        mystage = stage;
+
         setRoot("welcome", null);
 
-        stage.setTitle("Welcome");
+        //stage.minHeightProperty().bind(scene.heightProperty());
+        //stage.minWidthProperty().bind(scene.widthProperty());
+
+        stage.setTitle("Santorini");
         stage.setScene(scene);
         stage.show();
 
@@ -64,6 +70,10 @@ public class GUImain extends Application {
 
     public static FXMLLoader getFXMLLoader(){
         return loader;
+    }
+
+    public static Stage getStage(){
+        return mystage;
     }
 
 }
