@@ -66,9 +66,9 @@ public abstract class Power implements Serializable, GodsChecker {
 
     }
 
-    public ActionOutcome buildDome(Square squareWhereToBuild) {
+    public ActionOutcome buildDome(Square squareWhereTheWorkerIs,Square squareWhereToBuild) {
 
-        Action buildDomeAction = new BuildDomeAction(squareWhereToBuild);
+        Action buildDomeAction = new BuildDomeAction(squareWhereTheWorkerIs, squareWhereToBuild);
 
         if (buildDomeAction.isValid()) {
             buildDomeAction.doAction();

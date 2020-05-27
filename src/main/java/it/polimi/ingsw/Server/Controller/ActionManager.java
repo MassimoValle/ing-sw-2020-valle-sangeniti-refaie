@@ -302,7 +302,7 @@ public class ActionManager {
         Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getWorkerPosition());
 
         if (request instanceof BuildDomeRequest)
-            actionOutcome = playerGod.getGodPower().buildDome(squareWhereToBuild);
+            actionOutcome = playerGod.getGodPower().buildDome(squareWhereTheWorkerIs, squareWhereToBuild);
         else
             actionOutcome = playerGod.getGodPower().build(squareWhereTheWorkerIs, squareWhereToBuild);
 
@@ -315,7 +315,7 @@ public class ActionManager {
 
         //L'azione è stata eseguita
         if(request instanceof BuildDomeRequest)
-            turnManager.addActionPerformed(new BuildDomeAction(squareWhereToBuild));
+            turnManager.addActionPerformed(new BuildDomeAction(squareWhereTheWorkerIs, squareWhereToBuild));
         else
             turnManager.addActionPerformed(new BuildAction(squareWhereTheWorkerIs, squareWhereToBuild));
 

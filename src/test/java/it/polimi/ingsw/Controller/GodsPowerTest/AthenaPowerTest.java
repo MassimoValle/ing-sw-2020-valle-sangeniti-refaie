@@ -1,9 +1,13 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
 
+import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
+import it.polimi.ingsw.Server.Model.Player.Position;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,15 +18,15 @@ import static org.junit.Assert.*;
 
 public class AthenaPowerTest {
 
-    MasterController masterController;
-    Player player1, player2;
-    String pl1, pl2;
-    Game game;
-    SetupGameUtilityClass setupUtility;
+    private MasterController masterController;
+    private Player player1, player2;
+    private String pl1, pl2;
+    private Game game;
+    private SetupGameUtilityClass setupUtility;
 
 
     @Before
-    public void setUp() {
+    public void setUp() throws DomePresentException {
 
         game = Game.getInstance();
 
@@ -39,96 +43,65 @@ public class AthenaPowerTest {
 
         pl2 = player2.getPlayerName();
         pl1 = player1.getPlayerName();
+
+
+        Square sq31 = game.getGameMap().getSquare(new Position(3, 1));
+        sq31.addBlock(false);
+
     }
 
     @After
-    public void tearDown() { Game.resetInstance(); }
+    public void tearDown() {
+        Game.resetInstance();
+    }
 
 
     @Test
-    public void AthenaArtemisPowerTest() {
+    public void AthenaPowerLastsOnlyOneRoundTest() {
 
         game.getGameMap().printBoard();
-        System.out.println("tocca al player 1, primo turno");
         //Tocca al player1 (athena)
-        //seleziona un worker...
         setupUtility.selectWorker(pl1, 0);
-        //lo muovo...
-        setupUtility.move(pl1, 1, 2);
-        assertEquals(game.getGameMap().getWorkerOnSquare(1, 2), setupUtility.w1pl1);
-        game.getGameMap().printBoard();
-        //e costruisco
-        setupUtility.build(pl1, 0, 2);
-        game.getGameMap().printBoard();
-        assertTrue(game.getGameMap().getSquare(0, 2).hasBeenBuiltOver());
-        //passo il turno
-        setupUtility.endTurn(pl1);
-
-        System.out.println("tocca al player 2, primo turno");
-        //Tocca al player2 (artemis)
-        setupUtility.selectWorker(pl2, 0);
-        setupUtility.move(pl2, 2, 1);
-        assertEquals(game.getGameMap().getWorkerOnSquare(2, 1), setupUtility.w1pl2);
-        game.getGameMap().printBoard();
-        //player 2 sceglie di NON usare il potere
-        setupUtility.endMove(pl2);
-        //player 2 costruisce
-        setupUtility.build(pl2, 2, 2);
-        assertTrue(game.getGameMap().getSquare(2, 2).hasBeenBuiltOver());
-        game.getGameMap().printBoard();
-        //passo il turno
-        setupUtility.endTurn(pl2);
-
-        System.out.println("tocca al player 1, secondo turno");
-        setupUtility.selectWorker(pl1, 0);
-        //lo muovo... FACCIO SALIRE ATHENA AL LIVELLO 1
-        setupUtility.move(pl1, 0, 2);
-        game.getGameMap().printBoard();
-        setupUtility.build(pl1, 1, 2);
-        game.getGameMap().printBoard();
-        setupUtility.endTurn(pl1);
-
-        System.out.println("tocca al player 2, secondo turno");
-        setupUtility.selectWorker(pl2, 0);
-        //la move dovrebbe essere impedita dal potere di Athena
-        setupUtility.move(pl2, 2, 2);
-        assertFalse(game.getGameMap().getSquare(2, 2).hasWorkerOn());
-        game.getGameMap().printBoard();
-        //rifaccio una move concessa
-        setupUtility.move(pl2, 3, 2);
-        assertEquals(game.getGameMap().getWorkerOnSquare(3, 2), setupUtility.w1pl2);
-        game.getGameMap().printBoard();
-        //uso potere artemis e provo a salire (verifico che potere di athena è ancora attivo)
-        setupUtility.move(pl2, 2, 2);
-        assertFalse(game.getGameMap().getSquare(2, 2).hasWorkerOn());
-        game.getGameMap().printBoard();
-        //uso potere artemis per tornare nello spazio iniziale (DEVE RESTITUIRE ERRORE)
-        setupUtility.move(pl2, 2, 1);
-        assertFalse(game.getGameMap().getSquare(2, 1).hasWorkerOn());
-        game.getGameMap().printBoard();
-        //uso potere artemis per fare una mossa consentita
-        setupUtility.move(pl2, 3, 1);
-        assertTrue(game.getGameMap().getSquare(3, 1).hasWorkerOn());
-        game.getGameMap().printBoard();
-        setupUtility.endTurn(pl2);
-
-        System.out.println("tocca al player 1, terzo turno");
-        setupUtility.selectWorker(pl1, 0);
-        setupUtility.move(pl1, 1, 2);
+        setupUtility.move(pl1, 3, 1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(3, 1), setupUtility.w1pl1);
         game.getGameMap().printBoard();
         setupUtility.build(pl1, 2, 1);
         game.getGameMap().printBoard();
+        assertTrue(game.getGameMap().getSquare(2, 1).hasBeenBuiltOver());
         setupUtility.endTurn(pl1);
 
-        System.out.println("tocca al player 2, terzo turno");
+        System.out.println("tocca al player 2");
+        //Tocca al player2 (artemis)
         setupUtility.selectWorker(pl2, 0);
-        //il player2 dovrebbe poter salire dato che il potere di athena si è annullato
+        //la move non viene effettuata a causa del potere di athena
         setupUtility.move(pl2, 2, 1);
-        assertTrue(game.getGameMap().getSquare(2, 1).hasWorkerOn());
+        assertNotEquals(game.getGameMap().getWorkerOnSquare(2, 1), setupUtility.w1pl2);
+        game.getGameMap().printBoard();
+        setupUtility.move(pl2, 2, 2);
         game.getGameMap().printBoard();
         setupUtility.endMove(pl2);
-        setupUtility.build(pl2, 2, 2);
+        setupUtility.build(pl2, 3, 2);
+        assertTrue(game.getGameMap().getSquare(3, 2).hasBeenBuiltOver());
         game.getGameMap().printBoard();
         setupUtility.endTurn(pl2);
+
+        System.out.println("tocca al player 1, secondo round");
+        setupUtility.selectWorker(pl1, 1);
+        setupUtility.move(pl1, 2, 4);
+        setupUtility.build(pl1, 1, 4);
+        setupUtility.endTurn(pl1);
+        game.getGameMap().printBoard();
+
+        System.out.println("tocca al player 2, secondo round");
+        setupUtility.selectWorker(pl2, 1);
+        //faccio salire il worker per verificare che il potere di athena non sia attivo
+        setupUtility.move(pl2, 3, 2);
+        assertEquals(game.getGameMap().getWorkerOnSquare(3, 2), setupUtility.w2pl2);
+        game.getGameMap().printBoard();
+        setupUtility.endMove(pl2);
+        setupUtility.build(pl2, 4, 2);
+        setupUtility.endTurn(pl2);
+        game.getGameMap().printBoard();
     }
+
 }

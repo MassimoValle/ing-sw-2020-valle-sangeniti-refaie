@@ -1,6 +1,8 @@
 package it.polimi.ingsw.Server.Model.God.GodsPower;
 
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
+import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
@@ -21,8 +23,11 @@ public class ApolloPower extends Power {
     @Override
     public ActionOutcome move(Worker apolloWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
 
+        GameMap map = Game.getInstance().getGameMap();
+        int heightDifference = map.getDifferenceInAltitude(squareWhereTheWorkerIs.getPosition(), positionWhereToMove);
+
         //Controllo se attiva il potere di Apollo
-        if (squareWhereToMove.hasWorkerOn() && !squareWhereToMove.getWorkerOnSquare().getColor().equals(apolloWorker.getColor()) ) {
+        if (squareWhereToMove.hasWorkerOn() && !squareWhereToMove.getWorkerOnSquare().getColor().equals(apolloWorker.getColor()) && heightDifference >= -1 ) {
 
             apolloStartingSquare = squareWhereTheWorkerIs;
             opponentWorkerStartingSquare = squareWhereToMove;

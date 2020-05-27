@@ -145,7 +145,7 @@ public class Square {
 
         if (getHeight() != 0) {
             if (hasDome()) {
-                return "O";
+                return "O   ";
             }
         }
 

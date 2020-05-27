@@ -23,7 +23,7 @@ public class HephaestusPower extends Power {
             if (squareWhereToBuild.getHeight() == 2) {
                 return super.build(squareWhereTheWorkerIs, squareWhereToBuild);
             } else if (squareWhereToBuild.getHeight() == 3) {
-                return super.buildDome(squareWhereToBuild);
+                return super.buildDome(squareWhereTheWorkerIs, squareWhereToBuild);
             }
 
             outcome = super.build(squareWhereTheWorkerIs, squareWhereToBuild);

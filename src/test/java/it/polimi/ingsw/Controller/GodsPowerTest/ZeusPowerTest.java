@@ -18,8 +18,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
+
 import static org.junit.Assert.*;
 
 public class ZeusPowerTest {

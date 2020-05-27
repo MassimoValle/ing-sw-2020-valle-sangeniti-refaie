@@ -19,11 +19,12 @@ import static org.junit.Assert.assertEquals;
 
 public class MinotaurPowerTest {
 
-    MasterController masterController;
-    Player player1, player2;
-    String pl1, pl2;
-    Game game;
-    Worker w1pl1, w2pl1, w1pl2, w2pl2;
+    private MasterController masterController;
+    private Player player1, player2;
+    private String pl1, pl2;
+    private Game game;
+    private SetupGameUtilityClass setupUtility;
+    protected Worker w1pl1, w2pl1, w1pl2, w2pl2;
 
     @Before
     public void setUp() {
