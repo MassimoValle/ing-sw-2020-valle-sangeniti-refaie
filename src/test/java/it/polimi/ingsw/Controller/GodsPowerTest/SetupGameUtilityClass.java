@@ -13,6 +13,11 @@ import java.util.ArrayList;
 
 public class SetupGameUtilityClass {
 
+    protected Worker w1pl1;
+    protected Worker w2pl1;
+    protected Worker w1pl2;
+    protected Worker w2pl2;
+
     public void setup(MasterController masterController, int god1, int god2, boolean closeWorkers) {
         ArrayList<God> chosenGod = new ArrayList<>();
         chosenGod.add(masterController.getGameInstance().getDeck().getGod(god1));
@@ -27,7 +32,7 @@ public class SetupGameUtilityClass {
         masterController.getGameInstance().getChosenGodsFromDeck().get(1).setAssigned(true);
 
 
-        Worker w1pl1 = masterController.getGameInstance().getPlayers().get(0).getPlayerWorkers().get(0);
+        w1pl1 = masterController.getGameInstance().getPlayers().get(0).getPlayerWorkers().get(0);
         Square sq22;
 
         if (closeWorkers) {
@@ -42,7 +47,7 @@ public class SetupGameUtilityClass {
         w1pl1.setPlaced(true);
 
 
-        Worker w2pl1 = masterController.getGameInstance().getPlayers().get(0).getPlayerWorkers().get(1);
+       w2pl1 = masterController.getGameInstance().getPlayers().get(0).getPlayerWorkers().get(1);
         Square sq23;
 
         if (closeWorkers) {
@@ -59,7 +64,7 @@ public class SetupGameUtilityClass {
 
 
         //giocatore 2 piazza il primo worker
-        Worker w1pl2 = masterController.getGameInstance().getPlayers().get(1).getPlayerWorkers().get(0);
+        w1pl2 = masterController.getGameInstance().getPlayers().get(1).getPlayerWorkers().get(0);
         Square sq32;
 
         if (closeWorkers) {
@@ -75,7 +80,7 @@ public class SetupGameUtilityClass {
 
 
         //giocatore 2 piazza il seoondo worker
-        Worker w2pl2 = masterController.getGameInstance().getPlayers().get(1).getPlayerWorkers().get(1);
+        w2pl2 = masterController.getGameInstance().getPlayers().get(1).getPlayerWorkers().get(1);
         Square sq33;
 
         if (closeWorkers) {

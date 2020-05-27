@@ -111,10 +111,11 @@ public class ZeusPowerTest {
                 new MoveRequest(pl1, new Position(1, 2))
         );
 
+        game.getGameMap().printBoard();
         MasterController.dispatcher(
                 new BuildRequest(pl1, new Position(0, 2))
         );
-
+        game.getGameMap().printBoard();
         MasterController.dispatcher(
                 new EndTurnRequest(pl1)
         );
@@ -127,7 +128,7 @@ public class ZeusPowerTest {
         MasterController.dispatcher(
                 new MoveRequest(pl2, new Position(4, 3))
         );
-
+        game.getGameMap().printBoard();
         assertEquals( new Position(4,3) ,player2.getPlayerWorkers().get(1).getWorkerPosition());
         assertEquals(0, game.getGameMap().getSquare(4,3).getHeight());
         assertFalse(game.getGameMap().getSquare(4,3).hasBeenBuiltOver());
@@ -136,11 +137,11 @@ public class ZeusPowerTest {
         MasterController.dispatcher(
                 new BuildRequest(pl2, new Position(4,3))
         );
-
+        game.getGameMap().printBoard();
         assertEquals( new Position(4,3) ,player2.getPlayerWorkers().get(1).getWorkerPosition());
         assertEquals(1, game.getGameMap().getSquare(4,3).getHeight());
         assertTrue(game.getGameMap().getSquare(4,3).hasBeenBuiltOver());
-
+        game.getGameMap().printBoard();
         MasterController.dispatcher(
                 new EndTurnRequest(pl2)
         );
