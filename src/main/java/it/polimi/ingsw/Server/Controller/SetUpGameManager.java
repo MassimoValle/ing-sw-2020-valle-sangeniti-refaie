@@ -77,7 +77,6 @@ public class SetUpGameManager {
      */
     public void assignGodToPlayer(Player player, God god) {
         player.setPlayerGod(god);
-        //gameInstance.removeGodChosen(god);
         gameInstance.setGodAssigned(god);
         god.setAssigned(true);
         setupGameState = PossibleGameState.ASSIGNING_GOD;

@@ -19,6 +19,10 @@ public interface ClientInterface {
 
     int askNumbOfPlayer();
 
+    void youAreNotTheGodLikePlayer(String godLikePlayer);
+
+    void youAreTheGodLikeplayer();
+
     void showDeck();
 
     ArrayList<God> selectGods(int howMany);

@@ -37,7 +37,7 @@ public class ClientManager {
     /**
      * The Client state.
      */
-    PossibleClientState clientState;
+    private static PossibleClientState clientState;
 
     // model
     private Player me;
@@ -57,9 +57,12 @@ public class ClientManager {
     private boolean workersPlaced = false;
 
 
+
+
     //Qualsiasi messaggio che il client riceve dal server
     ServerMessage currentMessage = null;
-
+    //la richiesta corrente effettuata dal client
+    Request currentRequest = null;
     //la richiesta corrente che il client sta gestendo
     ServerRequest currentServerRequest = null;
 
@@ -122,7 +125,7 @@ public class ClientManager {
 
             case PLACE_WORKER -> placeWorker((PlaceWorkerServerRequest) serverRequest);
 
-            case START_TURN -> startTurn();
+            case START_TURN -> startTurn((StartTurnServerRequest) serverRequest);
 
             case SELECT_WORKER -> selectWorker();
 
@@ -292,7 +295,14 @@ public class ClientManager {
 
     private void chooseGodFromDeck(ChooseGodsServerRequest serverRequest){
 
-        clientState = PossibleClientState.CHOOSING_GODS;
+        if (!serverRequest.getMessageRecipient().equals(me.getPlayerName())) {
+            clientView.youAreNotTheGodLikePlayer(serverRequest.getMessageRecipient());
+            return;
+        } else {
+            clientView.youAreTheGodLikeplayer();
+        }
+
+        ClientManager.clientState = PossibleClientState.CHOOSING_GODS;
 
         int howMany = serverRequest.getHowMany();
 
@@ -347,7 +357,7 @@ public class ClientManager {
 
     }
 
-    private void startTurn() {
+    private void startTurn(StartTurnServerRequest serverRequest) {
 
         playerHasMoved = false;
         playerHasBuilt = false;

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Server.Model;
 
+import it.polimi.ingsw.Network.Message.Server.ServerMessage;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
@@ -184,7 +185,8 @@ public class Game extends Observable<Message> {
     /**
      * @param serverMessage the response that must be sent to the player
      */
-    public void putInChanges(Message serverMessage) {
+    public void putInChanges(Player player, ServerMessage serverMessage) {
+        serverMessage.setMessageRecipient(player.getPlayerName());
 
         notify(serverMessage);
     }

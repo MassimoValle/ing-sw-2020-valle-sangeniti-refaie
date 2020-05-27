@@ -71,6 +71,24 @@ public class CLI extends ClientView {
     }
 
     @Override
+    public void youAreNotTheGodLikePlayer(String godLikePlayer) {
+
+        consoleOut.println("\n " + godLikePlayer + " is the chosen one.");
+        consoleOut.println("Please wait while he is choosing the gods");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void youAreTheGodLikeplayer() {
+
+        consoleOut.println("\nYou are the Chosen One");
+        consoleOut.println("\nPlease select the gods");
+        consoleOut.println();
+
+    }
+
+    @Override
     public void showDeck() {
 
         consoleOut.println("\nLet's choose the gods!");

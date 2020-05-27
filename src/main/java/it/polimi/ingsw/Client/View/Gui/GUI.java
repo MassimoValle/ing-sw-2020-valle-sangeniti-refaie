@@ -127,6 +127,16 @@ public class GUI extends ClientView {
     }
 
     @Override
+    public void youAreNotTheGodLikePlayer(String godLikePlayer) {
+
+    }
+
+    @Override
+    public void youAreTheGodLikeplayer() {
+
+    }
+
+    @Override
     public void showDeck() {
         try {
             GUImain.setRoot("showDeck", null);
