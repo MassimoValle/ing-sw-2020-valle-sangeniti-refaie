@@ -15,19 +15,19 @@ public class HestiaPower extends Power {
 
 
     @Override
-    public ActionOutcome build(Square squareWhereToBuild) {
+    public ActionOutcome build(Square squareWhereTheWorkerIs, Square squareWhereToBuild) {
         ActionOutcome outcome;
 
 
         if(firstBuild){
-            outcome = super.build(squareWhereToBuild);
+            outcome = super.build(squareWhereTheWorkerIs, squareWhereToBuild);
             if(outcome == ActionOutcome.DONE) {
                 firstBuild = false;
                 return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
             } else return ActionOutcome.NOT_DONE;
 
         } else if(!squareWhereToBuild.getPosition().isPerimetral()){        //firstBuild = false
-            outcome = super.build(squareWhereToBuild);
+            outcome = super.build(squareWhereTheWorkerIs, squareWhereToBuild);
             firstBuild = true; //resetto firstBuild
             return ActionOutcome.DONE;
         } else return ActionOutcome.NOT_DONE; //cannot build because square is perimetral

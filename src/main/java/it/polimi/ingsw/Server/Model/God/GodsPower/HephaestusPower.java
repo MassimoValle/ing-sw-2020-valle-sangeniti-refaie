@@ -16,17 +16,17 @@ public class HephaestusPower extends Power {
 
 
     @Override
-    public ActionOutcome build(Square squareWhereToBuild) {
+    public ActionOutcome build(Square squareWhereTheWorkerIs, Square squareWhereToBuild) {
         ActionOutcome outcome;
 
         if (firstBlockBuilt == null) {
             if (squareWhereToBuild.getHeight() == 2) {
-                return super.build(squareWhereToBuild);
+                return super.build(squareWhereTheWorkerIs, squareWhereToBuild);
             } else if (squareWhereToBuild.getHeight() == 3) {
                 return super.buildDome(squareWhereToBuild);
             }
 
-            outcome = super.build(squareWhereToBuild);
+            outcome = super.build(squareWhereTheWorkerIs, squareWhereToBuild);
             if (outcome == ActionOutcome.DONE) {
                 firstBuild = false;
                 firstBlockBuilt = squareWhereToBuild;
@@ -35,7 +35,7 @@ public class HephaestusPower extends Power {
                 return ActionOutcome.NOT_DONE;
             }
         } else if (firstBlockBuilt.equals(squareWhereToBuild)) {
-            outcome = super.build(squareWhereToBuild);
+            outcome = super.build(squareWhereTheWorkerIs, squareWhereToBuild);
             if (outcome == ActionOutcome.DONE) {
                 //RESET
                 firstBuild = true;

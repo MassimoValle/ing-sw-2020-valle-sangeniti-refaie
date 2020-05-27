@@ -7,7 +7,6 @@ import it.polimi.ingsw.Server.Model.Action.BuildDomeAction;
 import it.polimi.ingsw.Server.Model.Action.MoveAction;
 import it.polimi.ingsw.Server.Model.God.PowerType;
 import it.polimi.ingsw.Server.Model.Map.Square;
-import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
@@ -54,9 +53,9 @@ public abstract class Power implements Serializable, GodsChecker {
 
     }
 
-    public ActionOutcome build(Square squareWhereToBuild) {
+    public ActionOutcome build(Square squareWhereTheWorkerIs, Square squareWhereToBuild) {
 
-        Action buildAction = new BuildAction(squareWhereToBuild);
+        Action buildAction = new BuildAction(squareWhereTheWorkerIs, squareWhereToBuild);
 
         if (buildAction.isValid() ) {
             buildAction.doAction();

@@ -299,11 +299,12 @@ public class ActionManager {
         God playerGod = activePlayer.getPlayerGod();
         Position positionWhereToBuild = request.getPositionWhereToBuild();
         Square squareWhereToBuild = gameInstance.getGameMap().getSquare(positionWhereToBuild);
+        Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getWorkerPosition());
 
         if (request instanceof BuildDomeRequest)
             actionOutcome = playerGod.getGodPower().buildDome(squareWhereToBuild);
         else
-            actionOutcome = playerGod.getGodPower().build(squareWhereToBuild);
+            actionOutcome = playerGod.getGodPower().build(squareWhereTheWorkerIs, squareWhereToBuild);
 
 
         if (actionOutcome == ActionOutcome.NOT_DONE) {
@@ -316,7 +317,7 @@ public class ActionManager {
         if(request instanceof BuildDomeRequest)
             turnManager.addActionPerformed(new BuildDomeAction(squareWhereToBuild));
         else
-            turnManager.addActionPerformed(new BuildAction(squareWhereToBuild));
+            turnManager.addActionPerformed(new BuildAction(squareWhereTheWorkerIs, squareWhereToBuild));
 
         MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.BUILD, positionWhereToBuild, activeWorker.getWorkersNumber(), request instanceof BuildDomeRequest);
 

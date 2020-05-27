@@ -131,9 +131,9 @@ public class DemeterPowerTest {
         game.getGameMap().printBoard();
 
 
-        setupUtility.build(pl1,1,3);
+        setupUtility.build(pl1,1,1);
         game.getGameMap().printBoard();
-        //setupUtility.build(pl1, 3,2);
+        setupUtility.build(pl1, 3,2);
         //assertEquals(2, game.getGameMap().getSquareHeight(new Position(3,2)));
         //game.getGameMap().printBoard();
 
