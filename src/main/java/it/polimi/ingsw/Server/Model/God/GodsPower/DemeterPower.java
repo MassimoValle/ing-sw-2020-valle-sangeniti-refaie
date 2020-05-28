@@ -28,16 +28,18 @@ public class DemeterPower extends Power {
         } else if (firstBlockBuilt.equals(squareWhereToBuild)) {
             return ActionOutcome.NOT_DONE;
         } else {
-            outcome = super.build(squareWhereToBuild);
-            if (outcome == ActionOutcome.DONE) {
-                //resetto
-                firstBuild = true;
-                firstBlockBuilt = squareWhereToBuild;
-                return outcome;
-            } else {
-                return ActionOutcome.NOT_DONE;
-            }
+            return super.build(squareWhereToBuild);
         }
+    }
 
+    @Override
+    public boolean powerMustBeReset() {
+        return true;
+    }
+
+    @Override
+    public void resetPower() {
+        firstBuild = true;
+        firstBlockBuilt = null;
     }
 }

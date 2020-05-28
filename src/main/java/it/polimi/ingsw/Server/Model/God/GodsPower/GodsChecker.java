@@ -7,10 +7,8 @@ public interface GodsChecker {
 
     boolean checkIfActionNotPermitted(MoveAction moveAction);
 
-    //used for Athena
     boolean canPreventsFromPerformingAction();
 
-    //used for prometheus
     boolean canBuildBeforeMoving(Worker workerSelected);
 
     boolean canUsePowerBeforeMoving();
@@ -21,4 +19,6 @@ public interface GodsChecker {
 
     //used for prometheus
     void setBuildBefore();
+
+    void resetPower();
 }

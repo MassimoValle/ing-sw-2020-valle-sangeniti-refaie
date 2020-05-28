@@ -240,30 +240,4 @@ public class TurnManager {
         actionPerformedByActivePlayer.add(action);
     }
 
-
-        /*
-    private void handleEndAction(EndRequest request) {
-
-        userPlayerState = UserPlayerState.ENDING_TURN;
-
-        // set GameManager attributes
-        SetUpGameController.lastActivePlayer = player;
-        SetUpGameController.lastActiveWorker = selectedWorker;
-
-        // set local attributes
-        player = nextPlayer();
-        selectedWorker = null;
-        currentPlayer++;
-
-        userPlayerState = UserPlayerState.STARTING_TURN;
-
-    }*/
-
-
-
-
-
-
-
-
 }

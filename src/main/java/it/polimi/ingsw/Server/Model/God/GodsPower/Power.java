@@ -81,7 +81,7 @@ public abstract class Power implements Serializable, GodsChecker {
 
 
 
-
+    @Override
     public boolean canPreventsFromPerformingAction(){
         return false;
     }
@@ -113,6 +113,15 @@ public abstract class Power implements Serializable, GodsChecker {
 
     @Override
     public void setBuildBefore() {
+    }
+
+    public boolean powerMustBeReset() {
+        return false;
+    }
+
+    @Override
+    public void resetPower() {
+
     }
 
 

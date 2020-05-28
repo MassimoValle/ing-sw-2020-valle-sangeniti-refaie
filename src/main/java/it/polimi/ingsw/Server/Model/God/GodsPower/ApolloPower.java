@@ -55,5 +55,17 @@ public class ApolloPower extends Power {
         return super.move(apolloWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
     }
 
+    @Override
+    public boolean powerMustBeReset() {
+        return true;
+    }
+
+    @Override
+    public void resetPower() {
+        apolloStartingSquare = null;
+        opponentWorkerStartingSquare = null;
+        apolloStartingPosition = null;
+        opponentWorkerPosition = null;
+    }
 }
 

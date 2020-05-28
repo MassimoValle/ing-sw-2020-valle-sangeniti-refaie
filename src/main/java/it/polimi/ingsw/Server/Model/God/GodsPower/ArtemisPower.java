@@ -35,23 +35,19 @@ public class ArtemisPower extends Power implements Serializable {
         } else if (startingPlace.equals(squareWhereToMove)) {
             return ActionOutcome.NOT_DONE;
         } else {
-            outcome = super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
-            if (outcome == ActionOutcome.DONE) {
-                //resetto
-                firstMove = true;
-                startingPlace = null;
-                return ActionOutcome.DONE;
-            } else {
-                return ActionOutcome.NOT_DONE;
-            }
+            return super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
         }
 
     }
 
     @Override
-    public ActionOutcome build(Square squareWhereToBuild) {
+    public boolean powerMustBeReset() {
+        return true;
+    }
+
+    @Override
+    public void resetPower() {
         firstMove = true;
         startingPlace = null;
-        return super.build(squareWhereToBuild);
     }
 }

@@ -35,21 +35,22 @@ public class HephaestusPower extends Power {
                 return ActionOutcome.NOT_DONE;
             }
         } else if (firstBlockBuilt.equals(squareWhereToBuild)) {
-            outcome = super.build(squareWhereToBuild);
-            if (outcome == ActionOutcome.DONE) {
-                //RESET
-                firstBuild = true;
-                firstBlockBuilt = null;
-                return outcome;
-            } else {
-                //NON DOVREBBE MAI ESSERE RAGGIUNTO
-                return ActionOutcome.NOT_DONE;
-            }
+            return super.build(squareWhereToBuild);
         } else {
             return ActionOutcome.NOT_DONE;
         }
 
     }
 
+    @Override
+    public boolean powerMustBeReset() {
+        return true;
+    }
+
+    @Override
+    public void resetPower() {
+        firstBuild = true;
+        firstBlockBuilt = null;
+    }
 }
 

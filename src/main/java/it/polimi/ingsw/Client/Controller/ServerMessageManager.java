@@ -1,16 +1,26 @@
 package it.polimi.ingsw.Client.Controller;
 
-import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.ServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.SelectWorkerServerResponse;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 
+/**
+ * This class is used whenever the client receive a message but the player isn't the turnOwner
+ */
 public class ServerMessageManager {
 
+    /**
+     * The Turn owner.
+     */
     String turnOwner = null;
 
 
+    /**
+     * Server request not for you.
+     *
+     * @param serverRequest the server request
+     */
     public void serverRequestNotForYou(ServerRequest serverRequest) {
         turnOwner = serverRequest.getMessageRecipient();
 
@@ -27,6 +37,11 @@ public class ServerMessageManager {
         }
     }
 
+    /**
+     * Server response not for you.
+     *
+     * @param serverResponse the server response
+     */
     public void serverResponseNotForYou(ServerResponse serverResponse) {
 
         turnOwner = serverResponse.getMessageRecipient();

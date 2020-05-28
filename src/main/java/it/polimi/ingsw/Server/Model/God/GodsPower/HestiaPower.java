@@ -25,11 +25,20 @@ public class HestiaPower extends Power {
                 return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
             } else return ActionOutcome.NOT_DONE;
 
-        } else if(!squareWhereToBuild.getPosition().isPerimetral()){        //firstBuild = false
-            outcome = super.build(squareWhereToBuild);
-            firstBuild = true; //resetto firstBuild
-            return ActionOutcome.DONE;
-        } else return ActionOutcome.NOT_DONE; //cannot build because square is perimetral
+        } else if(!squareWhereToBuild.getPosition().isPerimetral()){
+            return super.build(squareWhereToBuild);
+        } else
+            return ActionOutcome.NOT_DONE;
 
+    }
+
+    @Override
+    public boolean powerMustBeReset() {
+        return true;
+    }
+
+    @Override
+    public void resetPower() {
+        firstBuild = true;
     }
 }

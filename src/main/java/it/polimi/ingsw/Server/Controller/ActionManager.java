@@ -29,7 +29,6 @@ public class ActionManager {
     private ActionOutcome actionOutcome;
 
     private Player requestSender;
-
     //this is setted when during someone else's turn one player wins
     private Player winner;
 
@@ -52,8 +51,7 @@ public class ActionManager {
 
         requestSender = gameInstance.searchPlayerByName(request.getMessageSender());
 
-        //Controllo che il player sia nel suo turno
-        if(!isYourTurn(request.getMessageSender())) { //The player who sent the request isn't the playerActive
+        if(!isYourTurn(request.getMessageSender())) {
             MasterController.buildNegativeResponse(requestSender, ResponseContent.NOT_YOUR_TURN, "It's not your turn!");
             return;
         }
@@ -71,8 +69,6 @@ public class ActionManager {
 
             case END_TURN -> handleEndTurnAction((EndTurnRequest) request);
             default -> MasterController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getMessageSender()), ResponseContent.CHECK, "Must never be reached!");
-
-
         };
     }
 
@@ -375,45 +371,31 @@ public class ActionManager {
         gameState = PossibleGameState.BUILT;
         turnManager.updateTurnState(PossibleGameState.BUILT);
         gameState = PossibleGameState.PLAYER_TURN_ENDING;
-        MasterController.buildPositiveResponse(turnManager.getActivePlayer(), ResponseContent.END_TURN, "Devi passare il turno!");
+        MasterController.buildPositiveResponse(activePlayer, responseContent, "Devi passare il turno!");
+        MasterController.buildServerRequest(activePlayer, ServerRequestContent.END_TURN, null);
     }
 
     private void handleEndTurnAction(EndTurnRequest request) {
+
         ResponseContent responseContent = ResponseContent.END_TURN;
         Player activePlayer = turnManager.getActivePlayer();
+        Power power = activePlayer.getPlayerGod().getGodPower();
 
-        /*
-        //TODO this code must be revisited
-        if (gameState == PossibleGameState.WORKER_MOVED && !turnManager.activePlayerHasBuilt()) {
-            MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot end your turn, you must build first");
-            return;
-        }
+        if (power.powerMustBeReset())
+            power.resetPower();
 
-        if (gameState != PossibleGameState.BUILT) {
-            if (gameState != PossibleGameState.PLAYER_TURN_ENDING) {
-                if (gameState != PossibleGameState.WORKER_MOVED) {
-                    MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot end your turn");
-                    return;
-                }
-            }
-        }
-
-        if (!turnManager.activePlayerHasBuilt()) {
-            //QUESTO BLOCCO NON DOVREBBE MAI ESSERE RAGGIUNGIBILE PERCHÈ SE IL GAME STATE È BUILD ALLORA VUOL DIRE CHE HO COSTRUITO
-            MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "You must build at least once");
-            return;
-        }
-        */
 
         //aggiorno lo stato del controller e notifico al player che
         gameState = PossibleGameState.PLAYER_TURN_ENDING;
         MasterController.buildPositiveResponse(activePlayer, responseContent, "Turn ending");
+
         turnManager.updateTurnState(gameState);
         activePlayer = turnManager.getActivePlayer();
+
         gameState = PossibleGameState.START_ROUND;
+
         StartTurnServerRequest startTurnServerRequest = new StartTurnServerRequest();
         gameInstance.putInChanges(activePlayer, startTurnServerRequest);
-        //MasterController.buildPositiveResponse(activePlayer, ResponseContent.START_TURN, "It's your turn!");
         MasterController.buildServerRequest(activePlayer, ServerRequestContent.SELECT_WORKER, null);
 
     }
