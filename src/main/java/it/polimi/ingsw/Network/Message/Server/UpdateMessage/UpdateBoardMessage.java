@@ -8,7 +8,7 @@ public class UpdateBoardMessage extends UpdateMessage {
     private final UpdateType updateType;
     private final Position position;
     private final Integer workerIndex;
-    private final String playerName;
+    private final String playerName; //the player who did the move
     private final boolean domePresent;
 
     public UpdateBoardMessage(String playerName, UpdateType updateType, Position position, Integer workerIndex, boolean domePresent){

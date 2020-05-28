@@ -28,11 +28,11 @@ public class BabyGame {
         return instance;
     }
 
-    public void addPlayers(UpdatePlayersMessage serverMessage){
+    public void addPlayer(UpdatePlayersMessage.ClientPlayer clientPlayer){
 
-        Player player = new Player(serverMessage.getName());
-        player.setPlayerGod(serverMessage.getGod());
-        player.setColor(serverMessage.getColor());
+        Player player = new Player(clientPlayer.getName());
+        player.setPlayerGod(clientPlayer.getGod());
+        player.setColor(clientPlayer.getColor());
 
         players.add(player);
     }

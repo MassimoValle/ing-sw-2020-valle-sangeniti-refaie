@@ -6,6 +6,7 @@ import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Client.View.Gui.ViewControllers.MainViewController;
 import it.polimi.ingsw.Client.View.Gui.ViewControllers.PickGodController;
 import it.polimi.ingsw.Network.Client;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.SelectWorkerServerResponse;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
@@ -132,7 +133,7 @@ public class GUI extends ClientView {
     }
 
     @Override
-    public void youAreTheGodLikeplayer() {
+    public void youAreTheGodLikePlayer() {
 
     }
 
@@ -429,7 +430,77 @@ public class GUI extends ClientView {
     }
 
     @Override
+    public void anotherPlayerIsPickingUpGod(String turnOwner) {
+
+    }
+
+    @Override
+    public void anotherPlayerIsPlacingWorker(String turnOwner) {
+
+    }
+
+    @Override
+    public void startingPlayerTurn(String turnOwner) {
+
+    }
+
+    @Override
+    public void anotherPlayerIsSelectingWorker(String turnOwner) {
+
+    }
+
+    @Override
+    public void anotherPlayerIsMoving(String turnOwner) {
+
+    }
+
+    @Override
+    public void anotherPlayerIsBuilding(String turnOwner) {
+
+    }
+
+    @Override
+    public void anotherPlayerHasSelectedGods(String turnOwner) {
+
+    }
+
+    @Override
+    public void anotherPlayerHasPickedUpGod(String turnOwner) {
+
+    }
+
+    @Override
+    public void anotherPlayerHasPlacedWorker(String turnOwner) {
+
+    }
+
+    @Override
+    public void anotherPlayerHasSelectedWorker(SelectWorkerServerResponse serverResponse) {
+
+    }
+
+    @Override
+    public void anotherPlayerHasMoved(String turnOwner) {
+
+    }
+
+    @Override
+    public void anotherPlayerHasBuilt(String turnOwner) {
+
+    }
+
+    @Override
+    public void doNothing() {
+
+    }
+
+    @Override
     public void youWon() {
+
+    }
+
+    @Override
+    public void youLose(String winner) {
 
     }
 

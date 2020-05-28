@@ -136,8 +136,8 @@ public class ActionManager {
                 return;
             }
 
-        Integer index = request.getWorkerToSelect();
-        Worker workerFromRequest = activePlayer.getPlayerWorkers().get(index);
+        Integer workerIndex = request.getWorkerToSelect();
+        Worker workerFromRequest = activePlayer.getPlayerWorkers().get(workerIndex);
 
         //When a handleSelectWorkerRequest occurs the activeWorker in the turn must be set tu null
         //or has to be the other player's worker
@@ -459,9 +459,13 @@ public class ActionManager {
         }
     }
 
+
+    public TurnManager getTurnManager() {
+        return this.turnManager;
+    }
     //  ####    TESTING-ONLY    ####
 
-    public void setGameState(PossibleGameState gameState) {
+    public void _setGameState(PossibleGameState gameState) {
         this.gameState = gameState;
     }
 }

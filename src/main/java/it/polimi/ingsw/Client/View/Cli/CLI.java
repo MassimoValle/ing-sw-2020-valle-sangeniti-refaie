@@ -3,12 +3,14 @@ package it.polimi.ingsw.Client.View.Cli;
 import it.polimi.ingsw.Client.Controller.PossibleClientAction;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Client;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.SelectWorkerServerResponse;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -73,14 +75,14 @@ public class CLI extends ClientView {
     @Override
     public void youAreNotTheGodLikePlayer(String godLikePlayer) {
 
-        consoleOut.println("\n " + godLikePlayer + " is the chosen one.");
+        consoleOut.println("\n " + godLikePlayer + " is the Chosen One.");
         consoleOut.println("Please wait while he is choosing the gods");
         consoleOut.println();
 
     }
 
     @Override
-    public void youAreTheGodLikeplayer() {
+    public void youAreTheGodLikePlayer() {
 
         consoleOut.println("\nYou are the Chosen One");
         consoleOut.println("\nPlease select the gods");
@@ -214,9 +216,9 @@ public class CLI extends ClientView {
     @Override
     public void showAllPlayersInGame(Set<Player> playerSet) {
 
-        consoleOut.println("\nYou are playing against: ");
+        consoleOut.println("Players in game:");
         for (Player player: playerSet) {
-            consoleOut.println(player.printInfoInCLi() + "\n");
+            consoleOut.println(player.printInfoInCLi() + "");
         }
         consoleOut.println();
 
@@ -503,8 +505,99 @@ public class CLI extends ClientView {
     public void someoneElseDoingStuff() {
 
         consoleOut.println("It's not your turn\n" +
-                "Updating board..." +
+                //"Updating board..." +
                 "\n");
+    }
+
+    @Override
+    public void anotherPlayerIsPickingUpGod(String turnOwner) {
+
+    }
+
+    @Override
+    public void anotherPlayerIsPlacingWorker(String turnOwner) {
+
+    }
+
+    @Override
+    public void startingPlayerTurn(String turnOwner) {
+
+        consoleOut.println("\nIt's " + turnOwner + "turn!");
+        consoleOut.println();
+    }
+
+    @Override
+    public void anotherPlayerIsSelectingWorker(String turnOwner) {
+
+        consoleOut.println("\n" + turnOwner + " is selecting his worker...");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void anotherPlayerIsMoving(String turnOwner) {
+
+        consoleOut.println("\n" + turnOwner + " is moving his worker...");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void anotherPlayerIsBuilding(String turnOwner) {
+
+        consoleOut.println("\n" + turnOwner + " is building with his worker...");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void anotherPlayerHasSelectedGods(String turnOwner) {
+
+        consoleOut.println("\n" + turnOwner + " has chosen the Gods!");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void anotherPlayerHasPickedUpGod(String turnOwner) {
+
+        consoleOut.println("\n" + turnOwner + " picked up his God!");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void anotherPlayerHasPlacedWorker(String turnOwner) {
+
+        consoleOut.println("\n" + turnOwner + " has placed his worker");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void anotherPlayerHasSelectedWorker(SelectWorkerServerResponse serverResponse) {
+        String turnOwner = serverResponse.getMessageRecipient();
+        int workerIndex = serverResponse.getWorkerSelected();
+
+
+        consoleOut.println("\n" + turnOwner + " has selected his " + workerIndex +"° worker");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void anotherPlayerHasMoved(String turnOwner) {
+
+    }
+
+    @Override
+    public void anotherPlayerHasBuilt(String turnOwner) {
+
+    }
+
+    @Override
+    public void doNothing() {
+
     }
 
 
@@ -512,6 +605,13 @@ public class CLI extends ClientView {
     public void youWon() {
         consoleOut.println("\t#############");
         consoleOut.println("\t\tYOU WIN");
+        consoleOut.println("\t#############");
+    }
+
+    @Override
+    public void youLose(String winner) {
+        consoleOut.println("\t#############");
+        consoleOut.println("\t\tYOU LOSE");
         consoleOut.println("\t#############");
     }
 

@@ -18,6 +18,7 @@ import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static it.polimi.ingsw.Network.Message.Enum.ResponseContent.MOVE_WORKER_AGAIN;
 
@@ -67,9 +68,6 @@ public class MasterController {
 
 
 
-
-    // FIXME: da decidere se tenere qui
-
     /**
      * Build a specific {@link ServerRequest} based on the {@link ServerRequestContent} and
      * send it to the {@link Player}
@@ -86,11 +84,17 @@ public class MasterController {
                     gameInstance.putInChanges(player, selectWorkerServerRequest);
                 }
                 case MOVE_WORKER -> {
-                    ServerRequest moveWorkerServerRequest = new MoveWorkerServerRequest();
+
+                    List<Position> reachablePositions = gameInstance.getGameMap().getReachableAdjacentPlaces(activeWorker.getWorkerPosition());
+
+                    ServerRequest moveWorkerServerRequest = new MoveWorkerServerRequest(reachablePositions);
                     gameInstance.putInChanges(player, moveWorkerServerRequest);
                 }
                 case BUILD -> {
-                    ServerRequest buildServerRequest = new BuildServerRequest();
+
+                    List<Position> buildableSquares = gameInstance.getGameMap().getPlacesWhereYouCanBuildOn(activeWorker.getWorkerPosition());
+
+                    ServerRequest buildServerRequest = new BuildServerRequest(buildableSquares);
                     gameInstance.putInChanges(player, buildServerRequest);
                 }
                 default -> { //END TURN
@@ -145,10 +149,14 @@ public class MasterController {
                     gameInstance.putInChanges(player,
                             new PlaceWorkerServerResponse(status, gameManagerSays));
 
-            case SELECT_WORKER ->
-                    gameInstance.putInChanges(player,
-                            new SelectWorkerServerResponse(status, gameManagerSays)
-                    );
+            case SELECT_WORKER -> {
+
+                int workerIndex = actionManager.getTurnManager().getActiveWorker().getWorkersNumber() + 1;
+                gameInstance.putInChanges(player,
+                        new SelectWorkerServerResponse(status, gameManagerSays, workerIndex)
+                ); //in caso di risposta NEGTIVA il workerIndex non è significativo
+
+            }
 
             case POWER_BUTTON ->
                     gameInstance.putInChanges(player,
@@ -190,45 +198,39 @@ public class MasterController {
 
     }
 
-    //Fa la stessa identica cosa del buildPositiveResponse solo che invia una WonResponse
-    public static ServerResponse buildWonResponse(Player player, String gameManagerSays) {
 
-        ServerResponse res = new WonServerResponse(gameManagerSays);
-        gameInstance.putInChanges(player, res);
+    public static void buildWonResponse(Player player, String gameManagerSays) {
 
-        //da notificare a tutti gli altri giocatori che un player ha vinto --> fine partita
+        WonServerResponse wonServerResponse = new WonServerResponse(gameManagerSays);
+        gameInstance.putInChanges(player, wonServerResponse);
 
-        return res;
     }
 
     public static void updateClients(String player, UpdateType updateType, Position position, Integer workerIndex, boolean domePresent){
 
-        for(Player playerToSendUpdate: gameInstance.getPlayers()) {
-            UpdateBoardMessage updateMessage =  new UpdateBoardMessage(player, updateType, position, workerIndex, domePresent);
-            gameInstance.putInChanges(playerToSendUpdate, updateMessage);
-        }
+
+        UpdateBoardMessage updateMessage =  new UpdateBoardMessage(player, updateType, position, workerIndex, domePresent);
+        gameInstance.putInChanges(new Player("ALL"), updateMessage);
 
     }
 
-    public static void sendOtherPlayersInfoToEveryone(){
 
-        for(Player playerToSendUpdate : gameInstance.getPlayers()) {
+    public static void sendPlayersInfo(){
 
-            for (Player player : gameInstance.getPlayers()) {
+        ArrayList<UpdatePlayersMessage.ClientPlayer> clientPlayers = new ArrayList<>();
 
-                UpdatePlayersMessage updatePlayersMessage = new UpdatePlayersMessage(
-
-                        player.getPlayerName(),
-                        player.getPlayerGod(),
-                        player.getColor()
-
-                );
-
-                gameInstance.putInChanges(playerToSendUpdate, updatePlayersMessage);
-            }
-
+        for (Player player : gameInstance.getPlayers()) {
+            clientPlayers.add(new UpdatePlayersMessage.ClientPlayer(player.getPlayerGod(), player.getColor(), player.getPlayerName()));
         }
+
+        UpdatePlayersMessage updatePlayersMessage = new UpdatePlayersMessage(clientPlayers);
+
+        Player ALL = new Player("ALL");
+        gameInstance.putInChanges(ALL, updatePlayersMessage);
     }
+
+
+
 
     //      ####    TESTING-ONLY    ####
     public SetUpGameManager _getSetUpGameController() {

@@ -16,7 +16,6 @@ import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
 import it.polimi.ingsw.Network.Message.ClientRequests.*;
-import it.polimi.ingsw.Network.Message.Server.ServerResponse.PlaceWorkerServerResponse;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
 
@@ -202,7 +201,7 @@ public class SetUpGameManager {
         }
         else {
 
-            MasterController.sendOtherPlayersInfoToEveryone();
+            MasterController.sendPlayersInfo();
 
             PlaceWorkerServerRequest placeWorkerServerRequest = new PlaceWorkerServerRequest( workerNum);
             gameInstance.putInChanges(activePlayer, placeWorkerServerRequest);
@@ -263,7 +262,6 @@ public class SetUpGameManager {
                     StartTurnServerRequest startTurnServerRequest = new StartTurnServerRequest();
                     gameInstance.putInChanges(activePlayer, startTurnServerRequest);
 
-                    //MasterController.buildPositiveResponse(activePlayer, ResponseContent.START_TURN, "It's your turn");
                     MasterController.buildServerRequest(activePlayer, ServerRequestContent.SELECT_WORKER, null);
                     setupGameState = PossibleGameState.START_ROUND;
                     playerLoop = 0;

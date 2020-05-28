@@ -99,7 +99,7 @@ public class ZeusPowerTest {
 
         game.getGameMap().printBoard();
 
-        masterController._getActionManager().setGameState(PossibleGameState.START_ROUND);
+        masterController._getActionManager()._setGameState(PossibleGameState.START_ROUND);
         masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
         masterController._getTurnManager().nextTurn(player1);
 
@@ -206,7 +206,7 @@ public class ZeusPowerTest {
 
         game.getGameMap().printBoard();
 
-        masterController._getActionManager().setGameState(PossibleGameState.START_ROUND);
+        masterController._getActionManager()._setGameState(PossibleGameState.START_ROUND);
         masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
         masterController._getTurnManager().nextTurn(player1);
 

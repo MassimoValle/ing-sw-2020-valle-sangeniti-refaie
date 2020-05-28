@@ -8,10 +8,7 @@ import it.polimi.ingsw.Network.Message.Server.ServerResponse.*;
 import it.polimi.ingsw.Network.Message.Server.ServerMessage;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.*;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.*;
-import it.polimi.ingsw.Server.Model.Action.BuildDomeAction;
-import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
-import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Client.View.ClientView;
@@ -37,11 +34,14 @@ public class ClientManager {
     /**
      * The Client state.
      */
-    private static PossibleClientState clientState;
+    private PossibleClientState clientState;
 
     // model
     private Player me;
     private final BabyGame babyGame;
+
+    //Its use is intended to deal with message when the player is not the turn owner
+    private final ServerMessageManager serverMessageManager;
 
     private final ClientBoardUpdater clientBoardUpdater;
 
@@ -76,7 +76,9 @@ public class ClientManager {
      */
     public ClientManager(ClientView clientView){
 
-        this.clientView = clientView;
+        ClientManager.clientView = clientView;
+
+        this.serverMessageManager = new ServerMessageManager();
 
         this.babyGame = new BabyGame();
 
@@ -92,9 +94,7 @@ public class ClientManager {
      * @param serverMessage the server message
      */
     public void handleMessageFromServer(ServerMessage serverMessage){
-
         takeMessage(serverMessage);
-
     }
 
     //mette il messaggio in arrivo in current message e
@@ -116,6 +116,16 @@ public class ClientManager {
      */
     public void handleServerRequest(ServerRequest serverRequest) {
         currentServerRequest = serverRequest;
+
+
+        if(serverRequest instanceof StartTurnServerRequest && messageForMe(serverRequest) ) {
+            startTurn((StartTurnServerRequest) serverRequest);
+            return;
+        } else if (!messageForMe(serverRequest)) {
+            serverMessageManager.serverRequestNotForYou(serverRequest);
+            return;
+        }
+
 
         switch (serverRequest.getContent()) {
 
@@ -212,6 +222,12 @@ public class ClientManager {
         MessageStatus responseStatus = serverResponse.getResponseStatus();
         ResponseContent responseContent = serverResponse.getResponseContent();
 
+        if (!myTurn && responseContent != ResponseContent.LOGIN && responseContent != ResponseContent.NUM_PLAYER) {
+            serverMessageManager.serverResponseNotForYou(serverResponse);
+            return;
+        }
+
+
         if(responseContent != null) {
 
             switch (responseContent){
@@ -242,7 +258,6 @@ public class ClientManager {
             }
         }
     }
-
 
 
     /**
@@ -295,14 +310,11 @@ public class ClientManager {
 
     private void chooseGodFromDeck(ChooseGodsServerRequest serverRequest){
 
-        if (!serverRequest.getMessageRecipient().equals(me.getPlayerName())) {
-            clientView.youAreNotTheGodLikePlayer(serverRequest.getMessageRecipient());
-            return;
-        } else {
-            clientView.youAreTheGodLikeplayer();
-        }
+        myTurn = true;
 
-        ClientManager.clientState = PossibleClientState.CHOOSING_GODS;
+        clientView.youAreTheGodLikePlayer();
+
+        clientState = PossibleClientState.CHOOSING_GODS;
 
         int howMany = serverRequest.getHowMany();
 
@@ -324,6 +336,7 @@ public class ClientManager {
 
     private void pickGod(PickGodServerRequest serverRequest) {
 
+        myTurn = true;
         clientState = PossibleClientState.PICKING_UP_GOD;
 
         ArrayList<God> hand = (ArrayList<God>) serverRequest.getGods();
@@ -342,6 +355,8 @@ public class ClientManager {
     }
 
     private void placeWorker(PlaceWorkerServerRequest serverRequest) {
+
+        myTurn = true;
 
         clientState = PossibleClientState.PLACING_WORKERS;
 
@@ -401,9 +416,10 @@ public class ClientManager {
 
     }
 
-    private void moveWorker(MoveWorkerServerRequest response){
+    private void moveWorker(MoveWorkerServerRequest serverRequest){
 
         ArrayList<Position> nearlyPositionsValid = me.getPlayerWorkers().get(workerSelected).getWorkerPosition().getAdjacentPlaces();
+
 
         Position position = clientView.moveWorker(nearlyPositionsValid);
 
@@ -497,7 +513,7 @@ public class ClientManager {
         }
 
         clientView.godsSelectedSuccesfully();
-
+        myTurn = false;
         clientState = PossibleClientState.GODS_CHOSEN;
     }
 
@@ -509,7 +525,7 @@ public class ClientManager {
             return;
         }
         clientView.godPickedUpSuccessfully();
-
+        myTurn = false;
         clientState = PossibleClientState.GOD_ASSIGNED;
     }
 
@@ -526,6 +542,7 @@ public class ClientManager {
 
         if(workerPlaced == 2) {
             workersPlaced = true;
+            myTurn = false;
             clientState = PossibleClientState.WORKERS_PLACED;
         }
 
@@ -701,7 +718,7 @@ public class ClientManager {
     }
 
     /**
-     * It asks the {@link PossibleClientAction Action} the player wont to perform,
+     * It asks the {@link PossibleClientAction Action} the player want to perform,
      * it is called only when the players has two or more action to choose between
      *
      * @param possibleActions - {@link List<PossibleClientAction> } containing all the available action
@@ -712,6 +729,15 @@ public class ClientManager {
         return clientView.choseActionToPerform(possibleActions);
     }
 
+
+    /**
+     * Check if the username is the messageRecipient
+     *
+     * @return true if the username equals the message recipient false otherwise
+     */
+    private boolean messageForMe(ServerMessage serverMessage) {
+        return serverMessage.getMessageRecipient().equals(me.getPlayerName());
+    }
 
 
 
@@ -725,10 +751,15 @@ public class ClientManager {
      * @param updatePlayersMessage the update players message
      */
     public void updatePlayerInfo(UpdatePlayersMessage updatePlayersMessage) {
-        babyGame.addPlayers(updatePlayersMessage);
+        ArrayList<UpdatePlayersMessage.ClientPlayer> clientPlayers = updatePlayersMessage.getClientPlayers();
+
+        for(UpdatePlayersMessage.ClientPlayer clientPlayer : clientPlayers)
+            babyGame.addPlayer(clientPlayer);
+
         Set<Player> players = babyGame.getPlayers();
-        clientView.showAllPlayersInGame(players);
         updateMyInfo();
+
+        clientView.showAllPlayersInGame(players);
     }
 
     /**

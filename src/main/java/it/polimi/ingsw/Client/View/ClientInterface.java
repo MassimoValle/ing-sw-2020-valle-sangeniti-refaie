@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Client.View;
 
 import it.polimi.ingsw.Client.Controller.PossibleClientAction;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.SelectWorkerServerResponse;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
@@ -21,7 +22,7 @@ public interface ClientInterface {
 
     void youAreNotTheGodLikePlayer(String godLikePlayer);
 
-    void youAreTheGodLikeplayer();
+    void youAreTheGodLikePlayer();
 
     void showDeck();
 
@@ -96,7 +97,25 @@ public interface ClientInterface {
 
     void someoneElseDoingStuff();
 
+    void anotherPlayerIsPickingUpGod(String turnOwner);
+    void anotherPlayerIsPlacingWorker(String turnOwner);
+    void startingPlayerTurn(String turnOwner);
+    void anotherPlayerIsSelectingWorker(String turnOwner);
+    void anotherPlayerIsMoving(String turnOwner);
+    void anotherPlayerIsBuilding(String turnOwner);
+
+    void anotherPlayerHasSelectedGods(String turnOwner);
+    void anotherPlayerHasPickedUpGod(String turnOwner);
+    void anotherPlayerHasPlacedWorker(String turnOwner);
+    void anotherPlayerHasSelectedWorker(SelectWorkerServerResponse serverResponse);
+    void anotherPlayerHasMoved(String turnOwner);
+    void anotherPlayerHasBuilt(String turnOwner);
+
+    void doNothing();
+
     void youWon();
+
+    void youLose(String winner);
 
     void debug(ServerResponse serverResponse);
 

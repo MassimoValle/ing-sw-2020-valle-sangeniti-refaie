@@ -3,7 +3,6 @@ package it.polimi.ingsw.Controller.GodsPowerTest;
 import it.polimi.ingsw.Network.Message.ClientRequests.*;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Controller.MasterController;
-import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
@@ -89,7 +88,7 @@ public class SetupGameUtilityClass {
         sq33.setWorkerOn(w2pl2);
         w2pl2.setPlaced(true);
 
-        masterController._getActionManager().setGameState(PossibleGameState.START_ROUND);
+        masterController._getActionManager()._setGameState(PossibleGameState.START_ROUND);
         masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
         masterController._getTurnManager().nextTurn(masterController.getGameInstance().getPlayers().get(0));
 

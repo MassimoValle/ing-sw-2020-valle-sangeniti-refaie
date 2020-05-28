@@ -183,11 +183,13 @@ public class Game extends Observable<Message> {
 
 
     /**
-     * @param serverMessage the response that must be sent to the player
+     * It makes the message available to all the {@link it.polimi.ingsw.Server.View.RemoteView}
+     *
+     * @param player who the message is intended for
+     * @param serverMessage the ServerMessage in output
      */
     public void putInChanges(Player player, ServerMessage serverMessage) {
         serverMessage.setMessageRecipient(player.getPlayerName());
-
         notify(serverMessage);
     }
 
