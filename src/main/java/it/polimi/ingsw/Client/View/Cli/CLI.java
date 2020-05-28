@@ -230,13 +230,52 @@ public class CLI extends ClientView {
         consoleOut.println("Let's place your worker!\nWhere do you want to place it?\n");
         consoleOut.println("(You are placing your "+ n + "° worker)");
 
-        consoleOut.print("row: ");
-        int row = Integer.parseInt(consoleIn.nextLine());
-        consoleOut.println();
+        int row = -1;
+        int col = -1;
 
-        consoleOut.print("col: ");
-        int col = Integer.parseInt(consoleIn.nextLine());
-        consoleOut.println();
+        do {
+            consoleOut.print("row: ");
+
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    row = Integer.parseInt(entered);
+
+                    if (row < 0 || row > 4) {
+                        consoleOut.println("You must select one of the insert a number between 0 and 4");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
+
+        }while ( row < 0 || row > 4);
+
+        do {
+            consoleOut.print("col: ");
+
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    col = Integer.parseInt(entered);
+
+                    if (col < 0 || col > 4) {
+                        consoleOut.println("You must select one of the insert a number between 0 and 4");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
+
+        }while ( col < 0 || col > 4);
 
         return new Position(row, col);
     }
@@ -267,12 +306,23 @@ public class CLI extends ClientView {
 
     @Override
     public int selectWorker() {
-        int worker;
+        int worker = -1;
         do{
             consoleOut.println("\nWhich worker do you want to move?\n" +
                     "1 or 2?");
 
-            worker = Integer.parseInt(consoleIn.nextLine());
+            String entered = consoleIn.nextLine();
+
+            try {
+                worker = Integer.parseInt(entered);
+
+                if (worker != 1 && worker != 2) {
+                    consoleOut.println("You must select one of the worker gods");
+                }
+
+            } catch (NumberFormatException e) {
+                consoleOut.println("Please insert a number!");
+            }
 
         }while (worker != 1 && worker != 2);
 
@@ -298,9 +348,21 @@ public class CLI extends ClientView {
 
         consoleOut.println(">>>");
 
-        int actionToDo;
+        int actionToDo = -1;
         do{
-            actionToDo = Integer.parseInt(consoleIn.nextLine());
+
+            String entered = consoleIn.nextLine();
+
+            try {
+                actionToDo = Integer.parseInt(entered);
+
+                if (actionToDo < 0 || actionToDo > possibleActions.size()) {
+                    consoleOut.println("Please select an action");
+                }
+
+            } catch (NumberFormatException e) {
+                consoleOut.println("Please insert a number!");
+            }
 
         }while (actionToDo < 0 || actionToDo > possibleActions.size());
 
@@ -342,20 +404,60 @@ public class CLI extends ClientView {
 
         Position p;
 
-        consoleOut.println("These are all the possible position where you can move:");
-        nearlyPosValid.forEach(consoleOut::println);
+        //consoleOut.println("These are all the possible position where you can move:");
+        //nearlyPosValid.forEach(consoleOut::println);
+
+        consoleOut.println("Let's move!");
+        consoleOut.println("\n(x,y)");
+
+        int row = -1;
+        int col = -1;
 
         do {
             consoleOut.print("row: ");
-            int row = Integer.parseInt(consoleIn.nextLine());
-            consoleOut.println();
 
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    row = Integer.parseInt(entered);
+
+                    if (row < 0 || row > 4) {
+                        consoleOut.println("You must select one of the insert a number between 0 and 4");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
+
+        }while ( row < 0 || row > 4);
+
+        do {
             consoleOut.print("col: ");
-            int col = Integer.parseInt(consoleIn.nextLine());
-            consoleOut.println();
 
-            p = new Position(row, col);
-        }while (!nearlyPosValid.contains(p));
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    col = Integer.parseInt(entered);
+
+                    if (col < 0 || col > 4) {
+                        consoleOut.println("You must select one of the insert a number between 0 and 4");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
+
+        }while ( col < 0 || col > 4);
+
+        p = new Position(row, col);
 
         consoleOut.println("Moving onto (" + p.getRow() + "," + p.getColumn() + ")\n");
 
@@ -377,10 +479,25 @@ public class CLI extends ClientView {
         consoleOut.println("Do you want to move again?");
         consoleOut.println("1) sì ");
         consoleOut.println("2) no \n");
-        int input;
+        int input = -1;
 
         do{
-            input = Integer.parseInt(consoleIn.nextLine());
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    input = Integer.parseInt(entered);
+
+                    if (input != 1 && input != 2) {
+                        consoleOut.println("You have to choose between this 2 options");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
         }while (input != 1 && input != 2);
 
         return input == 1;
@@ -420,22 +537,60 @@ public class CLI extends ClientView {
     @Override
     public Position build(ArrayList<Position> possiblePosToBuild) {
 
-        Position p;
+        //consoleOut.println("These are all the possible position where you can build:");
+        //possiblePosToBuild.forEach(consoleOut::println);
+        consoleOut.println("Let's build!");
+        consoleOut.println("\n(x,y)");
 
-        consoleOut.println("These are all the possible position where you can build:");
-        possiblePosToBuild.forEach(consoleOut::println);
+
+        int row = -1;
+        int col = -1;
 
         do {
             consoleOut.print("row: ");
-            int row = Integer.parseInt(consoleIn.nextLine());
-            consoleOut.println();
 
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    row = Integer.parseInt(entered);
+
+                    if (row < 0 || row > 4) {
+                        consoleOut.println("You must select one of the insert a number between 0 and 4");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
+
+        }while ( row < 0 || row > 4);
+
+        do {
             consoleOut.print("col: ");
-            int col = Integer.parseInt(consoleIn.nextLine());
-            consoleOut.println();
 
-            p = new Position(row, col);
-        }while (!possiblePosToBuild.contains(p));
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    col = Integer.parseInt(entered);
+
+                    if (col < 0 || col > 4) {
+                        consoleOut.println("You must select one of the insert a number between 0 and 4");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
+
+        }while ( col < 0 || col > 4);
+
+        Position p = new Position(row, col);
 
         consoleOut.println("building onto (" + p.getRow() + "," + p.getColumn() + ")\n");
 
@@ -465,10 +620,25 @@ public class CLI extends ClientView {
         consoleOut.println("Do you want to build again?");
         consoleOut.println("1) sì");
         consoleOut.println("2) no ");
-        int input;
+        int input = -1;
 
         do{
-            input = Integer.parseInt(consoleIn.nextLine());
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    input = Integer.parseInt(entered);
+
+                    if (input != 1 && input != 2) {
+                        consoleOut.println("You have to choose between this 2 options");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
         }while (input != 1 && input != 2);
 
         return input == 1;
