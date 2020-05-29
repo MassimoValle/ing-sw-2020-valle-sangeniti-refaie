@@ -19,6 +19,8 @@ public class ArtemisPower extends Power implements Serializable {
         this.firstMove = true;
     }
 
+
+
     @Override
     public ActionOutcome move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
 

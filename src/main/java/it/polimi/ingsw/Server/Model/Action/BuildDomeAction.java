@@ -30,6 +30,7 @@ public class BuildDomeAction implements Action{
         return !squareWhereToBuildOn.hasWorkerOn() && adjacent.contains(squareWhereToBuildOn.getPosition()) &&
                 !squareWhereToBuildOn.hasDome();
 
+        //IL CONTROLLO PER VEDERE SE HAI ATLAS (permette di costruire una dome a qualsiasi livello) VIENE FATTO NEL CONTROLLER
     }
 
     @Override
