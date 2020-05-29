@@ -1,16 +1,15 @@
 package it.polimi.ingsw.Server.Controller;
 
+import it.polimi.ingsw.Network.Message.ClientRequests.ChoseGodsRequest;
+import it.polimi.ingsw.Network.Message.ClientRequests.PowerButtonRequest;
 import it.polimi.ingsw.Network.Message.Enum.UpdateType;
-import it.polimi.ingsw.Network.Message.Server.Responses.*;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.ServerRequest;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.*;
+import it.polimi.ingsw.Network.Message.Server.ServerRequests.*;
 import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.BuildServerRequest;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.EndTurnServerRequest;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.MoveWorkerServerRequest;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.SelectWorkerServerRequest;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateBoardMessage;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdatePlayersMessage;
 import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
@@ -19,6 +18,9 @@ import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static it.polimi.ingsw.Network.Message.Enum.ResponseContent.MOVE_WORKER_AGAIN;
 
 
 public class MasterController {
@@ -66,9 +68,6 @@ public class MasterController {
 
 
 
-
-    // FIXME: da decidere se tenere qui
-
     /**
      * Build a specific {@link ServerRequest} based on the {@link ServerRequestContent} and
      * send it to the {@link Player}
@@ -79,18 +78,23 @@ public class MasterController {
     public static void buildServerRequest(Player player, ServerRequestContent content, Worker activeWorker) {
 
             switch (content) {
+                
                 case SELECT_WORKER -> {
                     ServerRequest selectWorkerServerRequest = new SelectWorkerServerRequest();
                     gameInstance.putInChanges(player, selectWorkerServerRequest);
                 }
                 case MOVE_WORKER -> {
-                    ArrayList<Position> nearlyPosition = gameInstance.getGameMap().getReachableAdjacentPlaces(activeWorker.getWorkerPosition());
-                    ServerRequest moveWorkerServerRequest = new MoveWorkerServerRequest(nearlyPosition);
+
+                    List<Position> reachablePositions = gameInstance.getGameMap().getReachableAdjacentPlaces(activeWorker.getWorkerPosition());
+
+                    ServerRequest moveWorkerServerRequest = new MoveWorkerServerRequest(reachablePositions);
                     gameInstance.putInChanges(player, moveWorkerServerRequest);
                 }
                 case BUILD -> {
-                    ArrayList<Position> possiblePlaceToBuild = gameInstance.getGameMap().getPlacesWhereYouCanBuildOn(activeWorker.getWorkerPosition());
-                    ServerRequest buildServerRequest = new BuildServerRequest(possiblePlaceToBuild);
+
+                    List<Position> buildableSquares = gameInstance.getGameMap().getPlacesWhereYouCanBuildOn(activeWorker.getWorkerPosition());
+
+                    ServerRequest buildServerRequest = new BuildServerRequest(buildableSquares);
                     gameInstance.putInChanges(player, buildServerRequest);
                 }
                 default -> { //END TURN
@@ -102,7 +106,7 @@ public class MasterController {
     }
 
     /**
-     * Build the a {@link Response} with {@link MessageStatus#ERROR}
+     * Build the a {@link ServerResponse} with {@link MessageStatus#ERROR}
      *
      * @param gameManagerSays the message from the {@link ActionManager}
      */
@@ -115,7 +119,7 @@ public class MasterController {
     }
 
     /**
-     * Build the a {@link Response} with {@link MessageStatus#OK}
+     * Build the a {@link ServerResponse} with {@link MessageStatus#OK}
      *
      * @param gameManagerSays the message from the {@link ActionManager}
      */
@@ -129,82 +133,104 @@ public class MasterController {
 
     private static void buildResponse(Player player, ResponseContent content, MessageStatus status, String gameManagerSays) {
 
-        String playerName = player.getPlayerName();
-
         switch (content) {
-            case SELECT_WORKER ->
+
+            case CHOOSE_GODS ->
                     gameInstance.putInChanges(player,
-                            new SelectWorkerResponse(playerName, status, gameManagerSays)
+                            new ChooseGodsServerResponse(status, gameManagerSays)
                     );
 
+            case PICK_GOD ->
+                    gameInstance.putInChanges(player,
+                            new PickGodServerResponse(status, gameManagerSays)
+                    );
+
+            case PLACE_WORKER ->
+                    gameInstance.putInChanges(player,
+                            new PlaceWorkerServerResponse(status, gameManagerSays));
+
+            case SELECT_WORKER -> {
+
+                int workerIndex = actionManager.getTurnManager().getActiveWorker().getWorkersNumber() + 1;
+                gameInstance.putInChanges(player,
+                        new SelectWorkerServerResponse(status, gameManagerSays, workerIndex)
+                ); //in caso di risposta NEGTIVA il workerIndex non è significativo
+
+            }
+
+            case POWER_BUTTON ->
+                    gameInstance.putInChanges(player,
+                            new PowerButtonServerResponse(status, gameManagerSays)
+                    );
             case MOVE_WORKER ->
                     gameInstance.putInChanges(player,
-                            new MoveWorkerResponse(playerName, status, gameManagerSays)
+                            new MoveWorkerServerResponse(status, gameManagerSays)
                     );
+            case MOVE_WORKER_AGAIN ->
+                    gameInstance.putInChanges(player,
+                            new MoveWorkerServerResponse(ResponseContent.MOVE_WORKER_AGAIN, status, gameManagerSays)
+                    );
+
             case BUILD ->
                     gameInstance.putInChanges(player,
-                            new BuildResponse(playerName, status, gameManagerSays)
+                            new BuildServerResponse(status, gameManagerSays)
+                    );
+            case BUILD_AGAIN ->
+                    gameInstance.putInChanges(player,
+                            new BuildServerResponse(ResponseContent.BUILD_AGAIN,status, gameManagerSays)
                     );
             case END_MOVE ->
                     gameInstance.putInChanges(player,
-                            new EndMoveResponse(playerName, status, gameManagerSays)
+                            new EndMoveServerResponse(status, gameManagerSays)
                     );
             case END_BUILD ->
                     gameInstance.putInChanges(player,
-                            new EndBuildResponse(playerName, status, gameManagerSays));
+                            new EndBuildServerResponse(status, gameManagerSays));
             case END_TURN ->
                     gameInstance.putInChanges(player,
-                            new EndTurnResponse(playerName, status, gameManagerSays)
+                            new EndTurnServerResponse(status, gameManagerSays)
                     );
             default ->
                     gameInstance.putInChanges(player,
-                            new Response(playerName, content, status, gameManagerSays)
+                            new ServerResponse(content, status, gameManagerSays)
                     );
         }
 
     }
 
-    //Fa la stessa identica cosa del buildPositiveResponse solo che invia una WonResponse
-    public static Response buildWonResponse(Player player, String gameManagerSays) {
 
-        Response res = new WonResponse(player.getPlayerName(), gameManagerSays);
-        gameInstance.putInChanges(player, res);
+    public static void buildWonResponse(Player player, String gameManagerSays) {
 
-        //da notificare a tutti gli altri giocatori che un player ha vinto --> fine partita
+        WonServerResponse wonServerResponse = new WonServerResponse(gameManagerSays);
+        gameInstance.putInChanges(player, wonServerResponse);
 
-        return res;
     }
 
-    public static void updateClients(String player, UpdateType updateType, Position position, Integer workerIndex){
+    public static void updateClients(String player, UpdateType updateType, Position position, Integer workerIndex, boolean domePresent){
 
-        for(Player playerToSendUpdate: gameInstance.getPlayers()) {
-            UpdateBoardMessage updateMessage =  new UpdateBoardMessage(player, updateType, position, workerIndex);
-            gameInstance.putInChanges(playerToSendUpdate, updateMessage);
+
+        UpdateBoardMessage updateMessage =  new UpdateBoardMessage(player, updateType, position, workerIndex, domePresent);
+        gameInstance.putInChanges(new Player("ALL"), updateMessage);
+
+    }
+
+
+    public static void sendPlayersInfo(){
+
+        ArrayList<UpdatePlayersMessage.ClientPlayer> clientPlayers = new ArrayList<>();
+
+        for (Player player : gameInstance.getPlayers()) {
+            clientPlayers.add(new UpdatePlayersMessage.ClientPlayer(player.getPlayerGod(), player.getColor(), player.getPlayerName()));
         }
 
+        UpdatePlayersMessage updatePlayersMessage = new UpdatePlayersMessage(clientPlayers);
 
-
+        Player ALL = new Player("ALL");
+        gameInstance.putInChanges(ALL, updatePlayersMessage);
     }
 
-    public static void sendListOfPlayer(){
 
-        for(Player playerToSendUpdate : gameInstance.getPlayers()) {
 
-            for (Player player : gameInstance.getPlayers()) {
-
-                UpdatePlayersMessage updatePlayersMessage = new UpdatePlayersMessage(
-
-                        player.getPlayerName(),
-                        player.getPlayerGod(),
-                        player.getColor()
-
-                );
-
-                gameInstance.putInChanges(playerToSendUpdate, updatePlayersMessage);
-            }
-
-        }
-    }
 
     //      ####    TESTING-ONLY    ####
     public SetUpGameManager _getSetUpGameController() {

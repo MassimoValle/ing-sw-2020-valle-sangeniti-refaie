@@ -2,6 +2,9 @@ package it.polimi.ingsw.Server.Model.Action;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Server.Model.Map.Square;
+import it.polimi.ingsw.Server.Model.Player.Position;
+
+import java.util.ArrayList;
 
 
 /**
@@ -10,21 +13,22 @@ import it.polimi.ingsw.Server.Model.Map.Square;
  */
 public class BuildAction implements Action {
     private Square squareWhereToBuildOn;
+    private Square squareWhereTheWorkerIs;
 
 
-    public BuildAction(Square squareWhereToBuildOn) {
+    public BuildAction(Square squareWhereTheWorkerIs, Square squareWhereToBuildOn) {
         this.squareWhereToBuildOn = squareWhereToBuildOn;
+        this.squareWhereTheWorkerIs = squareWhereTheWorkerIs;
     }
 
 
     @Override
     public boolean isValid() {
 
-        if (squareWhereToBuildOn.hasWorkerOn()) {
-            return false;
-        }
+        ArrayList<Position> adjacent = squareWhereTheWorkerIs.getPosition().getAdjacentPlaces();
 
-        return true;
+        return !squareWhereToBuildOn.hasWorkerOn() && adjacent.contains(squareWhereToBuildOn.getPosition()) &&
+                !squareWhereToBuildOn.hasDome();
     }
 
     @Override

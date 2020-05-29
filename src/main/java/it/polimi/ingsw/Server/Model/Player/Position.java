@@ -128,12 +128,33 @@ public class Position implements Serializable {
         return row == 0 || row == 4 || column == 0 || column == 4;
     }
 
+    public boolean insideBoard() {
+        return this.row >= 0 && this.row <= 4 && this.column >= 0 && this.column <= 4;
+    }
 
     /**
-     * Check if a {@link Square square} has someone else's worker on.
+     * This method check if the 2 position are at unit distance;.
      *
-     * @return boolean
+     * @param pos the pos 2
+     * @return the boolean
      */
+    public boolean isClose(Position pos) {
+        return this.row - pos.row >= -1 && this.row - pos.row <= 1 && this.column - pos.column >= -1 && this.column - pos.column <= 1;
+    }
+
+    public boolean sameRow(Position pos) {
+        return this.row == pos.row;
+    }
+
+    public boolean sameColumn(Position pos) {
+        return this.column == pos.column;
+    }
+
+    public boolean isInCorner() {
+        return this.equals(new Position(0, 0)) || this.equals(new Position(0, 4)) ||
+                this.equals(new Position(4, 0)) || this.equals(new Position(4, 4));
+
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -149,5 +170,6 @@ public class Position implements Serializable {
         }
 
 
-    }
+
+}
 

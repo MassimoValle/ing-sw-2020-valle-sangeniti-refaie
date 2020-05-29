@@ -12,8 +12,4 @@ public class Dome extends Block {
         // assegna png
     }
 
-    @Override
-    void build(Position pos) {
-
-    }
 }

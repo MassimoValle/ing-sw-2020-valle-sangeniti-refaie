@@ -65,4 +65,8 @@ public class God implements Serializable {
     }
 
 
+    public boolean is(String name) {
+        String godName = this.getGodName();
+        return godName.equals(name);
+    }
 }

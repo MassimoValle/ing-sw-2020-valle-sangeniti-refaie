@@ -1,35 +1,31 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
-import it.polimi.ingsw.Network.Message.ClientRequests.MoveRequest;
-import it.polimi.ingsw.Network.Message.ClientRequests.SelectWorkerRequest;
-import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
+import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Game;
-import it.polimi.ingsw.Server.Model.God.God;
-import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
-import it.polimi.ingsw.Server.Model.Player.Position;
-import it.polimi.ingsw.Server.Model.Player.Worker;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 
 public class ApolloPowerTest {
 
-    MasterController masterController;
-    Player player1, player2;
-    Game game;
+
+    private MasterController masterController;
+    private Player player1, player2;
+    private String pl1, pl2;
+    private Game game;
+    private SetupGameUtilityClass setupUtility;
+
+
 
     @Before
-    public void setUp() {
+    public void setUp() throws DomePresentException {
 
-        Game.resetInstance();
         game = Game.getInstance();
-
-
 
         player1 = new Player("Simone");
         player2 = new Player("Massimo");
@@ -37,80 +33,122 @@ public class ApolloPowerTest {
         Game.getInstance().addPlayer(player2);
 
         masterController = new MasterController(game, player1);
+        setupUtility = new SetupGameUtilityClass();
+
+
+
+        pl1 = player1.getPlayerName();
+        pl2 = player2.getPlayerName();
+    }
+
+    @After
+    public void tearDown(){
+
+        Game.resetInstance();
+    }
+
+
+    @Test
+    public void ApolloPowerSwapOnSameLevelTest() throws DomePresentException {
+
+        setupUtility.setupDifferentHeight(masterController, 0,1, true );
+
+        game.getGameMap().printBoard();
+
+        setupUtility.selectWorker(pl1,0);
+        setupUtility.move(pl1, 3,3);
+
+        assertEquals(game.getGameMap().getWorkerOnSquare(3,3), setupUtility.w1pl1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w2pl2);
+        game.getGameMap().printBoard();
+        setupUtility.build(pl1, 4,2);
+        assertEquals(1, game.getGameMap().getSquare(4, 2).getHeight());
+        game.getGameMap().printBoard();
+        setupUtility.endTurn(pl1);
     }
 
     @Test
-    public void ApolloPowerTest() {
+    public void SwapWhenOpponentWorkerIsHigherTest() throws DomePresentException {
 
-        String pl1 = player1.getPlayerName();
-        String pl2 = player2.getPlayerName();
+        setupUtility.setupDifferentHeight(masterController, 0,1, false );
 
-        assertEquals(2, masterController.getGameInstance().getNumberOfPlayers());
+        setupUtility.selectWorker(pl1,0);
+        setupUtility.move(pl1, 3,3);
 
+        assertEquals(game.getGameMap().getWorkerOnSquare(3,3), setupUtility.w1pl1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w2pl2);
 
-        //Aggiungo i god alla partita
-        ArrayList<God> chosenGod = new ArrayList<>();
-        chosenGod.add(game.getDeck().getGod(0));
-        chosenGod.add(game.getDeck().getGod(1));
-        game.setChosenGodsFromDeck(chosenGod);
+        setupUtility.build(pl1, 4,4);
 
-        //assegno i god ai rispettivi giocatori
-        player1.setPlayerGod(chosenGod.get(0));
-        Game.getInstance().getChosenGodsFromDeck().get(0).setAssigned(true);
-        //game.getChosenGodsFromDeck().get(0).setAssigned(true);
-        player2.setPlayerGod(chosenGod.get(1));
-        game.getChosenGodsFromDeck().get(1).setAssigned(true);
-
-        //giocatore 1 piazza il primo worker
-        Worker w1pl1 = player1.getPlayerWorkers().get(0);
-        Square sq22 = game.getGameMap().getSquare(new Position(2, 2));
-
-        w1pl1.setPosition(new Position(2, 2));
-        sq22.setWorkerOn(w1pl1);
-        w1pl1.setPlaced(true);
-
-        //giocatore 2 piazza il primo worker
-        Worker w1pl2 = player2.getPlayerWorkers().get(0);
-        Square sq32 = game.getGameMap().getSquare(new Position(3, 2));
-
-        w1pl2.setPosition(new Position(3, 2));
-        sq32.setWorkerOn(w1pl2);
-        w1pl2.setPlaced(true);
-
-        //giocatore 1 piazza il secondo worker
-        Worker w2pl1 = player1.getPlayerWorkers().get(1);
-        Square sq23 = game.getGameMap().getSquare(new Position(2, 3));
-
-        w2pl1.setPosition(new Position(2, 3));
-        sq23.setWorkerOn(w2pl1);
-        w2pl1.setPlaced(true);
-
-        //giocatore 2 piazza il seoondo worker
-        Worker w2pl2 = player2.getPlayerWorkers().get(1);
-        Square sq33 = game.getGameMap().getSquare(new Position(3, 3));
-
-        w2pl2.setPosition(new Position(3, 3));
-        sq33.setWorkerOn(w2pl2);
-        w2pl2.setPlaced(true);
-
-        game.getGameMap().printBoard();
-
-        masterController._getActionManager().setGameState(PossibleGameState.START_ROUND);
-        masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
-        masterController._getTurnManager().nextTurn(player1);
-
-        game.getGameMap().printBoard();
-
-        MasterController.dispatcher(
-                new SelectWorkerRequest(pl1, 0)
-        );
-
-        MasterController.dispatcher(
-                new MoveRequest(pl1, new Position(3,3))
-        );
-
-        game.getGameMap().printBoard();
+        assertEquals(1, game.getGameMap().getSquare(4, 4).getHeight());
 
     }
 
+    @Test
+    public void DontSwapWhenOpponentWorkerIs2levelHigherTest() throws DomePresentException {
+
+        setupUtility.setupDifferentHeight(masterController, 0,1, false );
+
+        game.getGameMap().printBoard();
+
+        setupUtility.selectWorker(pl1,0);
+
+        //scambio posizione worker quando apollo è più in basso di 2 livelli (MOSSA NEGATA)
+
+        setupUtility.move(pl1, 3,2);
+
+        //assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w1pl1);
+        //assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w2pl2);
+        game.getGameMap().printBoard();
+        setupUtility.move(pl1,2,1);
+        assertTrue(game.getGameMap().getSquare(2,1).hasWorkerOn());
+        setupUtility.build(pl1, 3,1);
+        assertEquals(1, game.getGameMap().getSquare(3, 1).getHeight());
+        game.getGameMap().printBoard();
+        setupUtility.endTurn(pl1);
+
+    }
+
+    @Test
+    public void SwapWhenApolloWorkerIsHigherTest() throws DomePresentException {
+
+        setupUtility.setupDifferentHeight(masterController, 0,1, false );
+
+        game.getGameMap().printBoard();
+
+        setupUtility.selectWorker(pl1,1);
+        //scambio posizione worker quando apollo è più in alto di un livello
+        setupUtility.move(pl1, 3,2);
+        game.getGameMap().printBoard();
+        assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w2pl1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(2,3), setupUtility.w1pl2);
+        game.getGameMap().printBoard();
+        setupUtility.build(pl1, 4,3);
+        assertEquals(1, game.getGameMap().getSquare(4, 3).getHeight());
+        game.getGameMap().printBoard();
+        setupUtility.endTurn(pl1);
+    }
+
+    @Test
+    public void SwapWhenApolloWorkerIs2LevelHigherTest() throws DomePresentException {
+
+        setupUtility.setupDifferentHeight(masterController, 0,1, false );
+
+        game.getGameMap().printBoard();
+
+        setupUtility.selectWorker(pl1,1);
+        //scambio posizione worker quando apollo è più in alto di un livello
+        setupUtility.move(pl1, 3,3);
+        assertEquals(game.getGameMap().getWorkerOnSquare(3,3), setupUtility.w2pl1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(2,3), setupUtility.w2pl2);
+        game.getGameMap().printBoard();
+        setupUtility.build(pl1, 3,4);
+        assertEquals(1, game.getGameMap().getSquare(3, 4).getHeight());
+        game.getGameMap().printBoard();
+        setupUtility.endTurn(pl1);
+
+    }
 }
+
+
+

@@ -74,7 +74,7 @@ public class MasterControllerTest {
         }
 
         //player2 sceglie il suo god
-        masterController.dispatcher(
+        MasterController.dispatcher(
                 new PickGodRequest(player2.getPlayerName(), Deck.getInstance().getGod(0))
         );
 
@@ -134,6 +134,8 @@ public class MasterControllerTest {
         masterController.dispatcher(
                 new MoveRequest(player2.getPlayerName(), new Position(0,2))
         );
+
+        assertEquals(game.getGameMap().getWorkerOnSquare(0,2), player2.getPlayerWorkers().get(1));
 
         masterController.dispatcher(
                 new BuildRequest(player2.getPlayerName(), new Position(0,3))

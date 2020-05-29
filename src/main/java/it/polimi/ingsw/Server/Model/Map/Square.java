@@ -20,6 +20,7 @@ public class Square {
     private ArrayList<Block> tower;
 
 
+
     public Square(int row, int column) {
         this.tower = null;
         this.workerOnSquare = null;
@@ -41,6 +42,9 @@ public class Square {
         else
             return tower.size();
     }
+
+    public int getRow() {return this.row;}
+    public int getColumn() {return this.column;}
 
     public boolean hasWorkerOn() {
         return workerOnSquare != null;
@@ -86,6 +90,7 @@ public class Square {
     public void freeSquare() {
         this.workerOnSquare = null;
     }
+
 
 
     /**
@@ -140,7 +145,7 @@ public class Square {
 
         if (getHeight() != 0) {
             if (hasDome()) {
-                return "O";
+                return "O   ";
             }
         }
 
@@ -180,6 +185,9 @@ public class Square {
     }
 
 
+    public boolean isFull() {
+        return this.getHeight() == 4;
+    }
 }
 
 

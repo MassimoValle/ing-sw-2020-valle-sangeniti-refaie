@@ -8,7 +8,6 @@ import it.polimi.ingsw.Server.Model.Player.Position;
  */
 public abstract class Block {
 
-    abstract void build(Position pos);
 
 
 }

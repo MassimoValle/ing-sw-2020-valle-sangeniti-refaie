@@ -5,8 +5,8 @@ import it.polimi.ingsw.Server.Model.Map.Square;
 
 public class HephaestusPower extends Power {
 
-    private boolean firstBuild;
-    private Square firstBlockBuilt;
+    private static boolean firstBuild;
+    private static Square firstBlockBuilt;
 
     public HephaestusPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
@@ -16,17 +16,17 @@ public class HephaestusPower extends Power {
 
 
     @Override
-    public ActionOutcome build(Square squareWhereToBuild) {
+    public ActionOutcome build(Square squareWhereTheWorkerIs, Square squareWhereToBuild) {
         ActionOutcome outcome;
 
         if (firstBlockBuilt == null) {
             if (squareWhereToBuild.getHeight() == 2) {
-                return super.build(squareWhereToBuild);
+                return super.build(squareWhereTheWorkerIs, squareWhereToBuild);
             } else if (squareWhereToBuild.getHeight() == 3) {
-                return super.buildDome(squareWhereToBuild);
+                return super.buildDome(squareWhereTheWorkerIs, squareWhereToBuild);
             }
 
-            outcome = super.build(squareWhereToBuild);
+            outcome = super.build(squareWhereTheWorkerIs, squareWhereToBuild);
             if (outcome == ActionOutcome.DONE) {
                 firstBuild = false;
                 firstBlockBuilt = squareWhereToBuild;
@@ -35,21 +35,22 @@ public class HephaestusPower extends Power {
                 return ActionOutcome.NOT_DONE;
             }
         } else if (firstBlockBuilt.equals(squareWhereToBuild)) {
-            outcome = super.build(squareWhereToBuild);
-            if (outcome == ActionOutcome.DONE) {
-                //RESET
-                firstBuild = true;
-                firstBlockBuilt = null;
-                return outcome;
-            } else {
-                //NON DOVREBBE MAI ESSERE RAGGIUNTO
-                return ActionOutcome.NOT_DONE;
-            }
+            return super.build(squareWhereTheWorkerIs, squareWhereToBuild);
         } else {
             return ActionOutcome.NOT_DONE;
         }
 
     }
 
+    @Override
+    public boolean powerMustBeReset() {
+        return true;
+    }
+
+    @Override
+    public void resetPower() {
+        firstBuild = true;
+        firstBlockBuilt = null;
+    }
 }
 

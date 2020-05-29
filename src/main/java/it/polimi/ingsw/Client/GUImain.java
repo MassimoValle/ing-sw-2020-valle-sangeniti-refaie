@@ -9,29 +9,71 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class GUImain extends Application {
 
+    private static Scene scene;
+    private static ClientView clientView;
+    private static FXMLLoader loader;
+    private static Stage mystage;
+
     @Override
     public void start(Stage stage) throws Exception {
 
-        ClientView clientView = new GUI();
-        clientView.start();
+        /*FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Welcome.fxml"));
+        Parent root = loader.load();
 
+        scene = new Scene(root);*/
 
+        mystage = stage;
 
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/mainView.fxml"));
+        setRoot("welcome", null);
 
-        Scene scene = new Scene(root);
+        //stage.minHeightProperty().bind(scene.heightProperty());
+        //stage.minWidthProperty().bind(scene.widthProperty());
 
-        stage.setTitle("GUI");
+        stage.setTitle("Santorini");
         stage.setScene(scene);
         stage.show();
+
+        clientView = new GUI();
+
     }
+
+
 
     public static void main(String[] args) {
         Application.launch(args);
+    }
+
+    public static void startGame(){
+        Thread myThread = new Thread(clientView);
+        myThread.start();
+    }
+
+    public static void setRoot(String fxml, ResourceBundle resourceBundle) throws IOException {
+        Parent root = loadFXML(fxml, resourceBundle);
+
+        if(scene == null) scene = new Scene(root);
+        else scene.setRoot(root);
+    }
+
+    private static Parent loadFXML(String fxml, ResourceBundle resourceBundle) throws IOException {
+        loader = new FXMLLoader(GUImain.class.getResource("/fxml/" + fxml + ".fxml"), resourceBundle);
+        return loader.load();
+    }
+
+    public static FXMLLoader getFXMLLoader(){
+        return loader;
+    }
+
+    public static Stage getStage(){
+        return mystage;
     }
 
 }

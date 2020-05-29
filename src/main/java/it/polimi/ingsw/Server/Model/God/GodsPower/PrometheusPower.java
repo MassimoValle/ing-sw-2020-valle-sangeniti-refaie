@@ -22,7 +22,7 @@ public class PrometheusPower extends Power implements Serializable {
     public ActionOutcome move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
 
         if (buildBefore && squareWhereTheWorkerIs.getHeight() - squareWhereToMove.getHeight() < 0 ) {
-                return ActionOutcome.NOT_DONE;
+            return ActionOutcome.NOT_DONE;
         }
 
         ActionOutcome outcome = super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
@@ -54,5 +54,10 @@ public class PrometheusPower extends Power implements Serializable {
     @Override
     public void setBuildBefore() {
         buildBefore = true;
+    }
+
+    @Override
+    public boolean canUsePowerBeforeMoving() {
+        return true;
     }
 }

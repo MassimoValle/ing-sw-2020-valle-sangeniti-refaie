@@ -37,12 +37,10 @@ public class RemoteView extends View {
 
 
     @Override
-    protected void sendMessage(Game game) {
+    protected void sendMessage(Message message) {
 
-        Message response = game.notifyPlayer(getPlayer());
-
-        if(response != null)
-            connection.sendMessage(response);
+        if(message != null)
+            connection.sendMessage(message);
 
     }
 }

@@ -44,9 +44,11 @@ public class GameMap {
        return getBoard()[pos.getRow()][pos.getColumn()];
     }
 
+    //per test
     public Square getSquare(int row, int col) {
         return getBoard()[row][col];
     }
+
 
     /**
      * Gets worker on square.
@@ -217,4 +219,20 @@ public class GameMap {
         return !board[position.getRow()][position.getColumn()].hasWorkerOn();
     }
 
+    public boolean hasAtLeastFiveFullTower() {
+
+        int fullSquares = 0;
+
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                if (board[i][j].isFull())
+                    fullSquares++;
+
+            }
+        }
+
+        return fullSquares >= 5;
+
+
+    }
 }

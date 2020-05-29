@@ -144,8 +144,8 @@ public class Player {
 
     public String printInfoInCLi() {
 
-        return "\n" + playerName + "\n" +
-                "God: " + playerGod.getGodName() ;
+        return "Username:" + playerName + "\n" +
+                "God: " + playerGod.getGodName() + "\n" ;
 
     }
 

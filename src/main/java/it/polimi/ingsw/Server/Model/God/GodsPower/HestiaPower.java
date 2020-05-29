@@ -10,25 +10,36 @@ public class HestiaPower extends Power {
 
     public HestiaPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
+        firstBuild = true;
     }
 
 
     @Override
-    public ActionOutcome build(Square squareWhereToBuild) {
+    public ActionOutcome build(Square squareWhereTheWorkerIs, Square squareWhereToBuild) {
         ActionOutcome outcome;
 
 
         if(firstBuild){
-            outcome = super.build(squareWhereToBuild);
+            outcome = super.build(squareWhereTheWorkerIs, squareWhereToBuild);
             if(outcome == ActionOutcome.DONE) {
                 firstBuild = false;
                 return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
             } else return ActionOutcome.NOT_DONE;
 
-        } else if(!squareWhereToBuild.getPosition().isPerimetral()){        //firstBuild = false
-            outcome = super.build(squareWhereToBuild);
-            return ActionOutcome.DONE;
-        } else return ActionOutcome.NOT_DONE; //cannot build because square is perimetral
+        } else if(!squareWhereToBuild.getPosition().isPerimetral()){
+            return super.build(squareWhereTheWorkerIs, squareWhereToBuild);
+        } else
+            return ActionOutcome.NOT_DONE;
 
+    }
+
+    @Override
+    public boolean powerMustBeReset() {
+        return true;
+    }
+
+    @Override
+    public void resetPower() {
+        firstBuild = true;
     }
 }

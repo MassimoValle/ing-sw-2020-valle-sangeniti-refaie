@@ -1,8 +1,8 @@
 package it.polimi.ingsw.Server.Controller;
 
-import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
 import it.polimi.ingsw.Network.Message.Enum.UpdateType;
+import it.polimi.ingsw.Network.Message.Server.ServerRequests.StartTurnServerRequest;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Action.*;
 import it.polimi.ingsw.Server.Model.Game;
@@ -29,6 +29,8 @@ public class ActionManager {
     private ActionOutcome actionOutcome;
 
     private Player requestSender;
+    //this is setted when during someone else's turn one player wins
+    private Player winner;
 
     public ActionManager(Game game, TurnManager turnManager) {
         this.gameInstance = game;
@@ -49,8 +51,7 @@ public class ActionManager {
 
         requestSender = gameInstance.searchPlayerByName(request.getMessageSender());
 
-        //Controllo che il player sia nel suo turno
-        if(!isYourTurn(request.getMessageSender())) { //The player who sent the request isn't the playerActive
+        if(!isYourTurn(request.getMessageSender())) {
             MasterController.buildNegativeResponse(requestSender, ResponseContent.NOT_YOUR_TURN, "It's not your turn!");
             return;
         }
@@ -68,8 +69,6 @@ public class ActionManager {
 
             case END_TURN -> handleEndTurnAction((EndTurnRequest) request);
             default -> MasterController.buildNegativeResponse(gameInstance.searchPlayerByName(request.getMessageSender()), ResponseContent.CHECK, "Must never be reached!");
-
-
         };
     }
 
@@ -97,9 +96,21 @@ public class ActionManager {
             godPower.setBuildBefore();
             gameState = PossibleGameState.BUILD_BEFORE;
             turnManager.updateTurnState(PossibleGameState.BUILD_BEFORE);
+
             MasterController.buildPositiveResponse(activePlayer, ResponseContent.POWER_BUTTON, "You can build first!");
+            MasterController.buildServerRequest(activePlayer, ServerRequestContent.BUILD,activeWorker);
             return;
         }
+
+        if(godPower.canBuildDomeAtAnyLevel()) {
+
+            gameState = PossibleGameState.WORKER_MOVED;
+            turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
+            MasterController.buildPositiveResponse(activePlayer, ResponseContent.POWER_BUTTON, "You can build a dome (even onto a non-level-3 block!)");
+            MasterController.buildServerRequest(activePlayer, ServerRequestContent.BUILD, activeWorker);
+            return;
+        }
+
 
         MasterController.buildNegativeResponse(activePlayer, ResponseContent.POWER_BUTTON, "You are not allowed!");
     }
@@ -122,8 +133,8 @@ public class ActionManager {
                 return;
             }
 
-        Integer index = request.getWorkerToSelect();
-        Worker workerFromRequest = activePlayer.getPlayerWorkers().get(index);
+        Integer workerIndex = request.getWorkerToSelect();
+        Worker workerFromRequest = activePlayer.getPlayerWorkers().get(workerIndex);
 
         //When a handleSelectWorkerRequest occurs the activeWorker in the turn must be set tu null
         //or has to be the other player's worker
@@ -206,18 +217,17 @@ public class ActionManager {
         //L'azione è stata eseguita quindi l'aggiungo alla lista nel turn manager
         turnManager.addActionPerformed(new MoveAction(playerGod.getGodPower(), activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove));
 
-        MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.MOVE, positionWhereToMove, activeWorker.getWorkersNumber());
+        MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.MOVE, positionWhereToMove, activeWorker.getWorkersNumber(), false);
 
         //controllo che il giocatore con la mossa appena eseguita abbia vinto
         if (actionOutcome == ActionOutcome.WINNING_MOVE) {
-            //TODO:
-            //da implementare come fatto in pan direttamente nella MoveAction in Action
             MasterController.buildWonResponse(activePlayer, "YOU WON!");
+            //bisogna comunicare a tutti gli altri giocatori che l'activePlayer ha vinto
             return;
         }
 
         //vado a contrllare se con questa mossa l'activePlayer ha vinto (sono salito da un livello 2 a un livello 3)
-        if (playerHasWon(activePlayer)) {
+        if (playerHasWonAfterMoving(activePlayer)) {
             MasterController.buildWonResponse(activePlayer,"YOU WON!");
             return;
         }
@@ -284,8 +294,12 @@ public class ActionManager {
         God playerGod = activePlayer.getPlayerGod();
         Position positionWhereToBuild = request.getPositionWhereToBuild();
         Square squareWhereToBuild = gameInstance.getGameMap().getSquare(positionWhereToBuild);
+        Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getWorkerPosition());
 
-        actionOutcome = playerGod.getGodPower().build(squareWhereToBuild);
+        if (request instanceof BuildDomeRequest)
+            actionOutcome = playerGod.getGodPower().buildDome(squareWhereTheWorkerIs, squareWhereToBuild);
+        else
+            actionOutcome = playerGod.getGodPower().build(squareWhereTheWorkerIs, squareWhereToBuild);
 
 
         if (actionOutcome == ActionOutcome.NOT_DONE) {
@@ -295,26 +309,38 @@ public class ActionManager {
         }
 
         //L'azione è stata eseguita
-        turnManager.addActionPerformed(new BuildAction(squareWhereToBuild));
+        if(request instanceof BuildDomeRequest)
+            turnManager.addActionPerformed(new BuildDomeAction(squareWhereTheWorkerIs, squareWhereToBuild));
+        else
+            turnManager.addActionPerformed(new BuildAction(squareWhereTheWorkerIs, squareWhereToBuild));
 
-        MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.BUILD, positionWhereToBuild, activeWorker.getWorkersNumber());
+        MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.BUILD, positionWhereToBuild, activeWorker.getWorkersNumber(), request instanceof BuildDomeRequest);
+
+        //vado a contrllare se con questa mossa un qualsiasi giocatore con qualche potere particolare ha vinto
+        if (someoneHasWonAfterBuilding(activePlayer)) {
+            MasterController.buildWonResponse(winner,"YOU WON!");
+            //Da inviare anche a tutti gli altri giocatori che il winner ha vinto
+            return;
+        }
 
         if (actionOutcome == ActionOutcome.DONE) {
 
-            if (gameState == PossibleGameState.BUILD_BEFORE) {
-                gameState = PossibleGameState.WORKER_SELECTED;
-                turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
-                MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Now you can move!");
-                MasterController.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, activeWorker);
-                return;
+            switch (gameState) {
+
+                case BUILD_BEFORE -> {
+                    gameState = PossibleGameState.WORKER_SELECTED;
+                    turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
+                    MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Now you can move!");
+                    MasterController.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, activeWorker);
+                }
+
+                default -> {
+                    //action can not be performed again
+                    gameState = PossibleGameState.PLAYER_TURN_ENDING;
+                    turnManager.updateTurnState(PossibleGameState.BUILT);
+                    MasterController.buildPositiveResponse(activePlayer, responseContent, "Built!");
+                    MasterController.buildServerRequest(activePlayer, ServerRequestContent.END_TURN, null);}
             }
-
-
-            //action can not be performed again
-            gameState = PossibleGameState.PLAYER_TURN_ENDING;
-            turnManager.updateTurnState(PossibleGameState.BUILT);
-            MasterController.buildPositiveResponse(activePlayer, responseContent, "Built!");
-            MasterController.buildServerRequest(activePlayer, ServerRequestContent.END_TURN, null);
 
         } else {
             //action  can be performed again
@@ -336,7 +362,7 @@ public class ActionManager {
             return;
         }
 
-        //Sei sei arrivato qua vuol dire che hai sei in WORKER_MOVED, adesso controllo che hai costruito almeno una volta
+        //Sei sei arrivato qua vuol dire che sei in WORKER_MOVED, adesso controllo che hai costruito almeno una volta
         if ( !turnManager.activePlayerHasBuilt() ) {
             MasterController.buildNegativeResponse(activePlayer, responseContent, "You have to build at least once");
             return;
@@ -345,43 +371,31 @@ public class ActionManager {
         gameState = PossibleGameState.BUILT;
         turnManager.updateTurnState(PossibleGameState.BUILT);
         gameState = PossibleGameState.PLAYER_TURN_ENDING;
-        MasterController.buildPositiveResponse(turnManager.getActivePlayer(), ResponseContent.END_TURN, "Devi passare il turno!");
+        MasterController.buildPositiveResponse(activePlayer, responseContent, "Devi passare il turno!");
+        MasterController.buildServerRequest(activePlayer, ServerRequestContent.END_TURN, null);
     }
 
     private void handleEndTurnAction(EndTurnRequest request) {
+
         ResponseContent responseContent = ResponseContent.END_TURN;
         Player activePlayer = turnManager.getActivePlayer();
+        Power power = activePlayer.getPlayerGod().getGodPower();
 
-        /*
-        //TODO this code must be revisited
-        if (gameState == PossibleGameState.WORKER_MOVED && !turnManager.activePlayerHasBuilt()) {
-            MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot end your turn, you must build first");
-            return;
-        }
+        if (power.powerMustBeReset())
+            power.resetPower();
 
-        if (gameState != PossibleGameState.BUILT) {
-            if (gameState != PossibleGameState.PLAYER_TURN_ENDING) {
-                if (gameState != PossibleGameState.WORKER_MOVED) {
-                    MasterController.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "You cannot end your turn");
-                    return;
-                }
-            }
-        }
-
-        if (!turnManager.activePlayerHasBuilt()) {
-            //QUESTO BLOCCO NON DOVREBBE MAI ESSERE RAGGIUNGIBILE PERCHÈ SE IL GAME STATE È BUILD ALLORA VUOL DIRE CHE HO COSTRUITO
-            MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "You must build at least once");
-            return;
-        }
-        */
 
         //aggiorno lo stato del controller e notifico al player che
         gameState = PossibleGameState.PLAYER_TURN_ENDING;
         MasterController.buildPositiveResponse(activePlayer, responseContent, "Turn ending");
+
         turnManager.updateTurnState(gameState);
         activePlayer = turnManager.getActivePlayer();
+
         gameState = PossibleGameState.START_ROUND;
-        MasterController.buildPositiveResponse(activePlayer, ResponseContent.START_TURN, "It's your turn!");
+
+        StartTurnServerRequest startTurnServerRequest = new StartTurnServerRequest();
+        gameInstance.putInChanges(activePlayer, startTurnServerRequest);
         MasterController.buildServerRequest(activePlayer, ServerRequestContent.SELECT_WORKER, null);
 
     }
@@ -399,20 +413,44 @@ public class ActionManager {
 
 
     /**
-     * It checks if the {@link Player#getPlayerName()} has won
+     * It checks if the {@link Player#getPlayerName()} has won after performing a {@link MoveAction}
      *
      * @param player the player to check if he won
      *
      * @return true if he has won, false otherwise
      */
-    private boolean playerHasWon(Player player) {
-        Outcome outcome = new Outcome(player);
-        return outcome.playerHasWon(turnManager.getActiveWorker());
+    private boolean playerHasWonAfterMoving(Player player) {
+        Outcome outcome = new Outcome(player, gameInstance.getPowersInGame(), gameInstance.getGameMap(), gameInstance.getPlayers());
+        if( outcome.playerHasWonAfterMoving(turnManager.getActiveWorker()) ) {
+            winner = outcome.getWinner();
+            return true;
+        } else
+            return false;
     }
 
+    /**
+     * It checks if some {@link Player} has won after performing a {@link MoveAction}
+     *
+     * @param player the player to check if he won
+     *
+     * @return true if he has won, false otherwise
+     */
+    private boolean someoneHasWonAfterBuilding(Player player) {
+        Outcome outcome = new Outcome(player, gameInstance.getPowersInGame(), gameInstance.getGameMap(), gameInstance.getPlayers());
+        if (outcome.playerHasWonAfterBuilding(gameInstance.getGameMap())) {
+            winner = outcome.getWinner();
+            return true;
+        } else
+            return false;
+    }
+
+
+    public TurnManager getTurnManager() {
+        return this.turnManager;
+    }
     //  ####    TESTING-ONLY    ####
 
-    public void setGameState(PossibleGameState gameState) {
+    public void _setGameState(PossibleGameState gameState) {
         this.gameState = gameState;
     }
 }

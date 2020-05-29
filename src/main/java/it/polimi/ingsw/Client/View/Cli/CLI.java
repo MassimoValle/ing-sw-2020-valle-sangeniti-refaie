@@ -1,18 +1,21 @@
 package it.polimi.ingsw.Client.View.Cli;
 
-import it.polimi.ingsw.Client.Model.BabyGame;
+import it.polimi.ingsw.Client.Controller.PossibleClientAction;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Client;
-import it.polimi.ingsw.Network.Message.Server.Responses.Response;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.SelectWorkerServerResponse;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -27,22 +30,6 @@ public class CLI extends ClientView {
 
     }
 
-
-    @Override
-    public void start() {
-
-        String ip = askIpAddress();
-
-
-        Client client = new Client(ip, 8080, this);
-
-        try {
-            client.run();
-        } catch (IOException ex) {
-            //ex.printStackTrace();
-            start();
-        }
-    }
 
     @Override
     public String askIpAddress() {
@@ -86,6 +73,24 @@ public class CLI extends ClientView {
     }
 
     @Override
+    public void youAreNotTheGodLikePlayer(String godLikePlayer) {
+
+        consoleOut.println("\n " + godLikePlayer + " is the Chosen One.");
+        consoleOut.println("Please wait while he is choosing the gods");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void youAreTheGodLikePlayer() {
+
+        consoleOut.println("\nYou are the Chosen One");
+        consoleOut.println("\nPlease select the gods");
+        consoleOut.println();
+
+    }
+
+    @Override
     public void showDeck() {
 
         consoleOut.println("\nLet's choose the gods!");
@@ -120,7 +125,7 @@ public class CLI extends ClientView {
 
                 int n = Integer.parseInt(entered);
 
-                if (n < 1 || n > 15) {
+                if (n < 1 || n >= 15) {
                     consoleOut.println("Index not valid, please insert a valid index");
                     break;
                 }
@@ -138,6 +143,22 @@ public class CLI extends ClientView {
         return godsChosen;
     }
 
+    @Override
+    public void errorWhileChoosingGods(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the Gods you selected" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease select the correct Gods");
+
+    }
+
+    @Override
+    public void godsSelectedSuccesfully() {
+
+        consoleOut.println("Gods selected successfully");
+        consoleOut.println();
+
+    }
 
     @Override
     public God pickFromChosenGods(ArrayList<God> hand) {
@@ -176,11 +197,28 @@ public class CLI extends ClientView {
     }
 
     @Override
+    public void errorWhilePickinUpGod(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the God you selected" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease select the correct God");
+
+    }
+
+    @Override
+    public void godPickedUpSuccessfully() {
+
+        consoleOut.println("God picked successfully");
+        consoleOut.println();
+
+    }
+
+    @Override
     public void showAllPlayersInGame(Set<Player> playerSet) {
 
-        consoleOut.println("\nYou are playing against: ");
+        consoleOut.println("Players in game:");
         for (Player player: playerSet) {
-            consoleOut.println(player.printInfoInCLi() + "\n");
+            consoleOut.println(player.printInfoInCLi() + "");
         }
         consoleOut.println();
 
@@ -192,39 +230,99 @@ public class CLI extends ClientView {
         consoleOut.println("Let's place your worker!\nWhere do you want to place it?\n");
         consoleOut.println("(You are placing your "+ n + "° worker)");
 
-        consoleOut.print("row: ");
-        int row = Integer.parseInt(consoleIn.nextLine());
-        consoleOut.println();
+        int row = -1;
+        int col = -1;
 
-        consoleOut.print("col: ");
-        int col = Integer.parseInt(consoleIn.nextLine());
-        consoleOut.println();
+        do {
+            consoleOut.print("row: ");
+
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    row = Integer.parseInt(entered);
+
+                    if (row < 0 || row > 4) {
+                        consoleOut.println("You must select one of the insert a number between 0 and 4");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
+
+        }while ( row < 0 || row > 4);
+
+        do {
+            consoleOut.print("col: ");
+
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    col = Integer.parseInt(entered);
+
+                    if (col < 0 || col > 4) {
+                        consoleOut.println("You must select one of the insert a number between 0 and 4");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
+
+        }while ( col < 0 || col > 4);
 
         return new Position(row, col);
     }
 
-    @Override
-    public void workerPlacedSuccesfully(String gameManagerSays) {
 
-        consoleOut.println(gameManagerSays);
-        consoleOut.println();
+    @Override
+    public void errorWhilePlacingYourWorker(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the worker you wanted to place" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease try place it again");
     }
 
     @Override
-    public void startingTurn(String gameManagerSays) {
+    public void workerPlacedSuccesfully() {
 
-        consoleOut.println(gameManagerSays);
+        consoleOut.println("Worker placed successfully!");
+        consoleOut.println();
+    }
+
+
+    @Override
+    public void startingTurn() {
+
+        consoleOut.println("It's your turn!");
         consoleOut.println();
     }
 
     @Override
     public int selectWorker() {
-        int worker;
+        int worker = -1;
         do{
             consoleOut.println("\nWhich worker do you want to move?\n" +
                     "1 or 2?");
 
-            worker = Integer.parseInt(consoleIn.nextLine());
+            String entered = consoleIn.nextLine();
+
+            try {
+                worker = Integer.parseInt(entered);
+
+                if (worker != 1 && worker != 2) {
+                    consoleOut.println("You must select one of the worker gods");
+                }
+
+            } catch (NumberFormatException e) {
+                consoleOut.println("Please insert a number!");
+            }
 
         }while (worker != 1 && worker != 2);
 
@@ -235,6 +333,61 @@ public class CLI extends ClientView {
     public void workerSelectedSuccessfully() {
 
         consoleOut.println("\nWorker selected succesfully!\n");
+    }
+
+    @Override
+    public PossibleClientAction choseActionToPerform(List<PossibleClientAction> possibleActions) {
+
+        consoleOut.println("\nHere it is what you can do:");
+
+        int i = 1;
+        for (PossibleClientAction possibleClientAction : possibleActions) {
+            consoleOut.println( i +" " + possibleClientAction + "\n");
+            i++;
+        }
+
+        consoleOut.println(">>>");
+
+        int actionToDo = -1;
+        do{
+
+            String entered = consoleIn.nextLine();
+
+            try {
+                actionToDo = Integer.parseInt(entered);
+
+                if (actionToDo < 0 || actionToDo > possibleActions.size()) {
+                    consoleOut.println("Please select an action");
+                }
+
+            } catch (NumberFormatException e) {
+                consoleOut.println("Please insert a number!");
+            }
+
+        }while (actionToDo < 0 || actionToDo > possibleActions.size());
+
+        return possibleActions.get(actionToDo - 1);
+
+    }
+
+
+    @Override
+    public void errorWhileActivatingPower(String gameManagerSays) {
+
+        consoleOut.println("\n There was a problem with the power you want to use" +
+                "\nGame Manager says: " + gameManagerSays +
+                "\nPlease do a different action");
+
+    }
+
+    @Override
+    public void powerActivated(God god) {
+
+        consoleOut.println("Power activated: ");
+        consoleOut.println("Now you can: ");
+        consoleOut.println(god.getGodPower().getPowerDescription());
+        consoleOut.println();
+
     }
 
     @Override
@@ -251,20 +404,60 @@ public class CLI extends ClientView {
 
         Position p;
 
-        consoleOut.println("These are all the possible position where you can move:");
-        nearlyPosValid.forEach(consoleOut::println);
+        //consoleOut.println("These are all the possible position where you can move:");
+        //nearlyPosValid.forEach(consoleOut::println);
+
+        consoleOut.println("Let's move!");
+        consoleOut.println("\n(x,y)");
+
+        int row = -1;
+        int col = -1;
 
         do {
             consoleOut.print("row: ");
-            int row = Integer.parseInt(consoleIn.nextLine());
-            consoleOut.println();
 
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    row = Integer.parseInt(entered);
+
+                    if (row < 0 || row > 4) {
+                        consoleOut.println("You must select one of the insert a number between 0 and 4");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
+
+        }while ( row < 0 || row > 4);
+
+        do {
             consoleOut.print("col: ");
-            int col = Integer.parseInt(consoleIn.nextLine());
-            consoleOut.println();
 
-            p = new Position(row, col);
-        }while (!nearlyPosValid.contains(p));
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    col = Integer.parseInt(entered);
+
+                    if (col < 0 || col > 4) {
+                        consoleOut.println("You must select one of the insert a number between 0 and 4");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
+
+        }while ( col < 0 || col > 4);
+
+        p = new Position(row, col);
 
         consoleOut.println("Moving onto (" + p.getRow() + "," + p.getColumn() + ")\n");
 
@@ -286,10 +479,25 @@ public class CLI extends ClientView {
         consoleOut.println("Do you want to move again?");
         consoleOut.println("1) sì ");
         consoleOut.println("2) no \n");
-        int input;
+        int input = -1;
 
         do{
-            input = Integer.parseInt(consoleIn.nextLine());
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    input = Integer.parseInt(entered);
+
+                    if (input != 1 && input != 2) {
+                        consoleOut.println("You have to choose between this 2 options");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
         }while (input != 1 && input != 2);
 
         return input == 1;
@@ -329,22 +537,60 @@ public class CLI extends ClientView {
     @Override
     public Position build(ArrayList<Position> possiblePosToBuild) {
 
-        Position p;
+        //consoleOut.println("These are all the possible position where you can build:");
+        //possiblePosToBuild.forEach(consoleOut::println);
+        consoleOut.println("Let's build!");
+        consoleOut.println("\n(x,y)");
 
-        consoleOut.println("These are all the possible position where you can build:");
-        possiblePosToBuild.forEach(consoleOut::println);
+
+        int row = -1;
+        int col = -1;
 
         do {
             consoleOut.print("row: ");
-            int row = Integer.parseInt(consoleIn.nextLine());
-            consoleOut.println();
 
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    row = Integer.parseInt(entered);
+
+                    if (row < 0 || row > 4) {
+                        consoleOut.println("You must select one of the insert a number between 0 and 4");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
+
+        }while ( row < 0 || row > 4);
+
+        do {
             consoleOut.print("col: ");
-            int col = Integer.parseInt(consoleIn.nextLine());
-            consoleOut.println();
 
-            p = new Position(row, col);
-        }while (!possiblePosToBuild.contains(p));
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    col = Integer.parseInt(entered);
+
+                    if (col < 0 || col > 4) {
+                        consoleOut.println("You must select one of the insert a number between 0 and 4");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
+
+        }while ( col < 0 || col > 4);
+
+        Position p = new Position(row, col);
 
         consoleOut.println("building onto (" + p.getRow() + "," + p.getColumn() + ")\n");
 
@@ -374,10 +620,25 @@ public class CLI extends ClientView {
         consoleOut.println("Do you want to build again?");
         consoleOut.println("1) sì");
         consoleOut.println("2) no ");
-        int input;
+        int input = -1;
 
         do{
-            input = Integer.parseInt(consoleIn.nextLine());
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    input = Integer.parseInt(entered);
+
+                    if (input != 1 && input != 2) {
+                        consoleOut.println("You have to choose between this 2 options");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println("Please insert a number!");
+                }
+
+                consoleOut.println();
+            }
         }while (input != 1 && input != 2);
 
         return input == 1;
@@ -414,25 +675,120 @@ public class CLI extends ClientView {
     public void someoneElseDoingStuff() {
 
         consoleOut.println("It's not your turn\n" +
-                "Updating board..." +
+                //"Updating board..." +
                 "\n");
     }
 
     @Override
-    public void win(boolean imWinner) {
-        consoleOut.println("#############");
+    public void anotherPlayerIsPickingUpGod(String turnOwner) {
 
-        if(imWinner)
-            consoleOut.println("YOU WIN");
-        else consoleOut.println("YOU LOSE");
-
-        consoleOut.println("#############");
     }
 
     @Override
-    public void debug(Response response) {
+    public void anotherPlayerIsPlacingWorker(String turnOwner) {
 
-        printMessageFromServer(response);
+    }
+
+    @Override
+    public void startingPlayerTurn(String turnOwner) {
+
+        consoleOut.println("\nIt's " + turnOwner + "turn!");
+        consoleOut.println();
+    }
+
+    @Override
+    public void anotherPlayerIsSelectingWorker(String turnOwner) {
+
+        consoleOut.println("\n" + turnOwner + " is selecting his worker...");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void anotherPlayerIsMoving(String turnOwner) {
+
+        consoleOut.println("\n" + turnOwner + " is moving his worker...");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void anotherPlayerIsBuilding(String turnOwner) {
+
+        consoleOut.println("\n" + turnOwner + " is building with his worker...");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void anotherPlayerHasSelectedGods(String turnOwner) {
+
+        consoleOut.println("\n" + turnOwner + " has chosen the Gods!");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void anotherPlayerHasPickedUpGod(String turnOwner) {
+
+        consoleOut.println("\n" + turnOwner + " picked up his God!");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void anotherPlayerHasPlacedWorker(String turnOwner) {
+
+        consoleOut.println("\n" + turnOwner + " has placed his worker");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void anotherPlayerHasSelectedWorker(SelectWorkerServerResponse serverResponse) {
+        String turnOwner = serverResponse.getMessageRecipient();
+        int workerIndex = serverResponse.getWorkerSelected();
+
+
+        consoleOut.println("\n" + turnOwner + " has selected his " + workerIndex +"° worker");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void anotherPlayerHasMoved(String turnOwner) {
+
+    }
+
+    @Override
+    public void anotherPlayerHasBuilt(String turnOwner) {
+
+    }
+
+    @Override
+    public void doNothing() {
+
+    }
+
+
+    @Override
+    public void youWon() {
+        consoleOut.println("\t#############");
+        consoleOut.println("\t\tYOU WIN");
+        consoleOut.println("\t#############");
+    }
+
+    @Override
+    public void youLose(String winner) {
+        consoleOut.println("\t#############");
+        consoleOut.println("\t\tYOU LOSE");
+        consoleOut.println("\t#############");
+    }
+
+    @Override
+    public void debug(ServerResponse serverResponse) {
+
+        printMessageFromServer(serverResponse);
 
     }
 
@@ -442,7 +798,7 @@ public class CLI extends ClientView {
     }
 
     // test
-    private void printMessageFromServer(Response message){
+    private void printMessageFromServer(ServerResponse message){
         String out = "#### [SERVER] ####\n";
         out += "Message content: " + message.getResponseContent() + "\n";
         out += "Message status: " + message.getMessageStatus() + "\n";
@@ -450,5 +806,20 @@ public class CLI extends ClientView {
         out += "________________\n";
 
         consoleOut.println(out);
+    }
+
+    @Override
+    public void run() {
+        String ip = askIpAddress();
+
+
+        Client client = new Client(ip, 8080, this);
+
+        try {
+            client.run();
+        } catch (IOException ex) {
+            //ex.printStackTrace();
+            run();
+        }
     }
 }

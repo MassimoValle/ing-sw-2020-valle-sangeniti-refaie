@@ -1,6 +1,10 @@
 package it.polimi.ingsw.Client.Model;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
+import it.polimi.ingsw.Server.Model.Action.ApolloSwapAction;
+import it.polimi.ingsw.Server.Model.Action.MinotaurPushAction;
+import it.polimi.ingsw.Server.Model.God.GodsPower.ApolloPower;
+import it.polimi.ingsw.Server.Model.God.GodsPower.MinotaurPower;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
@@ -12,11 +16,9 @@ import java.util.Set;
 
 public class CLIclientMap extends GameMap {
 
-    public void placeUpdate(String playerName, Integer workerIndex, Position position){
+    public void placeUpdate(String playerName, Integer workerIndex, Position position, Set<Player> playersInGame){
 
-        Set<Player> players = BabyGame.getInstance().players;
-
-        for(Player player : players){
+        for(Player player : playersInGame){
             if(player.getPlayerName().equals(playerName)){
 
                 Worker worker = player.getPlayerWorkers().get(workerIndex);
@@ -29,36 +31,40 @@ public class CLIclientMap extends GameMap {
         }
     }
 
-    public void moveUpdate(String playerName, Integer workerIndex, Position position){
+    public void moveUpdate(String playerName, Integer workerIndex, Position position, Set<Player> playersInGame){
 
-        Set<Player> players = BabyGame.getInstance().players;
-
-        for(Player player : players){
+        for(Player player : playersInGame){
             if(player.getPlayerName().equals(playerName)){
                 Worker worker = player.getPlayerWorkers().get(workerIndex);
+                Power power = player.getPlayerGod().getGodPower();
 
-                moveWorker(worker, position);
+                moveWorker(worker, position, power);
 
             }
         }
     }
 
-    private void moveWorker(Worker worker, Position positionWhereToMove){
+    private void moveWorker(Worker worker, Position positionWhereToMove, Power power){
 
         Square startingSquare = getSquare(worker.getWorkerPosition());
         Square squareWhereToMove = getSquare(positionWhereToMove);
         Worker workerOnSquareWhereToMove = null;
 
+
         //this handles the apollo swap client side
-        if(squareWhereToMove.hasWorkerOn()) {
+        if(power instanceof ApolloPower && squareWhereToMove.hasWorkerOn()) {
             workerOnSquareWhereToMove = squareWhereToMove.getWorkerOnSquare();
-            //move atomica da fare sempre
             startingSquare.freeSquare();
             worker.setPosition(positionWhereToMove);
             squareWhereToMove.setWorkerOn(worker);
             startingSquare.setWorkerOn(workerOnSquareWhereToMove);
             workerOnSquareWhereToMove.setPosition(startingSquare.getPosition());
             return;
+        }
+
+        //this should handle the minotaur push client side
+        if (power instanceof MinotaurPower && squareWhereToMove.hasWorkerOn()) {
+
         }
 
         //move atomica da fare sempre
@@ -68,10 +74,10 @@ public class CLIclientMap extends GameMap {
 
     }
 
-    public void buildUpdate(Position position) {
+    public void buildUpdate(Position position, boolean domePresent) {
 
         try {
-            getSquare(position).addBlock(false);
+            getSquare(position).addBlock(domePresent);
         }catch (DomePresentException e){
             e.printStackTrace();
         }

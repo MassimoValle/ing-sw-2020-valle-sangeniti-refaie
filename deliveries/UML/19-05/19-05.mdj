@@ -27708,7 +27708,7 @@
 													"top": 1082,
 													"width": 390.5458984375,
 													"height": 13,
-													"text": "+private void chooseGodFromDeck(ShowDeckResponse response)",
+													"text": "+private void chooseGodFromDeck(ShowDeckResponse serverResponse)",
 													"horizontalAlignment": 0
 												},
 												{
@@ -27776,7 +27776,7 @@
 													"top": 1142,
 													"width": 390.5458984375,
 													"height": 13,
-													"text": "+private void moveWorker(MoveWorkerServerRequest response)",
+													"text": "+private void moveWorker(MoveWorkerServerRequest serverResponse)",
 													"horizontalAlignment": 0
 												},
 												{
@@ -27861,7 +27861,7 @@
 													"top": 1217,
 													"width": 390.5458984375,
 													"height": 13,
-													"text": "+private void win(WonResponse response)",
+													"text": "+private void win(WonResponse serverResponse)",
 													"horizontalAlignment": 0
 												}
 											],
@@ -31765,7 +31765,7 @@
 													"top": 577,
 													"width": 349.095703125,
 													"height": 13,
-													"text": "+void debug(Response response)",
+													"text": "+void debug(Response serverResponse)",
 													"horizontalAlignment": 0
 												}
 											],
@@ -33018,7 +33018,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFyLSQP+tixIJc="
 											},
-											"name": "ShowDeckResponse response",
+											"name": "ShowDeckResponse serverResponse",
 											"type": ""
 										}
 									]
@@ -33083,7 +33083,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFyLSRyJttGMlQ="
 											},
-											"name": "MoveWorkerServerRequest response",
+											"name": "MoveWorkerServerRequest serverResponse",
 											"type": ""
 										}
 									]
@@ -33145,7 +33145,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFyLSTvQN5DA2M="
 											},
-											"name": "WonResponse response",
+											"name": "WonResponse serverResponse",
 											"type": ""
 										}
 									]
@@ -33925,7 +33925,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFyLR5JCbaikgU="
 											},
-											"name": "Response response",
+											"name": "Response serverResponse",
 											"type": ""
 										}
 									]

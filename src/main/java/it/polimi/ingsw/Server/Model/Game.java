@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Server.Model;
 
-import it.polimi.ingsw.Client.Model.ModelSerialized;
+import it.polimi.ingsw.Network.Message.Server.ServerMessage;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
@@ -9,16 +9,15 @@ import it.polimi.ingsw.Server.Model.Player.ColorEnum;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.Server.Responses.Response;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.View.Observable;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
-public class Game extends Observable<Game> {
+public class Game extends Observable<Message> {
 
 
     private List<Player> players;
@@ -28,7 +27,6 @@ public class Game extends Observable<Game> {
     private GameMap gameMap;
 
     private List<ColorEnum> colorAvailable = new ArrayList<>();
-    private final HashMap<Player, Message> changes = new HashMap<>();
     private HashMap<Player, ColorEnum> playerColor = new HashMap<>();
 
     private static Game gameInstance;
@@ -185,42 +183,16 @@ public class Game extends Observable<Game> {
 
 
     /**
-     * It put the {@link Response} to the relative {@link Player} in the {@link Game#changes} HashMap
-     *  @param player the player to whom the answer is intended
-     * @param serverMessage the response that must be sent to the player
-     */
-    public void putInChanges(Player player, Message serverMessage) {
-        changes.put(player, serverMessage);
-
-        //sendUpdateToEveryone();
-
-        notify(this);
-        changes.remove(player, serverMessage);
-    }
-
-    private void sendUpdateToEveryone() {
-        ModelSerialized modelSerialized = new ModelSerialized();
-        //mandiamo a tutti questo model serialized cosi per aggiornare la loro view
-    }
-
-
-    /**
-     * It notify the {@link Player} to whom the {@link Message} is intended
+     * It makes the message available to all the {@link it.polimi.ingsw.Server.View.RemoteView}
      *
-     * @param player the player to whom the answer is intended
-     * @return the message that must be sent to the player
+     * @param player who the message is intended for
+     * @param serverMessage the ServerMessage in output
      */
-    public Message notifyPlayer(Player player) {
-        Message x = changes.get(player);
-        System.out.println("message taken by " + player.getPlayerName());
-
-        {
-            //testing only
-            gameMap.printBoard();
-        }
-
-        return x;
+    public void putInChanges(Player player, ServerMessage serverMessage) {
+        serverMessage.setMessageRecipient(player.getPlayerName());
+        notify(serverMessage);
     }
+
 
 
 
