@@ -44,9 +44,11 @@ public class GameMap {
        return getBoard()[pos.getRow()][pos.getColumn()];
     }
 
+    //per test
     public Square getSquare(int row, int col) {
         return getBoard()[row][col];
     }
+
 
     /**
      * Gets worker on square.

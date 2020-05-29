@@ -10,8 +10,8 @@ public class AtlasPower extends Power {
     }
 
     @Override
-    public ActionOutcome buildDome(Square squareWhereToBuild) {
-        return super.buildDome(squareWhereToBuild);
+    public ActionOutcome buildDome(Square squareWhereTheWorkerIs, Square squareWhereToBuild) {
+        return super.buildDome(squareWhereTheWorkerIs, squareWhereToBuild);
     }
 
     @Override

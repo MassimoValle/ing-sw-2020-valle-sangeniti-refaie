@@ -1,6 +1,5 @@
 package it.polimi.ingsw.Server.Model.God.GodsPower;
 
-import it.polimi.ingsw.Server.Model.Action.Action;
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
@@ -23,16 +22,16 @@ public class ZeusPower extends Power implements Serializable {
     }
 
     @Override
-    public ActionOutcome build(Square squareWhereToBuild) {
+    public ActionOutcome build(Square squareWhereTheWorkerIs, Square squareWhereToBuild) {
 
         if(newZeusPosition.equals(squareWhereToBuild.getPosition()) && squareWhereToBuild.getHeight() < 3) {
             Worker zeusWorker = squareWhereToBuild.getWorkerOnSquare();
             squareWhereToBuild.freeSquare();
-            super.build(squareWhereToBuild);
+            super.build(squareWhereTheWorkerIs, squareWhereToBuild);
             squareWhereToBuild.setWorkerOn(zeusWorker);
             return ActionOutcome.DONE;
         }
 
-        return super.build(squareWhereToBuild);
+        return super.build(squareWhereTheWorkerIs, squareWhereToBuild);
     }
 }

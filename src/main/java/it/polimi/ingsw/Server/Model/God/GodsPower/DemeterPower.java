@@ -14,11 +14,11 @@ public class DemeterPower extends Power {
     }
 
     @Override
-    public ActionOutcome build(Square squareWhereToBuild) {
+    public ActionOutcome build(Square squareWhereTheWorkerIs, Square squareWhereToBuild) {
         ActionOutcome outcome;
 
         if (firstBlockBuilt == null) {
-            outcome = super.build(squareWhereToBuild);
+            outcome = super.build(squareWhereTheWorkerIs, squareWhereToBuild);
             if (outcome == ActionOutcome.DONE) {
                 firstBuild = false;
                 firstBlockBuilt = squareWhereToBuild;
@@ -28,7 +28,7 @@ public class DemeterPower extends Power {
         } else if (firstBlockBuilt.equals(squareWhereToBuild)) {
             return ActionOutcome.NOT_DONE;
         } else {
-            return super.build(squareWhereToBuild);
+            return super.build(squareWhereTheWorkerIs, squareWhereToBuild);
         }
     }
 

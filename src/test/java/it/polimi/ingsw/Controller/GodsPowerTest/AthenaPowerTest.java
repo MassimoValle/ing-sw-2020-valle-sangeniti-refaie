@@ -1,35 +1,34 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
-import it.polimi.ingsw.Network.Message.ClientRequests.*;
-import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
+
+import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Game;
-import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
+
 
 import static org.junit.Assert.*;
 
 public class AthenaPowerTest {
 
-    MasterController masterController;
-    Player player1, player2;
-    String pl1, pl2;
-    Game game;
+    private MasterController masterController;
+    private Player player1, player2;
+    private String pl1, pl2;
+    private Game game;
+    private SetupGameUtilityClass setupUtility;
+
 
     @Before
-    public void setUp() {
+    public void setUp() throws DomePresentException {
 
-        Game.resetInstance();
         game = Game.getInstance();
-
-
 
         player1 = new Player("Simone");
         player2 = new Player("Massimo");
@@ -38,120 +37,71 @@ public class AthenaPowerTest {
 
         masterController = new MasterController(game, player1);
 
-        new SetupGameUtilityClass().setup(masterController, 2,0, true );
+        setupUtility = new SetupGameUtilityClass();
+        setupUtility.setup(masterController, 2, 1, true);
+
 
         pl2 = player2.getPlayerName();
         pl1 = player1.getPlayerName();
+
+
+        Square sq31 = game.getGameMap().getSquare(new Position(3, 1));
+        sq31.addBlock(false);
+
     }
+
+    @After
+    public void tearDown() {
+        Game.resetInstance();
+    }
+
 
     @Test
-    public void AthenaPowerTest() {
+    public void AthenaPowerLastsOnlyOneRoundTest() {
 
-        //Tocca al player1
-        //seleziona un worker...
+        game.getGameMap().printBoard();
+        //Tocca al player1 (athena)
+        setupUtility.selectWorker(pl1, 0);
+        setupUtility.move(pl1, 3, 1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(3, 1), setupUtility.w1pl1);
+        game.getGameMap().printBoard();
+        setupUtility.build(pl1, 2, 1);
+        game.getGameMap().printBoard();
+        assertTrue(game.getGameMap().getSquare(2, 1).hasBeenBuiltOver());
+        setupUtility.endTurn(pl1);
 
-        assertFalse(player1.getPlayerWorkers().get(0).isSelected());
+        System.out.println("tocca al player 2");
+        //Tocca al player2 (artemis)
+        setupUtility.selectWorker(pl2, 0);
+        //la move non viene effettuata a causa del potere di athena
+        setupUtility.move(pl2, 2, 1);
+        assertNotEquals(game.getGameMap().getWorkerOnSquare(2, 1), setupUtility.w1pl2);
+        game.getGameMap().printBoard();
+        setupUtility.move(pl2, 2, 2);
+        game.getGameMap().printBoard();
+        setupUtility.endMove(pl2);
+        setupUtility.build(pl2, 3, 2);
+        assertTrue(game.getGameMap().getSquare(3, 2).hasBeenBuiltOver());
+        game.getGameMap().printBoard();
+        setupUtility.endTurn(pl2);
 
+        System.out.println("tocca al player 1, secondo round");
+        setupUtility.selectWorker(pl1, 1);
+        setupUtility.move(pl1, 2, 4);
+        setupUtility.build(pl1, 1, 4);
+        setupUtility.endTurn(pl1);
+        game.getGameMap().printBoard();
 
-        masterController.dispatcher(
-                new SelectWorkerRequest(pl1, 0)
-        );
-
-        assertTrue(player1.getPlayerWorkers().get(0).isSelected());
-
-
-
-        //lo muovo...
-        masterController.dispatcher(
-                new MoveRequest(pl1, new Position(1, 2))
-        );
-
-        assertEquals(player1.getPlayerWorkers().get(0), game.getGameMap().getWorkerOnSquare(1,2));
-        assertTrue(game.getGameMap().getSquare(1,2).hasWorkerOn());
-        assertFalse(game.getGameMap().getSquare(1,2).hasBeenBuiltOver());
-
-
-        //e costruisco
-        masterController.dispatcher(
-                new BuildRequest(pl1, new Position(0, 2))
-        );
-
-        assertFalse(game.getGameMap().getSquare(1,2).hasBeenBuiltOver());
-
-        //passo il turno
-        masterController.dispatcher(
-                new EndTurnRequest(pl1)
-        );
-
-
-        //Tocca al player2
-        masterController.dispatcher(
-                new SelectWorkerRequest(pl2, 0)
-        );
-        //lo muovo
-        masterController.dispatcher(
-                new MoveRequest(pl2, new Position(4, 2))
-        );
-
-        masterController.dispatcher(
-                new BuildRequest(pl2, new Position(4, 3))
-        );
-        //passo il turno
-        masterController.dispatcher(
-                new EndTurnRequest(pl2)
-        );
-
-        // 2 TUNRO PLAYER ATHENA
-        //seleziona un worker...
-        masterController.dispatcher(
-                new SelectWorkerRequest(pl1, 0)
-        );
-        //lo muovo...
-        masterController.dispatcher(
-                new MoveRequest(pl1, new Position(0, 2))
-        );
-        //e costruisco
-        masterController.dispatcher(
-                new BuildRequest(pl1, new Position(0, 1))
-        );
-        //passo il turno
-        masterController.dispatcher(
-                new EndTurnRequest(pl1)
-        );
-
-        //Tocca al player2
-        masterController.dispatcher(
-                new SelectWorkerRequest(pl2, 0)
-        );
-        //lo muovo la prima volta
-        masterController.dispatcher(
-                new MoveRequest(pl2, new Position(4, 3))
-        );
-
-        assertFalse(game.getGameMap().getSquare(new Position(4,3)).hasWorkerOn());
-        assertEquals(new Position(4, 2), player2.getPlayerWorkers().get(0).getWorkerPosition());
-
-
-        masterController.dispatcher(
-                new MoveRequest(pl2, new Position(3, 2))
-        );
-
-        assertTrue(game.getGameMap().getSquare(new Position(3,2)).hasWorkerOn());
-        assertEquals(new Position(3, 2), player2.getPlayerWorkers().get(0).getWorkerPosition());
-
-
-        assertFalse(game.getGameMap().getSquare(3,1).hasBeenBuiltOver());
-
-        masterController.dispatcher(
-                new BuildRequest(pl2, new Position(3, 1))
-        );
-
-        assertTrue(game.getGameMap().getSquare(3,1).hasBeenBuiltOver());
-
-        //passo il turno
-        masterController.dispatcher(
-                new EndTurnRequest(pl2)
-        );
-
+        System.out.println("tocca al player 2, secondo round");
+        setupUtility.selectWorker(pl2, 1);
+        //faccio salire il worker per verificare che il potere di athena non sia attivo
+        setupUtility.move(pl2, 3, 2);
+        assertEquals(game.getGameMap().getWorkerOnSquare(3, 2), setupUtility.w2pl2);
+        game.getGameMap().printBoard();
+        setupUtility.endMove(pl2);
+        setupUtility.build(pl2, 4, 2);
+        setupUtility.endTurn(pl2);
+        game.getGameMap().printBoard();
     }
+
 }

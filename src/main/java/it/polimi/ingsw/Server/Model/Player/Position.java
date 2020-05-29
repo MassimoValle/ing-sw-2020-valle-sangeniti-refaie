@@ -128,12 +128,10 @@ public class Position implements Serializable {
         return row == 0 || row == 4 || column == 0 || column == 4;
     }
 
+    public boolean insideBoard() {
+        return this.row >= 0 && this.row <= 4 && this.column >= 0 && this.column <= 4;
+    }
 
-    /**
-     * Check if a {@link Square square} has someone else's worker on.
-     *
-     * @return boolean
-     */
 
     @Override
     public boolean equals(Object obj) {

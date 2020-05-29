@@ -10,23 +10,24 @@ public class HestiaPower extends Power {
 
     public HestiaPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
+        firstBuild = true;
     }
 
 
     @Override
-    public ActionOutcome build(Square squareWhereToBuild) {
+    public ActionOutcome build(Square squareWhereTheWorkerIs, Square squareWhereToBuild) {
         ActionOutcome outcome;
 
 
         if(firstBuild){
-            outcome = super.build(squareWhereToBuild);
+            outcome = super.build(squareWhereTheWorkerIs, squareWhereToBuild);
             if(outcome == ActionOutcome.DONE) {
                 firstBuild = false;
                 return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
             } else return ActionOutcome.NOT_DONE;
 
         } else if(!squareWhereToBuild.getPosition().isPerimetral()){
-            return super.build(squareWhereToBuild);
+            return super.build(squareWhereTheWorkerIs, squareWhereToBuild);
         } else
             return ActionOutcome.NOT_DONE;
 
