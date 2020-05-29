@@ -56,7 +56,7 @@ public class ClientManager {
     private int workerPlaced = 0;
     private boolean workersPlaced = false;
 
-    private String turnOwner = null;
+
 
 
     //Qualsiasi messaggio che il client riceve dal server
@@ -121,9 +121,6 @@ public class ClientManager {
         if(serverRequest instanceof StartTurnServerRequest && messageForMe(serverRequest) ) {
             startTurn((StartTurnServerRequest) serverRequest);
             return;
-        } else if (serverRequest instanceof StartTurnServerRequest) {
-            turnOwner = serverRequest.getMessageRecipient();
-            clientView.startingPlayerTurn(turnOwner);
         } else if (!messageForMe(serverRequest)) {
             serverMessageManager.serverRequestNotForYou(serverRequest);
             return;

@@ -1,6 +1,9 @@
 package it.polimi.ingsw.Client.Model;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
+import it.polimi.ingsw.Server.Model.Action.ApolloSwapAction;
+import it.polimi.ingsw.Server.Model.God.GodsPower.ApolloPower;
+import it.polimi.ingsw.Server.Model.God.GodsPower.MinotaurPower;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
@@ -32,29 +35,35 @@ public class CLIclientMap extends GameMap {
         for(Player player : playersInGame){
             if(player.getPlayerName().equals(playerName)){
                 Worker worker = player.getPlayerWorkers().get(workerIndex);
+                Power power = player.getPlayerGod().getGodPower();
 
-                moveWorker(worker, position);
+                moveWorker(worker, position, power);
 
             }
         }
     }
 
-    private void moveWorker(Worker worker, Position positionWhereToMove){
+    private void moveWorker(Worker worker, Position positionWhereToMove, Power power){
 
         Square startingSquare = getSquare(worker.getWorkerPosition());
         Square squareWhereToMove = getSquare(positionWhereToMove);
         Worker workerOnSquareWhereToMove = null;
 
+
         //this handles the apollo swap client side
-        if(squareWhereToMove.hasWorkerOn()) {
+        if(power instanceof ApolloPower && squareWhereToMove.hasWorkerOn()) {
             workerOnSquareWhereToMove = squareWhereToMove.getWorkerOnSquare();
-            //move atomica da fare sempre
             startingSquare.freeSquare();
             worker.setPosition(positionWhereToMove);
             squareWhereToMove.setWorkerOn(worker);
             startingSquare.setWorkerOn(workerOnSquareWhereToMove);
             workerOnSquareWhereToMove.setPosition(startingSquare.getPosition());
             return;
+        }
+
+        //this should handle the minotaur push client side
+        if (power instanceof MinotaurPower && squareWhereToMove.hasWorkerOn()) {
+
         }
 
         //move atomica da fare sempre

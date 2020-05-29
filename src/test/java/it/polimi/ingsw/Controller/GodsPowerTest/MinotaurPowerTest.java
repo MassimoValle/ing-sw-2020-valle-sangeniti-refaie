@@ -63,6 +63,9 @@ public class MinotaurPowerTest {
         //seleziona worker
         setupUtility.selectWorker(pl1, 0);
 
+        game.getGameMap().printBoard();
+
+
         //test potere minotauro quando i 2 worker sono sullo stesso livello
         setupUtility.move(pl1, 3,2);
         assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w1pl1);
@@ -78,39 +81,80 @@ public class MinotaurPowerTest {
 
 
         //player 2 (artemis) seleziona worker
-        MasterController.dispatcher(new SelectWorkerRequest(pl2, 1 ));
-        MasterController.dispatcher(new MoveRequest(pl2, new Position(2,2)));
+        setupUtility.selectWorker(pl2, 1 );
+        setupUtility.move(pl2, 2, 2);
+
+        setupUtility.endMove(pl2);
+
+        setupUtility.build(pl2,1,3);
+
         game.getGameMap().printBoard();
-        MasterController.dispatcher(new EndMoveRequest(pl2));
-        MasterController.dispatcher(new BuildRequest(pl2,new Position(1,3)));
-        game.getGameMap().printBoard();
-        MasterController.dispatcher(new EndTurnRequest(pl2));
+        setupUtility.endTurn(pl2);
+
 
         System.out.println("tocca al player1, secondo turno");
         //player 1 seleziona worker
-        MasterController.dispatcher(new SelectWorkerRequest(pl1,1));
+        setupUtility.selectWorker(pl1,1);
+
         //minotaur test spinta con minotauro livello più basso del worker da spingere
-        MasterController.dispatcher(new MoveRequest(pl1, new Position(2,2)));
+        setupUtility.move(pl1, 2,2);
+
         assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w2pl1);
         assertEquals(game.getGameMap().getWorkerOnSquare(2,1), setupUtility.w2pl2);
+
+        setupUtility.build(pl1, 1,3);
+
         game.getGameMap().printBoard();
-        MasterController.dispatcher(new BuildRequest(pl1, new Position(1,3)));
+
+        setupUtility.endTurn(pl1);
+
+    }
+
+    @Test
+    public void OutsideMapPushTest() {
+
+        //player1 (Minotaur) inizia
+        //seleziona worker
+        setupUtility.selectWorker(pl1, 0);
+
         game.getGameMap().printBoard();
-        MasterController.dispatcher(new EndTurnRequest(pl1));
 
-        System.out.println("tocca al player2, secondo turno");
-        //player 2 seleziona worker
-        MasterController.dispatcher(new SelectWorkerRequest(pl2, 0));
-        MasterController.dispatcher(new MoveRequest(pl2, new Position(3,3)));
+
+        //test potere minotauro quando i 2 worker sono sullo stesso livello
+        setupUtility.move(pl1, 3,2);
+        assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w1pl1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(4,2), setupUtility.w1pl2);
+
+
         game.getGameMap().printBoard();
-        //muovi ancora potere artemis
+        setupUtility.build(pl1, 2, 2);
+
+        game.getGameMap().printBoard();
+
+        setupUtility.endTurn(pl1);
 
 
+        //player 2 (artemis) seleziona worker
+        setupUtility.selectWorker(pl2, 0 );
+        setupUtility.move(pl2, 4, 1);
+
+        setupUtility.endMove(pl2);
+
+        setupUtility.build(pl2,4,0);
+
+        game.getGameMap().printBoard();
+        setupUtility.endTurn(pl2);
 
 
+        System.out.println("tocca al player1, secondo turno");
+        //player 1 seleziona worker
+        setupUtility.selectWorker(pl1,0);
 
+        setupUtility.move(pl1, 4,1);
 
+        //move non fatta
 
+        game.getGameMap().printBoard();
 
     }
 

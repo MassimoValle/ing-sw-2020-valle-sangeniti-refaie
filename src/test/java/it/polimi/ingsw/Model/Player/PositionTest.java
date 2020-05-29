@@ -75,6 +75,33 @@ public class PositionTest {
         assertFalse(pos2.isPerimetral());
     }
 
+    @Test
+    public void isClose() {
+
+        assertTrue(new Position(1,1).isClose(new Position(2,2)));
+        assertTrue(new Position(1,1).isClose(new Position(1,2)));
+        assertTrue(new Position(1,1).isClose(new Position(0,2)));
+        assertTrue(new Position(1,1).isClose(new Position(0,1)));
+        assertTrue(new Position(1,1).isClose(new Position(0,0)));
+        assertTrue(new Position(1,1).isClose(new Position(1,0)));
+        assertTrue(new Position(1,1).isClose(new Position(2,0)));
+        assertTrue(new Position(1,1).isClose(new Position(2,1)));
+
+
+        assertFalse(new Position(1,1).isClose(new Position(2,3)));
+        assertFalse(new Position(1,1).isClose(new Position(1,3)));
+        assertFalse(new Position(1,1).isClose(new Position(0,3)));
+
+    }
+
+
+    @Test
+    public void isInCorner() {
+
+        assertTrue(new Position(0,0).isInCorner());
+        assertFalse(new Position(0,1).isInCorner());
+
+    }
 
 
 

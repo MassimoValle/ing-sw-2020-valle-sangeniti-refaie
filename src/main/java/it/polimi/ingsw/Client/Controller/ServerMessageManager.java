@@ -29,7 +29,7 @@ public class ServerMessageManager {
             case CHOOSE_GODS_SERVER_REQUEST -> ClientManager.clientView.youAreNotTheGodLikePlayer(turnOwner);
             case PICK_GOD                   -> ClientManager.clientView.anotherPlayerIsPickingUpGod(turnOwner);
             case PLACE_WORKER               -> ClientManager.clientView.anotherPlayerIsPlacingWorker(turnOwner);
-            //case START_TURN                 -> ClientManager.clientView.startingPlayerTurn(turnOwner);
+            case START_TURN                 -> ClientManager.clientView.startingPlayerTurn(turnOwner);
             case SELECT_WORKER              -> ClientManager.clientView.anotherPlayerIsSelectingWorker(turnOwner);
             case MOVE_WORKER                -> ClientManager.clientView.anotherPlayerIsMoving(turnOwner);
             case BUILD                      -> ClientManager.clientView.anotherPlayerIsBuilding(turnOwner);
