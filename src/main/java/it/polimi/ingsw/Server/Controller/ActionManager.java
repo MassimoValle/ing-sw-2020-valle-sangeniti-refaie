@@ -221,8 +221,6 @@ public class ActionManager {
 
         //controllo che il giocatore con la mossa appena eseguita abbia vinto
         if (actionOutcome == ActionOutcome.WINNING_MOVE) {
-            //TODO:
-            //da implementare come fatto in pan direttamente nella MoveAction in Action
             MasterController.buildWonResponse(activePlayer, "YOU WON!");
             //bisogna comunicare a tutti gli altri giocatori che l'activePlayer ha vinto
             return;
@@ -423,7 +421,11 @@ public class ActionManager {
      */
     private boolean playerHasWonAfterMoving(Player player) {
         Outcome outcome = new Outcome(player, gameInstance.getPowersInGame(), gameInstance.getGameMap(), gameInstance.getPlayers());
-        return outcome.playerHasWonAfterMoving(turnManager.getActiveWorker());
+        if( outcome.playerHasWonAfterMoving(turnManager.getActiveWorker()) ) {
+            winner = outcome.getWinner();
+            return true;
+        } else
+            return false;
     }
 
     /**
@@ -438,9 +440,8 @@ public class ActionManager {
         if (outcome.playerHasWonAfterBuilding(gameInstance.getGameMap())) {
             winner = outcome.getWinner();
             return true;
-        } else {
+        } else
             return false;
-        }
     }
 
 

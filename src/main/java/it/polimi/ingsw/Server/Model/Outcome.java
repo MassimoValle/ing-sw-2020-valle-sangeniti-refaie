@@ -44,6 +44,10 @@ public class Outcome {
             return false;
         }
 
+        //TODO da gestire il caso in cui io mi muovo da un livello 3 a un livello 3 e casi particolare (zeus)
+
+        winner = player;
+
         return true;
 
     }

@@ -39,7 +39,7 @@ public class ApolloSwapAction extends MoveAction {
         int heightDifference = map.getDifferenceInAltitude(apolloStartingSquare.getPosition(), opponentWorkerPosition);
         ArrayList<Position> adjacent = apolloStartingSquare.getPosition().getAdjacentPlaces();
 
-        return heightDifference >= -1 && adjacent.contains(opponentWorkerPosition) && !super.godsPowerActive(apolloPower) && !opponentWorkerStartingSquare.hasDome();
+        return heightDifference >= -1 && adjacent.contains(opponentWorkerPosition) && !super.godsPowerActive(apolloPower);
     }
 
     @Override

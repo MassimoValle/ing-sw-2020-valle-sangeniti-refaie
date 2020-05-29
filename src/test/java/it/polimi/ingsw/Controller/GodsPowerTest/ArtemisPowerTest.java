@@ -92,12 +92,13 @@ public class ArtemisPowerTest {
 
         setupUtility.selectWorker(pl1,1);
         setupUtility.move(pl1, 2,4);
+
+        
         assertTrue(game.getGameMap().getSquare(2,4).hasWorkerOn());
-        game.getGameMap().printBoard();
-        //non voglio usare il potere
+
+
         setupUtility.endMove(pl1);
         setupUtility.build(pl1,1,4);
-        game.getGameMap().printBoard();
         setupUtility.endTurn(pl1);
 
     }

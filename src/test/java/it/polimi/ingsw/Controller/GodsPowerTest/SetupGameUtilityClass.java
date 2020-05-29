@@ -5,6 +5,7 @@ import it.polimi.ingsw.Network.Message.ClientRequests.*;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
@@ -18,7 +19,11 @@ public class SetupGameUtilityClass {
     protected Worker w1pl2;
     protected Worker w2pl2;
 
+    protected GameMap map;
+
     public void setup(MasterController masterController, int god1, int god2, boolean closeWorkers) {
+
+        map = masterController.getGameInstance().getGameMap();
         ArrayList<God> chosenGod = new ArrayList<>();
         chosenGod.add(masterController.getGameInstance().getDeck().getGod(god1));
         chosenGod.add(masterController.getGameInstance().getDeck().getGod(god2));
@@ -101,6 +106,8 @@ public class SetupGameUtilityClass {
     }
 
     public void setupDifferentHeight(MasterController masterController, int god1, int god2, boolean oneSameLevel) throws DomePresentException {
+
+        map = masterController.getGameInstance().getGameMap();
 
         ArrayList<God> chosenGod = new ArrayList<>();
         chosenGod.add(masterController.getGameInstance().getDeck().getGod(god1));
@@ -186,13 +193,14 @@ public class SetupGameUtilityClass {
         MasterController.dispatcher(
                 new MoveRequest(pl, new Position(i,j))
         );
+        map.printBoard();
     }
 
     public void build(String pl, int i, int j) {
         MasterController.dispatcher(
                 new BuildRequest(pl, new Position(i,j))
         );
-
+        map.printBoard();
     }
 
     public void buildDome(String pl, int i, int j){

@@ -56,8 +56,8 @@ public class ApolloPowerTest {
         game.getGameMap().printBoard();
 
         setupUtility.selectWorker(pl1,0);
-        //scambio posizione worker quando sono sullo stesso livello
         setupUtility.move(pl1, 3,3);
+
         assertEquals(game.getGameMap().getWorkerOnSquare(3,3), setupUtility.w1pl1);
         assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w2pl2);
         game.getGameMap().printBoard();
@@ -72,25 +72,15 @@ public class ApolloPowerTest {
 
         setupUtility.setupDifferentHeight(masterController, 0,1, false );
 
-        game.getGameMap().printBoard();
-
         setupUtility.selectWorker(pl1,0);
-
-        //scambio posizione worker quando apollo è più in basso di un livello
         setupUtility.move(pl1, 3,3);
 
         assertEquals(game.getGameMap().getWorkerOnSquare(3,3), setupUtility.w1pl1);
         assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w2pl2);
 
-        game.getGameMap().printBoard();
-
         setupUtility.build(pl1, 4,4);
 
         assertEquals(1, game.getGameMap().getSquare(4, 4).getHeight());
-
-        game.getGameMap().printBoard();
-
-        setupUtility.endTurn(pl1);
 
     }
 

@@ -7,6 +7,7 @@ import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
+import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 
