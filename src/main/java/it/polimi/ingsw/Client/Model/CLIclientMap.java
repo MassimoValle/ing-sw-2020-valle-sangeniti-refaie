@@ -64,7 +64,7 @@ public class CLIclientMap extends GameMap {
 
         //this should handle the minotaur push client side
         if (power instanceof MinotaurPower && squareWhereToMove.hasWorkerOn()) {
-
+            //TODO to handle mapUpdate when Minotaur is present
         }
 
         //move atomica da fare sempre
