@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Server.Model.Action;
 
+import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.GodsPower.ApolloPower;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
@@ -40,6 +41,14 @@ public class ApolloSwapAction extends MoveAction {
         ArrayList<Position> adjacent = apolloStartingSquare.getPosition().getAdjacentPlaces();
 
         return heightDifference >= -1 && adjacent.contains(opponentWorkerPosition) && !super.godsPowerActive(apolloPower);
+    }
+
+    public boolean clientValidation(GameMap clientMap) {
+
+        int heightDifference = clientMap.getDifferenceInAltitude(apolloStartingSquare.getPosition(), opponentWorkerPosition);
+        ArrayList<Position> adjacent = apolloStartingSquare.getPosition().getAdjacentPlaces();
+
+        return heightDifference >= -1 && adjacent.contains(opponentWorkerPosition);
     }
 
     @Override

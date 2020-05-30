@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Server.Model.Action;
 
+import it.polimi.ingsw.Client.Model.CLIclientMap;
 import it.polimi.ingsw.Exceptions.PositionOutsideBoardException;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.GodsPower.MinotaurPower;
@@ -7,7 +8,6 @@ import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
-import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 
@@ -32,7 +32,7 @@ public class MinotaurPushAction extends MoveAction {
         GameMap map = Game.getInstance().getGameMap();
 
         try {
-            backwardPosition = getBackwardPosition(playerWorker.getWorkerPosition(), newPosition);
+            backwardPosition = playerWorker.getWorkerPosition().getBackwardPosition(newPosition);
             backwardSquare = map.getSquare(backwardPosition);
         } catch (PositionOutsideBoardException e) {
             return false;
@@ -47,6 +47,26 @@ public class MinotaurPushAction extends MoveAction {
                 !backwardSquare.hasWorkerOn() && !backwardSquare.hasDome();
     }
 
+    public boolean clientValidation(CLIclientMap clientMap) {
+
+        try {
+            backwardPosition = playerWorker.getWorkerPosition().getBackwardPosition(newPosition);
+            backwardSquare = clientMap.getSquare(backwardPosition);
+        } catch (PositionOutsideBoardException e) {
+            return false;
+        }
+
+        otherWorker = clientMap.getWorkerOnSquare(newPosition);
+
+        int heightDifference = clientMap.getDifferenceInAltitude(playerWorker.getWorkerPosition(), newPosition);
+        ArrayList<Position> adjacent = oldPositionSquare.getPosition().getAdjacentPlaces();
+
+        return heightDifference >= -1 && adjacent.contains(newPosition) &&
+                !backwardSquare.hasWorkerOn() && !backwardSquare.hasDome();
+
+    }
+
+
     @Override
     public void doAction() {
 
@@ -55,57 +75,4 @@ public class MinotaurPushAction extends MoveAction {
         new MoveAction(null, minotaurWorker, newPosition, oldPositionSquare, newPositionSquare).doAction();
     }
 
-    private Position getBackwardPosition(Position pos1, Position pos2) throws PositionOutsideBoardException {
-
-        int x1 = pos1.getRow();
-        int x2 = pos2.getRow();
-        int y1 = pos1.getColumn();
-        int y2 = pos2.getColumn();
-        int x3,y3;
-
-
-        if ((pos2.isPerimetral() && pos1.isClose(pos2) && !pos1.isPerimetral() ) || pos2.isInCorner() || !pos1.isClose(pos2))
-            throw new PositionOutsideBoardException();
-
-
-
-        if (x1 == x2){
-            if (y1 < y2){
-                x3 = x2;
-                y3 = y2 + 1;
-                return new Position(x3,y3);
-            }else {         //y1 > y2 non ha senso vedere quando sono uguali.
-                x3 = x2;
-                y3 = y2 - 1;
-            } return new Position(x3,y3);
-        }else if (x1 < x2) {
-            if (y1 < y2) {
-                x3 = x2 + 1;
-                y3 = y2 + 1;
-                return new Position(x3,y3);
-            }else if (y1 == y2){
-                x3 = x2 + 1;
-                y3 = y2;
-                return new Position(x3,y3);
-            }else {
-                x3 = x2 + 1;
-                y3 = y2 - 1;
-                return new Position(x3,y3);
-            }
-        }else {
-            if(y1 < y2){
-                x3 = x2 - 1;
-                y3 = y2 + 1;
-                return new Position(x3,y3);
-            }else if (y1 == y2){
-                x3 = x2 -1;
-                y3 = y2;
-                return new Position(x3,y3);
-            }else {
-                x3 = x2 - 1;
-                y3 = y2 - 1;
-                return new Position(x3,y3);
-            }
-        }
-    }
 }

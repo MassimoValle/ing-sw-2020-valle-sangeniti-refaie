@@ -1,8 +1,6 @@
 package it.polimi.ingsw.Client.Model;
 
-import it.polimi.ingsw.Exceptions.DomePresentException;
-import it.polimi.ingsw.Server.Model.Action.ApolloSwapAction;
-import it.polimi.ingsw.Server.Model.Action.MinotaurPushAction;
+import it.polimi.ingsw.Server.Model.Action.*;
 import it.polimi.ingsw.Server.Model.God.GodsPower.ApolloPower;
 import it.polimi.ingsw.Server.Model.God.GodsPower.MinotaurPower;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
@@ -16,32 +14,23 @@ import java.util.Set;
 
 public class CLIclientMap extends GameMap {
 
-    public void placeUpdate(String playerName, Integer workerIndex, Position position, Set<Player> playersInGame){
+    public void placeUpdate(Player player, Integer workerIndex, Position position){
 
-        for(Player player : playersInGame){
-            if(player.getPlayerName().equals(playerName)){
+        Worker worker = player.getPlayerWorkers().get(workerIndex);
 
-                Worker worker = player.getPlayerWorkers().get(workerIndex);
+        worker.setPosition(position);
+        Square square = this.getSquare(position);
+        square.setWorkerOn(worker);
 
-                worker.setPosition(position);
-                Square square = this.getSquare(position);
-                square.setWorkerOn(worker);
-
-            }
-        }
     }
 
-    public void moveUpdate(String playerName, Integer workerIndex, Position position, Set<Player> playersInGame){
+    public void moveUpdate(Player player, Integer workerIndex, Position position){
 
-        for(Player player : playersInGame){
-            if(player.getPlayerName().equals(playerName)){
-                Worker worker = player.getPlayerWorkers().get(workerIndex);
-                Power power = player.getPlayerGod().getGodPower();
+        Worker worker = player.getPlayerWorkers().get(workerIndex);
+        Power power = player.getPlayerGod().getGodPower();
 
-                moveWorker(worker, position, power);
+        moveWorker(worker, position, power);
 
-            }
-        }
     }
 
     private void moveWorker(Worker worker, Position positionWhereToMove, Power power){
@@ -50,36 +39,49 @@ public class CLIclientMap extends GameMap {
         Square squareWhereToMove = getSquare(positionWhereToMove);
         Worker workerOnSquareWhereToMove = null;
 
-
         //this handles the apollo swap client side
         if(power instanceof ApolloPower && squareWhereToMove.hasWorkerOn()) {
-            workerOnSquareWhereToMove = squareWhereToMove.getWorkerOnSquare();
-            startingSquare.freeSquare();
-            worker.setPosition(positionWhereToMove);
-            squareWhereToMove.setWorkerOn(worker);
-            startingSquare.setWorkerOn(workerOnSquareWhereToMove);
-            workerOnSquareWhereToMove.setPosition(startingSquare.getPosition());
+            ApolloSwapAction swap = new ApolloSwapAction((ApolloPower) power, worker, positionWhereToMove, startingSquare, squareWhereToMove);
+            swap.clientValidation(this);
+            swap.doAction();
             return;
         }
 
         //this should handle the minotaur push client side
         if (power instanceof MinotaurPower && squareWhereToMove.hasWorkerOn()) {
-            //TODO to handle mapUpdate when Minotaur is present
+            MinotaurPushAction pushAction = new MinotaurPushAction((MinotaurPower) power, worker, positionWhereToMove, startingSquare, squareWhereToMove);
+
+            pushAction.clientValidation(this);
+
+            pushAction.doAction();
+            return;
         }
 
-        //move atomica da fare sempre
-        startingSquare.freeSquare();
-        worker.setPosition(positionWhereToMove);
-        squareWhereToMove.setWorkerOn(worker);
+        MoveAction moveAction = new MoveAction(power, worker, positionWhereToMove, startingSquare, squareWhereToMove);
+
+        moveAction.clientValidation(this);
+
+        moveAction.doAction();
 
     }
 
-    public void buildUpdate(Position position, boolean domePresent) {
+    public void buildUpdate(Player player, Integer workerIndex, Position position, boolean domePresent) {
 
-        try {
-            getSquare(position).addBlock(domePresent);
-        }catch (DomePresentException e){
-            e.printStackTrace();
+        Square startingSquare = getSquare(player.getPlayerWorkers().get(workerIndex).getWorkerPosition());
+        Square squareWhereToBuildOn = getSquare(position);
+
+        if (domePresent) {
+            BuildDomeAction buildDomeAction = new BuildDomeAction(startingSquare, squareWhereToBuildOn);
+
+            buildDomeAction.clientValidation();
+
+            buildDomeAction.doAction();
+        } else {
+            BuildAction buildAction = new BuildAction(startingSquare, squareWhereToBuildOn);
+
+            buildAction.clientValidation();
+
+            buildAction.doAction();
         }
 
     }
