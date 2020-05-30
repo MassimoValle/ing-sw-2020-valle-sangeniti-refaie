@@ -51,6 +51,16 @@ public class MoveAction implements Action {
     }
 
 
+    public boolean clientValidation(GameMap clientMap) {
+
+        int heightDifference = clientMap.getDifferenceInAltitude(oldPositionSquare.getPosition(), newPositionSquare.getPosition());
+        ArrayList<Position> adjacent = oldPositionSquare.getPosition().getAdjacentPlaces();
+
+        //if some God Power is active that prevent you from doing this move
+        return !newPositionSquare.hasWorkerOn() && heightDifference >= -1 && !newPositionSquare.hasDome() &&
+                adjacent.contains(newPosition);
+    }
+
 
     /**
      * Move the selected {@link Worker playerWorker}  by {@link Player player} into the {@link Position newPosition} chose by the player;

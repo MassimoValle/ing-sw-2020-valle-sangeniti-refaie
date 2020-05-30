@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Server.Model.Player;
 
+import it.polimi.ingsw.Exceptions.PositionOutsideBoardException;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 
@@ -156,6 +157,73 @@ public class Position implements Serializable {
 
     }
 
+    public Position getBackwardPosition(Position pos2) throws PositionOutsideBoardException {
+
+        Position pos1 = this;
+
+        int x1 = this.row;
+        int x2 = pos2.getRow();
+        int y1 = this.column;
+        int y2 = pos2.getColumn();
+        int x3,y3;
+
+
+        if ((pos2.isPerimetral() && pos1.isClose(pos2) && !pos1.isPerimetral() ) || pos2.isInCorner() || !pos1.isClose(pos2))
+            throw new PositionOutsideBoardException();
+
+
+        if (pos1.sameRow(pos2)) {
+            x3 = x2;
+            if (y1 < y2) {
+                y3 = y2 + 1;
+                return new Position(x3, y3);
+            } else {
+                y3 = y2 - 1;
+            }
+            return new Position(x3, y3);
+        }
+
+        if (pos1.sameColumn(pos2)) {
+            y3 = y2;
+            if (x1 < x2) {
+                x3 = x2 + 1;
+                return new Position(x3, y3);
+            } else {
+                x3 = x2 - 1;
+            }
+            return new Position(x3, y3);
+        }
+
+        if (x1 < x2) {
+            if (y1 < y2) {
+                x3 = x2 + 1;
+                y3 = y2 + 1;
+                return new Position(x3,y3);
+            }else if (y1 == y2){
+                x3 = x2 + 1;
+                y3 = y2;
+                return new Position(x3,y3);
+            }else {
+                x3 = x2 + 1;
+                y3 = y2 - 1;
+                return new Position(x3,y3);
+            }
+        }else {
+            if(y1 < y2){
+                x3 = x2 - 1;
+                y3 = y2 + 1;
+                return new Position(x3,y3);
+            }else if (y1 == y2){
+                x3 = x2 -1;
+                y3 = y2;
+                return new Position(x3,y3);
+            }else {
+                x3 = x2 - 1;
+                y3 = y2 - 1;
+                return new Position(x3,y3);
+            }
+        }
+    }
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Position) {

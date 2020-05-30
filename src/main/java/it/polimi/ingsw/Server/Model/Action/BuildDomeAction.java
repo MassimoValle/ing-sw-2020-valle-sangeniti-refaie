@@ -44,4 +44,11 @@ public class BuildDomeAction implements Action{
 
 
     }
+
+    public boolean clientValidation() {
+        ArrayList<Position> adjacent = squareWhereTheWorkerIs.getPosition().getAdjacentPlaces();
+
+        return !squareWhereToBuildOn.hasWorkerOn() && adjacent.contains(squareWhereToBuildOn.getPosition()) &&
+                !squareWhereToBuildOn.hasDome();
+    }
 }

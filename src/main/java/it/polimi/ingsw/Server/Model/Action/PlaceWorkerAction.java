@@ -17,7 +17,6 @@ public class PlaceWorkerAction implements Action{
         this.workerToBePlaced = workerToBePlaced;
         this.positionWhereToPlace = positionWhereToPlace;
         this.squareWhereToPlace = squareWhereToPlace;
-
     }
 
 
