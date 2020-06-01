@@ -187,6 +187,7 @@ public class SetupGameUtilityClass {
         MasterController.dispatcher(
                 new SelectWorkerRequest(pl, i)
         );
+        map.printBoard();
     }
 
     public void move(String pl, int i, int j) {
@@ -207,6 +208,7 @@ public class SetupGameUtilityClass {
         MasterController.dispatcher(
                 new BuildDomeRequest(pl, new Position(i,j))
         );
+        map.printBoard();
     }
 
     public void endTurn(String pl) {

@@ -45,7 +45,7 @@ public class ZeusPowerTest {
     @Test
     public void ZeusBuildTest() {
 
-        /*
+
 
         String pl1 = player1.getPlayerName();
         String pl2 = player2.getPlayerName();
@@ -147,7 +147,6 @@ public class ZeusPowerTest {
                 new EndTurnRequest(pl2)
         );
 
-        */
 
         //ok
     }
