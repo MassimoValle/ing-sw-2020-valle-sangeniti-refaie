@@ -271,7 +271,6 @@ public class GUI extends ClientView {
     @Override
     public void showAllPlayersInGame(Set<Player> playerSet) {
 
-        // TODO
         try {
             GUImain.setRoot("mainView", null);
             FXMLLoader fxmlLoader = GUImain.getFXMLLoader();
@@ -294,44 +293,98 @@ public class GUI extends ClientView {
             }
         }
 
-
         parameterListener.setToNull();
 
     }
 
     @Override
     public Position placeWorker(String worker) {
-        return null;
+
+        while (ParameterListener.getParameter() == null){
+
+            synchronized (parameterListener){
+                try {
+                    parameterListener.wait();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        Position ret = (Position) ParameterListener.getParameter();
+        parameterListener.setToNull();
+
+        return ret;
+
     }
 
     @Override
     public void errorWhilePlacingYourWorker(String gameManagerSays) {
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("There was a problem with the worker you wanted to place");
+        alert.setContentText("Game Manager says: " + gameManagerSays + "Please try place it again");
 
+        alert.showAndWait();
     }
 
     @Override
     public void workerPlacedSuccesfully() {
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("Worker placed successfully!");
 
+        alert.showAndWait();
     }
 
     @Override
     public void startingTurn() {
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("It's your turn!");
     }
 
     @Override
     public int selectWorker() {
-        return 0;
+
+        while (ParameterListener.getParameter() == null){
+
+            synchronized (parameterListener){
+                try {
+                    parameterListener.wait();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        int ret = (int) ParameterListener.getParameter();
+        parameterListener.setToNull();
+
+        return ret;
     }
 
     @Override
     public void errorWhileSelectingWorker(String gameManagerSays) {
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("There was a problem with the worker you selected");
+        alert.setContentText("Game Manager says: " + gameManagerSays + "Please select another worker");
 
+        alert.showAndWait();
     }
 
     @Override
     public void workerSelectedSuccessfully() {
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("Worker selected succesfully!");
 
+        alert.showAndWait();
     }
 
     @Override

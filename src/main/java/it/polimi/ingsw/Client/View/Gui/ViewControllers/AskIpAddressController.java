@@ -14,7 +14,6 @@ import java.util.ResourceBundle;
 public class AskIpAddressController implements Initializable {
 
     ParameterListener parameterListener = ParameterListener.getInstance();
-
     private String ipAddress = null;
 
     @FXML

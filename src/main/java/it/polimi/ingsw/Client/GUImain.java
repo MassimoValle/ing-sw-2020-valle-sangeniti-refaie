@@ -25,17 +25,9 @@ public class GUImain extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        /*FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Welcome.fxml"));
-        Parent root = loader.load();
-
-        scene = new Scene(root);*/
-
         mystage = stage;
 
         setRoot("welcome", null);
-
-        //stage.minHeightProperty().bind(scene.heightProperty());
-        //stage.minWidthProperty().bind(scene.widthProperty());
 
         stage.setTitle("Santorini");
         stage.setScene(scene);

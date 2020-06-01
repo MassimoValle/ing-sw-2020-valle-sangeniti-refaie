@@ -25,9 +25,9 @@ public class ShowDeckController implements Initializable {
     @FXML
     private AnchorPane showDeckAnchorPane;
 
-    private String parameter = null;
 
     ParameterListener parameterListener = ParameterListener.getInstance();
+    private String parameter = null;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

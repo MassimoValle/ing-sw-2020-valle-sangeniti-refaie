@@ -24,9 +24,9 @@ public class PickGodController implements Initializable {
     private AnchorPane pickGodAnchorPane;
 
 
+    ParameterListener parameterListener = ParameterListener.getInstance();
     private String parameter = null;
 
-    ParameterListener parameterListener = ParameterListener.getInstance();
     private ArrayList<God> hand;
 
     @Override
