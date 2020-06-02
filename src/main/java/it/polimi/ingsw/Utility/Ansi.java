@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Utility;
 
+import java.net.PortUnreachableException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +25,11 @@ public final class Ansi {
 
 	// Color code strings from:
 	// http://www.topmudsites.com/forums/mud-coding/413-java-ansi.html
+
+	public static final String RESET 						= "\u001B[0m";
+	public static final String CLEAR_LINE 					= "\33[1A\33[2K";
+	public static final String CLEAR_CONSOLE 				= "\033[H\033[2J";
+
 	public static final String	SANE				= "\u001B[0m";
 
 	public static final String	HIGH_INTENSITY		= "\u001B[1m";

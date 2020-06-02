@@ -10,7 +10,7 @@ import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
-import it.polimi.ingsw.Server.Model.Player.Worker;
+import it.polimi.ingsw.Utility.Ansi;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -22,11 +22,11 @@ import java.util.Set;
 public class CLI extends ClientView {
 
     private final Scanner consoleIn;
-    private final PrintStream consoleOut;
+    private final SantoriniStream consoleOut;
 
     public CLI(){
         consoleIn = new Scanner(System.in);
-        consoleOut = new PrintStream(System.out, true);
+        consoleOut = new SantoriniStream(System.out);
 
     }
 
@@ -210,6 +210,7 @@ public class CLI extends ClientView {
 
         consoleOut.println("God picked successfully");
         consoleOut.println();
+        consoleOut.clear(consoleOut);
 
     }
 
