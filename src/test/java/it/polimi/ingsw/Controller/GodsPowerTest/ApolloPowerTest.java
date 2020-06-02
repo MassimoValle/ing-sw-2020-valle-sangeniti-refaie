@@ -2,6 +2,7 @@ package it.polimi.ingsw.Controller.GodsPowerTest;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Server.Controller.MasterController;
+import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import org.junit.After;
@@ -57,6 +58,7 @@ public class ApolloPowerTest {
 
         setupUtility.selectWorker(pl1,0);
         setupUtility.move(pl1, 3,3);
+        assertEquals(ActionOutcome.DONE, setupUtility.getOutcome());
 
         assertEquals(game.getGameMap().getWorkerOnSquare(3,3), setupUtility.w1pl1);
         assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w2pl2);
@@ -97,8 +99,8 @@ public class ApolloPowerTest {
 
         setupUtility.move(pl1, 3,2);
 
-        //assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w1pl1);
-        //assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w2pl2);
+        assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w1pl1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w1pl2);
         game.getGameMap().printBoard();
         setupUtility.move(pl1,2,1);
         assertTrue(game.getGameMap().getSquare(2,1).hasWorkerOn());

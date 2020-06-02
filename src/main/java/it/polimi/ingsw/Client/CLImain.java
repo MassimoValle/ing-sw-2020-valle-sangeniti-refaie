@@ -24,8 +24,8 @@ public class CLImain {
         //clientView.run();
 
 
-        ImageDecorator imageDecorator = new ImageDecorator(new Square(0,0), new Image("/imgs/board/1row/0x0.png"));
-        ((Square) imageDecorator.getObject()).freeSquare();
+        //ImageDecorator imageDecorator = new ImageDecorator(new Square(0,0), new Image("/imgs/board/1row/0x0.png"));
+        //((Square) imageDecorator.getObject()).freeSquare();
 
     }
 }
