@@ -25,6 +25,7 @@ public class ApolloPowerTest {
     @Before
     public void setUp() throws DomePresentException {
 
+        Game.resetInstance();
         game = Game.getInstance();
 
         player1 = new Player("Simone");
@@ -53,17 +54,21 @@ public class ApolloPowerTest {
 
         setupUtility.setupDifferentHeight(masterController, 0,1, true );
 
-        game.getGameMap().printBoard();
 
         setupUtility.selectWorker(pl1,0);
         setupUtility.move(pl1, 3,3);
 
+
         assertEquals(game.getGameMap().getWorkerOnSquare(3,3), setupUtility.w1pl1);
         assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w2pl2);
-        game.getGameMap().printBoard();
+
+
         setupUtility.build(pl1, 4,2);
+
+
         assertEquals(1, game.getGameMap().getSquare(4, 2).getHeight());
-        game.getGameMap().printBoard();
+
+
         setupUtility.endTurn(pl1);
     }
 
@@ -75,12 +80,18 @@ public class ApolloPowerTest {
         setupUtility.selectWorker(pl1,0);
         setupUtility.move(pl1, 3,3);
 
+
         assertEquals(game.getGameMap().getWorkerOnSquare(3,3), setupUtility.w1pl1);
         assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w2pl2);
 
+
         setupUtility.build(pl1, 4,4);
 
+
         assertEquals(1, game.getGameMap().getSquare(4, 4).getHeight());
+
+
+        setupUtility.endTurn(pl1);
 
     }
 
@@ -89,22 +100,25 @@ public class ApolloPowerTest {
 
         setupUtility.setupDifferentHeight(masterController, 0,1, false );
 
-        game.getGameMap().printBoard();
 
         setupUtility.selectWorker(pl1,0);
 
-        //scambio posizione worker quando apollo è più in basso di 2 livelli (MOSSA NEGATA)
 
+        //scambio posizione worker quando apollo è più in basso di 2 livelli (MOSSA NEGATA)
         setupUtility.move(pl1, 3,2);
 
-        //assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w1pl1);
-        //assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w2pl2);
-        game.getGameMap().printBoard();
+
+        assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w1pl1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w1pl2);
+
+
         setupUtility.move(pl1,2,1);
+
+
         assertTrue(game.getGameMap().getSquare(2,1).hasWorkerOn());
+
+
         setupUtility.build(pl1, 3,1);
-        assertEquals(1, game.getGameMap().getSquare(3, 1).getHeight());
-        game.getGameMap().printBoard();
         setupUtility.endTurn(pl1);
 
     }
@@ -114,18 +128,19 @@ public class ApolloPowerTest {
 
         setupUtility.setupDifferentHeight(masterController, 0,1, false );
 
-        game.getGameMap().printBoard();
 
         setupUtility.selectWorker(pl1,1);
+
+
         //scambio posizione worker quando apollo è più in alto di un livello
         setupUtility.move(pl1, 3,2);
-        game.getGameMap().printBoard();
+
+
         assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w2pl1);
         assertEquals(game.getGameMap().getWorkerOnSquare(2,3), setupUtility.w1pl2);
-        game.getGameMap().printBoard();
+
+
         setupUtility.build(pl1, 4,3);
-        assertEquals(1, game.getGameMap().getSquare(4, 3).getHeight());
-        game.getGameMap().printBoard();
         setupUtility.endTurn(pl1);
     }
 
@@ -134,17 +149,18 @@ public class ApolloPowerTest {
 
         setupUtility.setupDifferentHeight(masterController, 0,1, false );
 
-        game.getGameMap().printBoard();
 
         setupUtility.selectWorker(pl1,1);
+
         //scambio posizione worker quando apollo è più in alto di un livello
         setupUtility.move(pl1, 3,3);
+
+
         assertEquals(game.getGameMap().getWorkerOnSquare(3,3), setupUtility.w2pl1);
         assertEquals(game.getGameMap().getWorkerOnSquare(2,3), setupUtility.w2pl2);
-        game.getGameMap().printBoard();
+
+
         setupUtility.build(pl1, 3,4);
-        assertEquals(1, game.getGameMap().getSquare(3, 4).getHeight());
-        game.getGameMap().printBoard();
         setupUtility.endTurn(pl1);
 
     }

@@ -28,6 +28,7 @@ public class AthenaPowerTest {
     @Before
     public void setUp() throws DomePresentException {
 
+        Game.resetInstance();
         game = Game.getInstance();
 
         player1 = new Player("Simone");
@@ -59,49 +60,59 @@ public class AthenaPowerTest {
     @Test
     public void AthenaPowerLastsOnlyOneRoundTest() {
 
-        game.getGameMap().printBoard();
         //Tocca al player1 (athena)
         setupUtility.selectWorker(pl1, 0);
         setupUtility.move(pl1, 3, 1);
+
+
         assertEquals(game.getGameMap().getWorkerOnSquare(3, 1), setupUtility.w1pl1);
-        game.getGameMap().printBoard();
+
+
         setupUtility.build(pl1, 2, 1);
-        game.getGameMap().printBoard();
-        assertTrue(game.getGameMap().getSquare(2, 1).hasBeenBuiltOver());
         setupUtility.endTurn(pl1);
 
-        System.out.println("tocca al player 2");
+
+
         //Tocca al player2 (artemis)
+        System.out.println("tocca al player 2");
         setupUtility.selectWorker(pl2, 0);
+
+
         //la move non viene effettuata a causa del potere di athena
         setupUtility.move(pl2, 2, 1);
+
+
         assertNotEquals(game.getGameMap().getWorkerOnSquare(2, 1), setupUtility.w1pl2);
-        game.getGameMap().printBoard();
+
+
         setupUtility.move(pl2, 2, 2);
-        game.getGameMap().printBoard();
+
+
         setupUtility.endMove(pl2);
         setupUtility.build(pl2, 3, 2);
-        assertTrue(game.getGameMap().getSquare(3, 2).hasBeenBuiltOver());
-        game.getGameMap().printBoard();
         setupUtility.endTurn(pl2);
+
 
         System.out.println("tocca al player 1, secondo round");
         setupUtility.selectWorker(pl1, 1);
         setupUtility.move(pl1, 2, 4);
         setupUtility.build(pl1, 1, 4);
         setupUtility.endTurn(pl1);
-        game.getGameMap().printBoard();
+
 
         System.out.println("tocca al player 2, secondo round");
         setupUtility.selectWorker(pl2, 1);
+
         //faccio salire il worker per verificare che il potere di athena non sia attivo
         setupUtility.move(pl2, 3, 2);
+
+
         assertEquals(game.getGameMap().getWorkerOnSquare(3, 2), setupUtility.w2pl2);
-        game.getGameMap().printBoard();
+
+
         setupUtility.endMove(pl2);
         setupUtility.build(pl2, 4, 2);
         setupUtility.endTurn(pl2);
-        game.getGameMap().printBoard();
     }
 
 }

@@ -1,7 +1,10 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
+import it.polimi.ingsw.Network.Message.ClientRequests.BuildDomeRequest;
+import it.polimi.ingsw.Server.Controller.ActionManager;
 import it.polimi.ingsw.Server.Controller.MasterController;
+import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
@@ -9,6 +12,7 @@ import it.polimi.ingsw.Server.Model.Player.Position;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class AtlasPowerTest {
@@ -24,6 +28,7 @@ public class AtlasPowerTest {
     @Before
     public void setUp() {
 
+        Game.resetInstance();
         game = Game.getInstance();
 
         player1 = new Player("Simone");
@@ -49,14 +54,15 @@ public class AtlasPowerTest {
     @Test
     public void AtlasBuildDomeGroundLevelTest(){
 
-        game.getGameMap().printBoard();
-        //player 1 (atlas)
+
         setupUtility.selectWorker(pl1, 0);
         setupUtility.move(pl1, 2,1);
-        game.getGameMap().printBoard();
         setupUtility.buildDome(pl1, 2,2);
+
+
         assertTrue(game.getGameMap().getSquare(2,2).hasDome());
-        game.getGameMap().printBoard();
+
+
         setupUtility.endTurn(pl1);
     }
 
@@ -67,15 +73,17 @@ public class AtlasPowerTest {
         Square sq21 = game.getGameMap().getSquare(new Position(2,1));
         sq21.addBlock(false);
 
-        game.getGameMap().printBoard();
 
-        //player 1 (atlas)
         setupUtility.selectWorker(pl1, 0);
         setupUtility.move(pl1, 1,1);
-        game.getGameMap().printBoard();
+
+
         setupUtility.buildDome(pl1, 2,1);
+
+
         assertTrue(game.getGameMap().getSquare(2,1).hasDome());
-        game.getGameMap().printBoard();
+
+
         setupUtility.endTurn(pl1);
     }
 
@@ -87,15 +95,17 @@ public class AtlasPowerTest {
         sq13.addBlock(false);
         sq13.addBlock(false);
 
-        game.getGameMap().printBoard();
 
-        //player 1 (atlas)
         setupUtility.selectWorker(pl1, 0);
         setupUtility.move(pl1, 1,2);
-        game.getGameMap().printBoard();
+
+
         setupUtility.buildDome(pl1, 1,3);
+
+
         assertTrue(game.getGameMap().getSquare(1,3).hasDome());
-        game.getGameMap().printBoard();
+
+
         setupUtility.endTurn(pl1);
     }
 
@@ -108,15 +118,16 @@ public class AtlasPowerTest {
         sq11.addBlock(false);
         sq11.addBlock(false);
 
-        game.getGameMap().printBoard();
 
-        //player 1 (atlas)
         setupUtility.selectWorker(pl1, 0);
         setupUtility.move(pl1, 1,2);
-        game.getGameMap().printBoard();
+
         setupUtility.buildDome(pl1, 1,1);
+
+
         assertTrue(game.getGameMap().getSquare(1,1).hasDome());
-        game.getGameMap().printBoard();
+
+
         setupUtility.endTurn(pl1);
     }
 
@@ -128,17 +139,17 @@ public class AtlasPowerTest {
         sq11.addBlock(true);
 
 
-
-        game.getGameMap().printBoard();
-
-        //player 1 (atlas)
         setupUtility.selectWorker(pl1, 0);
         setupUtility.move(pl1, 1,2);
-        game.getGameMap().printBoard();
+
+
         setupUtility.buildDome(pl1, 1,1);
+
+
         setupUtility.buildDome(pl1,0,1);
+
         assertTrue(game.getGameMap().getSquare(0,1).hasDome());
-        game.getGameMap().printBoard();
+
         setupUtility.endTurn(pl1);
     }
 }

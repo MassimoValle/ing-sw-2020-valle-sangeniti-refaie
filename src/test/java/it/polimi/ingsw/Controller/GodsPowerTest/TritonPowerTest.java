@@ -9,6 +9,7 @@ import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,6 +26,7 @@ public class TritonPowerTest {
     @Before
     public void setUp() {
 
+
         Game.resetInstance();
         game = Game.getInstance();
 
@@ -34,6 +36,12 @@ public class TritonPowerTest {
         Game.getInstance().addPlayer(player2);
 
         masterController = new MasterController(game, player1);
+    }
+
+    @After
+    public void tearDown(){
+
+        Game.resetInstance();
     }
 
     @Test
