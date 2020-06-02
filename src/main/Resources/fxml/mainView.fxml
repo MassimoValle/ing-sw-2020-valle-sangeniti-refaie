@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -10,38 +7,21 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Client.View.Gui.ViewControllers.MainViewController">
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Client.View.Gui.ViewControllers.MainViewController">
    <children>
-      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane prefWidth="1053.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
-            <AnchorPane>
+            <AnchorPane fx:id="cliffAnchorPane">
                <children>
-                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                  <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <top>
-                        <AnchorPane fx:id="topCliff" BorderPane.alignment="CENTER">
-                           <children>
-                              <ImageView pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <image>
-                                    <Image url="@../imgs/cliff/top.png" />
-                                 </image>
-                              </ImageView>
-                           </children>
-                        </AnchorPane>
+                        <AnchorPane fx:id="topCliff" styleClass="topCLiff" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER" />
                      </top>
                      <left>
-                        <AnchorPane fx:id="leftCliff" BorderPane.alignment="CENTER">
-                           <children>
-                              <ImageView pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <image>
-                                    <Image url="@../imgs/cliff/left.png" />
-                                 </image>
-                              </ImageView>
-                              <ToggleButton fx:id="powerButton" disable="true" layoutX="175.0" layoutY="700.0" mnemonicParsing="false" onAction="#powerEvent" prefHeight="138.0" prefWidth="255.0" text="Power Button" />
-                           </children>
-                        </AnchorPane>
+                        <AnchorPane fx:id="leftCliff" styleClass="leftCLiff" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER" />
                      </left>
                      <center>
-                        <AnchorPane fx:id="board" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                        <AnchorPane fx:id="board" BorderPane.alignment="CENTER">
                            <children>
                               <GridPane fx:id="gridPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columnConstraints>
@@ -58,65 +38,22 @@
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
-                                 <children>
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                                 </children>
                               </GridPane>
                            </children>
                         </AnchorPane>
                      </center>
                      <right>
-                        <AnchorPane fx:id="rightCliff" prefHeight="312.0" prefWidth="177.0" BorderPane.alignment="CENTER">
-                           <children>
-                              <ImageView layoutX="1.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <image>
-                                    <Image url="@../imgs/cliff/right.png" />
-                                 </image>
-                              </ImageView>
-                           </children>
-                        </AnchorPane>
+                        <AnchorPane fx:id="rightCliff" styleClass="rightCLiff" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER" />
                      </right>
                      <bottom>
-                        <AnchorPane fx:id="bottomCliff" BorderPane.alignment="CENTER">
-                           <children>
-                              <ImageView pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <image>
-                                    <Image url="@../imgs/cliff/bottom.png" />
-                                 </image>
-                              </ImageView>
-                           </children>
-                        </AnchorPane>
+                        <AnchorPane fx:id="bottomCliff" styleClass="bottomCLiff" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER" />
                      </bottom>
                   </BorderPane>
                </children>
             </AnchorPane>
          </center>
          <top>
-            <HBox fx:id="hboxPlayers" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+            <HBox fx:id="hboxPlayers" BorderPane.alignment="CENTER" />
          </top>
       </BorderPane>
    </children>

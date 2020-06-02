@@ -4,11 +4,15 @@ import it.polimi.ingsw.Client.GUImain;
 import it.polimi.ingsw.Client.Model.BabyGame;
 import it.polimi.ingsw.Client.Model.GUImap;
 import it.polimi.ingsw.Client.Model.PumpedSquare;
+import it.polimi.ingsw.Client.View.Gui.ParameterListener;
 import it.polimi.ingsw.Server.Model.Player.Player;
+import it.polimi.ingsw.Server.Model.Player.Position;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -62,6 +66,9 @@ public class MainViewController implements Initializable {
     GUImap guImap = (GUImap) BabyGame.getInstance().getClientMap();
     private Set<Player> players;
 
+    ParameterListener parameterListener = ParameterListener.getInstance();
+    private Object parameter = null;
+
 
     private void setupImageView(){
 
@@ -69,23 +76,34 @@ public class MainViewController implements Initializable {
 
             for (int col = 0; col < 5; col++) {
 
-                AnchorPane anchorPane = (AnchorPane) standardGetElementAt(row, col);
-
+                AnchorPane anchorPane = new AnchorPane();
                 ImageView imageView = ((PumpedSquare)guImap.getSquare(row, col)).getImg();
 
                 ImageViewPane imageViewPane = new ImageViewPane(imageView);
 
-                AnchorPane.setTopAnchor(imageViewPane, 5.0);
-                AnchorPane.setLeftAnchor(imageViewPane, 5.0);
-                AnchorPane.setRightAnchor(imageViewPane, 5.0);
-                AnchorPane.setBottomAnchor(imageViewPane, 5.0);
+                AnchorPane.setTopAnchor(imageViewPane, 3.0);
+                AnchorPane.setLeftAnchor(imageViewPane, 3.0);
+                AnchorPane.setRightAnchor(imageViewPane, 3.0);
+                AnchorPane.setBottomAnchor(imageViewPane, 3.0);
 
                 String baseBg = "FFFFFF";
-                assert anchorPane != null;
                 anchorPane.setStyle("-fx-background-color: #" + baseBg);
 
-                anchorPane.getChildren().add(imageView);
-                imageView.fitWidthProperty().bind(anchorPane.widthProperty());
+                anchorPane.getChildren().add(imageViewPane);
+
+                anchorPane.setOnMouseClicked(e -> {
+                    //TODO
+                    int x = GridPane.getRowIndex((Node) e.getSource());
+                    int y = GridPane.getColumnIndex((Node) e.getSource());
+
+                    Position ret = new Position(x, y);
+
+                    parameter = ret;
+                    parameterListener.setParameter(parameter);
+
+                });
+
+                gridPane.add(anchorPane, row, col);
 
             }
 
@@ -96,10 +114,31 @@ public class MainViewController implements Initializable {
         this.players = playerSet;
     }
 
+    public Node getNodeByRowColumnIndex (final int row, final int column, GridPane gridPane) {
+        Node result = null;
+        ObservableList<Node> childrens = gridPane.getChildren();
+
+        for (Node node : childrens) {
+            if(gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
+                result = node;
+                break;
+            }
+        }
+
+        return result;
+    }
+
     private Node standardGetElementAt(int i, int j) {
 
         for (Node x : gridPane.getChildren()) {
-            if ((GridPane.getRowIndex(x) == i) && (GridPane.getColumnIndex(x) == j)) {
+
+            if(gridPane == null) System.out.println("gridPane");
+            if(x == null) System.out.println("x");
+
+            int gridPaneX = GridPane.getRowIndex(x);
+            int gridPaneY = GridPane.getColumnIndex(x);
+
+            if ((gridPaneX == i) && (gridPaneY == j)) {
                 return x;
             }
         }
@@ -120,15 +159,18 @@ public class MainViewController implements Initializable {
     }
 
     public void init(){
+
         Platform.runLater(this::setScene);
     }
 
 
-    private void setScene(){
+    private void setScene() {
 
         Stage stage = GUImain.getStage();
         stage.setMaximized(true);
 
+        // prove di binding
+        /*
         double width = stage.getWidth();
         double height = stage.getHeight();
 
@@ -156,14 +198,34 @@ public class MainViewController implements Initializable {
         ImageView imageView3 = (ImageView) bottomCliff.getChildren().get(0);
         imageView3.fitHeightProperty().bind(bottomCliff.heightProperty());
         imageView3.fitWidthProperty().bind(bottomCliff.widthProperty());
+        */
 
 
         for (Player player : players){
+
+            /*
+            FXMLLoader loader = null;
+            Parent node = null;
+            try {
+
+                loader = new FXMLLoader(GUImain.class.getResource("/fxml/" + "player" + ".fxml"));
+                node = loader.load();
+
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+
+            hboxPlayers.getChildren().add(node);
+
+            PlayerController controller = loader.getController();
+            controller.init(player);
+            */
+
+
             Label nameLabel = new Label(player.getPlayerName());
             Label godLabel = new Label(player.getPlayerGod().getGodName());
             VBox vBox = new VBox(nameLabel, godLabel);
             AnchorPane anchorPane = new AnchorPane(vBox);
-            anchorPane.getStyleClass().add("nuvolaSpeedy");
 
             hboxPlayers.getChildren().add(anchorPane);
 
