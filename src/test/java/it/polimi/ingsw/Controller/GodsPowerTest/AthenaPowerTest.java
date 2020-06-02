@@ -3,6 +3,7 @@ package it.polimi.ingsw.Controller.GodsPowerTest;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Server.Controller.MasterController;
+import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
@@ -80,6 +81,8 @@ public class AthenaPowerTest {
 
         //la move non viene effettuata a causa del potere di athena
         setupUtility.move(pl2, 2, 1);
+        assertEquals(ActionOutcome.NOT_DONE, setupUtility.getOutcome());
+
 
 
         assertNotEquals(game.getGameMap().getWorkerOnSquare(2, 1), setupUtility.w1pl2);

@@ -3,6 +3,7 @@ package it.polimi.ingsw.Controller.GodsPowerTest;
 import it.polimi.ingsw.Network.Message.ClientRequests.*;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Controller.MasterController;
+import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.Square;
@@ -15,20 +16,22 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class TritonPowerTest {
 
-    MasterController masterController;
-    Player player1, player2;
-    Game game;
+    private MasterController masterController;
+    private Player player1, player2;
+    private String pl1, pl2;
+    private Game game;
+    private SetupGameUtilityClass setupUtility;
 
     @Before
     public void setUp() {
 
-
         Game.resetInstance();
         game = Game.getInstance();
+
 
         player1 = new Player("Simone");
         player2 = new Player("Massimo");
@@ -36,75 +39,86 @@ public class TritonPowerTest {
         Game.getInstance().addPlayer(player2);
 
         masterController = new MasterController(game, player1);
+
+        setupUtility = new SetupGameUtilityClass();
+        setupUtility.setup(masterController, 13,1, true );
+
+        pl2 = player2.getPlayerName();
+        pl1 = player1.getPlayerName();
+
+
     }
 
     @After
-    public void tearDown(){
+    public void tearDown() {
+        game = Game.getInstance();
+    }
 
-        Game.resetInstance();
+
+   @Test
+   public void TritonPowerTest(){
+
+        setupUtility.selectWorker(pl1,1);
+        setupUtility.move(pl1, 2,4);
+
+        assertEquals(ActionOutcome.DONE_CAN_BE_DONE_AGAIN, setupUtility.getOutcome());
+
+       setupUtility.move(pl1, 1,4);
+
+       assertEquals(ActionOutcome.DONE_CAN_BE_DONE_AGAIN, setupUtility.getOutcome());
+
+       setupUtility.move(pl1, 2,4);
+
+       assertEquals(ActionOutcome.DONE_CAN_BE_DONE_AGAIN, setupUtility.getOutcome());
+
+       setupUtility.move(pl1, 1,4);
+
+       assertEquals(ActionOutcome.DONE_CAN_BE_DONE_AGAIN, setupUtility.getOutcome());
+
+       setupUtility.move(pl1, 0,3);
+
+       assertEquals(ActionOutcome.DONE_CAN_BE_DONE_AGAIN, setupUtility.getOutcome());
+
+       setupUtility.move(pl1, 1,2);
+
+       assertEquals(ActionOutcome.DONE, setupUtility.getOutcome());
+
+
+
+       setupUtility.build(pl1, 1,3);
+       setupUtility.endTurn(pl1);
     }
 
     @Test
-    public void TritonPowerTest() {
+    public void DontWantToMoveAgainOnPerimeterTest(){
 
-        String pl1 = player1.getPlayerName();
-        String pl2 = player2.getPlayerName();
+        setupUtility.selectWorker(pl1, 1);
+        setupUtility.move(pl1, 2,4);
+        setupUtility.move(pl1, 1,4);
 
-        assertEquals(2, masterController.getGameInstance().getNumberOfPlayers());
+        setupUtility.endMove(pl1);
+
+        setupUtility.build(pl1, 0,4);
+
+        assertTrue(game.getGameMap().getSquare(0,4).hasBeenBuiltOver());
+
+        setupUtility.endTurn(pl1);
 
 
-        //Aggiungo i god alla partita
-        ArrayList<God> chosenGod = new ArrayList<>();
-        chosenGod.add(game.getDeck().getGod(0));
-        chosenGod.add(game.getDeck().getGod(13));
-        game.setChosenGodsFromDeck(chosenGod);
 
-        //assegno i god ai rispettivi giocatori
-        player1.setPlayerGod(chosenGod.get(0));
-        Game.getInstance().getChosenGodsFromDeck().get(0).setAssigned(true);
-        //game.getChosenGodsFromDeck().get(0).setAssigned(true);
-        player2.setPlayerGod(chosenGod.get(1));
-        game.getChosenGodsFromDeck().get(1).setAssigned(true);
+    }
 
-        //giocatore 1 piazza il primo worker
-        Worker w1pl1 = player1.getPlayerWorkers().get(0);
-        Square sq22 = game.getGameMap().getSquare(new Position(2, 2));
 
-        w1pl1.setPosition(new Position(2, 2));
-        sq22.setWorkerOn(w1pl1);
-        w1pl1.setPlaced(true);
 
-        //giocatore 2 piazza il primo worker
-        Worker w1pl2 = player2.getPlayerWorkers().get(0);
-        Square sq32 = game.getGameMap().getSquare(new Position(3, 2));
 
-        w1pl2.setPosition(new Position(3, 2));
-        sq32.setWorkerOn(w1pl2);
-        w1pl2.setPlaced(true);
 
-        //giocatore 1 piazza il secondo worker
-        Worker w2pl1 = player1.getPlayerWorkers().get(1);
-        Square sq23 = game.getGameMap().getSquare(new Position(2, 3));
 
-        w2pl1.setPosition(new Position(2, 3));
-        sq23.setWorkerOn(w2pl1);
-        w2pl1.setPlaced(true);
+    @Test
+    public void TritonNNNNNPowerTest() {
 
-        //giocatore 2 piazza il seoondo worker
-        Worker w2pl2 = player2.getPlayerWorkers().get(1);
-        Square sq33 = game.getGameMap().getSquare(new Position(3, 3));
 
-        w2pl2.setPosition(new Position(3, 3));
-        sq33.setWorkerOn(w2pl2);
-        w2pl2.setPlaced(true);
 
-        game.getGameMap().printBoard();
 
-        masterController._getActionManager()._setGameState(PossibleGameState.START_ROUND);
-        masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
-        masterController._getTurnManager().nextTurn(player1);
-
-        game.getGameMap().printBoard();
 
         MasterController.dispatcher(
                 new SelectWorkerRequest(pl1, 0)
@@ -112,11 +126,11 @@ public class TritonPowerTest {
 
         MasterController.dispatcher(
                 new MoveRequest(pl1, new Position(1,2))
-        );
+        );game.getGameMap().printBoard();
 
         MasterController.dispatcher(
                 new BuildRequest(pl1, new Position(0,2))
-        );
+        );game.getGameMap().printBoard();
 
         MasterController.dispatcher(
                 new EndTurnRequest(pl1)
@@ -129,23 +143,23 @@ public class TritonPowerTest {
 
         MasterController.dispatcher(
                 new MoveRequest(pl2, new Position(4,3))
-        );
+        );game.getGameMap().printBoard();
 
         MasterController.dispatcher(
                 new MoveRequest(pl2, new Position(4,4))
-        );
+        );game.getGameMap().printBoard();
 
         MasterController.dispatcher(
                 new MoveRequest(pl2, new Position(3,4))
-        );
+        );game.getGameMap().printBoard();
 
         MasterController.dispatcher(
                 new MoveRequest(pl2, new Position(2,4))
-        );
+        );game.getGameMap().printBoard();
 
         MasterController.dispatcher(
                 new MoveRequest(pl2, new Position(1,4))
-        );
+        );game.getGameMap().printBoard();
 
 /*
 

@@ -2,7 +2,9 @@ package it.polimi.ingsw.Controller.GodsPowerTest;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Server.Controller.MasterController;
+import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import org.junit.After;
@@ -82,20 +84,165 @@ public class MinotaurPowerTest {
         assertEquals(game.getGameMap().getWorkerOnSquare(3,3), setupUtility.w1pl1);
         assertEquals(game.getGameMap().getWorkerOnSquare(4,4), setupUtility.w2pl2);
 
-        setupUtility.buildDome(pl1,3,4);
+
+        setupUtility.build(pl1,3,4);
         setupUtility.endTurn(pl1);
 
+    }
+
+    @Test
+    public void PushWhenMinotaurWorkerIsHigherTest() throws DomePresentException {
+
+        setupUtility.setupDifferentHeight(masterController, 6,1, false );
+
+        setupUtility.selectWorker(pl1, 1);
+
+        setupUtility.move(pl1, 3,2);
 
 
+        assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w2pl1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(4,1), setupUtility.w1pl2);
+
+
+        setupUtility.build(pl1,3,1);
+        setupUtility.endTurn(pl1);
+    }
+
+    @Test
+    public void PushWhenBackwardSquareIs2LevelHigherThanOpponentWorkerTest() throws DomePresentException {
+
+        //setup
+        Square sq42 = game.getGameMap().getSquare(4,2);
+        sq42.addBlock(false);
+        sq42.addBlock(false);
+
+        setupUtility.selectWorker(pl1, 0);
+
+        setupUtility.move(pl1, 3,2);
+
+
+        assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w1pl1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(4,2), setupUtility.w1pl2);
+
+
+        setupUtility.build(pl1,2,1);
+        setupUtility.endTurn(pl1);
 
     }
+
+    @Test
+    public void PushWhenBackwardSquareIsLowerThanOpponentWorkerTest() throws DomePresentException {
+
+        setupUtility.setupDifferentHeight(masterController, 6,1, false );
+
+        setupUtility.selectWorker(pl1,0);
+
+        setupUtility.move(pl1, 3,3);
+
+        assertEquals(game.getGameMap().getWorkerOnSquare(3,3), setupUtility.w1pl1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(4,4), setupUtility.w2pl2);
+
+        setupUtility.build(pl1,3,4);
+        setupUtility.endTurn(pl1);
+    }
+
+    @Test
+    public void CantPushWhenOpponentWorkerIs2LevelHigherTest() throws DomePresentException {
+
+        setupUtility.setupDifferentHeight(masterController, 6,1, false );
+
+        setupUtility.selectWorker(pl1,0);
+
+        setupUtility.move(pl1, 3,2);
+
+        assertEquals(ActionOutcome.NOT_DONE, setupUtility.getOutcome());
+        assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w1pl1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w1pl2);
+
+        setupUtility.move(pl1,3,1);
+        setupUtility.build(pl1,4,1);
+        setupUtility.endTurn(pl1);
+
+    }
+
+    @Test
+    public void CantPushWhenBackwardSquareHasDome() throws DomePresentException {
+
+        //setup
+        Square sq42 = game.getGameMap().getSquare(4,2);
+        sq42.addBlock(true);
+
+        setupUtility.selectWorker(pl1, 0);
+
+        setupUtility.move(pl1, 3,2);
+
+
+        assertEquals(ActionOutcome.NOT_DONE, setupUtility.getOutcome());
+        assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w1pl1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w1pl2);
+
+
+        setupUtility.move(pl1,3,1);
+        setupUtility.build(pl1,2,1);
+        setupUtility.endTurn(pl1);
+
+    }
+
+    @Test
+    public void  CantPushWhenBackwardSquareHasWorkerOn(){
+
+        //player1 Minotaur
+        setupUtility.selectWorker(pl1,0);
+        setupUtility.move(pl1,2,1);
+        setupUtility.build(pl1,2,2);
+        setupUtility.endTurn(pl1);
+
+        //player2 Artemis
+        setupUtility.selectWorker(pl2,1);
+        setupUtility.move(pl2,4,3);
+        setupUtility.endMove(pl2);
+        setupUtility.build(pl2,3,3);
+        setupUtility.endTurn(pl2);
+
+        //player1 Minotaur
+        setupUtility.selectWorker(pl1,0);
+
+        setupUtility.move(pl1, 3,2);
+
+
+        assertEquals(ActionOutcome.NOT_DONE, setupUtility.getOutcome());
+        assertEquals(game.getGameMap().getWorkerOnSquare(2,1), setupUtility.w1pl1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w1pl2);
+
+
+        setupUtility.move(pl1,3,1);
+        setupUtility.build(pl1,2,1);
+        setupUtility.endTurn(pl1);
+
+    }
+
+    @Test
+    public void CantPushHisOwnWorker(){
+
+        setupUtility.selectWorker(pl1, 0);
+
+        setupUtility.move(pl1, 2,3);
+
+
+        assertEquals(ActionOutcome.NOT_DONE, setupUtility.getOutcome());
+        assertEquals(game.getGameMap().getWorkerOnSquare(2,2), setupUtility.w1pl1);
+        assertEquals(game.getGameMap().getWorkerOnSquare(2,3), setupUtility.w2pl1);
+
+        setupUtility.move(pl1,1,3);
+        setupUtility.build(pl1, 2, 2);
+        setupUtility.endTurn(pl1);
+    }
+
     @Test
     public void OutsideMapPushTest() {
 
-        //player1 (Minotaur)
         setupUtility.selectWorker(pl1, 0);
 
-        //test potere minotauro quando i 2 worker sono sullo stesso livello
         setupUtility.move(pl1, 3,2);
 
         assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w1pl1);
@@ -106,7 +253,7 @@ public class MinotaurPowerTest {
         setupUtility.endTurn(pl1);
 
 
-        //player 2 (artemis) seleziona worker
+        //player 2 (artemis)
         setupUtility.selectWorker(pl2, 0 );
         setupUtility.move(pl2, 4, 1);
         setupUtility.endMove(pl2);
@@ -114,14 +261,18 @@ public class MinotaurPowerTest {
         setupUtility.endTurn(pl2);
 
 
-        //player 1 seleziona worker
+        //player 1 Minotaur
         setupUtility.selectWorker(pl1,0);
+
         setupUtility.move(pl1, 4,1);
 
+        assertEquals(ActionOutcome.NOT_DONE, setupUtility.getOutcome());
         assertEquals(game.getGameMap().getWorkerOnSquare(3,2), setupUtility.w1pl1);
-        assertNotEquals(game.getGameMap().getWorkerOnSquare(4,1), setupUtility.w1pl1);
         assertEquals(game.getGameMap().getWorkerOnSquare(4,1), setupUtility.w1pl2);
 
+        setupUtility.move(pl1,3,1);
+        setupUtility.build(pl1,2,1);
+        setupUtility.endTurn(pl1);
 
     }
 

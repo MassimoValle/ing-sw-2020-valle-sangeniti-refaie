@@ -454,4 +454,8 @@ public class ActionManager {
     public void _setGameState(PossibleGameState gameState) {
         this.gameState = gameState;
     }
+
+    public ActionOutcome _getActionOutcome() {
+        return actionOutcome;
+    }
 }

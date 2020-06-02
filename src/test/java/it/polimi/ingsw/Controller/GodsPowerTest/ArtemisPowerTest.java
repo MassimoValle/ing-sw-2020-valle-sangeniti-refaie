@@ -1,14 +1,14 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
 import it.polimi.ingsw.Server.Controller.MasterController;
+import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ArtemisPowerTest {
 
@@ -76,10 +76,13 @@ public class ArtemisPowerTest {
 
         assertTrue(game.getGameMap().getSquare(2,4).hasWorkerOn());
 
-        //questa move deve fallire
+
         setupUtility.move(pl1, 2,3);
 
+
+        assertEquals(ActionOutcome.NOT_DONE, setupUtility.getOutcome());
         assertFalse(game.getGameMap().getSquare(2, 3).hasWorkerOn());
+
 
         //rifaccio la move dove mi posso muovere
         setupUtility.move(pl1,1,3);
@@ -105,5 +108,28 @@ public class ArtemisPowerTest {
         setupUtility.endTurn(pl1);
 
     }
-    
+
+    @Test
+    public void ArtemisCannotBuildDomeLikeAtlasDoesTest(){
+
+        setupUtility.selectWorker(pl1,1);
+        setupUtility.move(pl1, 2,4);
+
+
+        assertTrue(game.getGameMap().getSquare(2,4).hasWorkerOn());
+
+
+        setupUtility.endMove(pl1);
+
+        setupUtility.buildDome(pl1,1,4);
+
+
+        assertFalse(game.getGameMap().getSquare(1,4).hasDome());
+        assertEquals(ActionOutcome.DONE, setupUtility.getOutcome());
+        assertTrue(game.getGameMap().getSquare(1,4).hasBeenBuiltOver());
+
+
+        setupUtility.endTurn(pl1);
+
+    }
 }

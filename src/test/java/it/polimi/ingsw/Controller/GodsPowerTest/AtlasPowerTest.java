@@ -57,6 +57,7 @@ public class AtlasPowerTest {
 
         setupUtility.selectWorker(pl1, 0);
         setupUtility.move(pl1, 2,1);
+        setupUtility.powerButton(pl1);
         setupUtility.buildDome(pl1, 2,2);
 
 
@@ -77,7 +78,7 @@ public class AtlasPowerTest {
         setupUtility.selectWorker(pl1, 0);
         setupUtility.move(pl1, 1,1);
 
-
+        setupUtility.powerButton(pl1);
         setupUtility.buildDome(pl1, 2,1);
 
 
@@ -99,7 +100,7 @@ public class AtlasPowerTest {
         setupUtility.selectWorker(pl1, 0);
         setupUtility.move(pl1, 1,2);
 
-
+        setupUtility.powerButton(pl1);
         setupUtility.buildDome(pl1, 1,3);
 
 
@@ -122,6 +123,8 @@ public class AtlasPowerTest {
         setupUtility.selectWorker(pl1, 0);
         setupUtility.move(pl1, 1,2);
 
+
+        setupUtility.powerButton(pl1);
         setupUtility.buildDome(pl1, 1,1);
 
 
@@ -142,8 +145,11 @@ public class AtlasPowerTest {
         setupUtility.selectWorker(pl1, 0);
         setupUtility.move(pl1, 1,2);
 
-
+        setupUtility.powerButton(pl1);
         setupUtility.buildDome(pl1, 1,1);
+
+
+        assertEquals(ActionOutcome.NOT_DONE, setupUtility.getOutcome());
 
 
         setupUtility.buildDome(pl1,0,1);
