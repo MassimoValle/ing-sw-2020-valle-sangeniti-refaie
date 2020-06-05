@@ -8,6 +8,7 @@ import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
@@ -372,4 +373,6 @@ public class SetupGameUtilityClass {
     public ActionOutcome getOutcome() {
         return masterController._getActionManager()._getActionOutcome();
     }
+
+    public Player getWinner(){return masterController._getActionManager().getWinner();}
 }

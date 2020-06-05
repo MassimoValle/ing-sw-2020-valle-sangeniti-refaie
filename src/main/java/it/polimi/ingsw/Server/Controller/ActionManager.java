@@ -458,4 +458,6 @@ public class ActionManager {
     public ActionOutcome _getActionOutcome() {
         return actionOutcome;
     }
+
+    public Player getWinner(){ return this.winner;}
 }

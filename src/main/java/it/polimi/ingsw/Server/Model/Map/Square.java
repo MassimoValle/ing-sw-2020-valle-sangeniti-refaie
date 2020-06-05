@@ -144,8 +144,10 @@ public class Square {
         String ret = "";
 
         if (getHeight() != 0) {
-            if (hasDome()) {
-                return "O   ";
+            if (tower.size() == 4) {
+                return "F   ";
+            }else if(hasDome()){
+                return "D   ";
             }
         }
 
