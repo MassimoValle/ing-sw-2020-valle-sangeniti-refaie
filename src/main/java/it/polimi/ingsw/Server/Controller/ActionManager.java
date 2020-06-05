@@ -7,6 +7,7 @@ import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Action.*;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.God.GodsPower.AtlasPower;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Outcome;
@@ -296,7 +297,7 @@ public class ActionManager {
         Square squareWhereToBuild = gameInstance.getGameMap().getSquare(positionWhereToBuild);
         Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getWorkerPosition());
 
-        if (request instanceof BuildDomeRequest)
+        if (request instanceof BuildDomeRequest && requestSender.getPlayerGod().is("Atlas"))
             actionOutcome = playerGod.getGodPower().buildDome(squareWhereTheWorkerIs, squareWhereToBuild);
         else
             actionOutcome = playerGod.getGodPower().build(squareWhereTheWorkerIs, squareWhereToBuild);
@@ -453,4 +454,10 @@ public class ActionManager {
     public void _setGameState(PossibleGameState gameState) {
         this.gameState = gameState;
     }
+
+    public ActionOutcome _getActionOutcome() {
+        return actionOutcome;
+    }
+
+    public Player getWinner(){ return this.winner;}
 }
