@@ -2,6 +2,7 @@ package it.polimi.ingsw.Server.Model.God.GodsPower;
 
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
@@ -38,17 +39,18 @@ public class PrometheusPower extends Power implements Serializable {
 
     @Override
     public boolean canBuildBeforeMoving(Worker workerSelected) {
-        ArrayList<Position> availablePosition = Game.getInstance().getGameMap().getReachableAdjacentPlaces(workerSelected.getWorkerPosition());
+        GameMap gameMap = Game.getInstance().getGameMap();
 
-        if (availablePosition.isEmpty()) {
-            return false;
-        } else if ( availablePosition.size() == 1) {
-            Square singleSquareAvailable = Game.getInstance().getGameMap().getSquare(availablePosition.get(0));
-            Square workerSquare = Game.getInstance().getGameMap().getSquare(workerSelected.getWorkerPosition());
-            return workerSquare.getHeight() - singleSquareAvailable.getHeight() >= 1;
+        ArrayList<Position> availablePosition = gameMap.getReachableAdjacentPlaces(workerSelected.getWorkerPosition());
+        Square workerSquare = gameMap.getSquare(workerSelected.getWorkerPosition());
+
+
+        if (!availablePosition.isEmpty()) {
+            return gameMap.squareMinusOneAvailable(workerSquare) || gameMap.twoSquaresSameHeightAvailable(workerSquare)
+                    || gameMap.prometheusBuildsFirst(workerSquare);
         }
+        return false;
 
-        return true;
     }
 
     @Override

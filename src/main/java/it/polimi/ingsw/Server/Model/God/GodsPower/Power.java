@@ -5,12 +5,15 @@ import it.polimi.ingsw.Server.Model.Action.Action;
 import it.polimi.ingsw.Server.Model.Action.BuildAction;
 import it.polimi.ingsw.Server.Model.Action.BuildDomeAction;
 import it.polimi.ingsw.Server.Model.Action.MoveAction;
+import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.PowerType;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public abstract class Power implements Serializable, GodsChecker {
 
@@ -76,6 +79,21 @@ public abstract class Power implements Serializable, GodsChecker {
         } else {
             return ActionOutcome.NOT_DONE;
         }
+    }
+
+    public boolean isWorkerStuck(Worker worker) {
+        GameMap gameMap = Game.getInstance().getGameMap();
+
+        ArrayList<Position> placesWhereToMove = gameMap.getReachableAdjacentPlaces(worker.getWorkerPosition());
+
+        if (placesWhereToMove.isEmpty()) return true;
+
+        for (Position position: placesWhereToMove ) {
+            ArrayList<Position> placesWhereYouCanBuildOn = gameMap.getPlacesWhereYouCanBuildOn(position);
+            if (!placesWhereYouCanBuildOn.isEmpty()) return false;
+        }
+
+        return true;
     }
 
 

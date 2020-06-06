@@ -153,6 +153,7 @@ public class GameMap {
      * @return boolean
      */
     public boolean isWorkerStuck(Worker worker) {
+        //TODO da implementare sul potere???? (es Apollo);
         ArrayList<Position> placesWhereToMove;
         placesWhereToMove = getReachableAdjacentPlaces(worker.getWorkerPosition());
 
@@ -168,6 +169,61 @@ public class GameMap {
     }
 
 
+
+    /**
+     * It check if there's at least one reachable adjacent square -1 height compared to the square given
+     *
+     * @param square square
+     * @return true if there's at least one reachable adjacent square -1 height compared to the square given, false otherwise
+     */
+    public boolean squareMinusOneAvailable(Square square) {
+
+        for (Position pos : this.getReachableAdjacentPlaces(square.getPosition())) {
+            if (square.getHeight() - this.getSquare(pos).getHeight() >= 1)
+                return true;
+        }
+
+        return false;
+    }
+
+    public boolean squareSameHeightAvailable(Square square) {
+
+        for (Position pos : this.getReachableAdjacentPlaces(square.getPosition())) {
+            if (square.getHeight() == this.getSquare(pos).getHeight())
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * It check if there are at least two reachable adjacent squares with the same height
+     *
+     * @param square square
+     * @return true if there are at least two reachable adjacent squares with the same height, false otherwise
+     */
+    public boolean twoSquaresSameHeightAvailable(Square square) {
+        ArrayList<Position> positions = new ArrayList<>();
+
+        for (Position pos : this.getReachableAdjacentPlaces(square.getPosition())) {
+            if (square.getHeight() == this.getSquare(pos).getHeight())
+                positions.add(pos);
+        }
+        return positions.size() >= 2;
+    }
+
+    /**
+     * TODO DA TROVARE UN NOME DECENTE
+     * It check if there are at least 2 buildable squares and 1 square with the same height
+     *
+     * @param square the square
+     * @return true if there are at least 2 buildable squares and 1 square with the same height, false otherwise
+     */
+    public boolean prometheusBuildsFirst(Square square) {
+        ArrayList<Position> buildableSquares = this.getPlacesWhereYouCanBuildOn(square.getPosition());
+
+        return buildableSquares.size() > 1 && this.squareSameHeightAvailable(square);
+    }
 
     /**
      * Print board.
@@ -230,9 +286,7 @@ public class GameMap {
 
             }
         }
-
         return fullSquares >= 5;
-
-
     }
+
 }

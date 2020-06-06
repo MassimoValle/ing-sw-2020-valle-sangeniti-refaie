@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Model.Player;
 
 import it.polimi.ingsw.Server.Model.Map.GameMap;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import org.junit.Before;
@@ -21,13 +22,13 @@ public class WorkerTest {
     @Test
     public void checkWorkersPositionAndNumber() {
 
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(new Player("test"), 0);
         assertEquals(0, worker1.getWorkersNumber());
 
         worker1.setPosition(new Position(0,0));
         assertEquals(new Position(0,0), worker1.getWorkerPosition());
 
-        Worker worker2 = new Worker(1);
+        Worker worker2 = new Worker(new Player("test"),1);
         assertEquals(1, worker2.getWorkersNumber());
 
         worker2.setPosition(new Position(0,1));
@@ -36,8 +37,8 @@ public class WorkerTest {
 
     @Test
     public void checkIfSelectedAndPlaced() {
-        Worker worker1 = new Worker(0);
-        Worker worker2 = new Worker(0);
+        Worker worker1 = new Worker(new Player("test"),0);
+        Worker worker2 = new Worker(new Player("test"),0);
 
         assertFalse(worker1.isPlaced());
         assertFalse(worker1.isSelected());

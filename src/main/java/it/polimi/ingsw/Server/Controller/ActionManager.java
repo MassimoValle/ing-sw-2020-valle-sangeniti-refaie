@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Server.Controller;
 
+import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
 import it.polimi.ingsw.Network.Message.Enum.UpdateType;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.StartTurnServerRequest;
@@ -126,60 +127,36 @@ public class ActionManager {
      */
     void handleSelectWorkerAction(SelectWorkerRequest request) {
 
-        ResponseContent responseContent = ResponseContent.SELECT_WORKER;
+        RequestContent requestContent = RequestContent.SELECT_WORKER;
         Player activePlayer = turnManager.getActivePlayer();
 
-        if ( gameState != PossibleGameState.START_ROUND && gameState != PossibleGameState.WORKER_SELECTED) {
-                MasterController.buildNegativeResponse(activePlayer, responseContent, "You cannot select a worker!");
-                return;
-            }
+        if (wrongRequest(requestContent)) {
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.SELECT_WORKER, "You cannot select a worker!");
+            return;
+        }
+
 
         Integer workerIndex = request.getWorkerToSelect();
         Worker workerFromRequest = activePlayer.getPlayerWorkers().get(workerIndex);
+        Power power = activePlayer.getPlayerGod().getGodPower();
 
-        //When a handleSelectWorkerRequest occurs the activeWorker in the turn must be set tu null
-        //or has to be the other player's worker
-        Worker activeWorker = turnManager.getActiveWorker();
+        Action selectWorkerAction = new SelectWorkerAction(power, workerFromRequest, requestSender);
 
-        //You get into this statement only if the activeWorker is own by someone else.
-        if (activeWorker != null && !(activeWorker == activePlayer.getPlayerWorkers().get(0) || activeWorker == activePlayer.getPlayerWorkers().get(1))) {
-                MasterController.buildNegativeResponse(activePlayer, responseContent, "There's something wrong with the worker selection");
-                return;
-            }
-
-        Action selectWorkerAction = new SelectWorkerAction(workerFromRequest, requestSender);
-
-        if (!selectWorkerAction.isValid() ) {
-            MasterController.buildNegativeResponse(activePlayer, responseContent, "You cannot select this worker!");
-            return;
-        }
-
-
-        if (!workerFromRequest.isPlaced()) {
-            //worker is not placed yet
+        if (selectWorkerAction.isValid() ) {
             selectWorkerAction.doAction();
-        } else if ( workerFromRequest.isPlaced() ) {
-            if ( ! gameInstance.getGameMap().isWorkerStuck(workerFromRequest) ) {
-                //worker isn't stuck
-                selectWorkerAction.doAction();
-            }
-            else {
-                //worker is stuck
-                MasterController.buildNegativeResponse(activePlayer, responseContent, "Worker stuck!");
-                return;
-            }
         } else {
-            MasterController.buildNegativeResponse(activePlayer, responseContent, "You cannot select this worker!");
+            MasterController.buildNegativeResponse(activePlayer, ResponseContent.SELECT_WORKER, "You cannot select this worker!");
             return;
         }
+
 
         turnManager.setActiveWorker(workerFromRequest);
         gameState = PossibleGameState.WORKER_SELECTED;
         turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
-        MasterController.buildPositiveResponse(activePlayer, responseContent, "Worker Selected!");
+        MasterController.buildPositiveResponse(activePlayer, ResponseContent.SELECT_WORKER, "Worker Selected!");
         MasterController.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, turnManager.getActiveWorker());
-
     }
+
 
     /**
      * It handle the {@link MoveRequest} by a player that can be sent to Server after the {@link SelectWorkerRequest}
@@ -443,6 +420,28 @@ public class ActionManager {
             return true;
         } else
             return false;
+    }
+
+
+    /**
+     * It checks if the request is sent at the right moment
+     *
+     * @param content
+     * @return
+     */
+    private boolean wrongRequest(RequestContent content) {
+
+        switch (content) {
+
+            case SELECT_WORKER -> {
+                return gameState != PossibleGameState.START_ROUND && gameState != PossibleGameState.WORKER_SELECTED;
+            }
+
+            default -> {
+                return false;
+            }
+
+        }
     }
 
 

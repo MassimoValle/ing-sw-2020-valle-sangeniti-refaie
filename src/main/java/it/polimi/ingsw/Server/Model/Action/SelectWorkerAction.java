@@ -1,5 +1,8 @@
 package it.polimi.ingsw.Server.Model.Action;
 
+import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
@@ -9,12 +12,14 @@ import it.polimi.ingsw.Server.Model.Player.Worker;
  */
 public class SelectWorkerAction implements Action{
 
-    private Worker workerToSelect;
-    private Player player;
+    private final Worker workerToSelect;
+    private final Player player;
+    private final Power power;
 
-    public SelectWorkerAction(Worker workerToSelect, Player activePlayer) {
+    public SelectWorkerAction(Power power, Worker workerToSelect, Player activePlayer) {
         this.workerToSelect = workerToSelect;
         this.player = activePlayer;
+        this.power = power;
     }
 
     /**
@@ -24,7 +29,7 @@ public class SelectWorkerAction implements Action{
      */
     @Override
     public boolean isValid() {
-        return workerToSelect.getColor().equals(player.getColor());
+        return workerToSelect.getOwner().equals(player) && !power.isWorkerStuck(workerToSelect);
     }
 
     /**

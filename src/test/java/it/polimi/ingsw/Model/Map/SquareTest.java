@@ -6,6 +6,7 @@ import it.polimi.ingsw.Server.Model.Building.LevelOneBlock;
 import it.polimi.ingsw.Server.Model.Building.LevelThreeBlock;
 import it.polimi.ingsw.Server.Model.Building.LevelTwoBlock;
 import it.polimi.ingsw.Server.Model.Map.Square;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class SquareTest {
     public void getWorkerOnSquare(){
         assertNull(square.getWorkerOnSquare());
 
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(new Player("test"),0);
         square.setWorkerOn (worker1);
         assertEquals(worker1, square.getWorkerOnSquare());
 
@@ -37,14 +38,14 @@ public class SquareTest {
     @Test
     public void hasWorkerOnSquare(){
         assertFalse(square.hasWorkerOn());
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(new Player("test"),0);
         square.setWorkerOn (worker1);
         assertTrue(square.hasWorkerOn());
     }
 
     @Test
     public void checkIfBuilt() throws DomePresentException {
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(new Player("test"),0);
 
         assertEquals(0, square.getHeight());
         assertFalse(square.hasBeenBuiltOver());

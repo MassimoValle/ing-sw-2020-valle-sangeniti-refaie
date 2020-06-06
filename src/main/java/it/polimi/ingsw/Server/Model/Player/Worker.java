@@ -1,13 +1,12 @@
 package it.polimi.ingsw.Server.Model.Player;
 
-import javafx.scene.paint.Color;
-
 import java.util.List;
 
 public class Worker {
-    
-    //Numero del worker
+
     private int workersNumber;
+    private final Player owner;
+
 
 
     private ColorEnum color;
@@ -24,13 +23,18 @@ public class Worker {
     private List<Position> adjacentPosition;
 
 
-    public Worker(int workersNumber) {
+    public Worker(Player owner, int workersNumber) {
         this.height = 0;
         this.workerPosition = null;
         this.workersNumber = workersNumber;
         this.isBlocked = false;
         this.placed = false;
         this.selected = false;
+        this.owner = owner;
+    }
+
+    public Player getOwner() {
+        return owner;
     }
 
     public Position getWorkerPosition() {

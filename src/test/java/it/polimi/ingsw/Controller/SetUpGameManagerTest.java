@@ -103,7 +103,7 @@ public class SetUpGameManagerTest {
     public void placeWorkerRequest(){
 
         setUpGameManager.setSetupGameState(PossibleGameState.FILLING_BOARD);
-        Worker worker = new Worker(1);
+        Worker worker = new Worker(activePlayer, 1);
         worker.setColor(ColorEnum.RED);
         Position position = new Position(1, 1);
         Request request = new PlaceWorkerRequest(activePlayer.getPlayerName(), worker.getWorkersNumber(), position);
