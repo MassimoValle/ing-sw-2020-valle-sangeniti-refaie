@@ -7,6 +7,7 @@ import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Action.*;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.God.GodsPower.AtlasPower;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Outcome;
@@ -457,4 +458,6 @@ public class ActionManager {
     public ActionOutcome _getActionOutcome() {
         return actionOutcome;
     }
+
+    public Player getWinner(){ return this.winner;}
 }

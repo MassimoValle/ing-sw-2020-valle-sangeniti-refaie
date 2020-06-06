@@ -8,10 +8,13 @@ import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
 
 public class SetupGameUtilityClass {
 
@@ -182,9 +185,127 @@ public class SetupGameUtilityClass {
         sq33.setWorkerOn(w2pl2);
         w2pl2.setPlaced(true);
 
+        Square sq12 = masterController.getGameInstance().getGameMap().getSquare(new Position(1, 2));
+        sq12.addBlock(false);
+        sq12.addBlock(false);
+
+        Square sq01 = masterController.getGameInstance().getGameMap().getSquare(new Position(0, 1));
+        sq01.addBlock(false);
+        sq01.addBlock(false);
+        sq01.addBlock(false);
+
         masterController._getActionManager()._setGameState(PossibleGameState.START_ROUND);
         masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
         masterController._getTurnManager().nextTurn(masterController.getGameInstance().getPlayers().get(0));
+
+    }
+
+    public void setupCompleteTowers(MasterController masterController, int god1, int god2) throws DomePresentException {
+
+        this.masterController = masterController;
+
+        map = masterController.getGameInstance().getGameMap();
+        ArrayList<God> chosenGod = new ArrayList<>();
+        chosenGod.add(masterController.getGameInstance().getDeck().getGod(god1));
+        chosenGod.add(masterController.getGameInstance().getDeck().getGod(god2));
+        masterController.getGameInstance().setChosenGodsFromDeck(chosenGod);
+
+        //assegno i god ai rispettivi giocatori
+        masterController.getGameInstance().getPlayers().get(0).setPlayerGod(chosenGod.get(0));
+        masterController.getGameInstance().getChosenGodsFromDeck().get(0).setAssigned(true);
+        //game.getChosenGodsFromDeck().get(0).setAssigned(true);
+        masterController.getGameInstance().getPlayers().get(1).setPlayerGod(chosenGod.get(1));
+        masterController.getGameInstance().getChosenGodsFromDeck().get(1).setAssigned(true);
+
+
+        w1pl1 = masterController.getGameInstance().getPlayers().get(0).getPlayerWorkers().get(0);
+        Square sq00;
+
+        sq00 = masterController.getGameInstance().getGameMap().getSquare(new Position(0, 0));
+        w1pl1.setPosition(new Position(0, 0));
+
+
+        sq00.setWorkerOn(w1pl1);
+        w1pl1.setPlaced(true);
+
+
+        w2pl1 = masterController.getGameInstance().getPlayers().get(0).getPlayerWorkers().get(1);
+        Square sq04;
+
+
+        sq04 = masterController.getGameInstance().getGameMap().getSquare(new Position(0, 4));
+        sq04.addBlock(false);
+        sq04.addBlock(false);
+        sq04.addBlock(false);
+
+        w2pl1.setPosition(new Position(0, 4));
+
+
+        sq04.setWorkerOn(w2pl1);
+        w2pl1.setPlaced(true);
+
+
+
+        //giocatore 2 piazza il primo worker
+        w1pl2 = masterController.getGameInstance().getPlayers().get(1).getPlayerWorkers().get(0);
+        Square sq40;
+
+
+        sq40 = masterController.getGameInstance().getGameMap().getSquare(new Position(4, 0));
+        w1pl2.setPosition(new Position(4, 0));
+
+
+        sq40.setWorkerOn(w1pl2);
+        w1pl2.setPlaced(true);
+
+
+        //giocatore 2 piazza il seoondo worker
+        w2pl2 = masterController.getGameInstance().getPlayers().get(1).getPlayerWorkers().get(1);
+        Square sq44;
+
+
+        sq44 = masterController.getGameInstance().getGameMap().getSquare(new Position(4, 4));
+        sq44.addBlock(false);
+        sq44.addBlock(false);
+        sq44.addBlock(false);
+
+
+
+        w2pl2.setPosition(new Position(4, 4));
+
+
+        sq44.setWorkerOn(w2pl2);
+        w2pl2.setPlaced(true);
+
+        masterController._getActionManager()._setGameState(PossibleGameState.START_ROUND);
+        masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
+        masterController._getTurnManager().nextTurn(masterController.getGameInstance().getPlayers().get(0));
+
+        Square sq21 = masterController.getGameInstance().getGameMap().getSquare(new Position(2, 1));
+        sq21.addBlock(false);
+        sq21.addBlock(false);
+        sq21.addBlock(false);
+        sq21.addBlock(false);
+
+        Square sq31 = masterController.getGameInstance().getGameMap().getSquare(new Position(3, 1));
+        sq31.addBlock(false);
+        sq31.addBlock(false);
+        sq31.addBlock(false);
+        sq31.addBlock(false);
+
+        Square sq33 = masterController.getGameInstance().getGameMap().getSquare(new Position(3, 3));
+        sq33.addBlock(false);
+        sq33.addBlock(false);
+        sq33.addBlock(false);
+        sq33.addBlock(false);
+
+        Square sq22 = masterController.getGameInstance().getGameMap().getSquare(new Position(2, 2));
+        sq22.addBlock(false);
+        sq22.addBlock(false);
+        sq22.addBlock(false);
+        sq22.addBlock(false);
+
+
 
     }
 
@@ -199,21 +320,36 @@ public class SetupGameUtilityClass {
         MasterController.dispatcher(
                 new MoveRequest(pl, new Position(i,j))
         );
-        map.printBoard();
+
+        if(getOutcome() == ActionOutcome.NOT_DONE){}
+
+        else map.printBoard();
     }
 
     public void build(String pl, int i, int j) {
         MasterController.dispatcher(
                 new BuildRequest(pl, new Position(i,j))
         );
-        map.printBoard();
+
+        if(getOutcome() == ActionOutcome.NOT_DONE){}
+
+        else map.printBoard();
     }
 
     public void buildDome(String pl, int i, int j){
         MasterController.dispatcher(
                 new BuildDomeRequest(pl, new Position(i,j))
         );
-        map.printBoard();
+
+        if(getOutcome() == ActionOutcome.NOT_DONE){}
+
+        else map.printBoard();
+    }
+
+    public void powerButton(String pl){
+        MasterController.dispatcher((
+                new PowerButtonRequest(pl))
+        );
     }
 
     public void endTurn(String pl) {
@@ -237,4 +373,6 @@ public class SetupGameUtilityClass {
     public ActionOutcome getOutcome() {
         return masterController._getActionManager()._getActionOutcome();
     }
+
+    public Player getWinner(){return masterController._getActionManager().getWinner();}
 }

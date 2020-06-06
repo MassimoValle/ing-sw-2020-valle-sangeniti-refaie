@@ -22,7 +22,7 @@ public class PanPower extends Power {
 
         int a = squareWhereTheWorkerIs.getHeight();
         int b = squareWhereToMove.getHeight();
-        if ((b - a) > 1) {
+        if ((a-b) > 1) {
             if (outcome == ActionOutcome.DONE) {
                 return ActionOutcome.WINNING_MOVE;
             } else {
