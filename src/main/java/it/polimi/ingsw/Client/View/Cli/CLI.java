@@ -10,7 +10,7 @@ import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
-import it.polimi.ingsw.Server.Model.Player.Worker;
+import it.polimi.ingsw.Utility.Ansi;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -26,7 +26,7 @@ public class CLI extends ClientView {
 
     public CLI(){
         consoleIn = new Scanner(System.in);
-        consoleOut = new PrintStream(System.out, true);
+        consoleOut = new PrintStream(System.out);
 
     }
 
