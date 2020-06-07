@@ -1,6 +1,8 @@
 package it.polimi.ingsw.Server.Model.Player;
 
+import it.polimi.ingsw.Server.Model.Action.SelectWorkerAction;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -95,9 +97,7 @@ public class Player {
     //public String toString() { return "Player Name: " + this.playerName.toUpperCase(); }
 
     public boolean godAssigned() {
-        if (playerGod != null )
-            return true;
-        else return false;
+        return playerGod != null;
     }
 
     public boolean areWorkersPlaced() {
@@ -106,6 +106,24 @@ public class Player {
                 return false;
         }
         return true;
+    }
+
+    /**
+     * This method checks if the player cannot select any worker due to them being stuck
+     *
+     * @return true if all workers are stuck, false otherwise
+     */
+    public boolean areAllWorkersStuck() {
+        Power power = this.getPlayerGod().getGodPower();
+        int workersStuck = 0;
+
+        for (Worker worker : playerWorkers) {
+            SelectWorkerAction selectWorker = new SelectWorkerAction(power, worker, this);
+            if (!selectWorker.isValid())
+                workersStuck++;
+        }
+
+        return workersStuck == playerWorkers.size();
     }
 
     @Override

@@ -254,7 +254,7 @@ public class ClientManager {
                 case BUILD, BUILD_AGAIN -> handleBuildServerResponse((BuildServerResponse) serverResponse);
                 case END_BUILD ->handleEndBuildServerResponse((EndBuildServerResponse) serverResponse);
 
-                case PLAYER_WON -> playerWon((WonServerResponse) serverResponse);
+                case PLAYER_HAS_WON -> playerWon((WonServerResponse) serverResponse);
             }
         }
     }

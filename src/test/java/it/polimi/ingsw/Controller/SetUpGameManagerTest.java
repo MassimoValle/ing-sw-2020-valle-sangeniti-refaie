@@ -154,6 +154,7 @@ public class SetUpGameManagerTest {
         setUpGameManager.handleMessage(request1);
         assertEquals(game.getGameMap().getWorkerOnSquare(position1), workers.get(0));
 
+        //to change player's gods
         Request request2 = new PlaceWorkerRequest(activePlayer.getPlayerName(), workers.get(1).getWorkersNumber(), position2);
         setUpGameManager.handleMessage(request2);
         assertEquals(game.getGameMap().getWorkerOnSquare(position2), workers.get(1));
@@ -161,7 +162,7 @@ public class SetUpGameManagerTest {
         idx++;
     }
 
-    @Test
+    //da cambaire i god dei player
     public void placingWorkerFlow(){
 
         // player1

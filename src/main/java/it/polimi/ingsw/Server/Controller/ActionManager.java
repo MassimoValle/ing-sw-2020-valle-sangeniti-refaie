@@ -4,6 +4,7 @@ import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
 import it.polimi.ingsw.Network.Message.Enum.UpdateType;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.StartTurnServerRequest;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.LostServerResponse;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Action.*;
 import it.polimi.ingsw.Server.Model.Game;
@@ -380,9 +381,23 @@ public class ActionManager {
         gameState = PossibleGameState.START_ROUND;
         turnManager.updateTurnState(gameState);
 
+        if (nextPlayer.areAllWorkersStuck()) {
+            gameState = PossibleGameState.PLAYER_HAS_LOST;
+            LostServerResponse lostServerResponse = new LostServerResponse("You lost!");
+            gameInstance.putInChanges(nextPlayer, lostServerResponse);
+            playerHasLost(nextPlayer);
+            return;
+        }
+
         StartTurnServerRequest startTurnServerRequest = new StartTurnServerRequest();
         gameInstance.putInChanges(nextPlayer, startTurnServerRequest);
         MasterController.buildServerRequest(nextPlayer, ServerRequestContent.SELECT_WORKER, null);
+    }
+
+    private void playerHasLost(Player nextPlayer) {
+
+        //cosa deve succederer?
+
     }
 
     /**

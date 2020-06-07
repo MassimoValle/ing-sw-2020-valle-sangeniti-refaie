@@ -28,7 +28,8 @@ public enum ResponseContent {
     END_BUILD ("The player decides to stop from building"),
 
     END_TURN ("The player has finished his turn"),
-    PLAYER_WON ("The player has won"),
+    PLAYER_HAS_WON("The player has won"),
+    PLAYER_HAS_LOST ("The player has lost"),
 
     CHECK ("Not sure where this should be really used"),
     GAME_SERIALIZED ("...");

@@ -12,6 +12,7 @@ public enum PossibleGameState {
     WORKER_MOVED ("The player has moved, if he hasn't any extra abilities, now must build"),
     BUILT ("The player has built"),
     PLAYER_TURN_ENDING ("End of player turn"),
+    PLAYER_HAS_LOST ("Player has lost"),
     GAME_OVER ("Habemus Winner")
     ;
 
