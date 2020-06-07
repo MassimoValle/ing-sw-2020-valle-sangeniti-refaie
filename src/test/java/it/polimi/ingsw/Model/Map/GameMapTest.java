@@ -99,37 +99,6 @@ public class GameMapTest {
         assertEquals(worker1, gameMap.getWorkerOnSquare(pos1));
     }
 
-    @Test
-    public void workerIsStockTest() throws DomePresentException {
-        Worker worker1 = new Worker(new Player("test"),0);
-
-        worker1.setPosition(new Position(0,0));
-        worker1.setPlaced(true);
-        gameMap.getSquare(new Position(0,0)).setWorkerOn(worker1);
-
-        //let's place a dome around the worker
-        gameMap.getSquare(new Position(0,1)).addBlock(true);
-        gameMap.getSquare(new Position(1,1)).addBlock(true);
-        gameMap.getSquare(new Position(1,0)).addBlock(true);
-
-        assertEquals(0,gameMap.getReachableAdjacentPlaces(new Position(0,0)).size());
-        assertTrue(gameMap.isWorkerStuck(worker1));
-
-        //Now let's put another worker in pos(2,0)
-        Worker worker2 = new Worker(new Player("test"),0);
-
-        worker2.setPosition(new Position(2,0));
-        worker2.setPlaced(true);
-        gameMap.getSquare(new Position(2,0)).setWorkerOn(worker2);
-
-        assertEquals(3, gameMap.getReachableAdjacentPlaces(new Position(2,0)).size());
-        assertEquals(new Position(2,1), gameMap.getReachableAdjacentPlaces(new Position(2,0)).get(0));
-        assertEquals(new Position(3,1), gameMap.getReachableAdjacentPlaces(new Position(2,0)).get(1));
-        assertEquals(new Position(3,0), gameMap.getReachableAdjacentPlaces(new Position(2,0)).get(2));
-
-        assertFalse(gameMap.isWorkerStuck(worker2));
-    }
-
 
     @Test
     public void checkLegalPosition() {

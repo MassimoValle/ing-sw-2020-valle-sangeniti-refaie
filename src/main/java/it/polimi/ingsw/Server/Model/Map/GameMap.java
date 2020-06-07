@@ -147,30 +147,6 @@ public class GameMap {
 
 
     /**
-     * It checks if the {@link Worker worker} has no reachable places or in case he has than if he has adjacent places to build on
-     *
-     *
-     * @return boolean
-     */
-    public boolean isWorkerStuck(Worker worker) {
-        //TODO da implementare sul potere???? (es Apollo);
-        ArrayList<Position> placesWhereToMove;
-        placesWhereToMove = getReachableAdjacentPlaces(worker.getWorkerPosition());
-
-        if (placesWhereToMove.isEmpty()) return true;
-
-
-        for (Position position: placesWhereToMove ) {
-            ArrayList<Position> placesWhereYouCanBuildOn = getPlacesWhereYouCanBuildOn(position);
-            if (!placesWhereYouCanBuildOn.isEmpty()) return false;
-        }
-
-        return true;
-    }
-
-
-
-    /**
      * It check if there's at least one reachable adjacent square -1 height compared to the square given
      *
      * @param square square
@@ -186,6 +162,13 @@ public class GameMap {
         return false;
     }
 
+
+    /**
+     * It check if there's at least one reachable adjacent square with the same height compared to the square given
+     *
+     * @param square square
+     * @return true if there's at least one reachable adjacent square with the same height compared to the square given, false otherwise
+     */
     public boolean squareSameHeightAvailable(Square square) {
 
         for (Position pos : this.getReachableAdjacentPlaces(square.getPosition())) {

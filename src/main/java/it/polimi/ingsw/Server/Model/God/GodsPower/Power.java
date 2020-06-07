@@ -1,14 +1,11 @@
 package it.polimi.ingsw.Server.Model.God.GodsPower;
 
-import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
-import it.polimi.ingsw.Server.Model.Action.Action;
-import it.polimi.ingsw.Server.Model.Action.BuildAction;
-import it.polimi.ingsw.Server.Model.Action.BuildDomeAction;
-import it.polimi.ingsw.Server.Model.Action.MoveAction;
+import it.polimi.ingsw.Server.Model.Action.*;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.PowerType;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
@@ -32,6 +29,18 @@ public abstract class Power implements Serializable, GodsChecker {
 
     public String getPowerDescription() {
         return powerDescription;
+    }
+
+    public ActionOutcome selectWorker(Worker workerFromRequest, Player requestSender) {
+
+        Action selectWorkerAction = new SelectWorkerAction(this, workerFromRequest, requestSender);
+
+        if ( selectWorkerAction.isValid() ) {
+            selectWorkerAction.doAction();
+            return ActionOutcome.DONE;
+        } else
+            return ActionOutcome.NOT_DONE;
+
     }
 
     /**
@@ -81,6 +90,13 @@ public abstract class Power implements Serializable, GodsChecker {
         }
     }
 
+
+    /**
+     * It checks if the {@link Worker worker} has no reachable places or in case he has than if he has adjacent places to build on
+     *
+     *
+     * @return boolean
+     */
     public boolean isWorkerStuck(Worker worker) {
         GameMap gameMap = Game.getInstance().getGameMap();
 
@@ -158,4 +174,6 @@ public abstract class Power implements Serializable, GodsChecker {
         return powerDescription.equals(power.getPowerDescription()) &&
                 powerType.equals(power.getPowerType());
     }
+
+
 }
