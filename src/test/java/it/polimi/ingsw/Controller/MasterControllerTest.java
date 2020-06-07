@@ -47,6 +47,7 @@ public class MasterControllerTest {
         assertEquals(Dispatcher.SETUP_GAME, request.getMessageDispatcher());
 
         request = new Request(player1.getPlayerName(), Dispatcher.TURN, RequestContent.CHECK, MessageStatus.OK);
+        masterController._getActionManager()._setActivePlayer(player1);
         masterController.dispatcher(request);
         assertEquals(Dispatcher.TURN, request.getMessageDispatcher());
     }

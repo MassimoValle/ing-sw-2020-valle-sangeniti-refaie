@@ -257,14 +257,8 @@ public class SetUpGameManager {
 
                 // quando tutti hanno finito di piazzare i workers
                 if(playerLoop >= gameInstance.getPlayers().size()){
-                    //inizia il tuo turno
 
-                    StartTurnServerRequest startTurnServerRequest = new StartTurnServerRequest();
-                    gameInstance.putInChanges(activePlayer, startTurnServerRequest);
-
-                    MasterController.buildServerRequest(activePlayer, ServerRequestContent.SELECT_WORKER, null);
-                    setupGameState = PossibleGameState.START_ROUND;
-                    playerLoop = 0;
+                    MasterController.startFirstRound();
                     return;
                 }
 

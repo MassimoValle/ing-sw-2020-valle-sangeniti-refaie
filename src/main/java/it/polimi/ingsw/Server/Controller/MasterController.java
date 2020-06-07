@@ -8,6 +8,7 @@ import it.polimi.ingsw.Network.Message.Server.ServerRequests.*;
 import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateBoardMessage;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdatePlayersMessage;
+import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Player.Player;
@@ -43,6 +44,14 @@ public class MasterController {
         turnManager = new TurnManager(gameInstance.getPlayers());
         actionManager = new ActionManager(gameInstance, turnManager);
 
+    }
+
+    public static void startFirstRound() {
+        actionManager.startNextRound(true);
+    }
+
+    public static void gameOver() {
+        //e mo?
     }
 
 
@@ -213,7 +222,6 @@ public class MasterController {
         gameInstance.putInChanges(new Player("ALL"), updateMessage);
 
     }
-
 
     public static void sendPlayersInfo(){
 

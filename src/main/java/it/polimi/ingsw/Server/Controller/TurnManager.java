@@ -104,7 +104,7 @@ public class TurnManager {
     }
 
     /**
-     * Based on what the {@param gameState} is, then the {@link #playerState} is updated
+     * Based on what the gameState, then the {@link #playerState} is updated
      * and the turnOwnership given to the next {@link Player}
      *
      * @param gameState the actual game state
@@ -123,11 +123,9 @@ public class TurnManager {
                 giveTurnOwnership();
                 break;
 
-/*
             case START_ROUND: //Inizia il turno
                 updatePlayerState(PossiblePlayerState.STARTING_TURN);
-                giveTurnOwnership();
-                break;*/
+                break;
 
             case WORKER_SELECTED:
                 updatePlayerState(PossiblePlayerState.WORKER_SELECTED);

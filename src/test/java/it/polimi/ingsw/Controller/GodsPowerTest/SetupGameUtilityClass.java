@@ -108,6 +108,7 @@ public class SetupGameUtilityClass {
 
         masterController._getActionManager()._setGameState(PossibleGameState.START_ROUND);
         masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
+        masterController._getActionManager()._setActivePlayer(masterController.getGameInstance().getPlayers().get(0));
         masterController._getTurnManager().nextTurn(masterController.getGameInstance().getPlayers().get(0));
 
     }
@@ -196,6 +197,7 @@ public class SetupGameUtilityClass {
 
         masterController._getActionManager()._setGameState(PossibleGameState.START_ROUND);
         masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
+        masterController._getActionManager()._setActivePlayer(masterController.getGameInstance().getPlayers().get(0));
         masterController._getTurnManager().nextTurn(masterController.getGameInstance().getPlayers().get(0));
 
     }
@@ -279,6 +281,7 @@ public class SetupGameUtilityClass {
 
         masterController._getActionManager()._setGameState(PossibleGameState.START_ROUND);
         masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
+        masterController._getActionManager()._setActivePlayer(masterController.getGameInstance().getPlayers().get(0));
         masterController._getTurnManager().nextTurn(masterController.getGameInstance().getPlayers().get(0));
 
         Square sq21 = masterController.getGameInstance().getGameMap().getSquare(new Position(2, 1));
