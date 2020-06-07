@@ -1,6 +1,6 @@
 package it.polimi.ingsw.Server.Model.Action;
 
-import it.polimi.ingsw.Client.Model.CLIclientMap;
+import it.polimi.ingsw.Client.Model.Map.CLIclientMap;
 import it.polimi.ingsw.Exceptions.PositionOutsideBoardException;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.GodsPower.MinotaurPower;

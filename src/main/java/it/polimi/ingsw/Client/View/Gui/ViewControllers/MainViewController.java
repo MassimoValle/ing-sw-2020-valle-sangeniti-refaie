@@ -2,8 +2,8 @@ package it.polimi.ingsw.Client.View.Gui.ViewControllers;
 
 import it.polimi.ingsw.Client.GUImain;
 import it.polimi.ingsw.Client.Model.BabyGame;
-import it.polimi.ingsw.Client.Model.GUImap;
-import it.polimi.ingsw.Client.Model.PumpedSquare;
+import it.polimi.ingsw.Client.Model.Map.GUImap;
+import it.polimi.ingsw.Client.Model.Map.PumpedSquare;
 import it.polimi.ingsw.Client.View.Gui.ParameterListener;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
@@ -12,7 +12,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -63,7 +62,7 @@ public class MainViewController implements Initializable {
 
 
 
-    GUImap guImap = (GUImap) BabyGame.getInstance().getClientMap();
+    GUImap guiMap = (GUImap) BabyGame.getInstance().getClientMap();
     private Set<Player> players;
 
     ParameterListener parameterListener = ParameterListener.getInstance();
@@ -77,7 +76,7 @@ public class MainViewController implements Initializable {
             for (int col = 0; col < 5; col++) {
 
                 AnchorPane anchorPane = new AnchorPane();
-                ImageView imageView = ((PumpedSquare)guImap.getSquare(row, col)).getImg();
+                ImageView imageView = ((PumpedSquare) guiMap.getSquare(row, col)).getImg();
 
                 ImageViewPane imageViewPane = new ImageViewPane(imageView);
 
@@ -109,6 +108,7 @@ public class MainViewController implements Initializable {
 
         }
     }
+
 
     public void setPlayers(Set<Player> playerSet){
         this.players = playerSet;

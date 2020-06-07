@@ -1,6 +1,8 @@
 package it.polimi.ingsw.Client.Model;
 
 import it.polimi.ingsw.Client.Controller.ClientManager;
+import it.polimi.ingsw.Client.Model.Map.CLIclientMap;
+import it.polimi.ingsw.Client.Model.Map.GUImap;
 import it.polimi.ingsw.Client.View.Gui.GUI;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdatePlayersMessage;
 import it.polimi.ingsw.Server.Model.Player.Player;

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.Client.View.Gui.ViewControllers;
 
-import it.polimi.ingsw.Client.Model.PumpedDeck;
-import it.polimi.ingsw.Client.Model.PumpedGod;
+import it.polimi.ingsw.Client.Model.Gods.PumpedDeck;
+import it.polimi.ingsw.Client.Model.Gods.PumpedGod;
 import it.polimi.ingsw.Client.View.Gui.ParameterListener;
 import it.polimi.ingsw.Server.Model.God.God;
 import javafx.application.Platform;

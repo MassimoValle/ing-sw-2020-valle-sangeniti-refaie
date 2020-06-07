@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Client.Model;
+package it.polimi.ingsw.Client.Model.Map;
 
 import it.polimi.ingsw.Server.Model.Action.*;
 import it.polimi.ingsw.Server.Model.God.GodsPower.ApolloPower;

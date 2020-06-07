@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Client.Model;
+package it.polimi.ingsw.Client.Model.Gods;
 
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;

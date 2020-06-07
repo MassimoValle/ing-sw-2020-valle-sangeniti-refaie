@@ -1,6 +1,5 @@
 package it.polimi.ingsw.Server.Model.Building;
 
-import it.polimi.ingsw.Server.Model.Player.Position;
 
 /**
  * A lvl1 block.
@@ -8,7 +7,6 @@ import it.polimi.ingsw.Server.Model.Player.Position;
 public class LevelOneBlock extends Block {
 
 
-    public LevelOneBlock(){
-        // png
-    }
+    public LevelOneBlock(){ }
+
 }

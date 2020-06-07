@@ -1,6 +1,5 @@
-package it.polimi.ingsw.Client.Model;
+package it.polimi.ingsw.Client.Model.Map;
 
-import it.polimi.ingsw.Server.Model.Map.Square;
 import javafx.scene.image.Image;
 
 public class GUImap extends CLIclientMap {

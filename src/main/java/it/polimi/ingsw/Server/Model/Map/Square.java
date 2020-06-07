@@ -12,12 +12,12 @@ import java.util.ArrayList;
 
 public class Square {
 
-    private final int row;
-    private final int column;
+    protected final int row;
+    protected final int column;
 
     //To keep trace of worker is on the square
-    private Worker workerOnSquare;
-    private ArrayList<Block> tower;
+    protected Worker workerOnSquare;
+    protected ArrayList<Block> tower;
 
 
 
