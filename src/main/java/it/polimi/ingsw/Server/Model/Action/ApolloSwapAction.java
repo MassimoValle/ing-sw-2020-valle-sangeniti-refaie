@@ -40,8 +40,9 @@ public class ApolloSwapAction extends MoveAction {
         Worker opponentWorker = map.getWorkerOnSquare(opponentWorkerPosition);
         int heightDifference = map.getDifferenceInAltitude(apolloStartingSquare.getPosition(), opponentWorkerPosition);
         ArrayList<Position> adjacent = apolloStartingSquare.getPosition().getAdjacentPlaces();
+        ArrayList<Position> buildable = map.getPlacesWhereYouCanBuildOn(opponentWorkerPosition);
 
-        return heightDifference >= -1 && adjacent.contains(opponentWorkerPosition) && !super.godsPowerActive(apolloPower) && !apolloPower.isWorkerStuck(opponentWorker);
+        return heightDifference >= -1 && adjacent.contains(opponentWorkerPosition) && !super.godsPowerActive(apolloPower) && !apolloPower.isWorkerStuck(opponentWorker) && !buildable.isEmpty();
     }
 
     public boolean clientValidation(GameMap clientMap) {

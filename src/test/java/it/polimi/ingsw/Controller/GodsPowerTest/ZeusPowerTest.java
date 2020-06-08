@@ -1,23 +1,14 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
-import it.polimi.ingsw.Network.Message.ClientRequests.BuildRequest;
-import it.polimi.ingsw.Network.Message.ClientRequests.EndTurnRequest;
-import it.polimi.ingsw.Network.Message.ClientRequests.MoveRequest;
-import it.polimi.ingsw.Network.Message.ClientRequests.SelectWorkerRequest;
-import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Game;
-import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
-import it.polimi.ingsw.Server.Model.Player.Worker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
 
 
 import static org.junit.Assert.*;
@@ -64,7 +55,7 @@ public class ZeusPowerTest {
         setupUtility.move(pl1, 2,1);
         setupUtility.build(pl1,2,1);
 
-        assertEquals( new Position(2,1) ,player1.getPlayerWorkers().get(0).getWorkerPosition());
+        assertEquals( new Position(2,1) ,player1.getPlayerWorkers().get(0).getPosition());
         assertEquals(1, game.getGameMap().getSquare(2,1).getHeight());
         assertTrue(game.getGameMap().getSquare(2,1).hasBeenBuiltOver());
 
@@ -87,7 +78,7 @@ public class ZeusPowerTest {
         setupUtility.move(pl1, 2,4);
 
 
-        assertEquals( new Position(2,4) ,player1.getPlayerWorkers().get(1).getWorkerPosition());
+        assertEquals( new Position(2,4) ,player1.getPlayerWorkers().get(1).getPosition());
         assertEquals(3, game.getGameMap().getSquare(2,4).getHeight());
         assertFalse(game.getGameMap().getSquare(2,4).hasDome());
 
@@ -96,7 +87,7 @@ public class ZeusPowerTest {
         setupUtility.build(pl1,2,4);
 
 
-        assertEquals( new Position(2,4) ,player1.getPlayerWorkers().get(1).getWorkerPosition());
+        assertEquals( new Position(2,4) ,player1.getPlayerWorkers().get(1).getPosition());
         assertEquals(3, game.getGameMap().getSquare(2,4).getHeight());
         assertFalse(game.getGameMap().getSquare(2,4).hasDome());
 

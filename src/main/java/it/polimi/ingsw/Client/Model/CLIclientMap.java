@@ -10,8 +10,6 @@ import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
-import java.util.Set;
-
 public class CLIclientMap extends GameMap {
 
     public void placeUpdate(Player player, Integer workerIndex, Position position){
@@ -35,7 +33,7 @@ public class CLIclientMap extends GameMap {
 
     private void moveWorker(Worker worker, Position positionWhereToMove, Power power){
 
-        Square startingSquare = getSquare(worker.getWorkerPosition());
+        Square startingSquare = getSquare(worker.getPosition());
         Square squareWhereToMove = getSquare(positionWhereToMove);
         Worker workerOnSquareWhereToMove = null;
 
@@ -67,7 +65,7 @@ public class CLIclientMap extends GameMap {
 
     public void buildUpdate(Player player, Integer workerIndex, Position position, boolean domePresent) {
 
-        Square startingSquare = getSquare(player.getPlayerWorkers().get(workerIndex).getWorkerPosition());
+        Square startingSquare = getSquare(player.getPlayerWorkers().get(workerIndex).getPosition());
         Square squareWhereToBuildOn = getSquare(position);
 
         if (domePresent) {

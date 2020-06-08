@@ -8,6 +8,7 @@ import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class ArtemisPower extends Power implements Serializable {
 
@@ -28,7 +29,7 @@ public class ArtemisPower extends Power implements Serializable {
 
         if (startingPlace == null) {
             outcome = super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
-            if (outcome == ActionOutcome.DONE && hasNewMoveAvailable(positionWhereToMove)) {
+            if (outcome == ActionOutcome.DONE && hasNewMoveAvailable(squareWhereTheWorkerIs.getPosition(), positionWhereToMove)) {
                 firstMove = false;
                 startingPlace = squareWhereTheWorkerIs;
                 return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
@@ -47,10 +48,20 @@ public class ArtemisPower extends Power implements Serializable {
 
     }
 
-    private boolean hasNewMoveAvailable(Position pos) {
+    private boolean hasNewMoveAvailable(Position initPos, Position newPos) {
         GameMap map = Game.getInstance().getGameMap();
 
-        return map.getReachableAdjacentPlaces(pos).size() > 1;
+        ArrayList<Position> reachables = (ArrayList<Position>) map.getReachableAdjacentPlaces(newPos);
+        reachables.remove(initPos);
+
+        if (map.forcedToMoveUp(reachables, newPos) && athenaPowerActivated())
+            return false;
+
+        if (!reachables.isEmpty())
+            return true;
+        else
+            return false;
+
     }
 
     @Override

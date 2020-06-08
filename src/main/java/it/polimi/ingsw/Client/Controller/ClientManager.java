@@ -422,7 +422,7 @@ public class ClientManager {
 
     private void moveWorker(MoveWorkerServerRequest serverRequest){
 
-        ArrayList<Position> nearlyPositionsValid = me.getPlayerWorkers().get(workerSelected).getWorkerPosition().getAdjacentPlaces();
+        ArrayList<Position> nearlyPositionsValid = me.getPlayerWorkers().get(workerSelected).getPosition().getAdjacentPlaces();
 
 
         Position position = clientView.moveWorker(nearlyPositionsValid);
@@ -449,7 +449,7 @@ public class ClientManager {
 
     private void build(BuildServerRequest serverRequest) {
 
-        Position myWorkerPosition = me.getPlayerWorkers().get(workerSelected).getWorkerPosition();
+        Position myWorkerPosition = me.getPlayerWorkers().get(workerSelected).getPosition();
         ArrayList<Position> nearlyPositionsValid = myWorkerPosition.getAdjacentPlaces();
         nearlyPositionsValid.add(myWorkerPosition);
 

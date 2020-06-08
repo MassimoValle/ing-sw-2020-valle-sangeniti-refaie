@@ -1,16 +1,12 @@
 package it.polimi.ingsw.Server.Controller;
 
-import it.polimi.ingsw.Network.Message.ClientRequests.ChoseGodsRequest;
-import it.polimi.ingsw.Network.Message.ClientRequests.PowerButtonRequest;
 import it.polimi.ingsw.Network.Message.Enum.UpdateType;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.*;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.*;
 import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdateBoardMessage;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdatePlayersMessage;
-import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Game;
-import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
 import it.polimi.ingsw.Network.Message.Enum.ResponseContent;
@@ -20,8 +16,6 @@ import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static it.polimi.ingsw.Network.Message.Enum.ResponseContent.MOVE_WORKER_AGAIN;
 
 
 public class MasterController {
@@ -94,14 +88,14 @@ public class MasterController {
                 }
                 case MOVE_WORKER -> {
 
-                    List<Position> reachablePositions = gameInstance.getGameMap().getReachableAdjacentPlaces(activeWorker.getWorkerPosition());
+                    List<Position> reachablePositions = gameInstance.getGameMap().getReachableAdjacentPlaces(activeWorker.getPosition());
 
                     ServerRequest moveWorkerServerRequest = new MoveWorkerServerRequest(reachablePositions);
                     gameInstance.putInChanges(player, moveWorkerServerRequest);
                 }
                 case BUILD -> {
 
-                    List<Position> buildableSquares = gameInstance.getGameMap().getPlacesWhereYouCanBuildOn(activeWorker.getWorkerPosition());
+                    List<Position> buildableSquares = gameInstance.getGameMap().getPlacesWhereYouCanBuildOn(activeWorker.getPosition());
 
                     ServerRequest buildServerRequest = new BuildServerRequest(buildableSquares);
                     gameInstance.putInChanges(player, buildServerRequest);
@@ -159,8 +153,11 @@ public class MasterController {
                             new PlaceWorkerServerResponse(status, gameManagerSays));
 
             case SELECT_WORKER -> {
-
-                int workerIndex = actionManager.getTurnManager().getActiveWorker().getWorkersNumber() + 1;
+                int workerIndex;
+                if (status == MessageStatus.OK)
+                    workerIndex = actionManager.getTurnManager().getActiveWorker().getNumber() + 1;
+                else
+                    workerIndex = -1;
                 gameInstance.putInChanges(player,
                         new SelectWorkerServerResponse(status, gameManagerSays, workerIndex)
                 ); //in caso di risposta NEGTIVA il workerIndex non è significativo

@@ -1,9 +1,11 @@
 package it.polimi.ingsw.Server.Model.Map;
 
 
+import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -276,7 +278,23 @@ public class GameMap {
 
     public void removePlayerWorkers(Player playerToRemove) {
         for (Worker worker : playerToRemove.getPlayerWorkers()) {
-            this.getSquare(worker.getWorkerPosition()).freeSquare();
+            this.getSquare(worker.getPosition()).freeSquare();
         }
+    }
+
+    /**
+     * It checks if the worker starting from the position given can only move up
+     *
+     * @param position the position
+     * @return true if the worker can only move up, false otherwise;
+     */
+    public boolean forcedToMoveUp( List<Position> reachables, Position startingPosition) {
+
+        for (Position pos : reachables) {
+            if ( getSquare(pos).getHeight() <= getSquare(startingPosition).getHeight() )
+                return false;
+        }
+
+        return true;
     }
 }

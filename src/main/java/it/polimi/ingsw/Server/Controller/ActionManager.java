@@ -178,7 +178,7 @@ public class ActionManager {
         Worker activeWorker = turnManager.getActiveWorker();
         Position positionWhereToMove = request.getSenderMovePosition();
         God playerGod = activePlayer.getPlayerGod();
-        Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getWorkerPosition());
+        Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getPosition());
         Square squareWhereToMove = gameInstance.getGameMap().getSquare(positionWhereToMove);
 
         actionOutcome = playerGod.getGodPower().move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
@@ -191,7 +191,7 @@ public class ActionManager {
 
         //L'azione è stata eseguita quindi l'aggiungo alla lista nel turn manager e informo i client
         turnManager.addActionPerformed(new MoveAction(playerGod.getGodPower(), activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove));
-        MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.MOVE, positionWhereToMove, activeWorker.getWorkersNumber(), false);
+        MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.MOVE, positionWhereToMove, activeWorker.getNumber(), false);
 
         if (winningMove()) {
             gameEndingPhase();
@@ -258,7 +258,7 @@ public class ActionManager {
         God playerGod = activePlayer.getPlayerGod();
         Position positionWhereToBuild = request.getPositionWhereToBuild();
         Square squareWhereToBuild = gameInstance.getGameMap().getSquare(positionWhereToBuild);
-        Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getWorkerPosition());
+        Square squareWhereTheWorkerIs = gameInstance.getGameMap().getSquare(activeWorker.getPosition());
 
         if (request instanceof BuildDomeRequest && activePlayer.getPlayerGod().is("Atlas"))
             actionOutcome = playerGod.getGodPower().buildDome(squareWhereTheWorkerIs, squareWhereToBuild);
@@ -276,7 +276,7 @@ public class ActionManager {
         else
             turnManager.addActionPerformed(new BuildAction(squareWhereTheWorkerIs, squareWhereToBuild));
 
-        MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.BUILD, positionWhereToBuild, activeWorker.getWorkersNumber(), request instanceof BuildDomeRequest);
+        MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.BUILD, positionWhereToBuild, activeWorker.getNumber(), request instanceof BuildDomeRequest);
 
         //vado a contrllare se con questa mossa un qualsiasi giocatore con qualche potere particolare ha vinto
         if (someoneHasWonAfterBuilding(activePlayer)) {

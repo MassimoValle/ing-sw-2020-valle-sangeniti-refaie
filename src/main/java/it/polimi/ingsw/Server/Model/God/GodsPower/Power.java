@@ -11,7 +11,6 @@ import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Power implements Serializable, GodsChecker {
 
@@ -95,25 +94,28 @@ public abstract class Power implements Serializable, GodsChecker {
     /**
      * It checks if the {@link Worker worker} has no reachable places
      *
-     *
+     * @param worker the worker
      * @return true if worker is stuck, false otherwise
      */
     public boolean isWorkerStuck(Worker worker) {
         GameMap map = Game.getInstance().getGameMap();
-        ArrayList<Position> reachable = (ArrayList<Position>) map.getReachableAdjacentPlaces(worker.getWorkerPosition());
+        ArrayList<Position> reachable = (ArrayList<Position>) map.getReachableAdjacentPlaces(worker.getPosition());
 
-        //if (Game.getInstance().checkGodPresence("Athena") && ath))
+        if (!reachable.isEmpty() && map.forcedToMoveUp(reachable, worker.getPosition()) && athenaPowerActivated())
+            return true;
+
+
 
         return reachable.isEmpty();
-/*
-        for (Position pos : reachable) {
-            if (!map.getSquare(pos).hasWorkerOn())
-                return false;
-        }
-
-        return true;*/
     }
 
+    protected boolean athenaPowerActivated() {
+        for (Power power : Game.getInstance().getPowersInGame()) {
+            if (power instanceof AthenaPower && ((AthenaPower) power).hasGoneUp())
+                return true;
+        }
+        return false;
+    }
 
 
     @Override

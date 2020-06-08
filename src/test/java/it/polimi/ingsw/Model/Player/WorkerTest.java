@@ -23,16 +23,16 @@ public class WorkerTest {
     public void checkWorkersPositionAndNumber() {
 
         Worker worker1 = new Worker(new Player("test"), 0);
-        assertEquals(0, worker1.getWorkersNumber());
+        assertEquals(0, worker1.getNumber());
 
         worker1.setPosition(new Position(0,0));
-        assertEquals(new Position(0,0), worker1.getWorkerPosition());
+        assertEquals(new Position(0,0), worker1.getPosition());
 
         Worker worker2 = new Worker(new Player("test"),1);
-        assertEquals(1, worker2.getWorkersNumber());
+        assertEquals(1, worker2.getNumber());
 
         worker2.setPosition(new Position(0,1));
-        assertEquals(new Position(0,1), worker2.getWorkerPosition());
+        assertEquals(new Position(0,1), worker2.getPosition());
     }
 
     @Test

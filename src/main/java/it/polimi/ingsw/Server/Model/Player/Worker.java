@@ -37,11 +37,11 @@ public class Worker {
         return owner;
     }
 
-    public Position getWorkerPosition() {
+    public Position getPosition() {
         return workerPosition;
     }
 
-    public int getWorkersNumber() {
+    public int getNumber() {
         return workersNumber;
     }
 
