@@ -90,4 +90,8 @@ public class Worker {
         return "\nWorker " + (workersNumber+1)  + " si trova in " + workerPosition;
     }
 
+    public void remove() {
+        this.setPosition(null);
+        this.placed = false;
+    }
 }

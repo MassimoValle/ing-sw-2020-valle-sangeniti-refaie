@@ -9,6 +9,7 @@ import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PrometheusPower extends Power implements Serializable {
 
@@ -41,7 +42,7 @@ public class PrometheusPower extends Power implements Serializable {
     public boolean canBuildBeforeMoving(Worker workerSelected) {
         GameMap gameMap = Game.getInstance().getGameMap();
 
-        ArrayList<Position> availablePosition = gameMap.getReachableAdjacentPlaces(workerSelected.getWorkerPosition());
+        List<Position> availablePosition = gameMap.getReachableAdjacentPlaces(workerSelected.getWorkerPosition());
         Square workerSquare = gameMap.getSquare(workerSelected.getWorkerPosition());
 
 

@@ -114,6 +114,8 @@ public interface ClientInterface {
     void doNothing();
 
     void youWon();
+    void iLost();
+    void someoneHasLost(String loser);
 
     void youLose(String winner);
 

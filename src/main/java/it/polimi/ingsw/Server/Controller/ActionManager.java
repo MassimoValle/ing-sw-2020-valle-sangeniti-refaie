@@ -5,6 +5,7 @@ import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
 import it.polimi.ingsw.Network.Message.Enum.UpdateType;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.StartTurnServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.LostServerResponse;
+import it.polimi.ingsw.Network.Message.Server.ServerResponse.WonServerResponse;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Action.*;
 import it.polimi.ingsw.Server.Model.Game;
@@ -370,6 +371,8 @@ public class ActionManager {
 
         if (firstRound) { //scelta implementativa, il giocatore ad iniziare sarà sempre il successivo al godlikePlayer (cioè il player #0)
             activePlayer = gameInstance.getPlayers().get(1);
+        } else if (gameState == PossibleGameState.PLAYER_HAS_LOST) {
+            activePlayer = turnManager.getActivePlayer();
         } else {
             turnManager.updateTurnState(gameState);
             activePlayer = turnManager.getActivePlayer();
@@ -378,25 +381,41 @@ public class ActionManager {
 
         Player nextPlayer = activePlayer;
 
+
         gameState = PossibleGameState.START_ROUND;
         turnManager.updateTurnState(gameState);
+        StartTurnServerRequest startTurnServerRequest = new StartTurnServerRequest();
+        gameInstance.putInChanges(nextPlayer, startTurnServerRequest);
 
-        if (nextPlayer.areAllWorkersStuck()) {
+        //Se era una partita a due giocatori e uno si ritrova con i worker bloccati
+        if (turnManager.getInGamePlayers().size() == 1) {
+            WonServerResponse wonServerResponse = new WonServerResponse("You won!");
+            gameInstance.putInChanges(nextPlayer, wonServerResponse);
+            gameEndingPhase();
+            return;
+        }
+
+        if (nextPlayer.allWorkersStuck()) {
             gameState = PossibleGameState.PLAYER_HAS_LOST;
             LostServerResponse lostServerResponse = new LostServerResponse("You lost!");
             gameInstance.putInChanges(nextPlayer, lostServerResponse);
             playerHasLost(nextPlayer);
+            startNextRound(false);
             return;
         }
 
-        StartTurnServerRequest startTurnServerRequest = new StartTurnServerRequest();
-        gameInstance.putInChanges(nextPlayer, startTurnServerRequest);
         MasterController.buildServerRequest(nextPlayer, ServerRequestContent.SELECT_WORKER, null);
     }
 
     private void playerHasLost(Player nextPlayer) {
 
-        //cosa deve succederer?
+        gameInstance.getGameMap().removePlayerWorkers(nextPlayer);
+        nextPlayer.removeWorkers();
+
+        //devo rimuovere il giocatore dal turn manager
+        turnManager.updateTurnState(gameState);
+        turnManager.getInGamePlayers().remove(nextPlayer);
+        nextPlayer.setEliminated(true);
 
     }
 
@@ -465,7 +484,6 @@ public class ActionManager {
 
             case END_MOVE -> {
                 return gameState != PossibleGameState.WORKER_MOVED && (gameState != PossibleGameState.WORKER_SELECTED || !turnManager.activePlayerHasMoved());
-                //gameState != PossibleGameState.WORKER_SELECTED && gameState != PossibleGameState.WORKER_MOVED;
             }
 
             case BUILD -> {
@@ -520,6 +538,10 @@ public class ActionManager {
 
     public ActionOutcome _getActionOutcome() {
         return actionOutcome;
+    }
+
+    public PossibleGameState _getGameState() {
+        return gameState;
     }
 
     public Player getWinner(){ return this.winner;}

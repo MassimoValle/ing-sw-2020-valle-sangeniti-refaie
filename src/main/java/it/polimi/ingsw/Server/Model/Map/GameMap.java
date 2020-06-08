@@ -1,10 +1,12 @@
 package it.polimi.ingsw.Server.Model.Map;
 
 
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameMap {
 
@@ -91,7 +93,7 @@ public class GameMap {
      * @param from where you are right now
      * @return the reachable adjacent places
      */
-    public ArrayList<Position> getReachableAdjacentPlaces(Position from) {
+    public List<Position> getReachableAdjacentPlaces(Position from) {
        ArrayList<Position> adjacentPlaces = from.getAdjacentPlaces();
 
        ArrayList<Position> reachablePlaces = new ArrayList<>();
@@ -272,4 +274,9 @@ public class GameMap {
         return fullSquares >= 5;
     }
 
+    public void removePlayerWorkers(Player playerToRemove) {
+        for (Worker worker : playerToRemove.getPlayerWorkers()) {
+            this.getSquare(worker.getWorkerPosition()).freeSquare();
+        }
+    }
 }

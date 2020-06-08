@@ -16,6 +16,8 @@ public class Player {
     private int numWorker = 2;                  /** Number of workers per player */
     private ColorEnum color;
 
+    private boolean eliminated = false;
+
     //private LastTurnAction[] lastTurnActions;
 
 
@@ -113,7 +115,7 @@ public class Player {
      *
      * @return true if all workers are stuck, false otherwise
      */
-    public boolean areAllWorkersStuck() {
+    public boolean allWorkersStuck() {
         Power power = this.getPlayerGod().getGodPower();
         int workersStuck = 0;
 
@@ -168,5 +170,18 @@ public class Player {
     }
 
 
+    public void removeWorkers() {
+        for (Worker worker : playerWorkers) {
+            worker.remove();
+        }
+    }
+
+    public boolean isEliminated() {
+        return this.eliminated;
+    }
+
+    public void setEliminated(boolean eliminated) {
+        this.eliminated = eliminated;
+    }
 }
 

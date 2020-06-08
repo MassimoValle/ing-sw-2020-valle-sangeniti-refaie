@@ -79,6 +79,15 @@ public class Outcome {
         return false;
     }
 
+    private boolean athenaIsPresent() {
+        for(Power power : powersInGame ) {
+            if (power instanceof AthenaPower)
+                return true;
+        }
+        return false;
+    }
+
+
     private boolean chronusIsPresent() {
         for(Power power : powersInGame ) {
             if (power instanceof ChronusPower)

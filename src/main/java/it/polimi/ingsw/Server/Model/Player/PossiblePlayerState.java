@@ -12,4 +12,5 @@ public enum PossiblePlayerState {
     WORKER_MOVED,
     BUILT, 
     ENDING_TURN,
+    GAME_OVER,
 }

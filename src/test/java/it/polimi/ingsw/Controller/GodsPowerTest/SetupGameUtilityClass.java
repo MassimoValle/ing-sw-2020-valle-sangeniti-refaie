@@ -22,6 +22,9 @@ public class SetupGameUtilityClass {
     protected Worker w2pl1;
     protected Worker w1pl2;
     protected Worker w2pl2;
+    protected Worker w1pl3;
+    protected Worker w2pl3;
+
     protected GameMap map;
 
     protected MasterController masterController;
@@ -110,6 +113,129 @@ public class SetupGameUtilityClass {
         masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
         masterController._getActionManager()._setActivePlayer(masterController.getGameInstance().getPlayers().get(0));
         masterController._getTurnManager().nextTurn(masterController.getGameInstance().getPlayers().get(0));
+
+    }
+
+    public void setup3players(MasterController masterController, int god1, int god2, int god3, boolean closeWorkers) {
+        this.masterController = masterController;
+
+        map = masterController.getGameInstance().getGameMap();
+        ArrayList<God> chosenGod = new ArrayList<>();
+        chosenGod.add(masterController.getGameInstance().getDeck().getGod(god1));
+        chosenGod.add(masterController.getGameInstance().getDeck().getGod(god2));
+        chosenGod.add(masterController.getGameInstance().getDeck().getGod(god3));
+        masterController.getGameInstance().setChosenGodsFromDeck(chosenGod);
+
+        //assegno i god ai rispettivi giocatori
+        masterController.getGameInstance().getPlayers().get(0).setPlayerGod(chosenGod.get(0));
+        masterController.getGameInstance().getChosenGodsFromDeck().get(0).setAssigned(true);
+
+        masterController.getGameInstance().getPlayers().get(1).setPlayerGod(chosenGod.get(1));
+        masterController.getGameInstance().getChosenGodsFromDeck().get(1).setAssigned(true);
+
+        masterController.getGameInstance().getPlayers().get(2).setPlayerGod(chosenGod.get(2));
+        masterController.getGameInstance().getChosenGodsFromDeck().get(2).setAssigned(true);
+
+
+        w1pl1 = masterController.getGameInstance().getPlayers().get(0).getPlayerWorkers().get(0);
+        Square sq22;
+
+        if (closeWorkers) {
+            sq22 = masterController.getGameInstance().getGameMap().getSquare(new Position(2, 2));
+            w1pl1.setPosition(new Position(2, 2));
+        } else {
+            sq22 = masterController.getGameInstance().getGameMap().getSquare(new Position(0, 0));
+            w1pl1.setPosition(new Position(0, 0));
+        }
+
+        sq22.setWorkerOn(w1pl1);
+        w1pl1.setPlaced(true);
+
+
+        w2pl1 = masterController.getGameInstance().getPlayers().get(0).getPlayerWorkers().get(1);
+        Square sq23;
+
+        if (closeWorkers) {
+            sq23 = masterController.getGameInstance().getGameMap().getSquare(new Position(2, 3));
+            w2pl1.setPosition(new Position(2, 3));
+        } else {
+            sq23 = masterController.getGameInstance().getGameMap().getSquare(new Position(0, 4));
+            w2pl1.setPosition(new Position(0, 4));
+        }
+
+        sq23.setWorkerOn(w2pl1);
+        w2pl1.setPlaced(true);
+
+
+
+        //giocatore 2 piazza il primo worker
+        w1pl2 = masterController.getGameInstance().getPlayers().get(1).getPlayerWorkers().get(0);
+        Square sq32;
+
+        if (closeWorkers) {
+            sq32 = masterController.getGameInstance().getGameMap().getSquare(new Position(3, 2));
+            w1pl2.setPosition(new Position(3, 2));
+        } else {
+            sq32 = masterController.getGameInstance().getGameMap().getSquare(new Position(4, 0));
+            w1pl2.setPosition(new Position(4, 0));
+        }
+
+        sq32.setWorkerOn(w1pl2);
+        w1pl2.setPlaced(true);
+
+
+        //giocatore 2 piazza il seoondo worker
+        w2pl2 = masterController.getGameInstance().getPlayers().get(1).getPlayerWorkers().get(1);
+        Square sq33;
+
+        if (closeWorkers) {
+            sq33 = masterController.getGameInstance().getGameMap().getSquare(new Position(3, 3));
+            w2pl2.setPosition(new Position(3, 3));
+        } else {
+            sq33 = masterController.getGameInstance().getGameMap().getSquare(new Position(4, 4));
+            w2pl2.setPosition(new Position(4, 4));
+        }
+
+        sq33.setWorkerOn(w2pl2);
+        w2pl2.setPlaced(true);
+
+        //giocatore 3 piazza il primo worker
+        w1pl3 = masterController.getGameInstance().getPlayers().get(2).getPlayerWorkers().get(0);
+        Square sq42;
+
+        if (closeWorkers) {
+            sq42 = masterController.getGameInstance().getGameMap().getSquare(new Position(4, 2));
+            w1pl3.setPosition(new Position(4, 2));
+        } else {
+            sq42 = masterController.getGameInstance().getGameMap().getSquare(new Position(2, 2));
+            w1pl3.setPosition(new Position(2, 2));
+        }
+
+        sq42.setWorkerOn(w1pl3);
+        w1pl3.setPlaced(true);
+
+
+        //giocatore 2 piazza il seoondo worker
+        w2pl3 = masterController.getGameInstance().getPlayers().get(2).getPlayerWorkers().get(1);
+        Square sq43;
+
+        if (closeWorkers) {
+            sq43 = masterController.getGameInstance().getGameMap().getSquare(new Position(4, 3));
+            w2pl3.setPosition(new Position(4, 3));
+        } else {
+            sq43 = masterController.getGameInstance().getGameMap().getSquare(new Position(3, 3));
+            w2pl3.setPosition(new Position(3, 3));
+        }
+
+        sq43.setWorkerOn(w2pl3);
+        w2pl3.setPlaced(true);
+
+        masterController._getActionManager()._setGameState(PossibleGameState.START_ROUND);
+        masterController._getTurnManager().updateTurnState(PossibleGameState.START_ROUND);
+        masterController._getActionManager()._setActivePlayer(masterController.getGameInstance().getPlayers().get(0));
+        masterController._getTurnManager().nextTurn(masterController.getGameInstance().getPlayers().get(0));
+
+        masterController.getGameInstance().getGameMap().printBoard();
 
     }
 
@@ -472,6 +598,10 @@ public class SetupGameUtilityClass {
 
     public ActionOutcome getOutcome() {
         return masterController._getActionManager()._getActionOutcome();
+    }
+
+    public PossibleGameState getGameState() {
+        return masterController._getActionManager()._getGameState();
     }
 
     public Player getWinner(){return masterController._getActionManager().getWinner();}

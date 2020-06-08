@@ -36,16 +36,13 @@ public class GameMapTest {
 
     @Test
     public void checkDifference() throws DomePresentException {
-        gameMap.getBoard()[0][0].addBlock(false);
-        gameMap.getBoard()[0][0].addBlock(false);
-        gameMap.getBoard()[0][0].addBlock(false);
-        gameMap.getBoard()[0][0].addBlock(false);
+        gameMap.getBoard()[0][0].addBlock(true);
 
 
-        assertEquals(4, gameMap.getBoard()[0][0].getHeight());
+        assertEquals(1, gameMap.getBoard()[0][0].getHeight());
 
         System.out.println("Let's ceck the difference between position 0,0 and 0,1");
-        assertEquals(4, gameMap.getDifferenceInAltitude(new Position(0,0), new Position(0,1)));
+        assertEquals(1, gameMap.getDifferenceInAltitude(new Position(0,0), new Position(0,1)));
 
         //Pos (0,0) is adjacent...
         System.out.println(new Position(0,1).getAdjacentPlaces());

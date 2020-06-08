@@ -180,7 +180,7 @@ public class Square {
         } else if (ColorEnum.BLUE.equals(color)) {
             str = Ansi.BLUE.concat(" W" + ANSI_RESET);
         } else if (ColorEnum.GREEN.equals(color)) {
-            str = Ansi.BLUE.concat(" W" + ANSI_RESET);
+            str = Ansi.GREEN.concat(" W" + ANSI_RESET);
         }
 
         return str;

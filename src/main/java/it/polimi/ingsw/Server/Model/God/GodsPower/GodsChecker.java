@@ -17,7 +17,6 @@ public interface GodsChecker {
 
     boolean canBuildDomeAtAnyLevel();
 
-    //used for prometheus
     void setBuildBefore();
 
     void resetPower();
