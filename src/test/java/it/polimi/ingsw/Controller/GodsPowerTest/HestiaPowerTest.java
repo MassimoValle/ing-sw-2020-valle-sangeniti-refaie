@@ -1,5 +1,7 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
+import it.polimi.ingsw.Exceptions.DomePresentException;
+import it.polimi.ingsw.Exceptions.SantoriniException;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Game;
@@ -33,7 +35,6 @@ public class HestiaPowerTest {
 
         masterController = new MasterController(game, player1);
         setupUtility = new SetupGameUtilityClass();
-        setupUtility.setup(masterController, 11, 1, true);
 
 
         pl1 = player1.getPlayerName();
@@ -51,6 +52,8 @@ public class HestiaPowerTest {
     @Test
     public void HestiaPowerTest(){
 
+        setupUtility.setup(masterController, 11, 1, true);
+
         setupUtility.selectWorker(pl1,1);
         setupUtility.move(pl1,2,4);
         setupUtility.build(pl1, 1,4);
@@ -66,6 +69,8 @@ public class HestiaPowerTest {
 
     @Test
     public void CannotUseHestiaPowerOnPerimetralSquareTest(){
+
+        setupUtility.setup(masterController, 11, 1, true);
 
         setupUtility.selectWorker(pl1, 1);
         setupUtility.move(pl1, 1,4);
@@ -89,6 +94,8 @@ public class HestiaPowerTest {
 
     @Test
     public void DoesntWantToUseHestiaPowerTest(){
+
+        setupUtility.setup(masterController, 11, 1, true);
 
         //player1 Hestia
         setupUtility.selectWorker(pl1, 0);
@@ -120,6 +127,48 @@ public class HestiaPowerTest {
         assertTrue(game.getGameMap().getSquare(2,1).hasBeenBuiltOver());
 
         setupUtility.endTurn(pl1);
+
+    }
+
+    @Test
+    public void canBuildOneMoreTime() throws DomePresentException {
+
+        setupUtility.setup(masterController, 11, 1, true);
+
+        setupUtility.addBlock(1,4);
+        setupUtility.addBlock(1,4);
+        setupUtility.addBlock(1,4);
+        setupUtility.addDome(3,4);
+
+        //player1 Hestia
+        setupUtility.selectWorker(pl1, 1);
+        setupUtility.move(pl1,2,4);
+        setupUtility.build(pl1, 1,4);
+        assertEquals(ActionOutcome.DONE_CAN_BE_DONE_AGAIN, setupUtility.getOutcome());
+        setupUtility.endMove(pl1);
+        setupUtility.endTurn(pl1);
+
+    }
+
+    @Test
+    public void cannotBuildOneMoreTime() throws DomePresentException {
+
+        setupUtility.setup(masterController, 11, 1, true);
+
+        setupUtility.addBlock(1,4);
+        setupUtility.addDome(3,4);
+
+        //player1 Hestia
+        setupUtility.selectWorker(pl1, 1);
+        setupUtility.move(pl1,2,4);
+
+        setupUtility.addDome(2,3);
+        setupUtility.addDome(1,3);
+
+        setupUtility.build(pl1, 1,4);
+        assertEquals(ActionOutcome.DONE, setupUtility.getOutcome());
+        setupUtility.endTurn(pl1);
+
 
     }
 

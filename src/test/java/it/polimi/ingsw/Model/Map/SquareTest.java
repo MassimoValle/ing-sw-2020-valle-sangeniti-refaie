@@ -72,5 +72,38 @@ public class SquareTest {
     }
 
 
+    @Test
+    public void SquareTest() throws DomePresentException {
+
+        Square sq1 = new Square(1,1);
+        Square sq2 = new Square(2,2);
+
+        Worker w1 = new Worker(new Player("pl1"), 1);
+        sq1.setWorkerOn(w1);
+
+
+        assertNotEquals(sq1, sq2);
+
+        Square sq1copy = new Square(1,1);
+
+        Worker w2 = new Worker(new Player("pl1"), 1);
+        sq1copy.setWorkerOn(w2);
+
+        assertNotEquals(sq1,sq1copy);
+        assertNotSame(sq1,sq1copy);
+
+        sq1copy.setWorkerOn(w1);
+        assertEquals(sq1,sq1copy);
+
+        sq1.addBlock(false);
+        sq1copy.addBlock(false);
+
+        assertEquals(sq1,sq1copy);
+
+
+
+    }
+
+
 
 }

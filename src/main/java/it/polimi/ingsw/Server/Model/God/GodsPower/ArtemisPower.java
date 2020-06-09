@@ -29,7 +29,7 @@ public class ArtemisPower extends Power implements Serializable {
 
         if (startingPlace == null) {
             outcome = super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
-            if (outcome == ActionOutcome.DONE && hasNewMoveAvailable(squareWhereTheWorkerIs.getPosition(), positionWhereToMove)) {
+            if (outcome == ActionOutcome.DONE && hasNewMoveAvailable(squareWhereTheWorkerIs.getPosition(), positionWhereToMove) ) {
                 firstMove = false;
                 startingPlace = squareWhereTheWorkerIs;
                 return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
@@ -57,10 +57,7 @@ public class ArtemisPower extends Power implements Serializable {
         if (map.forcedToMoveUp(reachables, newPos) && athenaPowerActivated())
             return false;
 
-        if (!reachables.isEmpty())
-            return true;
-        else
-            return false;
+        return !reachables.isEmpty();
 
     }
 

@@ -6,13 +6,8 @@ public class Worker {
 
     private int workersNumber;
     private final Player owner;
-
-
-
     private ColorEnum color;
 
-    private boolean isBlocked;
-    private int height;
     private Position workerPosition;
     private boolean placed;
 
@@ -24,10 +19,8 @@ public class Worker {
 
 
     public Worker(Player owner, int workersNumber) {
-        this.height = 0;
         this.workerPosition = null;
         this.workersNumber = workersNumber;
-        this.isBlocked = false;
         this.placed = false;
         this.selected = false;
         this.owner = owner;
@@ -93,5 +86,26 @@ public class Worker {
     public void remove() {
         this.setPosition(null);
         this.placed = false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (!(obj instanceof Worker)) {
+            return false;
+        }
+
+        Worker worker = (Worker) obj;
+
+        return owner.equals(worker.owner) &&
+                workersNumber == worker.workersNumber &&
+                placed == worker.placed &&
+                selected == worker.selected &&
+                workerPosition.equals(worker.workerPosition);
+
+
     }
 }

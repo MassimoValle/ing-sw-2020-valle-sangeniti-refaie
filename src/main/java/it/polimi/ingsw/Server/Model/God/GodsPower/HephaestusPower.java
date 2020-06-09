@@ -20,11 +20,8 @@ public class HephaestusPower extends Power {
         ActionOutcome outcome;
 
         if (firstBlockBuilt == null) {
-            if (squareWhereToBuild.getHeight() == 2) {
+            if (squareWhereToBuild.getHeight() >= 2)
                 return super.build(squareWhereTheWorkerIs, squareWhereToBuild);
-            } else if (squareWhereToBuild.getHeight() == 3) {
-                return super.buildDome(squareWhereTheWorkerIs, squareWhereToBuild);
-            }
 
             outcome = super.build(squareWhereTheWorkerIs, squareWhereToBuild);
             if (outcome == ActionOutcome.DONE) {

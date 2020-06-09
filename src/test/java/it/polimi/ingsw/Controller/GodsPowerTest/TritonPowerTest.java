@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
+import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Network.Message.ClientRequests.*;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Controller.MasterController;
@@ -41,7 +42,6 @@ public class TritonPowerTest {
         masterController = new MasterController(game, player1);
 
         setupUtility = new SetupGameUtilityClass();
-        setupUtility.setup(masterController, 13,1, true );
 
         pl2 = player2.getPlayerName();
         pl1 = player1.getPlayerName();
@@ -58,32 +58,27 @@ public class TritonPowerTest {
    @Test
    public void TritonPowerTest(){
 
-        setupUtility.selectWorker(pl1,1);
-        setupUtility.move(pl1, 2,4);
+       setupUtility.setup(masterController, 13,1, true );
 
+
+       setupUtility.selectWorker(pl1,1);
+        setupUtility.move(pl1, 2,4);
         assertEquals(ActionOutcome.DONE_CAN_BE_DONE_AGAIN, setupUtility.getOutcome());
 
        setupUtility.move(pl1, 1,4);
-
        assertEquals(ActionOutcome.DONE_CAN_BE_DONE_AGAIN, setupUtility.getOutcome());
 
        setupUtility.move(pl1, 2,4);
-
        assertEquals(ActionOutcome.DONE_CAN_BE_DONE_AGAIN, setupUtility.getOutcome());
 
        setupUtility.move(pl1, 1,4);
-
        assertEquals(ActionOutcome.DONE_CAN_BE_DONE_AGAIN, setupUtility.getOutcome());
 
        setupUtility.move(pl1, 0,3);
-
        assertEquals(ActionOutcome.DONE_CAN_BE_DONE_AGAIN, setupUtility.getOutcome());
 
        setupUtility.move(pl1, 1,2);
-
        assertEquals(ActionOutcome.DONE, setupUtility.getOutcome());
-
-
 
        setupUtility.build(pl1, 1,3);
        setupUtility.endTurn(pl1);
@@ -91,6 +86,9 @@ public class TritonPowerTest {
 
     @Test
     public void DontWantToMoveAgainOnPerimeterTest(){
+
+        setupUtility.setup(masterController, 13,1, true );
+
 
         setupUtility.selectWorker(pl1, 1);
         setupUtility.move(pl1, 2,4);
@@ -114,8 +112,9 @@ public class TritonPowerTest {
 
 
     @Test
-    public void TritonNNNNNPowerTest() {
+    public void Triton1PowerTest() {
 
+        setupUtility.setup(masterController, 13,1, true );
 
 
 
@@ -160,22 +159,7 @@ public class TritonPowerTest {
         MasterController.dispatcher(
                 new MoveRequest(pl2, new Position(1,4))
         );game.getGameMap().printBoard();
-
-/*
-
-        //check if moving inside the perimeter won't allow me to move again
-
-        MasterController.dispatcher(
-                new MoveRequest(pl2, new Position(1,3))
-        );
-
-        MasterController.dispatcher(
-                new MoveRequest(pl2, new Position(0,3))
-        );
-
-        //it works, this code is commented but it's better to create multiple test method to check every behavior
-*/
-
+        
         //this checks if I can stop from moving on the perimeter
         MasterController.dispatcher(
                 new EndMoveRequest(pl2)
@@ -191,6 +175,72 @@ public class TritonPowerTest {
 
 
         game.getGameMap().printBoard();
+
+    }
+
+
+    @Test
+    public void athenaNotBlocking() throws DomePresentException {
+
+        setupUtility.setup(masterController, 2,13, true );
+
+        setupUtility.addBlock(2,3);
+        setupUtility.addBlock(1,3);
+        setupUtility.addBlock(1,3);
+
+
+        setupUtility.selectWorker(pl1, 1);
+        setupUtility.move(pl1, 1,3);
+        setupUtility.build(pl1, 0,3);
+
+        assertTrue(game.getGameMap().getSquare(0,3).hasBeenBuiltOver());
+
+        setupUtility.addBlock(2,4);
+        setupUtility.addBlock(4,4);
+        setupUtility.addBlock(4,3);
+
+        setupUtility.endTurn(pl1);
+
+        setupUtility.selectWorker(pl2, 1);
+        setupUtility.move(pl2, 3,4);
+
+        //HE CAN MOVE BACK TO ITS INITIAL SPACE
+        assertEquals(ActionOutcome.DONE_CAN_BE_DONE_AGAIN, setupUtility.getOutcome());
+
+
+
+    }
+    @Test
+    public void athenaBlocking() throws DomePresentException {
+
+        setupUtility.setup(masterController, 2,13, true );
+
+        setupUtility.addBlock(2,3);
+        setupUtility.addBlock(1,3);
+        setupUtility.addBlock(1,3);
+
+
+        setupUtility.selectWorker(pl1, 1);
+        setupUtility.move(pl1, 1,3);
+        setupUtility.build(pl1, 0,3);
+
+        assertTrue(game.getGameMap().getSquare(0,3).hasBeenBuiltOver());
+
+        setupUtility.addBlock(2,4);
+        setupUtility.addBlock(4,4);
+        setupUtility.addBlock(4,3);
+
+        setupUtility.endTurn(pl1);
+
+        setupUtility.addBlock(3,3);
+
+        setupUtility.selectWorker(pl2, 1);
+        setupUtility.move(pl2, 3,4);
+
+        //HE CANNOT MOVE AGAIN DUE TO ATHENA MOVING UP AND HE CAN ONLY MOVE UP
+        assertEquals(ActionOutcome.DONE, setupUtility.getOutcome());
+
+
 
     }
 
