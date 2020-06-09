@@ -276,6 +276,11 @@ public class GameMap {
         return fullSquares >= 5;
     }
 
+    /**
+     * Remove {@link Worker Player's wokers} from the board
+     *
+     * @param playerToRemove the player to remove
+     */
     public void removePlayerWorkers(Player playerToRemove) {
         for (Worker worker : playerToRemove.getPlayerWorkers()) {
             this.getSquare(worker.getPosition()).freeSquare();
@@ -283,9 +288,11 @@ public class GameMap {
     }
 
     /**
-     * It checks if the worker starting from the position given can only move up
+     * It checks if starting from the position given you can only move up
      *
-     * @param position the position
+     * @param reachables       {@link List<Position>} MUST NOT BE EMPTY
+     * @param startingPosition the starting {@link Position}
+     *
      * @return true if the worker can only move up, false otherwise;
      */
     public boolean forcedToMoveUp( List<Position> reachables, Position startingPosition) {

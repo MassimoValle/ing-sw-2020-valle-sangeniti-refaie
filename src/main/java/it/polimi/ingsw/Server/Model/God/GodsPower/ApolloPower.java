@@ -3,6 +3,7 @@ package it.polimi.ingsw.Server.Model.God.GodsPower;
 import it.polimi.ingsw.Server.Model.Action.Action;
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Action.ApolloSwapAction;
+import it.polimi.ingsw.Server.Model.Action.MinotaurPushAction;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
@@ -10,6 +11,8 @@ import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ApolloPower extends Power {
 
@@ -40,27 +43,28 @@ public class ApolloPower extends Power {
 
     @Override
     public boolean isWorkerStuck(Worker worker) {
+
         GameMap map = Game.getInstance().getGameMap();
-        ArrayList<Position> adjacent = worker.getPosition().getAdjacentPlaces();
-        ArrayList<Position> reachable = (ArrayList<Position>) map.getReachableAdjacentPlaces(worker.getPosition());
 
-        if (!reachable.isEmpty() && !map.forcedToMoveUp(reachable, worker.getPosition()))
-            return false;
+        ArrayList<Square> adjacents = new ArrayList<>();
 
-        if (athenaPowerActivated() && canSwapOnlyGoingUp(map, worker))
-            return true;
+        for (Position position: worker.getPosition().getAdjacentPlaces())
+            adjacents.add(map.getSquare(position));
 
-        if (!reachable.isEmpty())
-            return false;
+        List<Square> swappable = adjacents.stream()
+                .filter((Square::hasWorkerOn))
+                .filter((square -> !square.getWorkerOnSquare().getColor().equals(worker.getColor())))
+                .collect(Collectors.toList());
 
+        Square apolloStartingSquare = map.getSquare(worker.getPosition());
 
-        for (Position pos : adjacent) {
-            if (map.getDifferenceInAltitude(worker.getPosition(), pos) >= -1 && map.getSquare(pos).hasWorkerOn() && !map.getSquare(pos).getWorkerOnSquare().getColor().equals(worker.getColor()) && !map.getPlacesWhereYouCanBuildOn(pos).isEmpty()) {
+        for (Square opponentSquare: swappable) {
+            ApolloSwapAction apolloSwapAction = new ApolloSwapAction(this, worker, opponentSquare.getPosition(), apolloStartingSquare, opponentSquare);
+            if (apolloSwapAction.isValid())
                 return false;
-            }
         }
 
-        return true;
+        return super.isWorkerStuck(worker);
     }
 
     public boolean canSwapOnlyGoingUp(GameMap map, Worker worker) {

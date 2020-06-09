@@ -42,8 +42,6 @@ public class PrometheusPowerTest {
 
         masterController = new MasterController(game, player1);
         setupUtility = new SetupGameUtilityClass();
-        setupUtility.setup(masterController, 8, 1, true);
-
 
         pl1 = player1.getPlayerName();
         pl2 = player2.getPlayerName();
@@ -57,6 +55,8 @@ public class PrometheusPowerTest {
 
     @Test
     public void PrometheusPowerTest() throws DomePresentException {
+
+        setupUtility.setup(masterController, 8, 1, true);
 
 
         setupUtility.selectWorker(pl1,0);
@@ -95,6 +95,8 @@ public class PrometheusPowerTest {
     @Test
     public void CanClimbUpWhenDontUsePrometheusPowerTest(){
 
+        setupUtility.setup(masterController, 8, 1, true);
+
         //player1 prometheus
         setupUtility.selectWorker(pl1,0);
         setupUtility.move(pl1, 1,1);
@@ -119,6 +121,40 @@ public class PrometheusPowerTest {
 
         setupUtility.build(pl1,1,3);
         setupUtility.endTurn(pl1);
+
+    }
+
+    @Test
+    public void PrometheusOneWay() throws DomePresentException {
+
+        setupUtility.setup(masterController, 8,1, true);
+
+        masterController.getGameInstance().getGameMap().getSquare(1,1).addBlock(true);
+        masterController.getGameInstance().getGameMap().getSquare(2,1).addBlock(true);
+        masterController.getGameInstance().getGameMap().getSquare(3,1).addBlock(true);
+        masterController.getGameInstance().getGameMap().getSquare(1,3).addBlock(false);
+
+
+        //player1 prometheus
+        setupUtility.selectWorker(pl1,0);
+        setupUtility.powerButton(pl1);
+
+        //CAN ONLY BUILD IN (1,3)
+        //IF HE BUILDS IN (1,3) THEN HE CAN'T MOVE (he can't move up if chose to build first)
+        setupUtility.build(pl1, 1,2);
+        assertEquals(ActionOutcome.NOT_DONE, setupUtility.getOutcome());
+
+        setupUtility.build(pl1, 1,3);
+        assertEquals(ActionOutcome.DONE, setupUtility.getOutcome());
+
+        setupUtility.move(pl1, 1,2);
+        assertEquals(ActionOutcome.DONE, setupUtility.getOutcome());
+
+        setupUtility.build(pl1, 1,3);
+        assertEquals(ActionOutcome.DONE, setupUtility.getOutcome());
+
+
+
 
     }
 }

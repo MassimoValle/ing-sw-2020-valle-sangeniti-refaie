@@ -104,8 +104,6 @@ public abstract class Power implements Serializable, GodsChecker {
         if (!reachable.isEmpty() && map.forcedToMoveUp(reachable, worker.getPosition()) && athenaPowerActivated())
             return true;
 
-
-
         return reachable.isEmpty();
     }
 

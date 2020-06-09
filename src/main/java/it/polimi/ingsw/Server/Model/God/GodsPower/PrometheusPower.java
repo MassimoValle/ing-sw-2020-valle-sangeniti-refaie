@@ -8,11 +8,12 @@ import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PrometheusPower extends Power implements Serializable {
 
-    private static boolean buildBefore = false;
+    private boolean buildBefore = false;
 
     public PrometheusPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
@@ -36,6 +37,28 @@ public class PrometheusPower extends Power implements Serializable {
 
     }
 
+    @Override
+    public ActionOutcome build(Square squareWhereTheWorkerIs, Square squareWhereToBuild) {
+
+        if (!buildBefore)
+            return super.build(squareWhereTheWorkerIs, squareWhereToBuild);
+
+
+
+        GameMap map = Game.getInstance().getGameMap();
+        Position startingPosition = squareWhereTheWorkerIs.getPosition();
+
+        ArrayList<Position> reachables = (ArrayList<Position>) map.getReachableAdjacentPlaces(startingPosition);
+        reachables.remove(squareWhereToBuild.getPosition());
+
+        if ( map.forcedToMoveUp(reachables, startingPosition) )
+            return ActionOutcome.NOT_DONE;
+        else
+            return super.build(squareWhereTheWorkerIs, squareWhereToBuild);
+
+
+
+    }
 
     @Override
     public boolean canBuildBeforeMoving(Worker workerSelected) {
