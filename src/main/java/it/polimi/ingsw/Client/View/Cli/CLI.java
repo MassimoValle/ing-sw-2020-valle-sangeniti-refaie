@@ -10,7 +10,7 @@ import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
-import it.polimi.ingsw.Server.Model.Player.Worker;
+import it.polimi.ingsw.Utility.Ansi;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -26,7 +26,7 @@ public class CLI extends ClientView {
 
     public CLI(){
         consoleIn = new Scanner(System.in);
-        consoleOut = new PrintStream(System.out, true);
+        consoleOut = new PrintStream(System.out);
 
     }
 
@@ -779,10 +779,25 @@ public class CLI extends ClientView {
     }
 
     @Override
+    public void iLost() {
+        consoleOut.println("\t#############");
+        consoleOut.println("\t\tYOU LOST");
+        consoleOut.println("\t#############");
+    }
+
+    @Override
     public void youLose(String winner) {
         consoleOut.println("\t#############");
         consoleOut.println("\t\tYOU LOSE");
         consoleOut.println("\t#############");
+    }
+
+    @Override
+    public void someoneHasLost(String loser) {
+        consoleOut.println("#############");
+        consoleOut.println(loser + "cannot complete a full round, he is out of the game");
+        consoleOut.println("\t#############");
+
     }
 
     @Override

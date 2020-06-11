@@ -716,6 +716,16 @@ public class GUI extends ClientView {
     }
 
     @Override
+    public void iLost() {
+
+    }
+
+    @Override
+    public void someoneHasLost(String loser) {
+
+    }
+
+    @Override
     public void youLose(String winner) {
 
         if(!enaPopup) return;

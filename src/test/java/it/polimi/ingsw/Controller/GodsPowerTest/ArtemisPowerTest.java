@@ -1,14 +1,14 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
 import it.polimi.ingsw.Server.Controller.MasterController;
+import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ArtemisPowerTest {
 
@@ -23,6 +23,7 @@ public class ArtemisPowerTest {
     @Before
     public void setUp() {
 
+        Game.resetInstance();
         game = Game.getInstance();
 
         player1 = new Player("Simone");
@@ -48,47 +49,52 @@ public class ArtemisPowerTest {
     @Test
     public void ArtemisPowerTest(){
 
-        game.getGameMap().printBoard();
-
         setupUtility.selectWorker(pl1,0);
         setupUtility.move(pl1, 3,1);
+
+
         assertTrue(game.getGameMap().getSquare(3,1).hasWorkerOn());
-        game.getGameMap().printBoard();
+        assertFalse(game.getGameMap().getSquare(4,1).hasWorkerOn());
+
+
         //uso il potere di artemis
         setupUtility.move(pl1, 4,1);
-        game.getGameMap().printBoard();
+
+
         assertTrue(game.getGameMap().getSquare(4,1).hasWorkerOn());
+
+
         setupUtility.build(pl1,3,1);
-        game.getGameMap().printBoard();
         setupUtility.endTurn(pl1);
     }
 
     @Test
     public void ArtemisCantMoveBackToInitialPlaceTest(){
 
-        game.getGameMap().printBoard();
-
         setupUtility.selectWorker(pl1,1);
         setupUtility.move(pl1, 2,4);
+
         assertTrue(game.getGameMap().getSquare(2,4).hasWorkerOn());
-        game.getGameMap().printBoard();
-        //questa move deve fallire
+
+
         setupUtility.move(pl1, 2,3);
-        game.getGameMap().printBoard();
+
+
+        assertEquals(ActionOutcome.NOT_DONE, setupUtility.getOutcome());
         assertFalse(game.getGameMap().getSquare(2, 3).hasWorkerOn());
+
+
         //rifaccio la move dove mi posso muovere
         setupUtility.move(pl1,1,3);
+
         assertTrue(game.getGameMap().getSquare(1,3).hasWorkerOn());
-        game.getGameMap().printBoard();
+
         setupUtility.build(pl1,1,4);
-        game.getGameMap().printBoard();
         setupUtility.endTurn(pl1);
     }
 
     @Test
     public void ArtemisDoesntWantToUsePowerTest(){
-
-        game.getGameMap().printBoard();
 
         setupUtility.selectWorker(pl1,1);
         setupUtility.move(pl1, 2,4);
@@ -102,5 +108,28 @@ public class ArtemisPowerTest {
         setupUtility.endTurn(pl1);
 
     }
-    
+
+    @Test
+    public void ArtemisCannotBuildDomeLikeAtlasDoesTest(){
+
+        setupUtility.selectWorker(pl1,1);
+        setupUtility.move(pl1, 2,4);
+
+
+        assertTrue(game.getGameMap().getSquare(2,4).hasWorkerOn());
+
+
+        setupUtility.endMove(pl1);
+
+        setupUtility.buildDome(pl1,1,4);
+
+
+        assertFalse(game.getGameMap().getSquare(1,4).hasDome());
+        assertEquals(ActionOutcome.DONE, setupUtility.getOutcome());
+        assertTrue(game.getGameMap().getSquare(1,4).hasBeenBuiltOver());
+
+
+        setupUtility.endTurn(pl1);
+
+    }
 }

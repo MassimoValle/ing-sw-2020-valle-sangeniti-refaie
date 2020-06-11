@@ -2,6 +2,7 @@ package it.polimi.ingsw.Model.Map;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import org.junit.Before;
@@ -35,16 +36,13 @@ public class GameMapTest {
 
     @Test
     public void checkDifference() throws DomePresentException {
-        gameMap.getBoard()[0][0].addBlock(false);
-        gameMap.getBoard()[0][0].addBlock(false);
-        gameMap.getBoard()[0][0].addBlock(false);
-        gameMap.getBoard()[0][0].addBlock(false);
+        gameMap.getBoard()[0][0].addBlock(true);
 
 
-        assertEquals(4, gameMap.getBoard()[0][0].getHeight());
+        assertEquals(1, gameMap.getBoard()[0][0].getHeight());
 
         System.out.println("Let's ceck the difference between position 0,0 and 0,1");
-        assertEquals(4, gameMap.getDifferenceInAltitude(new Position(0,0), new Position(0,1)));
+        assertEquals(1, gameMap.getDifferenceInAltitude(new Position(0,0), new Position(0,1)));
 
         //Pos (0,0) is adjacent...
         System.out.println(new Position(0,1).getAdjacentPlaces());
@@ -90,43 +88,12 @@ public class GameMapTest {
     @Test
     public void workerOnSquareTest() {
         Position pos1 = new Position(0,0);
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(new Player("test"),0);
 
         assertNull(gameMap.getWorkerOnSquare(pos1));
 
         gameMap.getSquare(pos1).setWorkerOn(worker1);
         assertEquals(worker1, gameMap.getWorkerOnSquare(pos1));
-    }
-
-    @Test
-    public void workerIsStockTest() throws DomePresentException {
-        Worker worker1 = new Worker(0);
-
-        worker1.setPosition(new Position(0,0));
-        worker1.setPlaced(true);
-        gameMap.getSquare(new Position(0,0)).setWorkerOn(worker1);
-
-        //let's place a dome around the worker
-        gameMap.getSquare(new Position(0,1)).addBlock(true);
-        gameMap.getSquare(new Position(1,1)).addBlock(true);
-        gameMap.getSquare(new Position(1,0)).addBlock(true);
-
-        assertEquals(0,gameMap.getReachableAdjacentPlaces(new Position(0,0)).size());
-        assertTrue(gameMap.isWorkerStuck(worker1));
-
-        //Now let's put another worker in pos(2,0)
-        Worker worker2 = new Worker(0);
-
-        worker2.setPosition(new Position(2,0));
-        worker2.setPlaced(true);
-        gameMap.getSquare(new Position(2,0)).setWorkerOn(worker2);
-
-        assertEquals(3, gameMap.getReachableAdjacentPlaces(new Position(2,0)).size());
-        assertEquals(new Position(2,1), gameMap.getReachableAdjacentPlaces(new Position(2,0)).get(0));
-        assertEquals(new Position(3,1), gameMap.getReachableAdjacentPlaces(new Position(2,0)).get(1));
-        assertEquals(new Position(3,0), gameMap.getReachableAdjacentPlaces(new Position(2,0)).get(2));
-
-        assertFalse(gameMap.isWorkerStuck(worker2));
     }
 
 
@@ -142,7 +109,7 @@ public class GameMapTest {
         //The pos2 (0,0) has to be free
         assertTrue(gameMap.isPositionFree(pos2));
 
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(new Player("test"),0);
         worker1.setPosition(pos2);
         worker1.setPlaced(true);
         gameMap.getSquare(pos2).setWorkerOn(worker1);

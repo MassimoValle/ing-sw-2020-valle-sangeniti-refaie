@@ -59,12 +59,10 @@ public class ClientManager {
 
 
 
-    //Qualsiasi messaggio che il client riceve dal server
-    ServerMessage currentMessage = null;
-    //la richiesta corrente effettuata dal client
-    Request currentRequest = null;
-    //la richiesta corrente che il client sta gestendo
-    ServerRequest currentServerRequest = null;
+    ServerMessage currentMessage = null;            //Qualsiasi messaggio che il client riceve dal server
+    Request currentRequest = null;                  //la richiesta corrente inviata da questo client
+    ServerRequest currentServerRequest = null;      //la richiesta corrente che il client sta gestendo
+
 
 
 
@@ -222,6 +220,11 @@ public class ClientManager {
         MessageStatus responseStatus = serverResponse.getResponseStatus();
         ResponseContent responseContent = serverResponse.getResponseContent();
 
+        if (responseContent == ResponseContent.PLAYER_HAS_LOST && !myTurn) {
+            someoneHasLost((LostServerResponse) serverResponse);
+            return;
+        }
+
         if (!myTurn && responseContent != ResponseContent.LOGIN && responseContent != ResponseContent.NUM_PLAYER) {
             serverMessageManager.serverResponseNotForYou(serverResponse);
             return;
@@ -238,23 +241,24 @@ public class ClientManager {
                     else login();
                 }
 
-                case NUM_PLAYER -> chooseNumPlayers();
+                case NUM_PLAYER                         -> chooseNumPlayers();
 
-                case CHOOSE_GODS -> handleChooseGodsServerResponse((ChooseGodsServerResponse) serverResponse);
-                case PICK_GOD -> handlePickGodServerResponse((PickGodServerResponse) serverResponse);
-                case PLACE_WORKER -> handlePlaceWorkerServerResponse((PlaceWorkerServerResponse) serverResponse);
+                case CHOOSE_GODS                        -> handleChooseGodsServerResponse((ChooseGodsServerResponse) serverResponse);
+                case PICK_GOD                           -> handlePickGodServerResponse((PickGodServerResponse) serverResponse);
+                case PLACE_WORKER                       -> handlePlaceWorkerServerResponse((PlaceWorkerServerResponse) serverResponse);
 
-                case SELECT_WORKER -> handleSelectWorkerServerResponse((SelectWorkerServerResponse) serverResponse);
+                case SELECT_WORKER                      -> handleSelectWorkerServerResponse((SelectWorkerServerResponse) serverResponse);
 
-                case POWER_BUTTON -> handlePowerButtonServerResponse((PowerButtonServerResponse) serverResponse);
+                case POWER_BUTTON                       -> handlePowerButtonServerResponse((PowerButtonServerResponse) serverResponse);
 
-                case MOVE_WORKER, MOVE_WORKER_AGAIN -> handleMoveWorkerServerResponse((MoveWorkerServerResponse) serverResponse);
-                case END_MOVE -> handleEndMoveServerResponse((EndMoveServerResponse) serverResponse);
+                case MOVE_WORKER, MOVE_WORKER_AGAIN     -> handleMoveWorkerServerResponse((MoveWorkerServerResponse) serverResponse);
+                case END_MOVE                           -> handleEndMoveServerResponse((EndMoveServerResponse) serverResponse);
 
-                case BUILD, BUILD_AGAIN -> handleBuildServerResponse((BuildServerResponse) serverResponse);
-                case END_BUILD ->handleEndBuildServerResponse((EndBuildServerResponse) serverResponse);
+                case BUILD, BUILD_AGAIN                 -> handleBuildServerResponse((BuildServerResponse) serverResponse);
+                case END_BUILD                          ->handleEndBuildServerResponse((EndBuildServerResponse) serverResponse);
 
-                case PLAYER_WON -> playerWon((WonServerResponse) serverResponse);
+                case PLAYER_HAS_WON                     -> playerWon((WonServerResponse) serverResponse);
+                case PLAYER_HAS_LOST                    -> playerLost((LostServerResponse) serverResponse);
             }
         }
     }
@@ -418,7 +422,7 @@ public class ClientManager {
 
     private void moveWorker(MoveWorkerServerRequest serverRequest){
 
-        ArrayList<Position> nearlyPositionsValid = me.getPlayerWorkers().get(workerSelected).getWorkerPosition().getAdjacentPlaces();
+        ArrayList<Position> nearlyPositionsValid = me.getPlayerWorkers().get(workerSelected).getPosition().getAdjacentPlaces();
 
 
         Position position = clientView.moveWorker(nearlyPositionsValid);
@@ -445,7 +449,7 @@ public class ClientManager {
 
     private void build(BuildServerRequest serverRequest) {
 
-        Position myWorkerPosition = me.getPlayerWorkers().get(workerSelected).getWorkerPosition();
+        Position myWorkerPosition = me.getPlayerWorkers().get(workerSelected).getPosition();
         ArrayList<Position> nearlyPositionsValid = myWorkerPosition.getAdjacentPlaces();
         nearlyPositionsValid.add(myWorkerPosition);
 
@@ -498,8 +502,41 @@ public class ClientManager {
 
     }
 
+    /**
+     * It's called when the server inform you that you won
+     *
+     * @param response
+     */
     private void playerWon(WonServerResponse response){
         clientView.youWon();
+    }
+
+    /**
+     * It's called when the server inform you that you lost (due to being unable to complete a round)
+     *
+     * @param serverResponse
+     */
+    private void playerLost(LostServerResponse serverResponse) {
+        clientView.iLost();
+
+        //REMOVE THIS PLAYER FROM THE MATCH
+        removePlayerFromMatch(me);
+
+        //POSSIAMO FAR SI CHE IL CLIENT POSSA CHIEDERE SE VOGLIA RIMANERE A VEDERE IL PROSEGUIO DELLA PARTITA INVIANDOGLI SEMPRE LE INFORMAZIONI
+        //OPPURE POSSIAMO SEMPLICEMENTE TAGLIARLO FUORI
+    }
+
+
+    private void someoneHasLost(LostServerResponse serverResponse) {
+        clientView.someoneHasLost(serverResponse.getMessageRecipient());
+        removePlayerFromMatch(babyGame.getPlayerByName(serverResponse.getMessageRecipient()));
+    }
+
+    private void removePlayerFromMatch(Player playerToRemove) {
+        babyGame.getClientMap().removePlayerWorkers(playerToRemove);
+        playerToRemove.removeWorkers();
+        babyGame.getPlayers().remove(playerToRemove);
+
     }
 
 

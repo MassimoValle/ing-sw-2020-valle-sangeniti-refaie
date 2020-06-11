@@ -6,6 +6,7 @@ import it.polimi.ingsw.Server.Model.Building.LevelOneBlock;
 import it.polimi.ingsw.Server.Model.Building.LevelThreeBlock;
 import it.polimi.ingsw.Server.Model.Building.LevelTwoBlock;
 import it.polimi.ingsw.Server.Model.Map.Square;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class SquareTest {
     public void getWorkerOnSquare(){
         assertNull(square.getWorkerOnSquare());
 
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(new Player("test"),0);
         square.setWorkerOn (worker1);
         assertEquals(worker1, square.getWorkerOnSquare());
 
@@ -37,14 +38,14 @@ public class SquareTest {
     @Test
     public void hasWorkerOnSquare(){
         assertFalse(square.hasWorkerOn());
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(new Player("test"),0);
         square.setWorkerOn (worker1);
         assertTrue(square.hasWorkerOn());
     }
 
     @Test
     public void checkIfBuilt() throws DomePresentException {
-        Worker worker1 = new Worker(0);
+        Worker worker1 = new Worker(new Player("test"),0);
 
         assertEquals(0, square.getHeight());
         assertFalse(square.hasBeenBuiltOver());
@@ -67,6 +68,39 @@ public class SquareTest {
 
         //adding a new block when the tower.size() is >= 4 throws an exception
         System.out.println(square.toString());
+
+    }
+
+
+    @Test
+    public void SquareTest() throws DomePresentException {
+
+        Square sq1 = new Square(1,1);
+        Square sq2 = new Square(2,2);
+
+        Worker w1 = new Worker(new Player("pl1"), 1);
+        sq1.setWorkerOn(w1);
+
+
+        assertNotEquals(sq1, sq2);
+
+        Square sq1copy = new Square(1,1);
+
+        Worker w2 = new Worker(new Player("pl1"), 1);
+        sq1copy.setWorkerOn(w2);
+
+        assertNotEquals(sq1,sq1copy);
+        assertNotSame(sq1,sq1copy);
+
+        sq1copy.setWorkerOn(w1);
+        assertEquals(sq1,sq1copy);
+
+        sq1.addBlock(false);
+        sq1copy.addBlock(false);
+
+        assertEquals(sq1,sq1copy);
+
+
 
     }
 

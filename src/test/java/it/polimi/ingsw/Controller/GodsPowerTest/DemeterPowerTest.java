@@ -21,6 +21,7 @@ public class DemeterPowerTest {
     @Before
     public void setUp() {
 
+        Game.resetInstance();
         game = Game.getInstance();
 
         player1 = new Player("Simone");
@@ -46,22 +47,21 @@ public class DemeterPowerTest {
     @Test
     public void DemeterPowerTest(){
 
-        game.getGameMap().printBoard();
 
-        //player 1 (demeter)
         setupUtility.selectWorker(pl1,0);
-
         setupUtility.move(pl1,3,1);
-        game.getGameMap().printBoard();
-
         setupUtility.build(pl1,2,2);
-        game.getGameMap().printBoard();
+
+
+        assertFalse(game.getGameMap().getSquare(4, 2).hasBeenBuiltOver());
+
 
         //uso potere detemetrio
-        assertFalse(game.getGameMap().getSquare(4, 2).hasBeenBuiltOver());
         setupUtility.build(pl1,4,2);
+
+
         assertTrue(game.getGameMap().getSquare(4, 2).hasBeenBuiltOver());
-        game.getGameMap().printBoard();
+
 
         setupUtility.endTurn(pl1);
     }
@@ -69,86 +69,68 @@ public class DemeterPowerTest {
     @Test
     public void DemeterCannotBuildInSamePlaceTest(){
 
-        game.getGameMap().printBoard();
 
-        //player 1 (demeter)
         setupUtility.selectWorker(pl1,0);
-
         setupUtility.move(pl1,3,1);
-        game.getGameMap().printBoard();
+
 
         setupUtility.build(pl1,2,2);
-        game.getGameMap().printBoard();
+
 
         //uso potere detemetrio nello stesso spazio (dovrebbe fallire la costruzione)
         setupUtility.build(pl1,2,2);
+
+
         assertEquals(1, game.getGameMap().getSquare(2, 2).getHeight());
-        game.getGameMap().printBoard();
+
 
         setupUtility.build(pl1,4,2);
+
+
         assertEquals(1, game.getGameMap().getSquare(4, 2).getHeight());
-        game.getGameMap().printBoard();
+
+
 
         setupUtility.endTurn(pl1);
     }
 
     @Test
-    public void DemeterNotWantToBuildSecondTimeTest(){
+    public void DemeterDoesntWantToBuildSecondTimeTest(){
 
-        game.getGameMap().printBoard();
 
-        System.out.println("tocca al player1, primo turno");
         //player1 (demeter)
+        System.out.println("tocca al player1, primo turno");
         setupUtility.selectWorker(pl1,0);
-
         setupUtility.move(pl1,3,1);
-        game.getGameMap().printBoard();
-
         setupUtility.build(pl1,2,2);
-        game.getGameMap().printBoard();
 
         setupUtility.endBuild(pl1);
 
         setupUtility.endTurn(pl1);
+
 
         //player2 (artemis)
         System.out.println("tocca al player2, primo turno");
         setupUtility.selectWorker(pl2, 0);
-
         setupUtility.move(pl2, 2,2);
-        game.getGameMap().printBoard();
-
         setupUtility.endMove(pl2);
-
         setupUtility.build(pl2, 3,2);
-        game.getGameMap().printBoard();
-
         setupUtility.endTurn(pl2);
 
-        System.out.println("tocca al player1, secondo turno");
-        //player 1 seleziona worker
-        setupUtility.selectWorker(pl1, 0);
 
+        //player 1 seleziona worker
+        System.out.println("tocca al player1, secondo turno");
+        setupUtility.selectWorker(pl1, 0);
         setupUtility.move(pl1, 2,1);
-        game.getGameMap().printBoard();
 
 
         setupUtility.build(pl1,1,1);
-        assertEquals(1, game.getGameMap().getSquareHeight(new Position(1,1)));
-        game.getGameMap().printBoard();
 
-        //TODO serve il fix del reset delle variabili
-        //setupUtility.build(pl1, 3,2);
-        //assertEquals(2, game.getGameMap().getSquareHeight(new Position(3,2)));
-        //game.getGameMap().printBoard();
+
+        assertEquals(1, game.getGameMap().getSquareHeight(new Position(1,1)));
+
 
         setupUtility.endBuild(pl1);
         setupUtility.endTurn(pl1);
-
-
-
-
-
-
     }
 }

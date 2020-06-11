@@ -2,16 +2,18 @@ package it.polimi.ingsw.Server.Model.God.GodsPower;
 
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PrometheusPower extends Power implements Serializable {
 
-    private static boolean buildBefore = false;
+    private boolean buildBefore = false;
 
     public PrometheusPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
@@ -35,20 +37,43 @@ public class PrometheusPower extends Power implements Serializable {
 
     }
 
+    @Override
+    public ActionOutcome build(Square squareWhereTheWorkerIs, Square squareWhereToBuild) {
+
+        if (!buildBefore)
+            return super.build(squareWhereTheWorkerIs, squareWhereToBuild);
+
+
+
+        GameMap map = Game.getInstance().getGameMap();
+        Position startingPosition = squareWhereTheWorkerIs.getPosition();
+
+        ArrayList<Position> reachables = (ArrayList<Position>) map.getReachableAdjacentPlaces(startingPosition);
+        reachables.remove(squareWhereToBuild.getPosition());
+
+        if ( map.forcedToMoveUp(reachables, startingPosition) )
+            return ActionOutcome.NOT_DONE;
+        else
+            return super.build(squareWhereTheWorkerIs, squareWhereToBuild);
+
+
+
+    }
 
     @Override
     public boolean canBuildBeforeMoving(Worker workerSelected) {
-        ArrayList<Position> availablePosition = Game.getInstance().getGameMap().getReachableAdjacentPlaces(workerSelected.getWorkerPosition());
+        GameMap gameMap = Game.getInstance().getGameMap();
 
-        if (availablePosition.isEmpty()) {
-            return false;
-        } else if ( availablePosition.size() == 1) {
-            Square singleSquareAvailable = Game.getInstance().getGameMap().getSquare(availablePosition.get(0));
-            Square workerSquare = Game.getInstance().getGameMap().getSquare(workerSelected.getWorkerPosition());
-            return workerSquare.getHeight() - singleSquareAvailable.getHeight() >= 1;
+        List<Position> availablePosition = gameMap.getReachableAdjacentPlaces(workerSelected.getPosition());
+        Square workerSquare = gameMap.getSquare(workerSelected.getPosition());
+
+
+        if (!availablePosition.isEmpty()) {
+            return gameMap.squareMinusOneAvailable(workerSquare) || gameMap.twoSquaresSameHeightAvailable(workerSquare)
+                    || gameMap.prometheusBuildsFirst(workerSquare);
         }
+        return false;
 
-        return true;
     }
 
     @Override

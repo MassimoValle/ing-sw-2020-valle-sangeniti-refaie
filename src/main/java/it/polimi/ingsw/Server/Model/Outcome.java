@@ -30,8 +30,8 @@ public class Outcome {
 
     public boolean playerHasWonAfterMoving(Worker activeWorker) {
 
-        int height = gameMap.getSquareHeight(activeWorker.getWorkerPosition());
-        Position position = activeWorker.getWorkerPosition();
+        int height = gameMap.getSquareHeight(activeWorker.getPosition());
+        Position position = activeWorker.getPosition();
 
 
         if(!activeWorker.getColor().equals(player.getColor()))
@@ -78,6 +78,7 @@ public class Outcome {
         }
         return false;
     }
+
 
     private boolean chronusIsPresent() {
         for(Power power : powersInGame ) {

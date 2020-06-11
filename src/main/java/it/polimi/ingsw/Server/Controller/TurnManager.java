@@ -38,7 +38,7 @@ public class TurnManager {
         //this.activePlayer = null;
         this.activePlayer = players.get(1);
         this.activeWorker = null;
-        this.inGamePlayers = players;
+        this.inGamePlayers = new ArrayList<>(players);
         this.actionPerformedByActivePlayer = new ArrayList<>();
 
         updatePlayerState(PossiblePlayerState.CHOSE_GODS);
@@ -47,6 +47,11 @@ public class TurnManager {
 
 
     // getter
+
+
+    public List<Player> getInGamePlayers() {
+        return inGamePlayers;
+    }
 
     /**
      * Gets active player.
@@ -104,7 +109,7 @@ public class TurnManager {
     }
 
     /**
-     * Based on what the {@param gameState} is, then the {@link #playerState} is updated
+     * Based on what the gameState, then the {@link #playerState} is updated
      * and the turnOwnership given to the next {@link Player}
      *
      * @param gameState the actual game state
@@ -123,11 +128,9 @@ public class TurnManager {
                 giveTurnOwnership();
                 break;
 
-/*
-            case START_ROUND: //Inizia il turno
+            case START_ROUND:
                 updatePlayerState(PossiblePlayerState.STARTING_TURN);
-                giveTurnOwnership();
-                break;*/
+                break;
 
             case WORKER_SELECTED:
                 updatePlayerState(PossiblePlayerState.WORKER_SELECTED);
@@ -147,6 +150,11 @@ public class TurnManager {
             case PLAYER_TURN_ENDING:
                 updatePlayerState(PossiblePlayerState.ENDING_TURN);
                 giveTurnOwnership();
+                break;
+            case PLAYER_HAS_LOST:
+                updatePlayerState(PossiblePlayerState.GAME_OVER);
+                giveTurnOwnership();
+                break;
 
         }
 

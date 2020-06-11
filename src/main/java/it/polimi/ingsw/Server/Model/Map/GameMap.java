@@ -1,10 +1,14 @@
 package it.polimi.ingsw.Server.Model.Map;
 
 
+import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
+import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameMap {
 
@@ -91,7 +95,7 @@ public class GameMap {
      * @param from where you are right now
      * @return the reachable adjacent places
      */
-    public ArrayList<Position> getReachableAdjacentPlaces(Position from) {
+    public List<Position> getReachableAdjacentPlaces(Position from) {
        ArrayList<Position> adjacentPlaces = from.getAdjacentPlaces();
 
        ArrayList<Position> reachablePlaces = new ArrayList<>();
@@ -147,27 +151,66 @@ public class GameMap {
 
 
     /**
-     * It checks if the {@link Worker worker} has no reachable places or in case he has than if he has adjacent places to build on
+     * It check if there's at least one reachable adjacent square -1 height compared to the square given
      *
-     *
-     * @return boolean
+     * @param square square
+     * @return true if there's at least one reachable adjacent square -1 height compared to the square given, false otherwise
      */
-    public boolean isWorkerStuck(Worker worker) {
-        ArrayList<Position> placesWhereToMove;
-        placesWhereToMove = getReachableAdjacentPlaces(worker.getWorkerPosition());
+    public boolean squareMinusOneAvailable(Square square) {
 
-        if (placesWhereToMove.isEmpty()) return true;
-
-
-        for (Position position: placesWhereToMove ) {
-            ArrayList<Position> placesWhereYouCanBuildOn = getPlacesWhereYouCanBuildOn(position);
-            if (!placesWhereYouCanBuildOn.isEmpty()) return false;
+        for (Position pos : this.getReachableAdjacentPlaces(square.getPosition())) {
+            if (square.getHeight() - this.getSquare(pos).getHeight() >= 1)
+                return true;
         }
 
-        return true;
+        return false;
     }
 
 
+    /**
+     * It check if there's at least one reachable adjacent square with the same height compared to the square given
+     *
+     * @param square square
+     * @return true if there's at least one reachable adjacent square with the same height compared to the square given, false otherwise
+     */
+    public boolean squareSameHeightAvailable(Square square) {
+
+        for (Position pos : this.getReachableAdjacentPlaces(square.getPosition())) {
+            if (square.getHeight() == this.getSquare(pos).getHeight())
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * It check if there are at least two reachable adjacent squares with the same height
+     *
+     * @param square square
+     * @return true if there are at least two reachable adjacent squares with the same height, false otherwise
+     */
+    public boolean twoSquaresSameHeightAvailable(Square square) {
+        ArrayList<Position> positions = new ArrayList<>();
+
+        for (Position pos : this.getReachableAdjacentPlaces(square.getPosition())) {
+            if (square.getHeight() == this.getSquare(pos).getHeight())
+                positions.add(pos);
+        }
+        return positions.size() >= 2;
+    }
+
+    /**
+     * TODO DA TROVARE UN NOME DECENTE
+     * It check if there are at least 2 buildable squares and 1 square with the same height
+     *
+     * @param square the square
+     * @return true if there are at least 2 buildable squares and 1 square with the same height, false otherwise
+     */
+    public boolean prometheusBuildsFirst(Square square) {
+        ArrayList<Position> buildableSquares = this.getPlacesWhereYouCanBuildOn(square.getPosition());
+
+        return buildableSquares.size() > 1 && this.squareSameHeightAvailable(square);
+    }
 
     /**
      * Print board.
@@ -230,9 +273,35 @@ public class GameMap {
 
             }
         }
-
         return fullSquares >= 5;
+    }
 
+    /**
+     * Remove {@link Worker Player's wokers} from the board
+     *
+     * @param playerToRemove the player to remove
+     */
+    public void removePlayerWorkers(Player playerToRemove) {
+        for (Worker worker : playerToRemove.getPlayerWorkers()) {
+            this.getSquare(worker.getPosition()).freeSquare();
+        }
+    }
 
+    /**
+     * It checks if starting from the position given you can only move up
+     *
+     * @param reachables       {@link List<Position>} MUST NOT BE EMPTY
+     * @param startingPosition the starting {@link Position}
+     *
+     * @return true if the worker can only move up, false otherwise;
+     */
+    public boolean forcedToMoveUp( List<Position> reachables, Position startingPosition) {
+
+        for (Position pos : reachables) {
+            if ( getSquare(pos).getHeight() <= getSquare(startingPosition).getHeight() )
+                return false;
+        }
+
+        return true;
     }
 }

@@ -1,19 +1,13 @@
 package it.polimi.ingsw.Server.Model.Player;
 
-import javafx.scene.paint.Color;
-
 import java.util.List;
 
 public class Worker {
-    
-    //Numero del worker
+
     private int workersNumber;
-
-
+    private final Player owner;
     private ColorEnum color;
 
-    private boolean isBlocked;
-    private int height;
     private Position workerPosition;
     private boolean placed;
 
@@ -24,20 +18,23 @@ public class Worker {
     private List<Position> adjacentPosition;
 
 
-    public Worker(int workersNumber) {
-        this.height = 0;
+    public Worker(Player owner, int workersNumber) {
         this.workerPosition = null;
         this.workersNumber = workersNumber;
-        this.isBlocked = false;
         this.placed = false;
         this.selected = false;
+        this.owner = owner;
     }
 
-    public Position getWorkerPosition() {
+    public Player getOwner() {
+        return owner;
+    }
+
+    public Position getPosition() {
         return workerPosition;
     }
 
-    public int getWorkersNumber() {
+    public int getNumber() {
         return workersNumber;
     }
 
@@ -86,4 +83,29 @@ public class Worker {
         return "\nWorker " + (workersNumber+1)  + " si trova in " + workerPosition;
     }
 
+    public void remove() {
+        this.setPosition(null);
+        this.placed = false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (!(obj instanceof Worker)) {
+            return false;
+        }
+
+        Worker worker = (Worker) obj;
+
+        return owner.equals(worker.owner) &&
+                workersNumber == worker.workersNumber &&
+                placed == worker.placed &&
+                selected == worker.selected &&
+                workerPosition.equals(worker.workerPosition);
+
+
+    }
 }

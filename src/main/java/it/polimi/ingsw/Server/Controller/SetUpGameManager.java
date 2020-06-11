@@ -1,11 +1,9 @@
 package it.polimi.ingsw.Server.Controller;
 
-import it.polimi.ingsw.Network.Message.Enum.ServerRequestContent;
 import it.polimi.ingsw.Network.Message.Enum.UpdateType;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.ChooseGodsServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.PickGodServerRequest;
 import it.polimi.ingsw.Network.Message.Server.ServerRequests.PlaceWorkerServerRequest;
-import it.polimi.ingsw.Network.Message.Server.ServerRequests.StartTurnServerRequest;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Model.Action.Action;
 import it.polimi.ingsw.Server.Model.Action.PlaceWorkerAction;
@@ -244,7 +242,7 @@ public class SetUpGameManager {
             placeWorkerAction.doAction();
 
             MasterController.buildPositiveResponse(activePlayer, responseContent, "Worker placed!");
-            MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.PLACE, positionToPlaceWorker, worker.getWorkersNumber(), false);
+            MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.PLACE, positionToPlaceWorker, worker.getNumber(), false);
 
 
             if(activePlayer.areWorkersPlaced()) {   // se activePlayer ha già posizionato 2 worker
@@ -257,14 +255,8 @@ public class SetUpGameManager {
 
                 // quando tutti hanno finito di piazzare i workers
                 if(playerLoop >= gameInstance.getPlayers().size()){
-                    //inizia il tuo turno
 
-                    StartTurnServerRequest startTurnServerRequest = new StartTurnServerRequest();
-                    gameInstance.putInChanges(activePlayer, startTurnServerRequest);
-
-                    MasterController.buildServerRequest(activePlayer, ServerRequestContent.SELECT_WORKER, null);
-                    setupGameState = PossibleGameState.START_ROUND;
-                    playerLoop = 0;
+                    MasterController.startFirstRound();
                     return;
                 }
 

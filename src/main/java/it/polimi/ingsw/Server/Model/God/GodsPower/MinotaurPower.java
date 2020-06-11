@@ -3,10 +3,16 @@ package it.polimi.ingsw.Server.Model.God.GodsPower;
 import it.polimi.ingsw.Server.Model.Action.Action;
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Action.MinotaurPushAction;
+import it.polimi.ingsw.Server.Model.Action.MoveAction;
 import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class MinotaurPower extends Power {
@@ -33,6 +39,31 @@ public class MinotaurPower extends Power {
 
         }return super.move(minotaurWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
+    }
+
+    @Override
+    public boolean isWorkerStuck(Worker worker) {
+        GameMap map = Game.getInstance().getGameMap();
+
+        ArrayList<Square> adjacents = new ArrayList<>();
+
+        for (Position position: worker.getPosition().getAdjacentPlaces())
+            adjacents.add(map.getSquare(position));
+
+        List<Square> pushable = adjacents.stream()
+                .filter((Square::hasWorkerOn))
+                .filter((square -> !square.getWorkerOnSquare().getColor().equals(worker.getColor())))
+                .collect(Collectors.toList());
+
+        Square workerSquare = map.getSquare(worker.getPosition());
+
+        for (Square opponentSquare: pushable) {
+            MinotaurPushAction minotaurPushAction = new MinotaurPushAction(this, worker, opponentSquare.getPosition(), workerSquare, opponentSquare);
+            if (minotaurPushAction.isValid())
+                return false;
+        }
+
+        return super.isWorkerStuck(worker);
     }
 }
 

@@ -32,7 +32,7 @@ public class MinotaurPushAction extends MoveAction {
         GameMap map = Game.getInstance().getGameMap();
 
         try {
-            backwardPosition = playerWorker.getWorkerPosition().getBackwardPosition(newPosition);
+            backwardPosition = playerWorker.getPosition().getBackwardPosition(newPosition);
             backwardSquare = map.getSquare(backwardPosition);
         } catch (PositionOutsideBoardException e) {
             return false;
@@ -40,7 +40,7 @@ public class MinotaurPushAction extends MoveAction {
 
         otherWorker = map.getWorkerOnSquare(newPosition);
 
-        int heightDifference = map.getDifferenceInAltitude(playerWorker.getWorkerPosition(), newPosition);
+        int heightDifference = map.getDifferenceInAltitude(playerWorker.getPosition(), newPosition);
         ArrayList<Position> adjacent = oldPositionSquare.getPosition().getAdjacentPlaces();
 
         return heightDifference >= -1 && adjacent.contains(newPosition) && !super.godsPowerActive(minotaurPower) &&
@@ -50,7 +50,7 @@ public class MinotaurPushAction extends MoveAction {
     public boolean clientValidation(CLIclientMap clientMap) {
 
         try {
-            backwardPosition = playerWorker.getWorkerPosition().getBackwardPosition(newPosition);
+            backwardPosition = playerWorker.getPosition().getBackwardPosition(newPosition);
             backwardSquare = clientMap.getSquare(backwardPosition);
         } catch (PositionOutsideBoardException e) {
             return false;
@@ -58,7 +58,7 @@ public class MinotaurPushAction extends MoveAction {
 
         otherWorker = clientMap.getWorkerOnSquare(newPosition);
 
-        int heightDifference = clientMap.getDifferenceInAltitude(playerWorker.getWorkerPosition(), newPosition);
+        int heightDifference = clientMap.getDifferenceInAltitude(playerWorker.getPosition(), newPosition);
         ArrayList<Position> adjacent = oldPositionSquare.getPosition().getAdjacentPlaces();
 
         return heightDifference >= -1 && adjacent.contains(newPosition) &&

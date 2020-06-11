@@ -9,7 +9,7 @@ import it.polimi.ingsw.Server.Model.Player.Worker;
 public class AthenaPower extends Power {
 
 
-    private static boolean hasGoneUp;
+    private static boolean goneUp;
 
     public AthenaPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
@@ -17,12 +17,12 @@ public class AthenaPower extends Power {
 
     @Override
     public ActionOutcome move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
-        hasGoneUp = false;
+        goneUp = false;
 
         int a = squareWhereTheWorkerIs.getHeight();
         int b = squareWhereToMove.getHeight();
         if (b - a == 1) {
-            hasGoneUp = true;
+            goneUp = true;
         }
         return super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
     }
@@ -34,6 +34,10 @@ public class AthenaPower extends Power {
 
     @Override
     public boolean checkIfActionNotPermitted(MoveAction moveAction) {
-        return hasGoneUp && moveAction.oldPositionSquare.getHeight() - moveAction.newPositionSquare.getHeight() < 0;
+        return goneUp && moveAction.oldPositionSquare.getHeight() - moveAction.newPositionSquare.getHeight() < 0;
+    }
+
+    public boolean hasGoneUp() {
+        return goneUp;
     }
 }

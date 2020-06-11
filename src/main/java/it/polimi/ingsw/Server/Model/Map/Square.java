@@ -6,7 +6,6 @@ import it.polimi.ingsw.Server.Model.Player.ColorEnum;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Utility.*;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
@@ -144,8 +143,10 @@ public class Square {
         String ret = "";
 
         if (getHeight() != 0) {
-            if (hasDome()) {
-                return "O   ";
+            if (tower.size() == 4) {
+                return "F   ";
+            }else if(hasDome()){
+                return "D   ";
             }
         }
 
@@ -178,7 +179,7 @@ public class Square {
         } else if (ColorEnum.BLUE.equals(color)) {
             str = Ansi.BLUE.concat(" W" + ANSI_RESET);
         } else if (ColorEnum.GREEN.equals(color)) {
-            str = Ansi.BLUE.concat(" W" + ANSI_RESET);
+            str = Ansi.GREEN.concat(" W" + ANSI_RESET);
         }
 
         return str;
@@ -187,6 +188,24 @@ public class Square {
 
     public boolean isFull() {
         return this.getHeight() == 4;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (!(obj instanceof Square)) {
+            return false;
+        }
+
+        Square square = (Square) obj;
+
+        return this.row == square.row &&
+                this.column == square.column &&
+                this.workerOnSquare.equals(square.workerOnSquare) &&
+                this.getHeight() == square.getHeight();
     }
 }
 

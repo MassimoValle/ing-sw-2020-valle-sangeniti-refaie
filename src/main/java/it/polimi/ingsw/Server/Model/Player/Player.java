@@ -1,6 +1,8 @@
 package it.polimi.ingsw.Server.Model.Player;
 
+import it.polimi.ingsw.Server.Model.Action.SelectWorkerAction;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -13,6 +15,8 @@ public class Player {
     private List<Worker> playerWorkers;         /** List of workers assigned to the player */
     private int numWorker = 2;                  /** Number of workers per player */
     private ColorEnum color;
+
+    private boolean eliminated = false;
 
     //private LastTurnAction[] lastTurnActions;
 
@@ -28,7 +32,7 @@ public class Player {
     public Player(String playerName) {
         this.playerName = playerName;
         this.playerWorkers = new ArrayList<>();
-        for (int i = 0; i < numWorker; i++) { this.playerWorkers.add(new Worker(i)); }   // 2 workers
+        for (int i = 0; i < numWorker; i++) { this.playerWorkers.add(new Worker(this, i)); }   // 2 workers
     }
 
     /**
@@ -86,7 +90,7 @@ public class Player {
      * @return the worker
      */
     public Worker addNewWorker() {
-        Worker newWorker = new Worker(getPlayerWorkers().size() + 1);
+        Worker newWorker = new Worker(this, getPlayerWorkers().size() + 1);
         getPlayerWorkers().add(newWorker);
         return newWorker;
     }
@@ -95,9 +99,7 @@ public class Player {
     //public String toString() { return "Player Name: " + this.playerName.toUpperCase(); }
 
     public boolean godAssigned() {
-        if (playerGod != null )
-            return true;
-        else return false;
+        return playerGod != null;
     }
 
     public boolean areWorkersPlaced() {
@@ -106,6 +108,24 @@ public class Player {
                 return false;
         }
         return true;
+    }
+
+    /**
+     * This method checks if the player cannot select any worker due to them being stuck
+     *
+     * @return true if all workers are stuck, false otherwise
+     */
+    public boolean allWorkersStuck() {
+        Power power = this.getPlayerGod().getGodPower();
+        int workersStuck = 0;
+
+        for (Worker worker : playerWorkers) {
+            SelectWorkerAction selectWorker = new SelectWorkerAction(power, worker, this);
+            if (!selectWorker.isValid())
+                workersStuck++;
+        }
+
+        return workersStuck == playerWorkers.size();
     }
 
     @Override
@@ -150,5 +170,18 @@ public class Player {
     }
 
 
+    public void removeWorkers() {
+        for (Worker worker : playerWorkers) {
+            worker.remove();
+        }
+    }
+
+    public boolean isEliminated() {
+        return this.eliminated;
+    }
+
+    public void setEliminated(boolean eliminated) {
+        this.eliminated = eliminated;
+    }
 }
 

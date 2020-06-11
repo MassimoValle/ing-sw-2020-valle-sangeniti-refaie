@@ -3,6 +3,7 @@ package it.polimi.ingsw.Server.Model;
 import it.polimi.ingsw.Network.Message.Server.ServerMessage;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.God.GodsPower.AthenaPower;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.ColorEnum;
@@ -226,6 +227,14 @@ public class Game extends Observable<Message> {
         gameInstance = null;
     }
 
+    public boolean checkGodPresence(String godName) {
+
+        for (God god : getChosenGodsFromDeck())
+            if (godName.equals(god.getGodName()))
+                return true;
+
+        return false;
+    }
 }
 
 
