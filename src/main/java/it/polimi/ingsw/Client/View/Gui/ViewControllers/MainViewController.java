@@ -24,6 +24,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -67,6 +68,8 @@ public class MainViewController implements Initializable {
 
     ParameterListener parameterListener = ParameterListener.getInstance();
     private Object parameter = null;
+
+    private ArrayList<AnchorPane> enablePosition;
 
 
     private void setupImageView(){
@@ -232,5 +235,32 @@ public class MainViewController implements Initializable {
         }
 
         Platform.runLater(this::setupImageView);
+    }
+
+    public void enablePosition(ArrayList<Position> nearlyPosValid) {
+
+        for(Position pos : nearlyPosValid) {
+            for (Node node : gridPane.getChildren()) {
+                if (GridPane.getColumnIndex(node) == pos.getColumn() && GridPane.getRowIndex(node) == pos.getRow()) {
+                    AnchorPane ap = (AnchorPane) node;
+
+                    ap.setStyle("-fx-background-color: yellow");
+
+                    enablePosition.add(ap);
+                }
+            }
+        }
+
+    }
+
+     public void disablePosition(){
+
+        for(AnchorPane ap : enablePosition){
+
+            ap.setStyle("-fx-background-color: white");
+            enablePosition.remove(ap);
+
+        }
+
     }
 }

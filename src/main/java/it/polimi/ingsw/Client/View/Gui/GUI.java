@@ -16,10 +16,12 @@ import it.polimi.ingsw.Server.Model.Player.Position;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class GUI extends ClientView {
@@ -28,6 +30,8 @@ public class GUI extends ClientView {
     private final boolean mainPlayer = false;
 
     private final ParameterListener parameterListener;
+
+    private MainViewController controller;
 
     public GUI(){
         parameterListener = ParameterListener.getInstance();
@@ -274,7 +278,7 @@ public class GUI extends ClientView {
         try {
             GUImain.setRoot("mainView", null);
             FXMLLoader fxmlLoader = GUImain.getFXMLLoader();
-            MainViewController controller = fxmlLoader.<MainViewController>getController();
+            controller = fxmlLoader.<MainViewController>getController();
             controller.setPlayers(playerSet);
             controller.init();
 
@@ -394,86 +398,238 @@ public class GUI extends ClientView {
 
     @Override
     public void errorWhileActivatingPower(String gameManagerSays) {
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("There was a problem with the power you want to use");
+        alert.setContentText("Game Manager says: " + gameManagerSays + "Please do a different action");
 
+        alert.showAndWait();
     }
 
     @Override
     public void powerActivated(God god) {
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("Power activated!");
+        alert.setContentText("Now you can:  " + god.getGodPower().getPowerDescription());
 
+        alert.showAndWait();
     }
 
     @Override
     public Position moveWorker(ArrayList<Position> nearlyPosValid) {
-        return null;
+
+        controller.enablePosition(nearlyPosValid);
+
+        while (ParameterListener.getParameter() == null){
+
+            synchronized (parameterListener){
+                try {
+                    parameterListener.wait();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        Position ret = (Position) ParameterListener.getParameter();
+        parameterListener.setToNull();
+
+        controller.disablePosition();
+
+        return ret;
+
     }
 
     @Override
     public void errorWhileMovingWorker(String gameManagerSays) {
 
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("There was a problem with the move you performed");
+        alert.setContentText("Game Manager says: " + gameManagerSays + "Please move again");
+
+        alert.showAndWait();
     }
 
     @Override
     public boolean wantMoveAgain() {
-        return false;
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("Do you want to move again?");
+        alert.setContentText("Choose your option.");
+
+        ButtonType buttonTypeOne = new ButtonType("Yes");
+        ButtonType buttonTypeTwo = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == buttonTypeOne) {
+            return true;
+        } else { //if (result.get() == buttonTypeTwo) {
+            return false;
+        }
     }
 
     @Override
-    public void printCanMoveAgain(String gameManagaerSays) {
+    public void printCanMoveAgain(String gameManagerSays) {
+
+        System.out.println(gameManagerSays);
+        System.out.println();
 
     }
 
     @Override
     public void workerMovedSuccessfully() {
 
+        System.out.println("Worker moved successfully!");
+        System.out.println();
+
     }
 
     @Override
     public void endMoveRequestError(String gameManagerSays) {
+
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("End Move Request Error");
+        alert.setContentText("Game Manager says: " + gameManagerSays);
+
+        alert.showAndWait();
 
     }
 
     @Override
     public void endMovingPhase(String gameManagerSays) {
 
+        System.out.println(gameManagerSays);
+        System.out.println();
+
     }
 
     @Override
     public Position build(ArrayList<Position> possiblePosToBuild) {
-        return null;
+
+        controller.enablePosition(possiblePosToBuild);
+
+        while (ParameterListener.getParameter() == null){
+
+            synchronized (parameterListener){
+                try {
+                    parameterListener.wait();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        Position ret = (Position) ParameterListener.getParameter();
+        parameterListener.setToNull();
+
+        controller.disablePosition();
+
+        return ret;
+
     }
 
     @Override
     public boolean wantBuildAgain() {
-        return false;
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("Do you want to build again?");
+        alert.setContentText("Choose your option.");
+
+        ButtonType buttonTypeOne = new ButtonType("Yes");
+        ButtonType buttonTypeTwo = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == buttonTypeOne) {
+            return true;
+        } else { //if (result.get() == buttonTypeTwo) {
+            return false;
+        }
+
     }
 
     @Override
     public void printCanBuildAgain(String gameManagerSays) {
+
+        System.out.println(gameManagerSays);
+        System.out.println();
 
     }
 
     @Override
     public void errorWhileBuilding(String gameManagerSays) {
 
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("There was a problem with the built you performed");
+        alert.setContentText("Game Manager says: " + gameManagerSays + "Please build again");
+
+        alert.showAndWait();
+
     }
 
     @Override
     public void builtSuccessfully() {
+
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("Built successfully!");
+
+        alert.showAndWait();
 
     }
 
     @Override
     public void endBuildRequestError(String gameManagerSays) {
 
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("End Build Request Error");
+        alert.setContentText("Game Manager says: " + gameManagerSays);
+
+        alert.showAndWait();
+
     }
 
     @Override
     public void endBuildingPhase(String gameManagerSays) {
 
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("End Building Phase");
+        alert.setContentText("Game Manager says: " + gameManagerSays);
+
+        alert.showAndWait();
+
     }
 
     @Override
     public void endTurn() {
+
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("Ending turn!");
+
+        alert.showAndWait();
 
     }
 
@@ -550,20 +706,38 @@ public class GUI extends ClientView {
     @Override
     public void youWon() {
 
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("YOU WIN");
+
+        alert.showAndWait();
+
     }
 
     @Override
     public void youLose(String winner) {
+
+        if(!enaPopup) return;
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("YOU LOSE");
+
+        alert.showAndWait();
 
     }
 
     @Override
     public void debug(ServerResponse serverResponse) {
 
+        // do nothing
+
     }
 
     @Override
     public void showMap(GameMap clientMap) {
+
+        // do nothing
 
     }
 
