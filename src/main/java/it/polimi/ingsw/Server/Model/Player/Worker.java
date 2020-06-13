@@ -14,7 +14,7 @@ public class Worker {
     private boolean selected;
 
 
-    //ArayList contenente le posizioni in cui il worker selezionato può muoversi
+    //ArrayList contenente le posizioni in cui il worker selezionato può muoversi
     private List<Position> adjacentPosition;
 
 

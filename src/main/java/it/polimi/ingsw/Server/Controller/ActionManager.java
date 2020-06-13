@@ -304,7 +304,7 @@ public class ActionManager {
             turnManager.updateTurnState(PossibleGameState.BUILT);
 
             if (currentRequest instanceof EndBuildRequest)
-                MasterController.buildPositiveResponse(activePlayer, ResponseContent.END_BUILD, "Devi passare il turno!");
+                MasterController.buildPositiveResponse(activePlayer, ResponseContent.END_BUILD, "You've got to end your turn");
             else
                 MasterController.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Built!");
 
@@ -439,7 +439,7 @@ public class ActionManager {
      * @return true if he has won, false otherwise
      */
     private boolean playerHasWonAfterMoving(Player player) {
-        Outcome outcome = new Outcome(player, gameInstance.getPowersInGame(), gameInstance.getGameMap(), gameInstance.getPlayers());
+        Outcome outcome = new Outcome(player, gameInstance.getPowersInGame(), gameInstance.getGameMap(), gameInstance.getPlayers(), turnManager.getLastActionPerformed());
         if( outcome.playerHasWonAfterMoving(turnManager.getActiveWorker()) ) {
             winner = outcome.getWinner();
             return true;
@@ -455,7 +455,7 @@ public class ActionManager {
      * @return true if he has won, false otherwise
      */
     private boolean someoneHasWonAfterBuilding(Player player) {
-        Outcome outcome = new Outcome(player, gameInstance.getPowersInGame(), gameInstance.getGameMap(), gameInstance.getPlayers());
+        Outcome outcome = new Outcome(player, gameInstance.getPowersInGame(), gameInstance.getGameMap(), gameInstance.getPlayers(), turnManager.getLastActionPerformed());
         if (outcome.playerHasWonAfterBuilding(gameInstance.getGameMap())) {
             winner = outcome.getWinner();
             return true;

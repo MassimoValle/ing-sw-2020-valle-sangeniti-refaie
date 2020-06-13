@@ -165,7 +165,7 @@ public class MasterControllerTest {
         );
 
         masterController.dispatcher(
-                new EndTurnRequest(player2.getPlayerName())
+                new EndTurnRequest(player1.getPlayerName())
         );
 
         game.printGameInfo();

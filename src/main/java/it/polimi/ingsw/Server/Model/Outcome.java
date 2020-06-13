@@ -1,5 +1,7 @@
 package it.polimi.ingsw.Server.Model;
 
+import it.polimi.ingsw.Server.Model.Action.Action;
+import it.polimi.ingsw.Server.Model.Action.MoveAction;
 import it.polimi.ingsw.Server.Model.God.GodsPower.*;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.*;
@@ -16,14 +18,17 @@ public class Outcome {
     private final List<Power> powersInGame;
     private final List<Player> playersInGame;
 
+    private final Action lastAction;
+
     private Player winner = null;
 
 
-    public Outcome(Player player, List<Power> powersInGame, GameMap gameMap, List<Player> playersInGame) {
+    public Outcome(Player player, List<Power> powersInGame, GameMap gameMap, List<Player> playersInGame, Action lastAction) {
         this.player = player;
         this.powersInGame = powersInGame;
         this.gameMap = gameMap;
         this.playersInGame = playersInGame;
+        this.lastAction = lastAction;
     }
 
 
@@ -45,6 +50,8 @@ public class Outcome {
         }
 
         //TODO da gestire il caso in cui io mi muovo da un livello 3 a un livello 3 e casi particolare (zeus)
+        if (!((MoveAction) lastAction).winningMove())
+            return false;
 
         winner = player;
 

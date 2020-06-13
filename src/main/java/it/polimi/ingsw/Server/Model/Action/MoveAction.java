@@ -96,4 +96,12 @@ public class MoveAction implements Action {
         return false;
     }
 
+    /**
+     * It checks if moving from a lvl2 to lvl3 block
+     *
+     * @return true if so, false otherwise
+     */
+    public boolean winningMove() {
+        return oldPositionSquare.getHeight() == 2 && newPositionSquare.getHeight() == 3;
+    }
 }
