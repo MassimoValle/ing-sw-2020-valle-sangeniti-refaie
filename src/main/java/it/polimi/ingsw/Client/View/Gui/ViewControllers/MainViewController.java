@@ -7,6 +7,7 @@ import it.polimi.ingsw.Client.Model.Map.PumpedSquare;
 import it.polimi.ingsw.Client.View.Gui.ParameterListener;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,10 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -78,20 +76,9 @@ public class MainViewController implements Initializable {
 
             for (int col = 0; col < 5; col++) {
 
-                AnchorPane anchorPane = new AnchorPane();
-                ImageView imageView = ((PumpedSquare) guiMap.getSquare(row, col)).getImg();
+                AnchorPane anchorPane = (AnchorPane) getNodeByRowColumnIndex(row, col);
 
-                ImageViewPane imageViewPane = new ImageViewPane(imageView);
-
-                AnchorPane.setTopAnchor(imageViewPane, 3.0);
-                AnchorPane.setLeftAnchor(imageViewPane, 3.0);
-                AnchorPane.setRightAnchor(imageViewPane, 3.0);
-                AnchorPane.setBottomAnchor(imageViewPane, 3.0);
-
-                String baseBg = "FFFFFF";
-                anchorPane.setStyle("-fx-background-color: #" + baseBg);
-
-                anchorPane.getChildren().add(imageViewPane);
+                anchorPane.getChildren().add(((PumpedSquare) guiMap.getSquare(row,col)).getStackPane());
 
                 anchorPane.setOnMouseClicked(e -> {
                     //TODO
@@ -105,7 +92,6 @@ public class MainViewController implements Initializable {
 
                 });
 
-                gridPane.add(anchorPane, row, col);
 
             }
 
@@ -117,12 +103,15 @@ public class MainViewController implements Initializable {
         this.players = playerSet;
     }
 
-    public Node getNodeByRowColumnIndex (final int row, final int column, GridPane gridPane) {
+    public Node getNodeByRowColumnIndex (final int row, final int column) {
         Node result = null;
         ObservableList<Node> childrens = gridPane.getChildren();
 
         for (Node node : childrens) {
-            if(gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
+            //System.out.println("AnchorPane: " + node);
+            //System.out.println("Row: "+ GridPane.getRowIndex(node));
+            //System.out.println("Column: "+ GridPane.getColumnIndex(node));
+            if(GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
                 result = node;
                 break;
             }
@@ -172,58 +161,8 @@ public class MainViewController implements Initializable {
         Stage stage = GUImain.getStage();
         stage.setMaximized(true);
 
-        // prove di binding
-        /*
-        double width = stage.getWidth();
-        double height = stage.getHeight();
-
-        System.out.println("stage width: " + width);
-        System.out.println("stage height: " + height);
-
-        cliffAnchorPane.setMaxHeight(height);
-        cliffAnchorPane.setMaxWidth(width);
-
-        cliffAnchorPane.minWidthProperty().bind(stage.widthProperty());
-        cliffAnchorPane.minHeightProperty().bind(stage.heightProperty());
-
-        ImageView imageView = (ImageView) leftCliff.getChildren().get(0);
-        imageView.fitHeightProperty().bind(leftCliff.heightProperty());
-        imageView.fitWidthProperty().bind(leftCliff.widthProperty());
-
-        ImageView imageView1 = (ImageView) topCliff.getChildren().get(0);
-        imageView1.fitHeightProperty().bind(topCliff.heightProperty());
-        imageView1.fitWidthProperty().bind(topCliff.widthProperty());
-
-        ImageView imageView2 = (ImageView) rightCliff.getChildren().get(0);
-        imageView2.fitHeightProperty().bind(rightCliff.heightProperty());
-        imageView2.fitWidthProperty().bind(rightCliff.widthProperty());
-
-        ImageView imageView3 = (ImageView) bottomCliff.getChildren().get(0);
-        imageView3.fitHeightProperty().bind(bottomCliff.heightProperty());
-        imageView3.fitWidthProperty().bind(bottomCliff.widthProperty());
-        */
-
 
         for (Player player : players){
-
-            /*
-            FXMLLoader loader = null;
-            Parent node = null;
-            try {
-
-                loader = new FXMLLoader(GUImain.class.getResource("/fxml/" + "player" + ".fxml"));
-                node = loader.load();
-
-            }catch (IOException e){
-                e.printStackTrace();
-            }
-
-            hboxPlayers.getChildren().add(node);
-
-            PlayerController controller = loader.getController();
-            controller.init(player);
-            */
-
 
             Label nameLabel = new Label(player.getPlayerName());
             Label godLabel = new Label(player.getPlayerGod().getGodName());

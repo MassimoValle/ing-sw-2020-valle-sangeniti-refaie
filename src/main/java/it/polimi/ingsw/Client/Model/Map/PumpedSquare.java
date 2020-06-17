@@ -11,40 +11,37 @@ import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 import java.util.ArrayList;
 
 public class PumpedSquare extends Square {
 
     private Image baseImg;
-    private ImageView imgView;
-    private Image workerImg;
-    protected PumpedWorker workerOnSquare;
+    private ImageView imgWorker;
+    public StackPane stackPane;
 
     public PumpedSquare(int row, int column, Image baseImg) {
         super(row, column);
         this.baseImg = baseImg;
+        stackPane = new StackPane();
 
-        this.imgView  = new ImageView(baseImg);
+        ImageView imgView  = new ImageView(baseImg);
+        stackPane.getChildren().add(imgView);
     }
 
-    public ImageView getImg() {
-        return imgView;
+    public StackPane getStackPane() {
+        return stackPane;
     }
 
-    private void setImg(Image img) {
-        this.baseImg = img;
-        this.imgView.setImage(baseImg);
-    }
 
     @Override
     public void setWorkerOn(Worker worker) {
 
-        this.workerOnSquare = (PumpedWorker) worker;
+        this.workerOnSquare = worker;
 
-        workerImg = workerOnSquare.getImg();
-        this.imgView.setImage(workerImg);
-
+        imgWorker = new ImageView(((PumpedWorker) worker).getImg());
+        stackPane.getChildren().add(imgWorker);
     }
 
     /**
@@ -54,7 +51,7 @@ public class PumpedSquare extends Square {
     public void freeSquare() {
 
         this.workerOnSquare = null;
-        setImg(baseImg);
+        stackPane.getChildren().remove(imgWorker);
 
     }
 
@@ -74,16 +71,24 @@ public class PumpedSquare extends Square {
         } else {
             switch (tower.size()){
                 case 0:
-                    tower.add(new PumpedLevelOneBlock());
+                    PumpedLevelOneBlock pumpedLevelOneBlock = new PumpedLevelOneBlock();
+                    tower.add(pumpedLevelOneBlock);
+                    stackPane.getChildren().add(pumpedLevelOneBlock.getImgView());
                     break;
                 case 1:
-                    tower.add(new PumpedLevelTwoBlock());
+                    PumpedLevelTwoBlock pumpedLevelTwoBlock = new PumpedLevelTwoBlock();
+                    tower.add(pumpedLevelTwoBlock);
+                    stackPane.getChildren().add(pumpedLevelTwoBlock.getImgView());
                     break;
                 case 2:
-                    tower.add(new PumpedLevelThreeBlock());
+                    PumpedLevelThreeBlock pumpedLevelThreeBlock = new PumpedLevelThreeBlock();
+                    tower.add(pumpedLevelThreeBlock);
+                    stackPane.getChildren().add(pumpedLevelThreeBlock.getImgView());
                     break;
                 case 3:
-                    tower.add(new PumpedDome());
+                    PumpedDome pumpedDome = new PumpedDome();
+                    tower.add(pumpedDome);
+                    stackPane.getChildren().add(pumpedDome.getImgView());
                     break;
                 default:
                     //throw new Exception();
