@@ -12,8 +12,11 @@ import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Utility.Ansi;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -832,8 +835,17 @@ public class CLI extends ClientView {
 
         try {
             client.run();
+        } catch (EOFException ex) {
+            //this is thrown when the end of the stream is reached
+            System.out.println("Server disconnected while sending message to it!");
+        } catch (UnknownHostException ex) {
+            System.out.println("Unknown host, please insert again:");
+        } catch (ConnectException ex) {
+            System.out.println("Server refused to connect");
         } catch (IOException ex) {
-            //ex.printStackTrace();
+            ex.printStackTrace();
+            System.out.println("Error server side");
+        } finally {
             run();
         }
     }

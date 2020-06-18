@@ -71,6 +71,9 @@ public class ArtemisPowerTest {
     @Test
     public void ArtemisCantMoveBackToInitialPlaceTest(){
 
+        //da qualche parte non si resetta idk
+        player1.getPlayerGod().getGodPower().resetPower();
+
         setupUtility.selectWorker(pl1,1);
         setupUtility.move(pl1, 2,4);
 

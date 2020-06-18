@@ -276,8 +276,11 @@ public class ClientManager {
                     new LoginRequest(me.getPlayerName())
             );
         }catch (IOException e){
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Server disconnected while sending message to it");
         }
+
+
 
     }
 

@@ -244,6 +244,10 @@ public class TurnManager {
         return ret;
     }
 
+    public Action getLastActionPerformed() {
+        return actionPerformedByActivePlayer.get(actionPerformedByActivePlayer.size() - 1);
+    }
+
     public void addActionPerformed(Action action) {
         actionPerformedByActivePlayer.add(action);
     }

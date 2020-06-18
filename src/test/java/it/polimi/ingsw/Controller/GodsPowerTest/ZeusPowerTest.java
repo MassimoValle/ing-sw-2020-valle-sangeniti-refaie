@@ -68,33 +68,42 @@ public class ZeusPowerTest {
 
         setupUtility.setupDifferentHeight(masterController, 12, 1, true);
 
-        Square sq24 = game.getGameMap().getSquare(2,4);
+        Square sq24 = game.getGameMap().getSquare(2, 4);
         sq24.addBlock(false);
         sq24.addBlock(false);
         sq24.addBlock(false);
 
 
-        setupUtility.selectWorker(pl1,1);
-        setupUtility.move(pl1, 2,4);
+        setupUtility.selectWorker(pl1, 1);
+        setupUtility.move(pl1, 2, 4);
 
 
-        assertEquals( new Position(2,4) ,player1.getPlayerWorkers().get(1).getPosition());
-        assertEquals(3, game.getGameMap().getSquare(2,4).getHeight());
-        assertFalse(game.getGameMap().getSquare(2,4).hasDome());
-
-
-
-        setupUtility.build(pl1,2,4);
-
-
-        assertEquals( new Position(2,4) ,player1.getPlayerWorkers().get(1).getPosition());
-        assertEquals(3, game.getGameMap().getSquare(2,4).getHeight());
-        assertFalse(game.getGameMap().getSquare(2,4).hasDome());
-
-
-        setupUtility.endTurn(pl1);
-
-
+        assertEquals(new Position(2, 4), player1.getPlayerWorkers().get(1).getPosition());
+        assertEquals(3, game.getGameMap().getSquare(2, 4).getHeight());
+        assertFalse(game.getGameMap().getSquare(2, 4).hasDome());
 
     }
+
+    @Test
+    public void ZeusCantWinBuildingUnderHimself() throws DomePresentException {
+
+        setupUtility.setup(masterController, 12, 1, true);
+
+        setupUtility.addBlock(2,2);
+        setupUtility.addBlock(2,2);
+        setupUtility.addBlock(2,2);
+        setupUtility.addBlock(1,1);
+        setupUtility.addBlock(1,1);
+        setupUtility.addBlock(1,1);
+
+
+        assertNull(setupUtility.getWinner());
+
+        setupUtility.selectWorker(pl1, 0);
+        setupUtility.move(pl1, 1,1);
+
+        assertNull(setupUtility.getWinner());
+
+    }
+
 }
