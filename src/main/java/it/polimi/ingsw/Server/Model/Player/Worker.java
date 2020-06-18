@@ -1,5 +1,8 @@
 package it.polimi.ingsw.Server.Model.Player;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 import java.util.List;
 
 public class Worker {
@@ -14,6 +17,10 @@ public class Worker {
     private boolean selected;
 
 
+    //GUI
+    private ImageView imgView;
+
+
     //ArayList contenente le posizioni in cui il worker selezionato può muoversi
     private List<Position> adjacentPosition;
 
@@ -24,6 +31,25 @@ public class Worker {
         this.placed = false;
         this.selected = false;
         this.owner = owner;
+    }
+
+    public void initGUIObj(){
+        this.imgView = new ImageView(this.setImg());
+    }
+
+    private Image setImg() {
+        String path = "/imgs/workers/";
+        switch (getOwner().getColor()){
+            case RED -> path += "BrownWorker.png";
+            case BLUE -> path += "BlueWorker.png";
+            case GREEN -> path += "WhiteWorker.png";
+        }
+
+        return new Image(path);
+    }
+
+    public ImageView getImgView() {
+        return imgView;
     }
 
     public Player getOwner() {
@@ -40,11 +66,6 @@ public class Worker {
 
     public ColorEnum getColor() {
         return color;
-    }
-
-    private Worker placeNewWorker(Position position) {
-        this.setPosition(position);
-        return this;
     }
 
     public boolean isSelected() {

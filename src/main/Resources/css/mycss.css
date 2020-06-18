@@ -97,3 +97,17 @@
 }
 
 
+
+
+
+.cliff{
+  -fx-background-image: url("../imgs/cliff/SantoriniBoard.png");
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+}
+
+.scaleHeight{
+  -fx-cell-size: 20%;
+}
+
+

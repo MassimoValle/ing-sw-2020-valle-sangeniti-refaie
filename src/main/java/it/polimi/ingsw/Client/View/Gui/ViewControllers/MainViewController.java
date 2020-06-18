@@ -3,11 +3,9 @@ package it.polimi.ingsw.Client.View.Gui.ViewControllers;
 import it.polimi.ingsw.Client.GUImain;
 import it.polimi.ingsw.Client.Model.BabyGame;
 import it.polimi.ingsw.Client.Model.Map.GUImap;
-import it.polimi.ingsw.Client.Model.Map.PumpedSquare;
 import it.polimi.ingsw.Client.View.Gui.ParameterListener;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
-import it.polimi.ingsw.Server.Model.Player.Worker;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,7 +15,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -78,7 +75,7 @@ public class MainViewController implements Initializable {
 
                 AnchorPane anchorPane = (AnchorPane) getNodeByRowColumnIndex(row, col);
 
-                anchorPane.getChildren().add(((PumpedSquare) guiMap.getSquare(row,col)).getStackPane());
+                anchorPane.getChildren().add((guiMap.getSquare(row,col)).getStackPane());
 
                 anchorPane.setOnMouseClicked(e -> {
                     //TODO
@@ -104,38 +101,22 @@ public class MainViewController implements Initializable {
     }
 
     public Node getNodeByRowColumnIndex (final int row, final int column) {
+
         Node result = null;
         ObservableList<Node> childrens = gridPane.getChildren();
 
         for (Node node : childrens) {
-            //System.out.println("AnchorPane: " + node);
-            //System.out.println("Row: "+ GridPane.getRowIndex(node));
-            //System.out.println("Column: "+ GridPane.getColumnIndex(node));
+
             if(GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
                 result = node;
                 break;
             }
+
         }
 
         return result;
     }
 
-    private Node standardGetElementAt(int i, int j) {
-
-        for (Node x : gridPane.getChildren()) {
-
-            if(gridPane == null) System.out.println("gridPane");
-            if(x == null) System.out.println("x");
-
-            int gridPaneX = GridPane.getRowIndex(x);
-            int gridPaneY = GridPane.getColumnIndex(x);
-
-            if ((gridPaneX == i) && (gridPaneY == j)) {
-                return x;
-            }
-        }
-        return null;
-    }
 
     @FXML
     void powerEvent(ActionEvent event) {
@@ -159,7 +140,7 @@ public class MainViewController implements Initializable {
     private void setScene() {
 
         Stage stage = GUImain.getStage();
-        stage.setMaximized(true);
+        //stage.setResizable(false);
 
 
         for (Player player : players){

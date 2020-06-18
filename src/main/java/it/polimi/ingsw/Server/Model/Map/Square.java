@@ -6,6 +6,8 @@ import it.polimi.ingsw.Server.Model.Player.ColorEnum;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Utility.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 import java.util.ArrayList;
 
@@ -18,6 +20,11 @@ public class Square {
     protected Worker workerOnSquare;
     protected ArrayList<Block> tower;
 
+    //GUI
+    private ImageView imgWorker;
+    private StackPane stackPane;
+    private boolean GUI = false;
+
 
 
     public Square(int row, int column) {
@@ -25,6 +32,12 @@ public class Square {
         this.workerOnSquare = null;
         this.row = row;
         this.column = column;
+    }
+
+    public void initGUIObj(){
+        GUI = true;
+        imgWorker = null;
+        stackPane = new StackPane();
     }
 
     public Worker getWorkerOnSquare() {
@@ -80,7 +93,13 @@ public class Square {
      * @param worker the worker
      */
     public void setWorkerOn(Worker worker) {
+
         this.workerOnSquare = worker;
+
+        if(GUI) {
+            imgWorker = worker.getImgView();
+            getStackPane().getChildren().add(imgWorker);
+        }
     }
 
     /**
@@ -88,6 +107,10 @@ public class Square {
      */
     public void freeSquare() {
         this.workerOnSquare = null;
+
+        if(GUI) {
+            getStackPane().getChildren().remove(imgWorker);
+        }
     }
 
 
@@ -108,26 +131,55 @@ public class Square {
         }
 
         if (dome) {
-            tower.add(new Dome());
+            Dome dome1 = new Dome();
+            tower.add(dome1);
+
+            if(GUI) { addIfGUI(dome1); }
         } else {
             switch (tower.size()){
                 case 0:
-                    tower.add(new LevelOneBlock());
+                    LevelOneBlock levelOneBlock = new LevelOneBlock();
+                    tower.add(levelOneBlock);
+
+                    if(GUI) { addIfGUI(levelOneBlock); }
                     break;
                 case 1:
-                    tower.add(new LevelTwoBlock());
+                    LevelTwoBlock levelTwoBlock = new LevelTwoBlock();
+                    tower.add(levelTwoBlock);
+
+                    if(GUI) { addIfGUI(levelTwoBlock); }
                     break;
                 case 2:
-                    tower.add(new LevelThreeBlock());
+                    LevelThreeBlock levelThreeBlock = new LevelThreeBlock();
+                    tower.add(levelThreeBlock);
+
+                    if(GUI) { addIfGUI(levelThreeBlock); }
                     break;
                 case 3:
-                    tower.add(new Dome());
+                    Dome dome1 = new Dome();
+                    tower.add(dome1);
+
+                    if(GUI) { addIfGUI(dome1); }
                     break;
                 default:
                     //throw new Exception();
             }
         }
 
+    }
+
+    private void addIfGUI(Block block){
+        if (imgWorker == null)
+            getStackPane().getChildren().add(block.getImageView());
+        else {
+            switchOnTop(block);
+        }
+    }
+
+    private void switchOnTop(Block block){
+        getStackPane().getChildren().remove(imgWorker);
+        getStackPane().getChildren().add(block.getImageView());
+        getStackPane().getChildren().add(imgWorker);
     }
 
 
@@ -206,6 +258,10 @@ public class Square {
                 this.column == square.column &&
                 this.workerOnSquare.equals(square.workerOnSquare) &&
                 this.getHeight() == square.getHeight();
+    }
+
+    public StackPane getStackPane() {
+        return stackPane;
     }
 }
 

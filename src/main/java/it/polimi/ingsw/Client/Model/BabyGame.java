@@ -6,6 +6,7 @@ import it.polimi.ingsw.Client.Model.Map.GUImap;
 import it.polimi.ingsw.Client.View.Gui.GUI;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdatePlayersMessage;
 import it.polimi.ingsw.Server.Model.Player.Player;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,6 +36,12 @@ public class BabyGame {
         Player player = new Player(clientPlayer.getName());
         player.setPlayerGod(clientPlayer.getGod());
         player.setColor(clientPlayer.getColor());
+
+        if(ClientManager.clientView instanceof GUI) {
+            for (Worker worker : player.getPlayerWorkers()) {
+                worker.initGUIObj();
+            }
+        }
 
         players.add(player);
     }

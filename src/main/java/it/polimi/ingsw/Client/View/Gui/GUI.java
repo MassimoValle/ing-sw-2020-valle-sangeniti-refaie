@@ -276,7 +276,7 @@ public class GUI extends ClientView {
     public void showAllPlayersInGame(Set<Player> playerSet) {
 
         try {
-            GUImain.setRoot("mainView", null);
+            GUImain.setRoot("main2", null);
             FXMLLoader fxmlLoader = GUImain.getFXMLLoader();
             controller = fxmlLoader.<MainViewController>getController();
             controller.setPlayers(playerSet);

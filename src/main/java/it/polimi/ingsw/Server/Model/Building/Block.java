@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Server.Model.Building;
 
 import it.polimi.ingsw.Server.Model.Player.Position;
+import javafx.scene.image.ImageView;
 
 /**
  * Every building that can be placed in Santorini is a block
@@ -8,6 +9,10 @@ import it.polimi.ingsw.Server.Model.Player.Position;
  */
 public abstract class Block {
 
+    protected ImageView imageView;
 
+    public ImageView getImageView() {
+        return imageView;
+    }
 
 }

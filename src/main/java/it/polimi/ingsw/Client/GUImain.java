@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -53,6 +54,26 @@ public class GUImain extends Application {
 
         if(scene == null) scene = new Scene(root);
         else scene.setRoot(root);
+
+        /*
+        final double initWidth  = scene.getWidth();
+        final double initHeight = scene.getHeight();
+        final double ratio      = initWidth / initHeight;
+
+        final double newWidth  = scene.getWidth();
+        final double newHeight = scene.getHeight();
+
+        double scaleFactor =
+                newWidth / newHeight > ratio
+                        ? newHeight / initHeight
+                        : newWidth / initWidth;
+
+        Scale scale = new Scale(scaleFactor, scaleFactor);
+        scale.setPivotX(0);
+        scale.setPivotY(0);
+        scene.getRoot().getTransforms().setAll(scale);
+        */
+
     }
 
     private static Parent loadFXML(String fxml, ResourceBundle resourceBundle) throws IOException {
