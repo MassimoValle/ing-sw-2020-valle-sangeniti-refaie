@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Client.View.Gui.ViewControllers;
 
+import it.polimi.ingsw.Client.GUImain;
 import it.polimi.ingsw.Client.Model.Gods.PumpedDeck;
 import it.polimi.ingsw.Client.Model.Gods.PumpedGod;
 import it.polimi.ingsw.Client.View.Gui.ParameterListener;
@@ -10,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,6 +45,10 @@ public class PickGodController implements Initializable {
     }
 
     private void setScene() {
+
+        Stage stage = GUImain.getStage();
+        stage.setWidth(1280);
+        stage.setHeight(720);
 
         ArrayList<God> pumpedHand = new ArrayList<>();
 

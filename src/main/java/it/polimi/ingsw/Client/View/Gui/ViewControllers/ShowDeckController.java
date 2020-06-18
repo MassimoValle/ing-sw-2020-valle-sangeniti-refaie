@@ -1,16 +1,22 @@
 package it.polimi.ingsw.Client.View.Gui.ViewControllers;
 
+import it.polimi.ingsw.Client.GUImain;
 import it.polimi.ingsw.Client.Model.Gods.PumpedDeck;
 import it.polimi.ingsw.Client.Model.Gods.PumpedGod;
 import it.polimi.ingsw.Client.View.Gui.ParameterListener;
 import it.polimi.ingsw.Server.Model.God.God;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -29,6 +35,10 @@ public class ShowDeckController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("ShowDeckController created!");
+
+        Stage stage = GUImain.getStage();
+        stage.setWidth(1280);
+        stage.setHeight(720);
 
         PumpedDeck pumpedDeck = PumpedDeck.getInstance();
 
@@ -57,16 +67,45 @@ public class ShowDeckController implements Initializable {
 
 
             // info
-            AnchorPane info = new AnchorPane();
-            info.setId(god.getGodName());
-            pane.getChildren().add(info);
-            AnchorPane.setTopAnchor(info, 5.0);
-            AnchorPane.setRightAnchor(info, 5.0);
+            AnchorPane ap_info = new AnchorPane();
+            ap_info.setId(god.getGodName());
 
-            info.setOnMouseClicked(event -> {
+            ImageView imageView1 = new ImageView(new Image("/imgs/info.png"));
+            ap_info.getChildren().add(imageView1);
+
+            pane.getChildren().add(ap_info);
+            AnchorPane.setTopAnchor(ap_info, 5.0);
+            AnchorPane.setRightAnchor(ap_info, 5.0);
+
+
+            ap_info.setOnMouseClicked(event -> {
+
+                event.consume();
+
                 AnchorPane pane1 = (AnchorPane) event.getSource();
+
+                String godName = pane1.getId();
+
                 Stage newWindow = new Stage();
 
+
+                FXMLLoader loader = new FXMLLoader(GUImain.class.getResource("/fxml/infoGod.fxml"), resourceBundle);
+                Parent root = null;
+
+                try {
+                    root = loader.load();
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
+
+                Scene scene = new Scene(root);
+
+                newWindow.setTitle("God info");
+                newWindow.setScene(scene);
+                newWindow.show();
+
+                GodInfoController controller = loader.getController();
+                controller.setGodInfo(godName);
             });
 
             godsFlowPane.getChildren().add(pane);
