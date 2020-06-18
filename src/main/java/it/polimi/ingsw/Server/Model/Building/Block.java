@@ -10,9 +10,12 @@ import javafx.scene.image.ImageView;
 public abstract class Block {
 
     protected ImageView imageView;
+    protected String path = "/imgs/blocks/";
 
     public ImageView getImageView() {
         return imageView;
     }
+
+    public void initGUIObj(){}
 
 }

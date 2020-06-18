@@ -6,6 +6,8 @@ import it.polimi.ingsw.Server.Model.Player.ColorEnum;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Utility.*;
+import javafx.application.Platform;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 
@@ -38,6 +40,10 @@ public class Square {
         GUI = true;
         imgWorker = null;
         stackPane = new StackPane();
+
+        // test
+        //ImageView imageView = new ImageView(new Image("/imgs/workers/brownWorker.png"));
+        //stackPane.getChildren().add(imageView);
     }
 
     public Worker getWorkerOnSquare() {
@@ -98,8 +104,12 @@ public class Square {
 
         if(GUI) {
             imgWorker = worker.getImgView();
-            getStackPane().getChildren().add(imgWorker);
+            Platform.runLater(this::loadImgWorker);
         }
+    }
+
+    private void loadImgWorker(){
+        stackPane.getChildren().add(imgWorker);
     }
 
     /**
@@ -109,7 +119,11 @@ public class Square {
         this.workerOnSquare = null;
 
         if(GUI) {
-            getStackPane().getChildren().remove(imgWorker);
+            Platform.runLater(() ->
+                    getStackPane().getChildren().remove(imgWorker)
+                    );
+
+            imgWorker = null;
         }
     }
 
@@ -134,32 +148,44 @@ public class Square {
             Dome dome1 = new Dome();
             tower.add(dome1);
 
-            if(GUI) { addIfGUI(dome1); }
+            if(GUI) {
+                Platform.runLater(() -> addIfGUI(dome1));
+            }
         } else {
             switch (tower.size()){
                 case 0:
                     LevelOneBlock levelOneBlock = new LevelOneBlock();
                     tower.add(levelOneBlock);
 
-                    if(GUI) { addIfGUI(levelOneBlock); }
+                    if(GUI) {
+                        Platform.runLater(() -> addIfGUI(levelOneBlock));
+                    }
+
                     break;
                 case 1:
                     LevelTwoBlock levelTwoBlock = new LevelTwoBlock();
                     tower.add(levelTwoBlock);
 
-                    if(GUI) { addIfGUI(levelTwoBlock); }
+                    if(GUI) {
+                        Platform.runLater(() -> addIfGUI(levelTwoBlock));
+                    }
+
                     break;
                 case 2:
                     LevelThreeBlock levelThreeBlock = new LevelThreeBlock();
                     tower.add(levelThreeBlock);
 
-                    if(GUI) { addIfGUI(levelThreeBlock); }
+                    if(GUI) {
+                        Platform.runLater(() -> addIfGUI(levelThreeBlock));
+                    }
                     break;
                 case 3:
                     Dome dome1 = new Dome();
                     tower.add(dome1);
 
-                    if(GUI) { addIfGUI(dome1); }
+                    if(GUI) {
+                        Platform.runLater(() -> addIfGUI(dome1));
+                    }
                     break;
                 default:
                     //throw new Exception();
@@ -169,6 +195,7 @@ public class Square {
     }
 
     private void addIfGUI(Block block){
+        block.initGUIObj();
         if (imgWorker == null)
             getStackPane().getChildren().add(block.getImageView());
         else {

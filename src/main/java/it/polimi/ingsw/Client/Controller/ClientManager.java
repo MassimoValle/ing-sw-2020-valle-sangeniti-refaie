@@ -37,7 +37,7 @@ public class ClientManager {
     private PossibleClientState clientState;
 
     // model
-    private Player me;
+    public static Player me;
     private final BabyGame babyGame;
 
     //Its use is intended to deal with message when the player is not the turn owner
@@ -78,7 +78,7 @@ public class ClientManager {
 
         this.serverMessageManager = new ServerMessageManager();
 
-        this.babyGame = new BabyGame();
+        this.babyGame = BabyGame.getInstance();
 
         this.clientBoardUpdater = new ClientBoardUpdater(babyGame);
 

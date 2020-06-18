@@ -1,7 +1,9 @@
 package it.polimi.ingsw.Client.View.Gui;
 
+import it.polimi.ingsw.Client.Controller.ClientManager;
 import it.polimi.ingsw.Client.Controller.PossibleClientAction;
 import it.polimi.ingsw.Client.GUImain;
+import it.polimi.ingsw.Client.Model.BabyGame;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Client.View.Gui.ViewControllers.MainViewController;
 import it.polimi.ingsw.Client.View.Gui.ViewControllers.PickGodController;
@@ -13,6 +15,7 @@ import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
@@ -28,6 +31,7 @@ public class GUI extends ClientView {
 
     private final boolean enaPopup = false;
     private final boolean mainPlayer = false;
+    private Worker selectedWorker = null;
 
     private final ParameterListener parameterListener;
 
@@ -286,19 +290,6 @@ public class GUI extends ClientView {
             e.printStackTrace();
         }
 
-        while (ParameterListener.getParameter() == null){
-
-            synchronized (parameterListener){
-                try {
-                    parameterListener.wait();
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        parameterListener.setToNull();
-
     }
 
     @Override
@@ -345,29 +336,43 @@ public class GUI extends ClientView {
 
     @Override
     public void startingTurn() {
+        Platform.runLater(this::print_startingTurn);
+    }
+
+    private void print_startingTurn(){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information Dialog");
         alert.setHeaderText("It's your turn!");
+
+        alert.showAndWait();
     }
 
     @Override
     public int selectWorker() {
 
-        while (ParameterListener.getParameter() == null){
+        if (selectedWorker == null) {
 
-            synchronized (parameterListener){
-                try {
-                    parameterListener.wait();
-                }catch (InterruptedException e){
-                    e.printStackTrace();
+            while (ParameterListener.getParameter() == null) {
+
+                synchronized (parameterListener) {
+                    try {
+                        parameterListener.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
 
-        int ret = (int) ParameterListener.getParameter();
+        Position pos = (Position) ParameterListener.getParameter();
+
+        selectedWorker = BabyGame.getInstance().getClientMap().getWorkerOnSquare(pos);
+
+        //controller.selectWorker(selectedWorker);
+
         parameterListener.setToNull();
 
-        return ret;
+        return selectedWorker.getNumber();
     }
 
     @Override
@@ -393,7 +398,48 @@ public class GUI extends ClientView {
 
     @Override
     public PossibleClientAction choseActionToPerform(List<PossibleClientAction> possibleActions) {
-        return null;
+
+        while (ParameterListener.getParameter() == null){
+
+            synchronized (parameterListener){
+                try {
+                    parameterListener.wait();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        Object parameter = ParameterListener.getParameter();
+
+
+        if(parameter instanceof String){
+            if(parameter.equals("power")) {
+                parameterListener.setToNull();
+                return PossibleClientAction.POWER_BUTTON;
+            }
+        }
+        else
+        if(parameter instanceof Position){
+
+            for (Worker worker : ClientManager.me.getPlayerWorkers()){
+                if(worker.getPosition().equals(parameter)) {
+
+                    //controller.deselectWorker(selectedWorker);
+
+                    selectedWorker = BabyGame.getInstance().getClientMap().getWorkerOnSquare((Position) parameter);
+
+                    //controller.selectWorker(selectedWorker);
+
+                    parameterListener.setToNull();
+                    return PossibleClientAction.SELECT_WORKER;
+                }
+            }
+
+        }
+
+        return PossibleClientAction.MOVE;
+
     }
 
     @Override
@@ -421,7 +467,7 @@ public class GUI extends ClientView {
     @Override
     public Position moveWorker(ArrayList<Position> nearlyPosValid) {
 
-        controller.enablePosition(nearlyPosValid);
+        //controller.enablePosition(nearlyPosValid);
 
         while (ParameterListener.getParameter() == null){
 
@@ -434,10 +480,13 @@ public class GUI extends ClientView {
             }
         }
 
+
         Position ret = (Position) ParameterListener.getParameter();
         parameterListener.setToNull();
 
-        controller.disablePosition();
+        //controller.deselectWorker(selectedWorker);
+
+        //controller.disablePosition();
 
         return ret;
 
@@ -517,7 +566,7 @@ public class GUI extends ClientView {
     @Override
     public Position build(ArrayList<Position> possiblePosToBuild) {
 
-        controller.enablePosition(possiblePosToBuild);
+        //controller.enablePosition(possiblePosToBuild);
 
         while (ParameterListener.getParameter() == null){
 
@@ -533,7 +582,7 @@ public class GUI extends ClientView {
         Position ret = (Position) ParameterListener.getParameter();
         parameterListener.setToNull();
 
-        controller.disablePosition();
+        //controller.disablePosition();
 
         return ret;
 

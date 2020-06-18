@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -52,6 +53,20 @@ public class ShowDeckController implements Initializable {
                 pane1.setDisable(true);
                 pane1.setOpacity(0.7);
                 parameterListener.setParameter(parameter);
+            });
+
+
+            // info
+            AnchorPane info = new AnchorPane();
+            info.setId(god.getGodName());
+            pane.getChildren().add(info);
+            AnchorPane.setTopAnchor(info, 5.0);
+            AnchorPane.setRightAnchor(info, 5.0);
+
+            info.setOnMouseClicked(event -> {
+                AnchorPane pane1 = (AnchorPane) event.getSource();
+                Stage newWindow = new Stage();
+
             });
 
             godsFlowPane.getChildren().add(pane);

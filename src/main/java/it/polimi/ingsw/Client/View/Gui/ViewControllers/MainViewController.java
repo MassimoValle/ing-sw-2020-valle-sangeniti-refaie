@@ -6,12 +6,14 @@ import it.polimi.ingsw.Client.Model.Map.GUImap;
 import it.polimi.ingsw.Client.View.Gui.ParameterListener;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
@@ -26,32 +28,13 @@ import java.util.Set;
 
 public class MainViewController implements Initializable {
 
-    @FXML
-    private AnchorPane mainViewAnchorPane;
 
-    @FXML
-    private AnchorPane cliffAnchorPane;
-
-    @FXML
-    private AnchorPane topCliff;
-
-    @FXML
-    private AnchorPane leftCliff;
-
-    @FXML
-    private AnchorPane board;
 
     @FXML
     private GridPane gridPane;
 
     @FXML
-    private AnchorPane rightCliff;
-
-    @FXML
-    private AnchorPane bottomCliff;
-
-    @FXML
-    private ToggleButton powerButton;
+    private StackPane boardStackPane;
 
     @FXML
     private HBox hboxPlayers;
@@ -120,8 +103,7 @@ public class MainViewController implements Initializable {
 
     @FXML
     void powerEvent(ActionEvent event) {
-
-        Button powerButton = (Button) event.getSource();
+        parameterListener.setParameter("power");
 
     }
 
@@ -140,7 +122,11 @@ public class MainViewController implements Initializable {
     private void setScene() {
 
         Stage stage = GUImain.getStage();
-        //stage.setResizable(false);
+        stage.setResizable(false);
+        stage.setWidth(1280);
+        stage.setHeight(720);
+
+        boardStackPane.setMinSize(0.0 , 0.0);
 
 
         for (Player player : players){
@@ -157,7 +143,7 @@ public class MainViewController implements Initializable {
         Platform.runLater(this::setupImageView);
     }
 
-    public void enablePosition(ArrayList<Position> nearlyPosValid) {
+    /*public void enablePosition(ArrayList<Position> nearlyPosValid) {
 
         for(Position pos : nearlyPosValid) {
             for (Node node : gridPane.getChildren()) {
@@ -165,6 +151,7 @@ public class MainViewController implements Initializable {
                     AnchorPane ap = (AnchorPane) node;
 
                     ap.setStyle("-fx-background-color: yellow");
+                    ap.setStyle("-fx-opacity: 20%");
 
                     enablePosition.add(ap);
                 }
@@ -177,10 +164,30 @@ public class MainViewController implements Initializable {
 
         for(AnchorPane ap : enablePosition){
 
-            ap.setStyle("-fx-background-color: white");
+            ap.setStyle("-fx-background-color: transparent");
             enablePosition.remove(ap);
 
         }
 
     }
+
+    public void selectWorker(Worker selectedWorker) {
+
+        Position pos = selectedWorker.getPosition();
+
+        AnchorPane ap = (AnchorPane) getNodeByRowColumnIndex(pos.getRow(), pos.getColumn());
+
+        ap.setStyle("-fx-background-color: green");
+        ap.setStyle("-fx-opacity: 40%");
+    }
+
+    public void deselectWorker(Worker selectedWorker) {
+
+        Position pos = selectedWorker.getPosition();
+
+        AnchorPane ap = (AnchorPane) getNodeByRowColumnIndex(pos.getRow(), pos.getColumn());
+
+        ap.setStyle("-fx-background-color: transparent");
+    }
+     */
 }
