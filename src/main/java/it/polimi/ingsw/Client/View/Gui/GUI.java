@@ -582,6 +582,8 @@ public class GUI extends ClientView {
         Position ret = (Position) ParameterListener.getParameter();
         parameterListener.setToNull();
 
+        selectedWorker = null;
+
         //controller.disablePosition();
 
         return ret;
