@@ -196,8 +196,12 @@ public class Square {
 
     private void addIfGUI(Block block){
         block.initGUIObj();
-        if (imgWorker == null)
+        if (imgWorker == null) {
+            if(!getStackPane().getChildren().isEmpty())
+                getStackPane().getChildren().remove(0);
+
             getStackPane().getChildren().add(block.getImageView());
+        }
         else {
             switchOnTop(block);
         }
