@@ -170,6 +170,7 @@ public class MainViewController implements Initializable {
         }
 
     }
+    */
 
     public void selectWorker(Worker selectedWorker) {
 
@@ -177,8 +178,8 @@ public class MainViewController implements Initializable {
 
         AnchorPane ap = (AnchorPane) getNodeByRowColumnIndex(pos.getRow(), pos.getColumn());
 
-        ap.setStyle("-fx-background-color: green");
         ap.setStyle("-fx-opacity: 40%");
+
     }
 
     public void deselectWorker(Worker selectedWorker) {
@@ -187,7 +188,7 @@ public class MainViewController implements Initializable {
 
         AnchorPane ap = (AnchorPane) getNodeByRowColumnIndex(pos.getRow(), pos.getColumn());
 
-        ap.setStyle("-fx-background-color: transparent");
+        ap.setStyle("-fx-opacity: 100%");
     }
-     */
+
 }

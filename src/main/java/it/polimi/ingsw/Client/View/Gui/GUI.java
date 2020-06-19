@@ -368,7 +368,7 @@ public class GUI extends ClientView {
 
         selectedWorker = BabyGame.getInstance().getClientMap().getWorkerOnSquare(pos);
 
-        //controller.selectWorker(selectedWorker);
+        controller.selectWorker(selectedWorker);
 
         parameterListener.setToNull();
 
@@ -425,11 +425,11 @@ public class GUI extends ClientView {
             for (Worker worker : ClientManager.me.getPlayerWorkers()){
                 if(worker.getPosition().equals(parameter)) {
 
-                    //controller.deselectWorker(selectedWorker);
+                    controller.deselectWorker(selectedWorker);
 
                     selectedWorker = BabyGame.getInstance().getClientMap().getWorkerOnSquare((Position) parameter);
 
-                    //controller.selectWorker(selectedWorker);
+                    controller.selectWorker(selectedWorker);
 
                     parameterListener.setToNull();
                     return PossibleClientAction.SELECT_WORKER;
@@ -483,8 +483,6 @@ public class GUI extends ClientView {
 
         Position ret = (Position) ParameterListener.getParameter();
         parameterListener.setToNull();
-
-        //controller.deselectWorker(selectedWorker);
 
         //controller.disablePosition();
 
@@ -582,6 +580,7 @@ public class GUI extends ClientView {
         Position ret = (Position) ParameterListener.getParameter();
         parameterListener.setToNull();
 
+        controller.deselectWorker(selectedWorker);
         selectedWorker = null;
 
         //controller.disablePosition();
