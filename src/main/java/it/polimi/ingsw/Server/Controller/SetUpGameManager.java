@@ -30,7 +30,7 @@ public class SetUpGameManager {
     private int currentPlayer;
 
     private int playerLoop = 0; // temporary var loop for player iteration
-    private Integer workerNum = 0;
+    private Integer workerPlaced = 0;
 
     private PossibleGameState setupGameState;
 
@@ -141,22 +141,22 @@ public class SetUpGameManager {
     private void handleChooseGods(ChoseGodsRequest request) {
         ResponseContent responseContent = ResponseContent.CHOOSE_GODS;
 
-        Player requestSender = gameInstance.searchPlayerByName(request.getMessageSender());
+        //Player requestSender = gameInstance.searchPlayerByName(request.getMessageSender());
 
         //verifico che è il momento del godlike player
         if(setupGameState != PossibleGameState.GODLIKE_PLAYER_MOMENT){
-            MasterController.buildNegativeResponse(requestSender, responseContent, "It's not the time to chose the gods");
+            MasterController.buildNegativeResponse(activePlayer, responseContent, "It's not the time to chose the gods");
             return;
         }
 
         //verifico che il nunmero di gods scelti sia corretto
         if(request.getChosenGods().size() != gameInstance.getPlayers().size()){
-            MasterController.buildNegativeResponse(requestSender, responseContent, "You sent the wrong number of gods! Try again!");
+            MasterController.buildNegativeResponse(activePlayer, responseContent, "You sent the wrong number of gods! Try again!");
             return;
         }
 
         gameInstance.setChosenGodsFromDeck(request.getChosenGods());
-        MasterController.buildPositiveResponse(requestSender, responseContent, "Gods selected!");
+        MasterController.buildPositiveResponse(activePlayer, responseContent, "Gods selected!");
 
         //Turno del giocatore successivo
         activePlayer = nextPlayer();
@@ -197,11 +197,11 @@ public class SetUpGameManager {
             PickGodServerRequest pickGodServerRequest = new PickGodServerRequest( gameInstance.getUnassignedGods());
             gameInstance.putInChanges(activePlayer, pickGodServerRequest);
         }
-        else {
+        else {  // inizio la fase di piazzamento dei worker
 
             MasterController.sendPlayersInfo();
 
-            PlaceWorkerServerRequest placeWorkerServerRequest = new PlaceWorkerServerRequest( workerNum);
+            PlaceWorkerServerRequest placeWorkerServerRequest = new PlaceWorkerServerRequest(workerPlaced);
             gameInstance.putInChanges(activePlayer, placeWorkerServerRequest);
 
             playerLoop = 0;
@@ -236,10 +236,8 @@ public class SetUpGameManager {
 
         if (placeWorkerAction.isValid()) {
 
-            workerNum++;
-            if(workerNum > 1) workerNum = 0;
-
             placeWorkerAction.doAction();
+            workerPlaced += 1;
 
             MasterController.buildPositiveResponse(activePlayer, responseContent, "Worker placed!");
             MasterController.updateClients(activePlayer.getPlayerName(), UpdateType.PLACE, positionToPlaceWorker, worker.getNumber(), false);
@@ -251,18 +249,20 @@ public class SetUpGameManager {
 
                 activePlayer = nextPlayer();
                 playerLoop++;
+                workerPlaced = 0;
 
 
                 // quando tutti hanno finito di piazzare i workers
                 if(playerLoop >= gameInstance.getPlayers().size()){
 
+                    playerLoop = 0;
                     MasterController.startFirstRound();
                     return;
                 }
 
             }
 
-            PlaceWorkerServerRequest placeWorkerServerRequest = new PlaceWorkerServerRequest(workerNum);
+            PlaceWorkerServerRequest placeWorkerServerRequest = new PlaceWorkerServerRequest(workerPlaced);
             gameInstance.putInChanges(activePlayer, placeWorkerServerRequest);
 
 
