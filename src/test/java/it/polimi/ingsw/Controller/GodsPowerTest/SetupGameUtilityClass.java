@@ -536,14 +536,14 @@ public class SetupGameUtilityClass {
     }
 
     public void selectWorker(String pl, int i) {
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new SelectWorkerRequest(pl, i)
         );
         map.printBoard();
     }
 
     public void move(String pl, int i, int j) {
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new MoveRequest(pl, new Position(i,j))
         );
 
@@ -553,7 +553,7 @@ public class SetupGameUtilityClass {
     }
 
     public void build(String pl, int i, int j) {
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new BuildRequest(pl, new Position(i,j))
         );
 
@@ -563,7 +563,7 @@ public class SetupGameUtilityClass {
     }
 
     public void buildDome(String pl, int i, int j){
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new BuildDomeRequest(pl, new Position(i,j))
         );
 
@@ -573,25 +573,25 @@ public class SetupGameUtilityClass {
     }
 
     public void powerButton(String pl){
-        MasterController.dispatcher((
+        masterController.dispatcher((
                 new PowerButtonRequest(pl))
         );
     }
 
     public void endTurn(String pl) {
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new EndTurnRequest(pl)
         );
     }
 
     public void endMove(String pl) {
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new EndMoveRequest(pl)
         );
     }
 
     public void endBuild(String pl) {
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new EndBuildRequest(pl)
         );
     }

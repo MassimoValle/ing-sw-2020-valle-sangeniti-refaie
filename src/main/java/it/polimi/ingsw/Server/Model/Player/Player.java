@@ -121,7 +121,7 @@ public class Player {
 
         for (Worker worker : playerWorkers) {
             SelectWorkerAction selectWorker = new SelectWorkerAction(power, worker, this);
-            if (!selectWorker.isValid())
+            if (!selectWorker.isValid(null))
                 workersStuck++;
         }
 

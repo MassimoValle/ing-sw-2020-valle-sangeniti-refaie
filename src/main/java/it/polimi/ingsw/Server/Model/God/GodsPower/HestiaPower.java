@@ -11,10 +11,10 @@ import java.util.ArrayList;
 
 public class HestiaPower extends Power {
 
-    private boolean firstBuild = true;
+    private boolean firstBuild;
 
-    public HestiaPower(String powerType, String powerDescription) {
-        super(powerType, powerDescription);
+    public HestiaPower(String powerType, String powerDescription, GameMap map) {
+        super(powerType, powerDescription, map);
         firstBuild = true;
     }
 
@@ -44,7 +44,7 @@ public class HestiaPower extends Power {
     }
 
     private boolean hasNewBuildAvailable(Position workerPosition, Square squareWhereToBuild) {
-        GameMap map = Game.getInstance().getGameMap();
+
         ArrayList<Position> buildables = map.getPlacesWhereYouCanBuildOn(workerPosition);
 
         buildables.removeIf(Position::isPerimetral);

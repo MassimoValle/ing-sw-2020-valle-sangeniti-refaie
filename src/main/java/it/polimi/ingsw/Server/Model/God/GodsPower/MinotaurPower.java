@@ -19,8 +19,8 @@ public class MinotaurPower extends Power {
 
     private  Position backWardPosition;
 
-    public MinotaurPower(String powerType, String powerDescription) {
-        super(powerType, powerDescription);
+    public MinotaurPower(String powerType, String powerDescription, GameMap map) {
+        super(powerType, powerDescription, map);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class MinotaurPower extends Power {
 
             Action minotaurPushAction = new MinotaurPushAction(this, minotaurWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
-            if (!minotaurPushAction.isValid())
+            if (!minotaurPushAction.isValid(map))
                 return ActionOutcome.NOT_DONE;
             else
                 minotaurPushAction.doAction();
@@ -43,7 +43,6 @@ public class MinotaurPower extends Power {
 
     @Override
     public boolean isWorkerStuck(Worker worker) {
-        GameMap map = Game.getInstance().getGameMap();
 
         ArrayList<Square> adjacents = new ArrayList<>();
 
@@ -59,7 +58,7 @@ public class MinotaurPower extends Power {
 
         for (Square opponentSquare: pushable) {
             MinotaurPushAction minotaurPushAction = new MinotaurPushAction(this, worker, opponentSquare.getPosition(), workerSquare, opponentSquare);
-            if (minotaurPushAction.isValid())
+            if (minotaurPushAction.isValid(map))
                 return false;
         }
 

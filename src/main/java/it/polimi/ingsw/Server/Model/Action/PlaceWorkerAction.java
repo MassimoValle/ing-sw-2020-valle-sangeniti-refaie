@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Server.Model.Action;
 
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
@@ -9,9 +10,9 @@ import it.polimi.ingsw.Server.Model.Player.Worker;
  */
 public class PlaceWorkerAction implements Action{
 
-    private Worker workerToBePlaced;
-    private Position positionWhereToPlace;
-    private Square squareWhereToPlace;
+    private final Worker workerToBePlaced;
+    private final Position positionWhereToPlace;
+    private final Square squareWhereToPlace;
 
     public PlaceWorkerAction(Worker workerToBePlaced, Position positionWhereToPlace, Square squareWhereToPlace) {
         this.workerToBePlaced = workerToBePlaced;
@@ -21,14 +22,11 @@ public class PlaceWorkerAction implements Action{
 
 
     @Override
-    public boolean isValid() {
+    public boolean isValid(GameMap map) {
         //Devo controllare che quel worker non è gia piazzato è che nella posizione indicata dal player non ci sia già un altro worker
         if (workerToBePlaced.isPlaced()) {
             return false;
-        } else if (squareWhereToPlace.hasWorkerOn()) {
-            return false;
-        }
-        return true;
+        } else return !squareWhereToPlace.hasWorkerOn();
     }
 
     @Override

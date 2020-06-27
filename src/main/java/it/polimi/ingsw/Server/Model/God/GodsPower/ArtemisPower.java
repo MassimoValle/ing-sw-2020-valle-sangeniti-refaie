@@ -17,8 +17,8 @@ public class ArtemisPower extends Power implements Serializable {
 
     private ActionOutcome outcome;
 
-    public ArtemisPower(String powerType, String powerDescription) {
-        super(powerType, powerDescription);
+    public ArtemisPower(String powerType, String powerDescription, GameMap map) {
+        super(powerType, powerDescription, map);
         this.firstMove = true;
     }
 
@@ -49,12 +49,11 @@ public class ArtemisPower extends Power implements Serializable {
     }
 
     private boolean hasNewMoveAvailable(Position initPos, Position newPos) {
-        GameMap map = Game.getInstance().getGameMap();
 
         ArrayList<Position> reachables = (ArrayList<Position>) map.getReachableAdjacentPlaces(newPos);
         reachables.remove(initPos);
 
-        if (map.forcedToMoveUp(reachables, newPos) && athenaPowerActivated())
+        if (map.forcedToMoveUp(reachables, newPos))// && athenaPowerActivated())
             return false;
 
         return !reachables.isEmpty();

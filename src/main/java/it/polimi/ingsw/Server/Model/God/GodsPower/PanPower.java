@@ -2,6 +2,7 @@ package it.polimi.ingsw.Server.Model.God.GodsPower;
 
 import it.polimi.ingsw.Server.Model.Action.Action;
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Outcome;
 import it.polimi.ingsw.Server.Model.Player.Position;
@@ -11,8 +12,8 @@ import it.polimi.ingsw.Server.Model.Player.Worker;
 public class PanPower extends Power {
 
 
-    public PanPower(String powerType, String powerDescription) {
-        super(powerType, powerDescription);
+    public PanPower(String powerType, String powerDescription, GameMap map) {
+        super(powerType, powerDescription, map);
     }
 
     @Override

@@ -16,11 +16,13 @@ public abstract class Power implements Serializable, GodsChecker {
 
     protected String powerDescription;
     protected PowerType powerType;
+    protected GameMap map;
 
 
-    protected Power(String powerType, String powerDescription) {
+    protected Power(String powerType, String powerDescription, GameMap map) {
         this.powerType = PowerType.matchFromXml(powerType);
         this.powerDescription = powerDescription;
+        this.map = map;
     }
 
     protected PowerType getPowerType() {
@@ -35,7 +37,7 @@ public abstract class Power implements Serializable, GodsChecker {
 
         Action selectWorkerAction = new SelectWorkerAction(this, workerFromRequest, requestSender);
 
-        if ( selectWorkerAction.isValid() ) {
+        if ( selectWorkerAction.isValid(map) ) {
             selectWorkerAction.doAction();
             return ActionOutcome.DONE;
         } else
@@ -56,7 +58,7 @@ public abstract class Power implements Serializable, GodsChecker {
 
         Action moveAction = new MoveAction(this, activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
-        if ( moveAction.isValid() ) {
+        if ( moveAction.isValid(map) ) {
             moveAction.doAction();
             return ActionOutcome.DONE;
         } else {
@@ -69,7 +71,7 @@ public abstract class Power implements Serializable, GodsChecker {
 
         Action buildAction = new BuildAction(squareWhereTheWorkerIs, squareWhereToBuild);
 
-        if (buildAction.isValid() ) {
+        if (buildAction.isValid(map) ) {
             buildAction.doAction();
             return ActionOutcome.DONE;
         } else {
@@ -82,7 +84,7 @@ public abstract class Power implements Serializable, GodsChecker {
 
         Action buildDomeAction = new BuildDomeAction(squareWhereTheWorkerIs, squareWhereToBuild);
 
-        if (buildDomeAction.isValid()) {
+        if (buildDomeAction.isValid(map)) {
             buildDomeAction.doAction();
             return ActionOutcome.DONE;
         } else {
@@ -98,22 +100,22 @@ public abstract class Power implements Serializable, GodsChecker {
      * @return true if worker is stuck, false otherwise
      */
     public boolean isWorkerStuck(Worker worker) {
-        GameMap map = Game.getInstance().getGameMap();
         ArrayList<Position> reachable = (ArrayList<Position>) map.getReachableAdjacentPlaces(worker.getPosition());
 
-        if (!reachable.isEmpty() && map.forcedToMoveUp(reachable, worker.getPosition()) && athenaPowerActivated())
+        if (!reachable.isEmpty() && map.forcedToMoveUp(reachable, worker.getPosition()))// && athenaPowerActivated())
             return true;
 
         return reachable.isEmpty();
     }
 
-    protected boolean athenaPowerActivated() {
+    //TODO mettere Athena come observer
+    /*protected boolean athenaPowerActivated() {
         for (Power power : Game.getInstance().getPowersInGame()) {
             if (power instanceof AthenaPower && ((AthenaPower) power).hasGoneUp())
                 return true;
         }
         return false;
-    }
+    }*/
 
 
     @Override

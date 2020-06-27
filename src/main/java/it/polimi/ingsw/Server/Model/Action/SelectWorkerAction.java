@@ -28,7 +28,7 @@ public class SelectWorkerAction implements Action{
      * @return always true
      */
     @Override
-    public boolean isValid() {
+    public boolean isValid(GameMap map) {
         return workerToSelect.getOwner().equals(player) && !power.isWorkerStuck(workerToSelect);
     }
 

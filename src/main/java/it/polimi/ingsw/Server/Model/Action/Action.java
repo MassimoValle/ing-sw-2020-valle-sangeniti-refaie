@@ -1,6 +1,8 @@
 package it.polimi.ingsw.Server.Model.Action;
 
 
+import it.polimi.ingsw.Server.Model.Map.GameMap;
+
 /**
  * Every action performed by the player that alter the Model has to implements this interface
  */
@@ -11,7 +13,7 @@ public interface Action {
      *
      * @return the boolean
      */
-    boolean isValid();
+    boolean isValid(GameMap map);
 
     /**
      * Do the action.

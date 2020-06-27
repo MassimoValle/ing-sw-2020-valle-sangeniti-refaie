@@ -13,7 +13,7 @@ public class RemoteView extends View {
 
         @Override
         public void update(Message message) {
-            MasterController.dispatcher((Request) message);
+            masterController.dispatcher((Request) message);
         }
 
     }
@@ -22,6 +22,7 @@ public class RemoteView extends View {
 
 
     private final Connection connection;
+    private MasterController masterController;
 
 
 
@@ -32,6 +33,11 @@ public class RemoteView extends View {
 
         c.addObserver(new MessageReceiver());
     }
+
+
+    public void setController(MasterController masterController){
+        this.masterController = masterController;
+    };
 
 
 

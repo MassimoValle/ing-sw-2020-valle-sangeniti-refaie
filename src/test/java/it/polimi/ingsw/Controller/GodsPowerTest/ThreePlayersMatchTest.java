@@ -29,17 +29,18 @@ public class ThreePlayersMatchTest {
     @Before
     public void setUp() throws DomePresentException {
 
-        Game.resetInstance();
-        game = Game.getInstance();
+
+        game = new Game();
 
         player1 = new Player("UNO");
         player2 = new Player("DUE");
         player3 = new Player("TRE");
-        Game.getInstance().addPlayer(player1);
-        Game.getInstance().addPlayer(player2);
-        Game.getInstance().addPlayer(player3);
+        game.addPlayer(player1);
+        game.addPlayer(player2);
+        game.addPlayer(player3);
 
-        masterController = new MasterController(game, player1);
+        masterController = new MasterController(game);
+        masterController.start(player1);
         setupUtility = new SetupGameUtilityClass();
 
         pl1 = player1.getPlayerName();
@@ -49,7 +50,7 @@ public class ThreePlayersMatchTest {
 
     @After
     public void tearDown(){
-        Game.resetInstance();
+        game = null;
     }
 
     @Test

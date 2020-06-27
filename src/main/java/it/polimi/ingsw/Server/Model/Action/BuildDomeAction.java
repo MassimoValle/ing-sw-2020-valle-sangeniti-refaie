@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Server.Model.Action;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
 
@@ -12,8 +13,8 @@ import java.util.ArrayList;
  */
 public class BuildDomeAction implements Action{
 
-    private Square squareWhereToBuildOn;
-    private Square squareWhereTheWorkerIs;
+    private final Square squareWhereToBuildOn;
+    private final Square squareWhereTheWorkerIs;
 
 
     public BuildDomeAction(Square squareWhereTheWorkerIs, Square squareWhereToBuildOn) {
@@ -23,7 +24,7 @@ public class BuildDomeAction implements Action{
 
 
     @Override
-    public boolean isValid() {
+    public boolean isValid(GameMap map) {
 
         ArrayList<Position> adjacent = squareWhereTheWorkerIs.getPosition().getAdjacentPlaces();
 

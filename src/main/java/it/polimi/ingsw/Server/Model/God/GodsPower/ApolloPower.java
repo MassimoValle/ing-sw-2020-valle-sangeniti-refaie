@@ -3,8 +3,6 @@ package it.polimi.ingsw.Server.Model.God.GodsPower;
 import it.polimi.ingsw.Server.Model.Action.Action;
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Action.ApolloSwapAction;
-import it.polimi.ingsw.Server.Model.Action.MinotaurPushAction;
-import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
@@ -16,8 +14,8 @@ import java.util.stream.Collectors;
 
 public class ApolloPower extends Power {
 
-    public ApolloPower(String powerType, String powerDescription) {
-        super(powerType, powerDescription);
+    public ApolloPower(String powerType, String powerDescription, GameMap map) {
+        super(powerType, powerDescription, map);
     }
 
     @Override
@@ -28,7 +26,7 @@ public class ApolloPower extends Power {
 
             Action apolloSwap = new ApolloSwapAction(this, apolloWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
 
-            if (!apolloSwap.isValid())
+            if (!apolloSwap.isValid(map))
                 return ActionOutcome.NOT_DONE;
             else
                 apolloSwap.doAction();
@@ -44,8 +42,6 @@ public class ApolloPower extends Power {
     @Override
     public boolean isWorkerStuck(Worker worker) {
 
-        GameMap map = Game.getInstance().getGameMap();
-
         ArrayList<Square> adjacents = new ArrayList<>();
 
         for (Position position: worker.getPosition().getAdjacentPlaces())
@@ -60,7 +56,7 @@ public class ApolloPower extends Power {
 
         for (Square opponentSquare: swappable) {
             ApolloSwapAction apolloSwapAction = new ApolloSwapAction(this, worker, opponentSquare.getPosition(), apolloStartingSquare, opponentSquare);
-            if (apolloSwapAction.isValid())
+            if (apolloSwapAction.isValid(map))
                 return false;
         }
 
@@ -86,11 +82,7 @@ public class ApolloPower extends Power {
 
         if (!swapNotHigherAvailable.isEmpty())
             return false;
-        else if (!swapHigherAvailable.isEmpty()) {
-            return true;
-        }
-
-        return false;
+        else return !swapHigherAvailable.isEmpty();
     }
 }
 

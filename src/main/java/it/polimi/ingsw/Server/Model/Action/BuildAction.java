@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Server.Model.Action;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
 
@@ -23,7 +24,7 @@ public class BuildAction implements Action {
 
 
     @Override
-    public boolean isValid() {
+    public boolean isValid(GameMap map) {
 
         ArrayList<Position> adjacent = squareWhereTheWorkerIs.getPosition().getAdjacentPlaces();
 

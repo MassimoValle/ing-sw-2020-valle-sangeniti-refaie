@@ -33,11 +33,10 @@ public class ApolloSwapAction extends MoveAction {
     }
 
     @Override
-    public boolean isValid() {
+    public boolean isValid(GameMap map) {
 
-        GameMap map = Game.getInstance().getGameMap();
+        //GameMap map = Game.getInstance().getGameMap();
 
-        Worker opponentWorker = map.getWorkerOnSquare(opponentWorkerPosition);
         int heightDifference = map.getDifferenceInAltitude(apolloStartingSquare.getPosition(), opponentWorkerPosition);
         ArrayList<Position> adjacent = apolloStartingSquare.getPosition().getAdjacentPlaces();
         ArrayList<Position> buildable = map.getPlacesWhereYouCanBuildOn(opponentWorkerPosition);

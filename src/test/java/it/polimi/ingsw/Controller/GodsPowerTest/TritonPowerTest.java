@@ -30,16 +30,16 @@ public class TritonPowerTest {
     @Before
     public void setUp() {
 
-        Game.resetInstance();
-        game = Game.getInstance();
+        game = new Game();
 
 
         player1 = new Player("Simone");
         player2 = new Player("Massimo");
-        Game.getInstance().addPlayer(player1);
-        Game.getInstance().addPlayer(player2);
+        game.addPlayer(player1);
+        game.addPlayer(player2);
 
-        masterController = new MasterController(game, player1);
+        masterController = new MasterController(game);
+        masterController.start(player1);
 
         setupUtility = new SetupGameUtilityClass();
 
@@ -51,7 +51,7 @@ public class TritonPowerTest {
 
     @After
     public void tearDown() {
-        game = Game.getInstance();
+        game = null;
     }
 
 
@@ -119,57 +119,57 @@ public class TritonPowerTest {
 
 
 
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new SelectWorkerRequest(pl1, 0)
         );
 
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new MoveRequest(pl1, new Position(1,2))
         );game.getGameMap().printBoard();
 
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new BuildRequest(pl1, new Position(0,2))
         );game.getGameMap().printBoard();
 
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new EndTurnRequest(pl1)
         );
 
         //player 2 con tritone
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new SelectWorkerRequest(pl2, 1)
         );
 
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new MoveRequest(pl2, new Position(4,3))
         );game.getGameMap().printBoard();
 
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new MoveRequest(pl2, new Position(4,4))
         );game.getGameMap().printBoard();
 
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new MoveRequest(pl2, new Position(3,4))
         );game.getGameMap().printBoard();
 
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new MoveRequest(pl2, new Position(2,4))
         );game.getGameMap().printBoard();
 
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new MoveRequest(pl2, new Position(1,4))
         );game.getGameMap().printBoard();
         
         //this checks if I can stop from moving on the perimeter
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new EndMoveRequest(pl2)
         );
 
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new BuildRequest(pl2, new Position(0,4))
         );
 
-        MasterController.dispatcher(
+        masterController.dispatcher(
                 new EndTurnRequest(pl2)
         );
 

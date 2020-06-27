@@ -16,8 +16,7 @@ public class GameTest {
 
     @Before
     public void initClass() {
-        Game.resetInstance();
-        game = Game.getInstance();
+        game = new Game();
     }
 
     @Test

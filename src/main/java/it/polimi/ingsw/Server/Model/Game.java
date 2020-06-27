@@ -21,29 +21,23 @@ import java.util.List;
 public class Game extends Observable<Message> {
 
 
-    private List<Player> players;
-    private Deck deck;
+    private final List<Player> players;
+    private final Deck deck;
 
-    private List<God> chosenGodsFromDeck;
-    private GameMap gameMap;
+    private final List<God> chosenGodsFromDeck;
+    private final GameMap gameMap;
 
-    private List<ColorEnum> colorAvailable = new ArrayList<>();
-    private HashMap<Player, ColorEnum> playerColor = new HashMap<>();
+    private final List<ColorEnum> colorAvailable = new ArrayList<>();
+    private final HashMap<Player, ColorEnum> playerColor = new HashMap<>();
 
-    private static Game gameInstance;
-
-
-    public static Game getInstance() {
-        if(gameInstance == null)
-            gameInstance = new Game();
-        return gameInstance;
-    }
 
     public Game() {
         this.players = new ArrayList<>();
-        this.deck = Deck.getInstance();
-        this.chosenGodsFromDeck = new ArrayList<>();
         this.gameMap = new GameMap();
+        this.deck = Deck.getInstance();
+        this.deck.setMap(gameMap);
+
+        this.chosenGodsFromDeck = new ArrayList<>();
 
         initColorAvailable();
 
@@ -223,7 +217,7 @@ public class Game extends Observable<Message> {
 
 
     //  ####    TESTING-ONLY    ####
-    public static void resetInstance() {
+    /*public static void resetInstance() {
         gameInstance = null;
     }
 
@@ -234,7 +228,7 @@ public class Game extends Observable<Message> {
                 return true;
 
         return false;
-    }
+    }*/
 }
 
 

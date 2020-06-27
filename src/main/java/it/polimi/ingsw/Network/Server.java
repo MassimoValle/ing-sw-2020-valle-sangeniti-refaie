@@ -25,15 +25,12 @@ public class Server {
 
     private final ExecutorService executor = Executors.newFixedThreadPool(128);
 
-    private final List<Connection> connections = new ArrayList<Connection>();
+    private static final List<Connection> connections = new ArrayList<>();
     private final Map<String, Connection> clientsConnected = new HashMap<>();
-    private final Map<String, Connection> playersInLobby = new HashMap<>();
+    private static final Map<Integer, Map<String, Connection>> rooms = new HashMap<>();
 
-    // Controller of the game
-    MasterController masterController;
-
-    // field set by a user
-    private int lobbySize = 0;
+    int numRoom = 0;
+    int temp_lobbySize = 0;
 
 
 
@@ -44,60 +41,126 @@ public class Server {
     }
 
     //Deregister connection
-    public synchronized void deregisterConnection(Connection c){
+    public static synchronized void deregisterConnection(Connection c){
+
+        removeConnectionInRooms(c);
         connections.remove(c);
-        for (Map.Entry<String, Connection> entry : playersInLobby.entrySet())
-            if(entry.getValue().equals(c))
-                playersInLobby.remove(entry);
 
+    }
 
-        if(lobbySize == 0){
-            askLobbySize(connections.get(0));
+    private static void removeConnectionInRooms(Connection connection){
+
+        for (Map.Entry<Integer, Map<String, Connection>> entry : rooms.entrySet()) {    // controllo in tutte le rooms
+
+            Map<String, Connection> connectionsInLobby = entry.getValue();  // per tutte le connessioni nella lobby
+
+            for (Map.Entry<String, Connection> entryLobby : connectionsInLobby.entrySet())
+                if(entryLobby.getValue().equals(connection))
+                    connectionsInLobby.remove(entry);
         }
+
+
+
     }
 
 
+    private synchronized void setUpLobbySize() {
 
-    // full up lobby and start game
-    public synchronized void lobby() {
+        // richiede al primo utente nella clientsConnected il numero di giocatori
+        if(temp_lobbySize == 0) {
 
-        if(clientsConnected.size() >= lobbySize && lobbySize != 0){
+            Map.Entry<String, Connection> entry = clientsConnected.entrySet().iterator().next();
+            Connection value = entry.getValue();
+            askLobbySize(value);
+        }
+        else
+            initLobby();
+    }
 
-            Game game = Game.getInstance();
+    // lobby size
+    public synchronized void askLobbySize(Connection connection){
+        connection.sendMessage(
+                new ServerResponse(ResponseContent.NUM_PLAYER, MessageStatus.OK, "Lobby size?")
+        );
+    }
+
+    private synchronized void setLobbySize(SetPlayersRequest request) {
+
+        temp_lobbySize = Integer.parseInt(request.getHowMany());
+        initLobby();
+
+        if(clientsConnected.size() > 1){
+            setUpLobbySize();
+        }
+
+    }
+
+
+    /**
+     * full up lobby and start game
+     */
+    public synchronized void initLobby() {
+
+        if(clientsConnected.size() >= temp_lobbySize){
+
+            ArrayList<RemoteView> rvs = new ArrayList<>();
+            Game game = new Game();
             Player activePlayer = null;
 
             int loop = 0;
 
+            Map<String, Connection> playersInLobby = new HashMap<>();
 
-            for (Map.Entry<String, Connection> entry : clientsConnected.entrySet()) {
 
-                if(loop < lobbySize){
+            Iterator it = clientsConnected.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry)it.next();
 
-                    System.out.println(entry.getKey() + " = " + entry.getValue());
+                if(loop < temp_lobbySize){
 
-                    Player player = new Player(entry.getKey());
+                    System.out.println(pair.getKey() + " = " + pair.getValue());
+
+                    Player player = new Player((String) pair.getKey());
                     if(loop == 0) activePlayer = player;
 
-                    RemoteView rvplayer = new RemoteView(player, entry.getValue());
-                    game.addObserver(rvplayer);
+                    RemoteView rvPlayer = new RemoteView(player, (Connection) pair.getValue());
+                    game.addObserver(rvPlayer);
+                    rvs.add(rvPlayer);
 
                     game.addPlayer(player);
-                    playersInLobby.put(player.getPlayerName(), entry.getValue());
+                    playersInLobby.put(player.getPlayerName(), (Connection) pair.getValue());
 
-                    clientsConnected.remove(entry);  // remove entry from clientsConnected
                     loop++;
                 }
 
+                it.remove(); // remove entry from clientsConnected
             }
 
-            // PROBLEMA: hashmap al contrario XC
-
+            rooms.put(numRoom, playersInLobby);
+            numRoom++;
+            temp_lobbySize = 0;
 
             System.out.println("new game!");
-            masterController = new MasterController(game, activePlayer);
+            MasterController masterController = new MasterController(game);
+
+            for (RemoteView rv : rvs){
+                rv.setController(masterController);
+            }
+
+            Player finalActivePlayer = activePlayer;
+            //masterController.start(finalActivePlayer);
+            new Thread(() -> masterController.start(finalActivePlayer));
 
         }
 
+    }
+
+    public static void cleanLobby(){
+        //TODO
+    }
+
+    public static void refresh(){
+        //TODO
     }
 
 
@@ -145,35 +208,22 @@ public class Server {
     }
 
 
-
-    // lobby size
-    public void askLobbySize(Connection connection){
-        connection.sendMessage(
-                new ServerResponse(ResponseContent.NUM_PLAYER, MessageStatus.OK, "Lobby size?")
-        );
-    }
-
-    private void setLobbySize(SetPlayersRequest request) {
-
-            lobbySize = Integer.parseInt(request.getHowMany());
-            lobby();
-
-    }
-
-
     private synchronized void checkLogin(LoginRequest request, Connection connection) {
 
 
         if(connections.size() == 1) {
             registerClient(request.getMessageSender(), connection);
-            askLobbySize(connection);
 
         } else {
             login(request.getMessageSender(), connection);
+
+            setUpLobbySize();
+
         }
 
 
     }
+
 
     // Check if there is a client with same name
     public synchronized void login(String username, Connection connection) {
@@ -190,7 +240,6 @@ public class Server {
     // Register client in clientsConnected
     public synchronized void registerClient(String username, Connection connection){
 
-        connection.setName(username);
         clientsConnected.put(username, connection);
 
         System.out.println("Registered client:  " + username);
@@ -199,7 +248,6 @@ public class Server {
                 new ServerResponse(ResponseContent.LOGIN, MessageStatus.OK, "Connected! Ready to play!")
         );
 
-        lobby();
 
 
     }

@@ -24,16 +24,16 @@ public class MinotaurPowerTest {
     @Before
     public void setUp() {
 
-        Game.resetInstance();
-        game = Game.getInstance();
+        game = new Game();
 
 
         player1 = new Player("Simone");
         player2 = new Player("Massimo");
-        Game.getInstance().addPlayer(player1);
-        Game.getInstance().addPlayer(player2);
+        game.addPlayer(player1);
+        game.addPlayer(player2);
 
-        masterController = new MasterController(game, player1);
+        masterController = new MasterController(game);
+        masterController.start(player1);
 
         setupUtility = new SetupGameUtilityClass();
         setupUtility.setup(masterController, 6,1, true );
@@ -46,7 +46,7 @@ public class MinotaurPowerTest {
 
     @After
     public void tearDown() {
-        game = Game.getInstance();
+        game = null;
     }
 
     @Test

@@ -12,13 +12,12 @@ import java.net.Socket;
 
 public class Connection extends Observable<Message> implements Runnable {
 
-    private Server server;
-    private Socket socket;
+    private final Server server;
+    private final Socket socket;
 
     private ObjectInputStream socketIn;
     private ObjectOutputStream socketOut;
 
-    private String name;
     private boolean active;
 
     private final Object outLock = new Object();
@@ -48,11 +47,7 @@ public class Connection extends Observable<Message> implements Runnable {
 
 
 
-    // getter
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     private synchronized boolean isActive(){
         return active;
@@ -76,16 +71,6 @@ public class Connection extends Observable<Message> implements Runnable {
         }
     }
 
-    public void asyncSend(final Message message){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                sendMessage(message);
-            }
-        }).start();
-    }
-
-
 
     // close Connection
 
@@ -105,7 +90,7 @@ public class Connection extends Observable<Message> implements Runnable {
     private void close(){
         closeConnection();
         System.out.println("Deregistering client...");
-        server.deregisterConnection(this);
+        Server.deregisterConnection(this);
         System.out.println("Done!");
     }
 

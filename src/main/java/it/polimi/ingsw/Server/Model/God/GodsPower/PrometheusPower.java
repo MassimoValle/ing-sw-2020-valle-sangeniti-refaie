@@ -15,8 +15,8 @@ public class PrometheusPower extends Power implements Serializable {
 
     private boolean buildBefore = false;
 
-    public PrometheusPower(String powerType, String powerDescription) {
-        super(powerType, powerDescription);
+    public PrometheusPower(String powerType, String powerDescription, GameMap map) {
+        super(powerType, powerDescription, map);
     }
 
 
@@ -45,7 +45,6 @@ public class PrometheusPower extends Power implements Serializable {
 
 
 
-        GameMap map = Game.getInstance().getGameMap();
         Position startingPosition = squareWhereTheWorkerIs.getPosition();
 
         ArrayList<Position> reachables = (ArrayList<Position>) map.getReachableAdjacentPlaces(startingPosition);
@@ -62,15 +61,14 @@ public class PrometheusPower extends Power implements Serializable {
 
     @Override
     public boolean canBuildBeforeMoving(Worker workerSelected) {
-        GameMap gameMap = Game.getInstance().getGameMap();
 
-        List<Position> availablePosition = gameMap.getReachableAdjacentPlaces(workerSelected.getPosition());
-        Square workerSquare = gameMap.getSquare(workerSelected.getPosition());
+        List<Position> availablePosition = map.getReachableAdjacentPlaces(workerSelected.getPosition());
+        Square workerSquare = map.getSquare(workerSelected.getPosition());
 
 
         if (!availablePosition.isEmpty()) {
-            return gameMap.squareMinusOneAvailable(workerSquare) || gameMap.twoSquaresSameHeightAvailable(workerSquare)
-                    || gameMap.prometheusBuildsFirst(workerSquare);
+            return map.squareMinusOneAvailable(workerSquare) || map.twoSquaresSameHeightAvailable(workerSquare)
+                    || map.prometheusBuildsFirst(workerSquare);
         }
         return false;
 

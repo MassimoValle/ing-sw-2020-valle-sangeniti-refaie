@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Server.Model.God.GodsPower;
 
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 
 public class DemeterPower extends Power {
@@ -9,8 +10,8 @@ public class DemeterPower extends Power {
     private Square firstBlockBuilt = null;
 
 
-    public DemeterPower(String powerType, String powerDescription) {
-        super(powerType, powerDescription);
+    public DemeterPower(String powerType, String powerDescription, GameMap map) {
+        super(powerType, powerDescription, map);
     }
 
     @Override

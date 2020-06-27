@@ -2,6 +2,7 @@ package it.polimi.ingsw.Server.Model.God.GodsPower;
 
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Action.MoveAction;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
@@ -11,8 +12,8 @@ public class AthenaPower extends Power {
 
     private static boolean goneUp;
 
-    public AthenaPower(String powerType, String powerDescription) {
-        super(powerType, powerDescription);
+    public AthenaPower(String powerType, String powerDescription, GameMap map) {
+        super(powerType, powerDescription, map);
     }
 
     @Override

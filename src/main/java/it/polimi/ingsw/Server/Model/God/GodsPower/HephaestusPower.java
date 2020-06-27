@@ -1,6 +1,8 @@
 package it.polimi.ingsw.Server.Model.God.GodsPower;
 
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
+import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 
 public class HephaestusPower extends Power {
@@ -8,8 +10,8 @@ public class HephaestusPower extends Power {
     private static boolean firstBuild;
     private static Square firstBlockBuilt;
 
-    public HephaestusPower(String powerType, String powerDescription) {
-        super(powerType, powerDescription);
+    public HephaestusPower(String powerType, String powerDescription, GameMap map) {
+        super(powerType, powerDescription, map);
         firstBuild = true;
         firstBlockBuilt = null;
     }

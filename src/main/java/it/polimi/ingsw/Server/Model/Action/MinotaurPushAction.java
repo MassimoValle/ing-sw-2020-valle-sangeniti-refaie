@@ -27,9 +27,7 @@ public class MinotaurPushAction extends MoveAction {
     }
 
     @Override
-    public boolean isValid() {
-
-        GameMap map = Game.getInstance().getGameMap();
+    public boolean isValid(GameMap map) {
 
         try {
             backwardPosition = playerWorker.getPosition().getBackwardPosition(newPosition);

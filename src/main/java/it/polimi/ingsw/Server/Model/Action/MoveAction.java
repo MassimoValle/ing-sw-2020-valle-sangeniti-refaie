@@ -38,9 +38,8 @@ public class MoveAction implements Action {
      * @return true if is valid, false otherwise
      */
     @Override
-    public boolean isValid() {
+    public boolean isValid(GameMap map) {
 
-        GameMap map = Game.getInstance().getGameMap();
         int heightDifference = map.getDifferenceInAltitude(oldPositionSquare.getPosition(), newPositionSquare.getPosition());
         ArrayList<Position> adjacent = oldPositionSquare.getPosition().getAdjacentPlaces();
 
@@ -87,7 +86,7 @@ public class MoveAction implements Action {
      */
     boolean godsPowerActive(Power godsPowerPerformingAction) {
 
-        ArrayList<Power> powersInGame = (ArrayList<Power>) Game.getInstance().getPowersInGame();
+        ArrayList<Power> powersInGame = null;//TODO (da sistemare con observer) = (ArrayList<Power>) Game.getInstance().getPowersInGame();
         for (Power godPower: powersInGame) {
             if (!godPower.equals(godsPowerPerformingAction) && godPower.canPreventsFromPerformingAction() && godPower.checkIfActionNotPermitted(this)) {
                  return true;

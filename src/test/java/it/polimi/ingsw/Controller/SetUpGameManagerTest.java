@@ -35,7 +35,6 @@ public class SetUpGameManagerTest {
 
     @Before
     public void setUp() {
-        Game.resetInstance();
 
         Player p1 = new Player("client1");
         Player p2 = new Player("client2");
@@ -44,18 +43,19 @@ public class SetUpGameManagerTest {
         players.add(p1); players.add(p2); players.add(p3);
         activePlayer = players.get(0);
 
-        game = Game.getInstance();
+        game = new Game();
         game.addPlayer(p1);
         game.addPlayer(p2);
         game.addPlayer(p3);
 
         gods = new ArrayList<>();
-        gods.add(new God("apello", "desc", new ApolloPower("Your move", "desc")));
-        gods.add(new God("figlio", "desc", new ApolloPower("Your move", "desc")));
-        gods.add(new God("apollo", "desc", new ApolloPower("Your move", "desc")));
+        gods.add(new God("apello", "desc", new ApolloPower("Your move", "desc", game.getGameMap())));
+        gods.add(new God("figlio", "desc", new ApolloPower("Your move", "desc", game.getGameMap())));
+        gods.add(new God("apollo", "desc", new ApolloPower("Your move", "desc", game.getGameMap())));
 
 
-        masterController = new MasterController(game, activePlayer);
+        masterController = new MasterController(game);
+        masterController.start(activePlayer);
         setUpGameManager = masterController._getSetUpGameController();
 
     }
@@ -64,7 +64,7 @@ public class SetUpGameManagerTest {
     @Test
     public void assignignGod(){
 
-        God god = new God("apollo", "desc", new ApolloPower("Your move", "desc"));
+        God god = new God("apollo", "desc", new ApolloPower("Your move", "desc", game.getGameMap()));
         setUpGameManager.assignGodToPlayer(activePlayer, god);
 
         int index = game.getPlayers().indexOf(activePlayer);

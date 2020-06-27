@@ -2,6 +2,7 @@ package it.polimi.ingsw.Server.Model.God.GodsPower;
 
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Action.ZeusBuildAction;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Position;
 import it.polimi.ingsw.Server.Model.Player.Worker;
@@ -12,8 +13,8 @@ public class ZeusPower extends Power implements Serializable {
 
     private Position newZeusPosition = null;
 
-    public ZeusPower(String powerType, String powerDescription) {
-        super(powerType, powerDescription);
+    public ZeusPower(String powerType, String powerDescription, GameMap map) {
+        super(powerType, powerDescription, map);
     }
 
     @Override
@@ -29,7 +30,7 @@ public class ZeusPower extends Power implements Serializable {
 
             ZeusBuildAction zeusBuildAction = new ZeusBuildAction(squareWhereToBuild);
 
-            if ( zeusBuildAction.isValid() )
+            if ( zeusBuildAction.isValid(null) )
                 zeusBuildAction.doAction();
 
             return ActionOutcome.DONE;
