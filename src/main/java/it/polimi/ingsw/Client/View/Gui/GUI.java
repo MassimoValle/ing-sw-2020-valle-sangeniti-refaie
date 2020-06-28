@@ -332,7 +332,7 @@ public class GUI extends ClientView {
     }
 
     @Override
-    public int selectWorker() {
+    public int selectWorker(List<Position> workersPositions) {
 
         parameterListener.setToNull();
         boolean again = false;
@@ -482,7 +482,7 @@ public class GUI extends ClientView {
     }
 
     @Override
-    public Position moveWorker(ArrayList<Position> nearlyPosValid) {
+    public Position moveWorker(List<Position> nearlyPosValid) {
 
         //controller.enablePosition(nearlyPosValid);
 

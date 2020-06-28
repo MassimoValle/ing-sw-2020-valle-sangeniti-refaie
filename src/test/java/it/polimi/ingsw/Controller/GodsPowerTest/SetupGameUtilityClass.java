@@ -6,6 +6,7 @@ import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.God.GodsInGame;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
@@ -42,9 +43,18 @@ public class SetupGameUtilityClass {
         //assegno i god ai rispettivi giocatori
         masterController.getGameInstance().getPlayers().get(0).setPlayerGod(chosenGod.get(0));
         masterController.getGameInstance().getChosenGodsFromDeck().get(0).setAssigned(true);
-        //game.getChosenGodsFromDeck().get(0).setAssigned(true);
+
         masterController.getGameInstance().getPlayers().get(1).setPlayerGod(chosenGod.get(1));
         masterController.getGameInstance().getChosenGodsFromDeck().get(1).setAssigned(true);
+
+        chosenGod.get(0).getGodPower().setMap(map);
+        chosenGod.get(1).getGodPower().setMap(map);
+
+        GodsInGame.getIstance().addGodToGame(masterController.getGameInstance(), chosenGod.get(0));
+        GodsInGame.getIstance().addGodToGame(masterController.getGameInstance(), chosenGod.get(1));
+
+
+
 
 
         w1pl1 = masterController.getGameInstance().getPlayers().get(0).getPlayerWorkers().get(0);
@@ -135,6 +145,14 @@ public class SetupGameUtilityClass {
 
         masterController.getGameInstance().getPlayers().get(2).setPlayerGod(chosenGod.get(2));
         masterController.getGameInstance().getChosenGodsFromDeck().get(2).setAssigned(true);
+
+        chosenGod.get(0).getGodPower().setMap(map);
+        chosenGod.get(1).getGodPower().setMap(map);
+        chosenGod.get(2).getGodPower().setMap(map);
+
+        GodsInGame.getIstance().addGodToGame(masterController.getGameInstance(), chosenGod.get(0));
+        GodsInGame.getIstance().addGodToGame(masterController.getGameInstance(), chosenGod.get(1));
+        GodsInGame.getIstance().addGodToGame(masterController.getGameInstance(), chosenGod.get(2));
 
 
         w1pl1 = masterController.getGameInstance().getPlayers().get(0).getPlayerWorkers().get(0);
@@ -256,6 +274,13 @@ public class SetupGameUtilityClass {
         masterController.getGameInstance().getPlayers().get(1).setPlayerGod(chosenGod.get(1));
         masterController.getGameInstance().getChosenGodsFromDeck().get(1).setAssigned(true);
 
+        chosenGod.get(0).getGodPower().setMap(map);
+        chosenGod.get(1).getGodPower().setMap(map);
+
+        GodsInGame.getIstance().addGodToGame(masterController.getGameInstance(), chosenGod.get(0));
+        GodsInGame.getIstance().addGodToGame(masterController.getGameInstance(), chosenGod.get(1));
+
+
 
         w1pl1 = masterController.getGameInstance().getPlayers().get(0).getPlayerWorkers().get(0);
         Square sq22;
@@ -354,6 +379,12 @@ public class SetupGameUtilityClass {
         masterController.getGameInstance().getPlayers().get(1).setPlayerGod(chosenGod.get(1));
         masterController.getGameInstance().getChosenGodsFromDeck().get(1).setAssigned(true);
 
+        chosenGod.get(0).getGodPower().setMap(map);
+        chosenGod.get(1).getGodPower().setMap(map);
+
+        GodsInGame.getIstance().addGodToGame(masterController.getGameInstance(), chosenGod.get(0));
+        GodsInGame.getIstance().addGodToGame(masterController.getGameInstance(), chosenGod.get(1));
+
         //player1 piazza primo worker
         w1pl1 = masterController.getGameInstance().getPlayers().get(0).getPlayerWorkers().get(0);
         Square sq22;
@@ -442,6 +473,11 @@ public class SetupGameUtilityClass {
         masterController.getGameInstance().getPlayers().get(1).setPlayerGod(chosenGod.get(1));
         masterController.getGameInstance().getChosenGodsFromDeck().get(1).setAssigned(true);
 
+        chosenGod.get(0).getGodPower().setMap(map);
+        chosenGod.get(1).getGodPower().setMap(map);
+
+        GodsInGame.getIstance().addGodToGame(masterController.getGameInstance(), chosenGod.get(0));
+        GodsInGame.getIstance().addGodToGame(masterController.getGameInstance(), chosenGod.get(1));
 
         w1pl1 = masterController.getGameInstance().getPlayers().get(0).getPlayerWorkers().get(0);
         Square sq00;

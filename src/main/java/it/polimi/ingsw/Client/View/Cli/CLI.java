@@ -11,7 +11,6 @@ import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
-import it.polimi.ingsw.Utility.Ansi;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -310,11 +309,17 @@ public class CLI extends ClientView {
     }
 
     @Override
-    public int selectWorker() {
+    public int selectWorker(List<Position> workersPositions) {
         int worker = -1;
         do{
             consoleOut.println("\nWhich worker do you want to move?\n" +
-                    "1 or 2?");
+                    "1 ("
+                            + workersPositions.get(0).getRow() + "," +
+                            workersPositions.get(0).getColumn() + ")\n" +
+                    "2 ("
+                    + workersPositions.get(1).getRow() + "," +
+                    workersPositions.get(1).getColumn() + ")\n"
+            );
 
             String entered = consoleIn.nextLine();
 
@@ -405,7 +410,7 @@ public class CLI extends ClientView {
     }
 
     @Override
-    public Position moveWorker(ArrayList<Position> nearlyPosValid) {
+    public Position moveWorker(List<Position> nearlyPosValid) {
 
         Position p;
 

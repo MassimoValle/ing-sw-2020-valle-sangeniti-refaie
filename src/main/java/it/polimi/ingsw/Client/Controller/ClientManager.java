@@ -15,6 +15,7 @@ import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Message.Enum.Dispatcher;
 import it.polimi.ingsw.Network.Message.Enum.RequestContent;
 import it.polimi.ingsw.Network.Message.Enum.MessageStatus;
+import it.polimi.ingsw.Server.Model.Player.Worker;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -394,7 +395,13 @@ public class ClientManager {
 
         clientState = PossibleClientState.SELECTING_WORKER;
 
-        this.workerSelected = clientView.selectWorker();
+        List<Position> workersPosition = new ArrayList<>();
+
+        for (Worker worker: me.getPlayerWorkers())
+            workersPosition.add(worker.getPosition());
+
+
+        this.workerSelected = clientView.selectWorker(workersPosition);
 
         try {
             Client.sendMessage(
@@ -425,8 +432,8 @@ public class ClientManager {
 
     private void moveWorker(MoveWorkerServerRequest serverRequest){
 
-        ArrayList<Position> nearlyPositionsValid = me.getPlayerWorkers().get(workerSelected).getPosition().getAdjacentPlaces();
-
+        Position workerPosition = me.getPlayerWorkers().get(workerSelected).getPosition();
+        List<Position> nearlyPositionsValid = babyGame.getClientMap().getReachableAdjacentPlaces(workerPosition);
 
         Position position = clientView.moveWorker(nearlyPositionsValid);
 

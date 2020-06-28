@@ -16,7 +16,10 @@ import it.polimi.ingsw.Server.Model.Player.Worker;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SendResponse {
+/**
+ * This class is used to send every kind of {@link it.polimi.ingsw.Network.Message.Message} to the clients
+ */
+public class OutgoingMessageManager {
 
     private final Game gameInstance;
     private final TurnManager turnManager;
@@ -25,7 +28,7 @@ public class SendResponse {
 
 
     // RESPONSE
-    public SendResponse(Game gameInstance, TurnManager turnManager){
+    public OutgoingMessageManager(Game gameInstance, TurnManager turnManager){
 
         this.gameInstance = gameInstance;
         this.turnManager = turnManager;
