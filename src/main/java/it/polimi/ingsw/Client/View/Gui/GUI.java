@@ -10,6 +10,7 @@ import it.polimi.ingsw.Client.View.Gui.ViewControllers.PickGodController;
 import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.SelectWorkerServerResponse;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
+import it.polimi.ingsw.Server.Model.Action.MoveAction;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
@@ -367,7 +368,6 @@ public class GUI extends ClientView {
         }
         while (again);
 
-        //controller.selectWorker(selectedWorker);
         selectedWorker.selectedOnGUI();
 
         parameterListener.setToNull();
@@ -449,7 +449,12 @@ public class GUI extends ClientView {
 
         }
 
-        return PossibleClientAction.MOVE;
+        possibleActions.removeIf((x) -> x.equals(PossibleClientAction.POWER_BUTTON));
+        possibleActions.removeIf((x) -> x.equals(PossibleClientAction.SELECT_WORKER));
+
+        controller.disablePowerButton();
+
+        return possibleActions.get(0);
 
     }
 
@@ -603,7 +608,6 @@ public class GUI extends ClientView {
     @Override
     public Position build(ArrayList<Position> possiblePosToBuild) {
 
-        parameterListener.setToNull();
         //controller.enablePosition(possiblePosToBuild);
 
         while (ParameterListener.getParameter() == null){
@@ -738,9 +742,9 @@ public class GUI extends ClientView {
     @Override
     public void endTurn() {
 
-        //controller.deselectWorker(selectedWorker);
         selectedWorker.deselectedOnGUI();
         selectedWorker = null;
+        controller.disablePowerButton();
 
         if(!enaPopup) return;
 

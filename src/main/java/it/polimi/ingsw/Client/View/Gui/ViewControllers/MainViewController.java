@@ -150,7 +150,9 @@ public class MainViewController implements Initializable {
     }
 
     public void disablePowerButton(){
-        powerButton.setDisable(true);
+
+        if(!powerButton.isDisable())
+            powerButton.setDisable(true);
     }
 
     /*public void enablePosition(ArrayList<Position> nearlyPosValid) {
