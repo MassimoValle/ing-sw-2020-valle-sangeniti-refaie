@@ -35,7 +35,7 @@ public class SetUpGameManager {
 
     private PossibleGameState setupGameState;
 
-    private final SendResponse sendResponse;
+    private final OutgoingMessageManager outgoingMessageManager;
 
 
 
@@ -45,7 +45,7 @@ public class SetUpGameManager {
         this.setupGameState = PossibleGameState.GAME_INIT;
 
         this.gameInstance = game;
-        this.sendResponse = new SendResponse(gameInstance, null);
+        this.outgoingMessageManager = new OutgoingMessageManager(gameInstance, null);
         this.activePlayer = activePlayer;
         currentPlayer = gameInstance.getPlayers().indexOf(activePlayer);
 
@@ -129,7 +129,7 @@ public class SetUpGameManager {
     public boolean handleMessage(Request request) {
 
         if(!isYourTurn(request.getMessageSender())) {
-            sendResponse.buildNegativeResponse(getPlayerByName(request.getMessageSender()), ResponseContent.CHECK, "It's not your turn!");
+            outgoingMessageManager.buildNegativeResponse(getPlayerByName(request.getMessageSender()), ResponseContent.CHECK, "It's not your turn!");
             return false;
         }
 
@@ -145,7 +145,7 @@ public class SetUpGameManager {
             case PLACE_WORKER -> {
                 return handlePlaceWorker((PlaceWorkerRequest) request);
             }
-            default -> sendResponse.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "Something went wrong!");
+            default -> outgoingMessageManager.buildNegativeResponse(activePlayer, ResponseContent.CHECK, "Something went wrong!");
         }
 
         return false;
@@ -164,18 +164,18 @@ public class SetUpGameManager {
 
         //verifico che è il momento del godlike player
         if(setupGameState != PossibleGameState.GODLIKE_PLAYER_MOMENT){
-            sendResponse.buildNegativeResponse(activePlayer, responseContent, "It's not the time to chose the gods");
+            outgoingMessageManager.buildNegativeResponse(activePlayer, responseContent, "It's not the time to chose the gods");
             return;
         }
 
         //verifico che il nunmero di gods scelti sia corretto
         if(request.getChosenGods().size() != gameInstance.getPlayers().size()){
-            sendResponse.buildNegativeResponse(activePlayer, responseContent, "You sent the wrong number of gods! Try again!");
+            outgoingMessageManager.buildNegativeResponse(activePlayer, responseContent, "You sent the wrong number of gods! Try again!");
             return;
         }
 
         gameInstance.setChosenGodsFromDeck(request.getChosenGods());
-        sendResponse.buildPositiveResponse(activePlayer, responseContent, "Gods selected!");
+        outgoingMessageManager.buildPositiveResponse(activePlayer, responseContent, "Gods selected!");
 
         //Turno del giocatore successivo
         activePlayer = nextPlayer();
@@ -198,14 +198,14 @@ public class SetUpGameManager {
 
 
         if(setupGameState != PossibleGameState.ASSIGNING_GOD){
-            sendResponse.buildNegativeResponse(activePlayer, responseContent, "It's not the time to pick a god");
+            outgoingMessageManager.buildNegativeResponse(activePlayer, responseContent, "It's not the time to pick a god");
             return;
         }
 
 
         assignGodToPlayer(activePlayer, request.getGod());
 
-        sendResponse.buildPositiveResponse(activePlayer, responseContent, "confirm!");
+        outgoingMessageManager.buildPositiveResponse(activePlayer, responseContent, "confirm!");
 
 
 
@@ -218,7 +218,7 @@ public class SetUpGameManager {
         }
         else {  // inizio la fase di piazzamento dei worker
 
-            sendResponse.sendPlayersInfo();
+            outgoingMessageManager.sendPlayersInfo();
 
             PlaceWorkerServerRequest placeWorkerServerRequest = new PlaceWorkerServerRequest(workerPlaced);
             gameInstance.putInChanges(activePlayer, placeWorkerServerRequest);
@@ -240,7 +240,7 @@ public class SetUpGameManager {
         ResponseContent responseContent = ResponseContent.PLACE_WORKER;
 
         if(setupGameState != PossibleGameState.FILLING_BOARD){
-            sendResponse.buildNegativeResponse(activePlayer, responseContent, "It's not the time to place a worker!");
+            outgoingMessageManager.buildNegativeResponse(activePlayer, responseContent, "It's not the time to place a worker!");
             return false;
         }
 
@@ -259,13 +259,13 @@ public class SetUpGameManager {
             placeWorkerAction.doAction();
             workerPlaced += 1;
 
-            sendResponse.buildPositiveResponse(activePlayer, responseContent, "Worker placed!");
-            sendResponse.updateClients(activePlayer.getPlayerName(), UpdateType.PLACE, positionToPlaceWorker, worker.getNumber(), false);
+            outgoingMessageManager.buildPositiveResponse(activePlayer, responseContent, "Worker placed!");
+            outgoingMessageManager.updateClients(activePlayer.getPlayerName(), UpdateType.PLACE, positionToPlaceWorker, worker.getNumber(), false);
 
 
             if(activePlayer.areWorkersPlaced()) {   // se activePlayer ha già posizionato 2 worker
 
-                sendResponse.buildPositiveResponse(activePlayer, responseContent, "All workers are placed");
+                outgoingMessageManager.buildPositiveResponse(activePlayer, responseContent, "All workers are placed");
 
                 activePlayer = nextPlayer();
                 playerLoop++;
@@ -288,7 +288,7 @@ public class SetUpGameManager {
 
         }
         else {
-            sendResponse.buildNegativeResponse(activePlayer, ResponseContent.PLACE_WORKER, "Errore nel posizionamento del worker");
+            outgoingMessageManager.buildNegativeResponse(activePlayer, ResponseContent.PLACE_WORKER, "Errore nel posizionamento del worker");
 
         }
 

@@ -26,18 +26,17 @@ public class ActionManager {
 
     private final Game gameInstance;
     private final TurnManager turnManager;
-    private final SendResponse sendResponse;
+    private final OutgoingMessageManager outgoingMessageManager;
     private PossibleGameState gameState;
-    private ActionOutcome actionOutcome;        //contains the last action outcome performed by the client
-    private Player activePlayer;                //turnOwner
-    private Request currentRequest;             //currentRequest by the turnOwner
-    private Player winner;                      //this is set when during someone else's turn one player wins
+    private ActionOutcome actionOutcome;                            //contains the last action outcome performed by the client
+    private Player activePlayer;                                    //turnOwner
+    private Request currentRequest;                                 //currentRequest by the turnOwner
+    private Player winner;                                          //this is set when during someone else's turn one player wins
 
     public ActionManager(Game game, TurnManager turnManager) {
         this.gameInstance = game;
         this.turnManager = turnManager;
-        this.sendResponse = new SendResponse(gameInstance, turnManager);
-
+        this.outgoingMessageManager = new OutgoingMessageManager(gameInstance, turnManager);
         this.gameState = PossibleGameState.START_ROUND;
     }
 
@@ -47,14 +46,13 @@ public class ActionManager {
      * It handles the the request .
      *
      * @param request the request sent by the client
-     * @return positive/negative response if the client can perform action requested
      */
     public void handleRequest(Request request){
 
         Player requestSender = gameInstance.searchPlayerByName(request.getMessageSender());
 
         if(!isYourTurn(request.getMessageSender())) {
-            sendResponse.buildNegativeResponse(requestSender, ResponseContent.NOT_YOUR_TURN, "It's not your turn!");
+            outgoingMessageManager.buildNegativeResponse(requestSender, ResponseContent.NOT_YOUR_TURN, "It's not your turn!");
             return;
         }
 
@@ -66,14 +64,14 @@ public class ActionManager {
             case POWER_BUTTON -> handlePowerButton((PowerButtonRequest) request);
 
             case MOVE -> handleMoveAction((MoveRequest) request);
-            case END_MOVE -> handleEndMoveAction((EndMoveRequest) request);
+            case END_MOVE -> handleEndMoveAction();
 
             case BUILD -> handleBuildAction((BuildRequest) request);
-            case END_BUILD -> handleEndBuildAction((EndBuildRequest) request);
+            case END_BUILD -> handleEndBuildAction();
 
-            case END_TURN -> handleEndTurnAction((EndTurnRequest) request);
-            default -> sendResponse.buildNegativeResponse(gameInstance.searchPlayerByName(request.getMessageSender()), ResponseContent.CHECK, "Must never be reached!");
-        };
+            case END_TURN -> handleEndTurnAction();
+            default -> outgoingMessageManager.buildNegativeResponse(gameInstance.searchPlayerByName(request.getMessageSender()), ResponseContent.CHECK, "Must never be reached!");
+        }
     }
 
 
@@ -88,7 +86,7 @@ public class ActionManager {
 
         //controllo che il giocatore abbia un worker attivo
         if (turnManager.getActiveWorker() == null) {
-           sendResponse.buildNegativeResponse(activePlayer, ResponseContent.POWER_BUTTON, "Please, select a worker first");
+           outgoingMessageManager.buildNegativeResponse(activePlayer, ResponseContent.POWER_BUTTON, "Please, select a worker first");
             return;
         }
 
@@ -100,8 +98,8 @@ public class ActionManager {
             gameState = PossibleGameState.BUILD_BEFORE;
             turnManager.updateTurnState(PossibleGameState.BUILD_BEFORE);
 
-           sendResponse.buildPositiveResponse(activePlayer, ResponseContent.POWER_BUTTON, "You can build first!");
-           sendResponse.buildServerRequest(activePlayer, ServerRequestContent.BUILD,activeWorker);
+           outgoingMessageManager.buildPositiveResponse(activePlayer, ResponseContent.POWER_BUTTON, "You can build first!");
+           outgoingMessageManager.buildServerRequest(activePlayer, ServerRequestContent.BUILD,activeWorker);
             return;
         }
 
@@ -109,13 +107,13 @@ public class ActionManager {
 
             gameState = PossibleGameState.WORKER_MOVED;
             turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
-           sendResponse.buildPositiveResponse(activePlayer, ResponseContent.POWER_BUTTON, "You can build a dome (even onto a non-level-3 block!)");
-           sendResponse.buildServerRequest(activePlayer, ServerRequestContent.BUILD, activeWorker);
+           outgoingMessageManager.buildPositiveResponse(activePlayer, ResponseContent.POWER_BUTTON, "You can build a dome (even onto a non-level-3 block!)");
+           outgoingMessageManager.buildServerRequest(activePlayer, ServerRequestContent.BUILD, activeWorker);
             return;
         }
 
 
-       sendResponse.buildNegativeResponse(activePlayer, ResponseContent.POWER_BUTTON, "You are not allowed!");
+       outgoingMessageManager.buildNegativeResponse(activePlayer, ResponseContent.POWER_BUTTON, "You are not allowed!");
     }
 
     /**
@@ -124,14 +122,13 @@ public class ActionManager {
      * or in {@link PossibleGameState#START_ROUND} when the player has to select one Worker
      *
      * @param request the request sent by the client
-     * @return positive/negative response if the client can perform action requested
      */
     void handleSelectWorkerAction(SelectWorkerRequest request) {
 
         RequestContent requestContent = RequestContent.SELECT_WORKER;
 
         if (wrongRequest(requestContent)) {
-           sendResponse.buildNegativeResponse(activePlayer, ResponseContent.SELECT_WORKER, "You cannot select a worker!");
+           outgoingMessageManager.buildNegativeResponse(activePlayer, ResponseContent.SELECT_WORKER, "You cannot select a worker!");
             return;
         }
 
@@ -142,7 +139,7 @@ public class ActionManager {
         actionOutcome = power.selectWorker(workerFromRequest, activePlayer);
 
         if (actionOutcome == ActionOutcome.NOT_DONE) {
-            sendResponse.buildNegativeResponse(activePlayer, ResponseContent.SELECT_WORKER, "You cannot select this worker!");
+            outgoingMessageManager.buildNegativeResponse(activePlayer, ResponseContent.SELECT_WORKER, "You cannot select this worker!");
             return;
         }
 
@@ -152,14 +149,6 @@ public class ActionManager {
         nextPhase();
     }
 
-    /**
-     * It updates the server
-     */
-    private void workerSelected() {
-        turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
-        sendResponse.buildPositiveResponse(activePlayer, ResponseContent.SELECT_WORKER, "Worker Selected!");
-        sendResponse.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, turnManager.getActiveWorker());
-    }
 
 
     /**
@@ -167,13 +156,12 @@ public class ActionManager {
      * It's called only in {@link PossibleGameState#WORKER_SELECTED} whe the player have to move the previously selected worker
      *
      * @param request the request sent by the client
-     * @return positive/negative response if the client can perform action requested
      */
     void handleMoveAction(MoveRequest request) {
         ResponseContent responseContent = ResponseContent.MOVE_WORKER;
 
         if (wrongRequest(RequestContent.MOVE)) {
-            sendResponse.buildNegativeResponse(activePlayer, responseContent, "You cannot move!");
+            outgoingMessageManager.buildNegativeResponse(activePlayer, responseContent, "You cannot move!");
             return;
         }
 
@@ -187,50 +175,29 @@ public class ActionManager {
 
         //action hasn't been done
         if (actionOutcome == ActionOutcome.NOT_DONE) {
-            sendResponse.buildNegativeResponse(activePlayer, responseContent, "You cannot move here!");
+            outgoingMessageManager.buildNegativeResponse(activePlayer, responseContent, "You cannot move here!");
             return;
         }
 
         //L'azione è stata eseguita quindi l'aggiungo alla lista nel turn manager e informo i client
         turnManager.addActionPerformed(new MoveAction(playerGod.getGodPower(), activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove));
-        sendResponse.updateClients(activePlayer.getPlayerName(), UpdateType.MOVE, positionWhereToMove, activeWorker.getNumber(), false);
+        outgoingMessageManager.updateClients(activePlayer.getPlayerName(), UpdateType.MOVE, positionWhereToMove, activeWorker.getNumber(), false);
 
         if (winningMove()) {
-            //return gameEndingPhase();
+            gameEndingPhase();
+            return;
         }
 
         gameState = PossibleGameState.WORKER_MOVED;
         nextPhase();
     }
 
-    /**
-     * It updates the server
-     */
-    private void workerMoved() {
-
-        if (actionOutcome == ActionOutcome.DONE || currentRequest instanceof EndMoveRequest) {
-            turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
-
-            if (currentRequest instanceof EndMoveRequest)
-                sendResponse.buildPositiveResponse(activePlayer, ResponseContent.END_MOVE, "Now you can build");
-            else
-                sendResponse.buildPositiveResponse(activePlayer, ResponseContent.MOVE_WORKER, "Worker Moved!");
-
-            sendResponse.buildServerRequest(activePlayer, ServerRequestContent.BUILD, turnManager.getActiveWorker());
-
-        } else {
-            gameState = PossibleGameState.WORKER_SELECTED;
-            turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
-            sendResponse.buildPositiveResponse(activePlayer, ResponseContent.MOVE_WORKER_AGAIN, "Worker Moved! Worker has an extra move! You can choose to move again or to build!");
-            sendResponse.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, turnManager.getActiveWorker());
-        }
-    }
 
 
-    private void handleEndMoveAction(EndMoveRequest request) {
+    private void handleEndMoveAction() {
 
         if (wrongRequest(RequestContent.END_MOVE)) {
-            sendResponse.buildNegativeResponse(activePlayer, ResponseContent.END_MOVE, "You must move at least once!");
+            outgoingMessageManager.buildNegativeResponse(activePlayer, ResponseContent.END_MOVE, "You must move at least once!");
             return;
         }
 
@@ -243,7 +210,6 @@ public class ActionManager {
      * It's called only in {@link PossibleGameState#WORKER_SELECTED} whe the player have to move the previously selected worker
      *
      * @param request the request sent by the client
-     * @return positive/negative response if the client can perform action requested,
      *
      *  in case of SOME GOD'S POWERS it can be called also when the {@link PossibleGameState#WORKER_SELECTED}
      */
@@ -252,7 +218,7 @@ public class ActionManager {
         Worker activeWorker = turnManager.getActiveWorker();
 
         if (wrongRequest(RequestContent.BUILD)){
-            sendResponse.buildNegativeResponse(activePlayer, responseContent, "You cannot build!");
+            outgoingMessageManager.buildNegativeResponse(activePlayer, responseContent, "You cannot build!");
             return;
         }
 
@@ -267,7 +233,7 @@ public class ActionManager {
             actionOutcome = playerGod.getGodPower().build(squareWhereTheWorkerIs, squareWhereToBuild);
 
         if (actionOutcome == ActionOutcome.NOT_DONE) {
-            sendResponse.buildNegativeResponse(activePlayer, responseContent, "You cannot build here!");
+            outgoingMessageManager.buildNegativeResponse(activePlayer, responseContent, "You cannot build here!");
             return;
         }
 
@@ -277,11 +243,11 @@ public class ActionManager {
         else
             turnManager.addActionPerformed(new BuildAction(squareWhereTheWorkerIs, squareWhereToBuild));
 
-       sendResponse.updateClients(activePlayer.getPlayerName(), UpdateType.BUILD, positionWhereToBuild, activeWorker.getNumber(), request instanceof BuildDomeRequest);
+       outgoingMessageManager.updateClients(activePlayer.getPlayerName(), UpdateType.BUILD, positionWhereToBuild, activeWorker.getNumber(), request instanceof BuildDomeRequest);
 
         //vado a contrllare se con questa mossa un qualsiasi giocatore con qualche potere particolare ha vinto
         if (someoneHasWonAfterBuilding(activePlayer)) {
-           sendResponse.buildWonResponse(winner,"YOU WON!");
+           outgoingMessageManager.buildWonResponse(winner,"YOU WON!");
             return;
         }
 
@@ -291,39 +257,11 @@ public class ActionManager {
         nextPhase();
     }
 
-    private void built() {
 
-        if (actionOutcome == ActionOutcome.DONE && gameState == PossibleGameState.BUILD_BEFORE ) {
-            gameState = PossibleGameState.WORKER_SELECTED;
-            turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
-           sendResponse.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Now you can move!");
-           sendResponse.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, turnManager.getActiveWorker());
-
-        } else if (actionOutcome == ActionOutcome.DONE || currentRequest instanceof EndBuildRequest) {
-
-            gameState = PossibleGameState.PLAYER_TURN_ENDING;
-            turnManager.updateTurnState(PossibleGameState.BUILT);
-
-            if (currentRequest instanceof EndBuildRequest)
-               sendResponse.buildPositiveResponse(activePlayer, ResponseContent.END_BUILD, "You've got to end your turn");
-            else
-               sendResponse.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Built!");
-
-           sendResponse.buildServerRequest(activePlayer, ServerRequestContent.END_TURN, null);
-
-        } else {
-            gameState = PossibleGameState.WORKER_MOVED;
-            turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
-           sendResponse.buildPositiveResponse(turnManager.getActivePlayer(), ResponseContent.BUILD_AGAIN, "Built! Worker has an extra built!");
-           sendResponse.buildServerRequest(activePlayer, ServerRequestContent.BUILD, turnManager.getActiveWorker());
-        }
-
-    }
-
-    private void handleEndBuildAction(EndBuildRequest request) {
+    private void handleEndBuildAction() {
 
         if (wrongRequest(RequestContent.END_BUILD)) {
-           sendResponse.buildNegativeResponse(activePlayer, ResponseContent.END_BUILD, "You must build at least once!");
+           outgoingMessageManager.buildNegativeResponse(activePlayer, ResponseContent.END_BUILD, "You must build at least once!");
             return;
         }
 
@@ -332,12 +270,12 @@ public class ActionManager {
     }
 
 
-    private void handleEndTurnAction(EndTurnRequest request) {
+    private void handleEndTurnAction() {
 
         ResponseContent responseContent = ResponseContent.END_TURN;
 
         if (wrongRequest(RequestContent.END_TURN)) {
-           sendResponse.buildNegativeResponse(activePlayer, responseContent, "You cannot end your turn!");
+           outgoingMessageManager.buildNegativeResponse(activePlayer, responseContent, "You cannot end your turn!");
             return;
         }
 
@@ -347,66 +285,12 @@ public class ActionManager {
             power.resetPower();
 
         gameState = PossibleGameState.PLAYER_TURN_ENDING;
-       sendResponse.buildPositiveResponse(activePlayer, responseContent, "Turn ending");
+       outgoingMessageManager.buildPositiveResponse(activePlayer, responseContent, "Turn ending");
 
         nextPhase();
     }
 
-    /**
-     * It makes the server to evolve based on the current gameState
-     */
-    private void nextPhase() {
 
-        switch (gameState) {
-            case WORKER_SELECTED -> workerSelected();
-
-            case WORKER_MOVED -> workerMoved();
-
-            case BUILT, BUILD_BEFORE -> built();
-
-            case PLAYER_TURN_ENDING -> startNextRound(false);
-        }
-    }
-
-    protected void startNextRound(boolean firstRound) {
-
-        if (firstRound) { //scelta implementativa, il giocatore ad iniziare sarà sempre il successivo al godlikePlayer (cioè il player #0)
-            activePlayer = gameInstance.getPlayers().get(1);
-        } else if (gameState == PossibleGameState.PLAYER_HAS_LOST) {
-            activePlayer = turnManager.getActivePlayer();
-        } else {
-            turnManager.updateTurnState(gameState);
-            activePlayer = turnManager.getActivePlayer();
-        }
-
-
-        Player nextPlayer = activePlayer;
-
-
-        gameState = PossibleGameState.START_ROUND;
-        turnManager.updateTurnState(gameState);
-        StartTurnServerRequest startTurnServerRequest = new StartTurnServerRequest();
-        gameInstance.putInChanges(nextPlayer, startTurnServerRequest);
-
-        //Se era una partita a due giocatori e uno si ritrova con i worker bloccati
-        if (turnManager.getInGamePlayers().size() == 1) {
-            WonServerResponse wonServerResponse = new WonServerResponse("You won!");
-            gameInstance.putInChanges(nextPlayer, wonServerResponse);
-            gameEndingPhase();
-            return;
-        }
-
-        if (nextPlayer.allWorkersStuck()) {
-            gameState = PossibleGameState.PLAYER_HAS_LOST;
-            LostServerResponse lostServerResponse = new LostServerResponse("You lost!");
-            gameInstance.putInChanges(nextPlayer, lostServerResponse);
-            playerHasLost(nextPlayer);
-            startNextRound(false);
-            return;
-        }
-
-       sendResponse.buildServerRequest(nextPlayer, ServerRequestContent.SELECT_WORKER, null);
-    }
 
     private void playerHasLost(Player nextPlayer) {
 
@@ -468,8 +352,8 @@ public class ActionManager {
     /**
      * It checks if the request is sent at the right moment
      *
-     * @param content
-     * @return
+     * @param content the request content sent by the client
+     * @return true if the request cannot be accepted, false otherwise
      */
     private boolean wrongRequest(RequestContent content) {
 
@@ -516,12 +400,131 @@ public class ActionManager {
     private boolean winningMove() {
 
         if (actionOutcome == ActionOutcome.WINNING_MOVE || playerHasWonAfterMoving(activePlayer)) {
-           sendResponse.buildWonResponse(activePlayer, "YOU WON!");
+           outgoingMessageManager.buildWonResponse(activePlayer, "YOU WON!");
             return true;
         }
 
         return false;
     }
+
+    /**
+     * It makes the server to evolve based on the current gameState
+     */
+    public void nextPhase() {
+
+        switch (gameState) {
+            case WORKER_SELECTED -> workerSelected();
+
+            case WORKER_MOVED -> workerMoved();
+
+            case BUILT, BUILD_BEFORE -> built();
+
+            case PLAYER_TURN_ENDING -> startNextRound(false);
+        }
+    }
+
+    /**
+     * It updates the server
+     */
+    private void workerSelected() {
+        turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
+        outgoingMessageManager.buildPositiveResponse(activePlayer, ResponseContent.SELECT_WORKER, "Worker Selected!");
+        outgoingMessageManager.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, turnManager.getActiveWorker());
+    }
+
+    /**
+     * It updates the server
+     */
+    private void workerMoved() {
+
+        if (actionOutcome == ActionOutcome.DONE || currentRequest instanceof EndMoveRequest) {
+            turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
+
+            if (currentRequest instanceof EndMoveRequest)
+                outgoingMessageManager.buildPositiveResponse(activePlayer, ResponseContent.END_MOVE, "Now you can build");
+            else
+                outgoingMessageManager.buildPositiveResponse(activePlayer, ResponseContent.MOVE_WORKER, "Worker Moved!");
+
+            outgoingMessageManager.buildServerRequest(activePlayer, ServerRequestContent.BUILD, turnManager.getActiveWorker());
+
+        } else {
+            gameState = PossibleGameState.WORKER_SELECTED;
+            turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
+            outgoingMessageManager.buildPositiveResponse(activePlayer, ResponseContent.MOVE_WORKER_AGAIN, "Worker Moved! Worker has an extra move! You can choose to move again or to build!");
+            outgoingMessageManager.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, turnManager.getActiveWorker());
+        }
+    }
+
+    private void built() {
+
+        if (actionOutcome == ActionOutcome.DONE && gameState == PossibleGameState.BUILD_BEFORE ) {
+            gameState = PossibleGameState.WORKER_SELECTED;
+            turnManager.updateTurnState(PossibleGameState.WORKER_SELECTED);
+            outgoingMessageManager.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Now you can move!");
+            outgoingMessageManager.buildServerRequest(activePlayer, ServerRequestContent.MOVE_WORKER, turnManager.getActiveWorker());
+
+        } else if (actionOutcome == ActionOutcome.DONE || currentRequest instanceof EndBuildRequest) {
+
+            gameState = PossibleGameState.PLAYER_TURN_ENDING;
+            turnManager.updateTurnState(PossibleGameState.BUILT);
+
+            if (currentRequest instanceof EndBuildRequest)
+                outgoingMessageManager.buildPositiveResponse(activePlayer, ResponseContent.END_BUILD, "You've got to end your turn");
+            else
+                outgoingMessageManager.buildPositiveResponse(activePlayer, ResponseContent.BUILD, "Built!");
+
+            outgoingMessageManager.buildServerRequest(activePlayer, ServerRequestContent.END_TURN, null);
+
+        } else {
+            gameState = PossibleGameState.WORKER_MOVED;
+            turnManager.updateTurnState(PossibleGameState.WORKER_MOVED);
+            outgoingMessageManager.buildPositiveResponse(turnManager.getActivePlayer(), ResponseContent.BUILD_AGAIN, "Built! Worker has an extra built!");
+            outgoingMessageManager.buildServerRequest(activePlayer, ServerRequestContent.BUILD, turnManager.getActiveWorker());
+        }
+
+    }
+
+    protected void startNextRound(boolean firstRound) {
+
+        if (firstRound) { //scelta implementativa, il giocatore ad iniziare sarà sempre il successivo al godlikePlayer (cioè il player #0)
+            activePlayer = gameInstance.getPlayers().get(1);
+        } else if (gameState == PossibleGameState.PLAYER_HAS_LOST) {
+            activePlayer = turnManager.getActivePlayer();
+        } else {
+            turnManager.updateTurnState(gameState);
+            activePlayer = turnManager.getActivePlayer();
+        }
+
+
+        Player nextPlayer = activePlayer;
+
+
+        gameState = PossibleGameState.START_ROUND;
+        turnManager.updateTurnState(gameState);
+        StartTurnServerRequest startTurnServerRequest = new StartTurnServerRequest();
+        gameInstance.putInChanges(nextPlayer, startTurnServerRequest);
+
+        //Se era una partita a due giocatori e uno si ritrova con i worker bloccati
+        if (turnManager.getInGamePlayers().size() == 1) {
+            WonServerResponse wonServerResponse = new WonServerResponse("You won!");
+            gameInstance.putInChanges(nextPlayer, wonServerResponse);
+            gameEndingPhase();
+            return;
+        }
+
+        if (nextPlayer.allWorkersStuck()) {
+            gameState = PossibleGameState.PLAYER_HAS_LOST;
+            LostServerResponse lostServerResponse = new LostServerResponse("You lost!");
+            gameInstance.putInChanges(nextPlayer, lostServerResponse);
+            playerHasLost(nextPlayer);
+            startNextRound(false);
+            return;
+        }
+
+        outgoingMessageManager.buildServerRequest(nextPlayer, ServerRequestContent.SELECT_WORKER, null);
+    }
+
+
 
 
     public TurnManager getTurnManager() {

@@ -117,23 +117,32 @@ public class TurnManager {
     public void updateTurnState(PossibleGameState gameState) {
 
         switch (gameState) {
+
             case ASSIGNING_GOD -> {
                 updatePlayerState(PossiblePlayerState.PICK_GOD);
                 giveTurnOwnership();
             }
+
             case FILLING_BOARD -> {
                 updatePlayerState(PossiblePlayerState.PLACING_WORKERS);
                 giveTurnOwnership();
             }
+
             case START_ROUND -> updatePlayerState(PossiblePlayerState.STARTING_TURN);
+
             case WORKER_SELECTED -> updatePlayerState(PossiblePlayerState.WORKER_SELECTED);
+
             case WORKER_MOVED -> updatePlayerState(PossiblePlayerState.WORKER_MOVED);
+
             case BUILD_BEFORE -> updatePlayerState(PossiblePlayerState.POWER_BUTTON);
+
             case BUILT -> updatePlayerState(PossiblePlayerState.BUILT);
+
             case PLAYER_TURN_ENDING -> {
                 updatePlayerState(PossiblePlayerState.ENDING_TURN);
                 giveTurnOwnership();
             }
+
             case PLAYER_HAS_LOST -> {
                 updatePlayerState(PossiblePlayerState.GAME_OVER);
                 giveTurnOwnership();

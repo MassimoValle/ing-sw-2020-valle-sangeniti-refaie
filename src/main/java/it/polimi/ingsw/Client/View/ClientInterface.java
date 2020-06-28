@@ -48,7 +48,7 @@ public interface ClientInterface {
 
     void startingTurn();
 
-    int selectWorker();
+    int selectWorker(List<Position> workersPositions);
 
     void errorWhileSelectingWorker(String gameManagerSays);
 
@@ -60,7 +60,7 @@ public interface ClientInterface {
 
     void powerActivated(God god);
 
-    Position moveWorker(ArrayList<Position> nearlyPosValid);
+    Position moveWorker(List<Position> nearlyPosValid);
 
     void errorWhileMovingWorker(String gameManagerSays);
 
