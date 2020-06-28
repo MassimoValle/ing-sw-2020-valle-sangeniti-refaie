@@ -13,8 +13,8 @@ import java.util.ArrayList;
  * The construction of a Block/Dome is transparent to the player who wants to build
  */
 public class BuildAction implements Action {
-    private Square squareWhereToBuildOn;
-    private Square squareWhereTheWorkerIs;
+    protected final Square squareWhereToBuildOn;
+    protected final Square squareWhereTheWorkerIs;
 
 
     public BuildAction(Square squareWhereTheWorkerIs, Square squareWhereToBuildOn) {
