@@ -14,13 +14,13 @@
          <center>
             <FlowPane styleClass="setupCenter" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER">
                <children>
-                  <Label text="Username:" />
+                  <Label prefHeight="33.0" prefWidth="152.0" styleClass="UsernameLabel" stylesheets="@../css/mycss.css" />
                   <TextField fx:id="txtFieldUsername" focusTraversable="false" />
                </children>
             </FlowPane>
          </center>
          <bottom>
-            <Button fx:id="getUsernameButton" mnemonicParsing="false" onAction="#getUsernameEvent" styleClass="setupButton" stylesheets="@../css/mycss.css" text="Next --&gt;" BorderPane.alignment="CENTER">
+            <Button fx:id="getUsernameButton" mnemonicParsing="false" onAction="#getUsernameEvent" prefHeight="30.0" prefWidth="135.0" styleClass="nextButton" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="20.0" />
                </BorderPane.margin></Button>

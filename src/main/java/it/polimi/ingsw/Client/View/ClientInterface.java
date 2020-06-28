@@ -110,6 +110,7 @@ public interface ClientInterface {
     void anotherPlayerHasSelectedWorker(SelectWorkerServerResponse serverResponse);
     void anotherPlayerHasMoved(String turnOwner);
     void anotherPlayerHasBuilt(String turnOwner);
+    void anotherPlayerHasEndedHisTurn(String turnOwner);
 
     void doNothing();
 

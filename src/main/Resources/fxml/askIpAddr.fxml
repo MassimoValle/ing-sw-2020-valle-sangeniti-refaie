@@ -15,19 +15,20 @@
          <center>
             <FlowPane styleClass="setupCenter" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER">
                <children>
-                  <Label text="IP Address:" />
+                  <Label prefHeight="28.0" prefWidth="127.0" styleClass="IpAddressLabel" stylesheets="@../css/mycss.css" />
                   <TextField fx:id="txtFieldIP" focusTraversable="false" prefHeight="27.0" prefWidth="419.0" promptText="127.0.0.1" stylesheets="@../css/mycss.css" />
                </children>
             </FlowPane>
          </center>
          <bottom>
-            <Button mnemonicParsing="false" onAction="#getIpEvent" styleClass="setupButton" stylesheets="@../css/mycss.css" text="Next --&gt;" BorderPane.alignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#getIpEvent" prefHeight="30.0" prefWidth="135.0" styleClass="nextButton" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
                <BorderPane.margin>
                   <Insets bottom="20.0" />
-               </BorderPane.margin></Button>
+               </BorderPane.margin>
+            </Button>
          </bottom>
       </BorderPane>
    </children>

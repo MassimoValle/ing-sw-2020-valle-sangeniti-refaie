@@ -10,18 +10,6 @@
   -fx-font-family: "Comic Sans MS";
 }
 
-.welcomeButton{
-  -fx-background-color: white;
-  -fx-border-color: black;
-  -fx-text-inner-color: black;
-  -fx-text-fill: -fx-text-inner-color;
-  -fx-text-alignment: center;
-
-  -fx-border-insets: 3px;
-}
-
-/* Stile per askIpAddr.fxml */
-
 .setupBackground{
   -fx-background-image: url("../imgs/setup.jpg");
   -fx-background-repeat: stretch;
@@ -112,6 +100,186 @@
   -fx-background-position: center center;
   -fx-background-size: 100% 100%;
 }
+
+
+.playButton{
+  -fx-background-image: url("../imgs/textBox/button-play-normal.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.nextButton{
+  -fx-background-image: url("../imgs/textBox/next.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.IpAddressLabel{
+  -fx-background-image: url("../imgs/textBox/IpAddress.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+}
+
+.LobbySizeLabel{
+  -fx-background-image: url("../imgs/textBox/lobbysize.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+}
+
+.UsernameLabel{
+  -fx-background-image: url("../imgs/textBox/Username.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+}
+
+.PickGodLabel{
+  -fx-background-image: url("../imgs/textBox/PickGod.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+}
+
+.SelectGodLabel{
+  -fx-background-image: url("../imgs/textBox/SelectGods.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+}
+
+.WaitingLabel{
+  -fx-background-image: url("../imgs/textBox/waiting.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+}
+
+.PowerButton{
+  -fx-background-image: url("../imgs/textBox/ActivatePower.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.Apollo{
+  -fx-background-image: url("../imgs/godspng/apollo.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.Artemis{
+  -fx-background-image: url("../imgs/godspng/artemis.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.Athena{
+  -fx-background-image: url("../imgs/godspng/athena.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.Atlas{
+  -fx-background-image: url("../imgs/godspng/atlas.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.Chronus{
+  -fx-background-image: url("../imgs/godspng/chronus.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.Demeter{
+  -fx-background-image: url("../imgs/godspng/demeter.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.Hephaestus{
+  -fx-background-image: url("../imgs/godspng/hephaestus.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.Hera{
+  -fx-background-image: url("../imgs/godspng/hera.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.Hestia{
+  -fx-background-image: url("../imgs/godspng/hestia.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.Minotaur{
+  -fx-background-image: url("../imgs/godspng/minotaur.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.Pan{
+  -fx-background-image: url("../imgs/godspng/pan.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.Prometheus{
+  -fx-background-image: url("../imgs/godspng/prometheus.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.Triton{
+  -fx-background-image: url("../imgs/godspng/triton.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.Zeus{
+  -fx-background-image: url("../imgs/godspng/zeus.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
 
 
 

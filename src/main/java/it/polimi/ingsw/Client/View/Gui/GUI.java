@@ -10,7 +10,6 @@ import it.polimi.ingsw.Client.View.Gui.ViewControllers.PickGodController;
 import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.SelectWorkerServerResponse;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
-import it.polimi.ingsw.Server.Model.Action.MoveAction;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
@@ -32,6 +31,7 @@ public class GUI extends ClientView {
 
     private final boolean enaPopup = true;
     private Worker selectedWorker = null;
+    private Worker opponentWorkerSelected = null;
 
     private final ParameterListener parameterListener;
     private MainViewController controller;
@@ -260,7 +260,7 @@ public class GUI extends ClientView {
     @Override
     public void showAllPlayersInGame(Set<Player> playerSet) {
 
-        GUImain.setRoot("main2");
+        GUImain.setRoot("mainView");
         FXMLLoader fxmlLoader = GUImain.getFXMLLoader();
         controller = fxmlLoader.getController();
         controller.setPlayers(playerSet);
@@ -810,7 +810,15 @@ public class GUI extends ClientView {
 
     @Override
     public void anotherPlayerHasSelectedWorker(SelectWorkerServerResponse serverResponse) {
+        String playerName = serverResponse.getMessageRecipient();
 
+        int indexWorker = serverResponse.getWorkerSelected()-1;
+
+        if(opponentWorkerSelected != null) opponentWorkerSelected.deselectedOnGUI();
+
+        opponentWorkerSelected = BabyGame.getInstance().getPlayerByName(playerName).getPlayerWorkers().get(indexWorker);
+
+        opponentWorkerSelected.selectedOnGUI();
     }
 
     @Override
@@ -821,6 +829,12 @@ public class GUI extends ClientView {
     @Override
     public void anotherPlayerHasBuilt(String turnOwner) {
 
+    }
+
+    @Override
+    public void anotherPlayerHasEndedHisTurn(String turnOwner) {
+        opponentWorkerSelected.deselectedOnGUI();
+        opponentWorkerSelected = null;
     }
 
     @Override

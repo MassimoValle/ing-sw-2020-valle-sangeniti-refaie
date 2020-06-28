@@ -17,7 +17,7 @@
                <children>
                   <FlowPane styleClass="setupCenter" stylesheets="@../css/mycss.css">
                      <children>
-                        <Label text="Lobby size:" />
+                        <Label prefHeight="39.0" prefWidth="185.0" styleClass="LobbySizeLabel" stylesheets="@../css/mycss.css" />
                         <ChoiceBox fx:id="choiceBox" prefHeight="42.0" prefWidth="185.0" />
                      </children>
                   </FlowPane>
@@ -25,7 +25,7 @@
             </VBox>
          </center>
          <bottom>
-            <Button mnemonicParsing="false" onAction="#getLobbySizeEvent" styleClass="setupButton" stylesheets="@../css/mycss.css" text="Next --&gt;" BorderPane.alignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#getLobbySizeEvent" prefHeight="30.0" prefWidth="135.0" styleClass="nextButton" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="20.0" />
                </BorderPane.margin></Button>

@@ -2,6 +2,7 @@ package it.polimi.ingsw.Server.Model.God.GodsPower;
 
 import it.polimi.ingsw.Server.Model.Action.*;
 import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.God.GodsInGame;
 import it.polimi.ingsw.Server.Model.God.PowerType;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
@@ -106,20 +107,20 @@ public abstract class Power implements Serializable, GodsChecker {
     public boolean isWorkerStuck(Worker worker) {
         ArrayList<Position> reachable = (ArrayList<Position>) map.getReachableAdjacentPlaces(worker.getPosition());
 
-        if (!reachable.isEmpty() && map.forcedToMoveUp(reachable, worker.getPosition()))// && athenaPowerActivated())
+        if (!reachable.isEmpty() && map.forcedToMoveUp(reachable, worker.getPosition()) && athenaPowerActivated())
             return true;
 
         return reachable.isEmpty();
     }
 
-    //TODO mettere Athena come observer
-    /*protected boolean athenaPowerActivated() {
-        for (Power power : Game.getInstance().getPowersInGame()) {
+
+    protected boolean athenaPowerActivated() {
+        for (Power power : GodsInGame.getIstance().getPowersByMap(map)) {
             if (power instanceof AthenaPower && ((AthenaPower) power).hasGoneUp())
                 return true;
         }
         return false;
-    }*/
+    }
 
 
     @Override

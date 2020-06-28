@@ -4,12 +4,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="setupBackground" stylesheets="@../css/mycss.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="setupBackground" stylesheets="@../css/mycss.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
-            <Label styleClass="setupCenter" stylesheets="@../css/mycss.css" text="Waiting for opponents..." BorderPane.alignment="CENTER" />
+            <Label prefHeight="51.0" prefWidth="296.0" styleClass="WaitingLabel" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
    </children>

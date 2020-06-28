@@ -57,6 +57,7 @@ public class ServerMessageManager {
             case SELECT_WORKER              -> ClientManager.clientView.anotherPlayerHasSelectedWorker((SelectWorkerServerResponse) serverResponse);
             case MOVE_WORKER                -> ClientManager.clientView.anotherPlayerHasMoved(turnOwner);
             case BUILD                      -> ClientManager.clientView.anotherPlayerHasBuilt(turnOwner);
+            case END_TURN                   -> ClientManager.clientView.anotherPlayerHasEndedHisTurn(turnOwner);
             case PLAYER_HAS_WON             -> ClientManager.clientView.youLose(turnOwner);
             default                         -> ClientManager.clientView.doNothing();
         }

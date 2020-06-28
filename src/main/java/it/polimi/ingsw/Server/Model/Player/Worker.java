@@ -38,11 +38,20 @@ public class Worker {
     }
 
     public void selectedOnGUI(){
-        imgView.setOpacity(0.4);
+
+        String path = "/imgs/workers/";
+
+        switch (getOwner().getColor()){
+            case RED -> path += "BrownWorkerGLOW.png";
+            case BLUE -> path += "BlueWorkerGLOW.png";
+            case GREEN -> path += "WhiteWorkerGLOW.png";
+        }
+
+        this.imgView.setImage(new Image(path));
     }
 
     public void deselectedOnGUI(){
-        imgView.setOpacity(1);
+        imgView.setImage(setImg());
     }
 
 

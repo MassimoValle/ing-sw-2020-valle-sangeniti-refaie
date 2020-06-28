@@ -34,7 +34,13 @@ public class MainViewController implements Initializable {
     private StackPane boardStackPane;
 
     @FXML
-    private HBox hboxPlayers;
+    private VBox vbox1;
+
+    @FXML
+    private VBox vbox2;
+
+    @FXML
+    private VBox vbox3;
 
     @FXML
     private Button powerButton;
@@ -130,20 +136,45 @@ public class MainViewController implements Initializable {
 
         boardStackPane.setMinSize(0.0 , 0.0);
 
-
+        /*int counter = 1;
+        Label playerLabel;
+        Label godLabel;
         for (Player player : players){
 
-            Label nameLabel = new Label(player.getPlayerName());
-            Label godLabel = new Label(player.getPlayerGod().getGodName());
-            VBox vBox = new VBox(nameLabel, godLabel);
-            AnchorPane anchorPane = new AnchorPane(vBox);
+            switch (counter) {
+                case 1 -> {
+                    playerLabel = (Label) vbox1.getChildren().get(0);
+                    playerLabel.setText(player.getPlayerName());
+                    godLabel = (Label) vbox1.getChildren().get(1);
+                    godLabel.getStyleClass().add(player.getPlayerGod().getGodName());
+                    godLabel.setMinSize(300, 300);
+                }
+                case 2 -> {
+                    playerLabel = (Label) vbox2.getChildren().get(0);
+                    playerLabel.setText(player.getPlayerName());
+                    godLabel = (Label) vbox2.getChildren().get(1);
+                    godLabel.getStyleClass().add(player.getPlayerGod().getGodName());
+                    godLabel.setMinSize(300, 300);
+                }
+                case 3 -> {
+                    playerLabel = (Label) vbox3.getChildren().get(0);
+                    playerLabel.setText(player.getPlayerName());
+                    godLabel = (Label) vbox3.getChildren().get(1);
+                    godLabel.getStyleClass().add(player.getPlayerGod().getGodName());
+                    godLabel.setMinSize(300, 300);
+                }
+                default -> System.out.println("error");
+            }
 
-            hboxPlayers.getChildren().add(anchorPane);
+            counter++;
 
-        }
+
+
+        }*/
 
         Platform.runLater(this::setupImageView);
     }
+
 
     public void enablePowerButton(){
         powerButton.setDisable(false);

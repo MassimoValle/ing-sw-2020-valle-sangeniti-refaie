@@ -776,6 +776,11 @@ public class CLI extends ClientView {
     }
 
     @Override
+    public void anotherPlayerHasEndedHisTurn(String turnOwner) {
+
+    }
+
+    @Override
     public void doNothing() {
 
     }
