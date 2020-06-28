@@ -27,12 +27,10 @@ public class Server {
 
     private static final List<Connection> connections = new ArrayList<>();
     private final Map<String, Connection> clientsConnected = new HashMap<>();
-    private static final Map<Integer, Map<String, Connection>> rooms = new HashMap<>();
+    private static final Map<MasterController, Map<String, Connection>> rooms = new HashMap<>();
 
-    int numRoom = 0;
-    int temp_lobbySize = 0;
-
-
+    int temp_lobbySize = -1;
+    boolean lobbySizeAsked = false;
 
 
     //Register connection
@@ -41,39 +39,55 @@ public class Server {
     }
 
     //Deregister connection
-    public static synchronized void deregisterConnection(Connection c){
+    private static synchronized void deregisterConnection(Connection c){
 
-        removeConnectionInRooms(c);
         connections.remove(c);
 
     }
 
-    private static void removeConnectionInRooms(Connection connection){
-
-        for (Map.Entry<Integer, Map<String, Connection>> entry : rooms.entrySet()) {    // controllo in tutte le rooms
-
-            Map<String, Connection> connectionsInLobby = entry.getValue();  // per tutte le connessioni nella lobby
-
-            for (Map.Entry<String, Connection> entryLobby : connectionsInLobby.entrySet())
-                if(entryLobby.getValue().equals(connection))
-                    connectionsInLobby.remove(entry);
-        }
 
 
+    // if there is an exception by client connection
+    public static void clientConnectionException(Connection c) {
+
+        deregisterConnection(c);
+
+        MasterController masterController = searchConnectionInRooms(c);
+
+        assert masterController != null;
+        masterController.clientConnectionException();
 
     }
+
+    private static MasterController searchConnectionInRooms(Connection c) {
+
+        for (Map.Entry<MasterController, Map<String, Connection>> entry : rooms.entrySet()){
+
+            for (Map.Entry<String, Connection> entry1 : entry.getValue().entrySet()){
+
+                if(entry1.getValue().equals(c))
+                    return entry.getKey();
+
+            }
+        }
+
+        return null;
+    }
+
+
+
 
 
     private synchronized void setUpLobbySize() {
 
         // richiede al primo utente nella clientsConnected il numero di giocatori
-        if(temp_lobbySize == 0) {
+        if(!lobbySizeAsked) {
 
             Map.Entry<String, Connection> entry = clientsConnected.entrySet().iterator().next();
             Connection value = entry.getValue();
             askLobbySize(value);
         }
-        else
+        else if(temp_lobbySize > 1) // nel caso in cui temp_lobbySize = 3 ma ci sono 2 giocatori in clientsConnected, quando arriva il 3o fa partire la lobby
             initLobby();
     }
 
@@ -82,6 +96,8 @@ public class Server {
         connection.sendMessage(
                 new ServerResponse(ResponseContent.NUM_PLAYER, MessageStatus.OK, "Lobby size?")
         );
+
+        lobbySizeAsked = true;
     }
 
     private synchronized void setLobbySize(SetPlayersRequest request) {
@@ -136,9 +152,9 @@ public class Server {
                 it.remove(); // remove entry from clientsConnected
             }
 
-            rooms.put(numRoom, playersInLobby);
-            numRoom++;
-            temp_lobbySize = 0;
+            rooms.put(masterController, playersInLobby);
+            temp_lobbySize = -1;
+            lobbySizeAsked = false;
 
             System.out.println("new game!");
 
@@ -149,12 +165,27 @@ public class Server {
 
     }
 
-    public static void cleanLobby(){
-        //TODO
+
+
+    // game over
+    public static void cleanLobby(MasterController masterController){
+
+        removeConnectionInRooms(masterController);
     }
 
-    public static void refresh(){
-        //TODO
+    private static void removeConnectionInRooms(MasterController masterController){
+
+        Map<String, Connection> room = rooms.get(masterController);
+
+        for (Map.Entry<String, Connection> entryLobby : room.entrySet()){
+
+            Connection conn = entryLobby.getValue();
+            deregisterConnection(conn);
+
+        }
+
+        rooms.remove(masterController);
+
     }
 
 
@@ -181,6 +212,7 @@ public class Server {
     }
 
 
+    // Register new connection
     private void newConnection(Socket socket) {
         Connection connection = new Connection(socket, this);
         registerConnection(connection);
@@ -201,11 +233,14 @@ public class Server {
 
     }
 
-
+    // Check if is the first connection or not
     private synchronized void checkLogin(LoginRequest request, Connection connection) {
 
+        login(request.getMessageSender(), connection);
 
-        if(connections.size() == 1) {
+        setUpLobbySize();
+
+        /*if(connections.size() == 1) {
             registerClient(request.getMessageSender(), connection);
 
         } else {
@@ -213,11 +248,9 @@ public class Server {
 
             setUpLobbySize();
 
-        }
-
+        }*/
 
     }
-
 
     // Check if there is a client with same name
     public synchronized void login(String username, Connection connection) {

@@ -46,10 +46,15 @@ public class MasterController {
         actionManager.startNextRound(true);
     }
 
+    public void clientConnectionException() {
+        // TODO
+
+        gameOver();
+    }
+
     public void gameOver() {
 
-        Server.cleanLobby();
-        Server.refresh();
+        Server.cleanLobby(this);
 
     }
 
@@ -85,4 +90,6 @@ public class MasterController {
     public TurnManager _getTurnManager() {
         return turnManager;
     }
+
+
 }

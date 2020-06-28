@@ -21,47 +21,14 @@ public class SendResponse {
     private final Game gameInstance;
     private final TurnManager turnManager;
 
+
+
+
+    // RESPONSE
     public SendResponse(Game gameInstance, TurnManager turnManager){
 
         this.gameInstance = gameInstance;
         this.turnManager = turnManager;
-
-    }
-
-    /**
-     * Build a specific {@link ServerRequest} based on the {@link ServerRequestContent} and
-     * send it to the {@link Player}
-     * @param player       the {@link Player} to whom the request is intended
-     * @param content      the {@link ServerRequestContent}
-     * @param activeWorker the {@link Worker} the player has to move/built with.
-     */
-    public void buildServerRequest(Player player, ServerRequestContent content, Worker activeWorker) {
-
-        switch (content) {
-
-            case SELECT_WORKER -> {
-                ServerRequest selectWorkerServerRequest = new SelectWorkerServerRequest();
-                gameInstance.putInChanges(player, selectWorkerServerRequest);
-            }
-            case MOVE_WORKER -> {
-
-                List<Position> reachablePositions = gameInstance.getGameMap().getReachableAdjacentPlaces(activeWorker.getPosition());
-
-                ServerRequest moveWorkerServerRequest = new MoveWorkerServerRequest(reachablePositions);
-                gameInstance.putInChanges(player, moveWorkerServerRequest);
-            }
-            case BUILD -> {
-
-                List<Position> buildableSquares = gameInstance.getGameMap().getPlacesWhereYouCanBuildOn(activeWorker.getPosition());
-
-                ServerRequest buildServerRequest = new BuildServerRequest(buildableSquares);
-                gameInstance.putInChanges(player, buildServerRequest);
-            }
-            default -> { //END TURN
-                ServerRequest endTurnServerRequest = new EndTurnServerRequest();
-                gameInstance.putInChanges(player, endTurnServerRequest);
-            }
-        }
 
     }
 
@@ -88,6 +55,13 @@ public class SendResponse {
         MessageStatus status = MessageStatus.OK;
 
         buildResponse(player, responseContent, status, gameManagerSays);
+
+    }
+
+    public void buildWonResponse(Player player, String gameManagerSays) {
+
+        WonServerResponse wonServerResponse = new WonServerResponse(gameManagerSays);
+        gameInstance.putInChanges(player, wonServerResponse);
 
     }
 
@@ -162,13 +136,51 @@ public class SendResponse {
     }
 
 
-    public void buildWonResponse(Player player, String gameManagerSays) {
 
-        WonServerResponse wonServerResponse = new WonServerResponse(gameManagerSays);
-        gameInstance.putInChanges(player, wonServerResponse);
+
+
+    // REQUEST
+    /**
+     * Build a specific {@link ServerRequest} based on the {@link ServerRequestContent} and
+     * send it to the {@link Player}
+     * @param player       the {@link Player} to whom the request is intended
+     * @param content      the {@link ServerRequestContent}
+     * @param activeWorker the {@link Worker} the player has to move/built with.
+     */
+    public void buildServerRequest(Player player, ServerRequestContent content, Worker activeWorker) {
+
+        switch (content) {
+
+            case SELECT_WORKER -> {
+                ServerRequest selectWorkerServerRequest = new SelectWorkerServerRequest();
+                gameInstance.putInChanges(player, selectWorkerServerRequest);
+            }
+            case MOVE_WORKER -> {
+
+                List<Position> reachablePositions = gameInstance.getGameMap().getReachableAdjacentPlaces(activeWorker.getPosition());
+
+                ServerRequest moveWorkerServerRequest = new MoveWorkerServerRequest(reachablePositions);
+                gameInstance.putInChanges(player, moveWorkerServerRequest);
+            }
+            case BUILD -> {
+
+                List<Position> buildableSquares = gameInstance.getGameMap().getPlacesWhereYouCanBuildOn(activeWorker.getPosition());
+
+                ServerRequest buildServerRequest = new BuildServerRequest(buildableSquares);
+                gameInstance.putInChanges(player, buildServerRequest);
+            }
+            default -> { //END TURN
+                ServerRequest endTurnServerRequest = new EndTurnServerRequest();
+                gameInstance.putInChanges(player, endTurnServerRequest);
+            }
+        }
 
     }
 
+
+
+
+    // UPDATE
     public void updateClients(String player, UpdateType updateType, Position position, Integer workerIndex, boolean domePresent){
 
 

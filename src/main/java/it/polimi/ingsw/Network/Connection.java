@@ -90,7 +90,7 @@ public class Connection extends Observable<Message> implements Runnable {
     private void close(){
         closeConnection();
         System.out.println("Deregistering client...");
-        Server.deregisterConnection(this);
+        Server.clientConnectionException(this);
         System.out.println("Done!");
     }
 

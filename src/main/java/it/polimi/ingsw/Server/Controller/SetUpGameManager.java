@@ -107,9 +107,8 @@ public class SetUpGameManager {
      */
     public Player nextPlayer() {
         currentPlayer++;
-        Player next = gameInstance.getPlayers().get((currentPlayer % gameInstance.getPlayers().size()));
 
-        return next;
+        return gameInstance.getPlayers().get((currentPlayer % gameInstance.getPlayers().size()));
     }
 
 

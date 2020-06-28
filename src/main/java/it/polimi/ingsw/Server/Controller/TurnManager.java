@@ -117,45 +117,27 @@ public class TurnManager {
     public void updateTurnState(PossibleGameState gameState) {
 
         switch (gameState) {
-
-            case ASSIGNING_GOD:
+            case ASSIGNING_GOD -> {
                 updatePlayerState(PossiblePlayerState.PICK_GOD);
                 giveTurnOwnership();
-                break;
-
-            case FILLING_BOARD:
+            }
+            case FILLING_BOARD -> {
                 updatePlayerState(PossiblePlayerState.PLACING_WORKERS);
                 giveTurnOwnership();
-                break;
-
-            case START_ROUND:
-                updatePlayerState(PossiblePlayerState.STARTING_TURN);
-                break;
-
-            case WORKER_SELECTED:
-                updatePlayerState(PossiblePlayerState.WORKER_SELECTED);
-                break;
-
-            case WORKER_MOVED:
-                updatePlayerState(PossiblePlayerState.WORKER_MOVED);
-                break;
-
-            case BUILD_BEFORE:
-                updatePlayerState(PossiblePlayerState.POWER_BUTTON);
-                break;
-
-            case BUILT:
-                updatePlayerState(PossiblePlayerState.BUILT);
-                break;
-            case PLAYER_TURN_ENDING:
+            }
+            case START_ROUND -> updatePlayerState(PossiblePlayerState.STARTING_TURN);
+            case WORKER_SELECTED -> updatePlayerState(PossiblePlayerState.WORKER_SELECTED);
+            case WORKER_MOVED -> updatePlayerState(PossiblePlayerState.WORKER_MOVED);
+            case BUILD_BEFORE -> updatePlayerState(PossiblePlayerState.POWER_BUTTON);
+            case BUILT -> updatePlayerState(PossiblePlayerState.BUILT);
+            case PLAYER_TURN_ENDING -> {
                 updatePlayerState(PossiblePlayerState.ENDING_TURN);
                 giveTurnOwnership();
-                break;
-            case PLAYER_HAS_LOST:
+            }
+            case PLAYER_HAS_LOST -> {
                 updatePlayerState(PossiblePlayerState.GAME_OVER);
                 giveTurnOwnership();
-                break;
-
+            }
         }
 
     }
@@ -167,7 +149,7 @@ public class TurnManager {
     private void giveTurnOwnership() {
 
         int playerIndex = inGamePlayers.indexOf( activePlayer);
-        Player nextPlayer = null;
+        Player nextPlayer;
 
         switch (inGamePlayers.size()) {
             case 2:
