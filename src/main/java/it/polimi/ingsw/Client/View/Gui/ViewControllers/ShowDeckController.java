@@ -89,7 +89,7 @@ public class ShowDeckController implements Initializable {
                 Stage newWindow = new Stage();
 
 
-                FXMLLoader loader = new FXMLLoader(GUImain.class.getResource("/fxml/infoGod.fxml"), resourceBundle);
+                FXMLLoader loader = new FXMLLoader(GUImain.class.getResource("/fxml/infoGod.fxml"));
                 Parent root = null;
 
                 try {
