@@ -6,17 +6,14 @@ import it.polimi.ingsw.Client.Model.Map.GUImap;
 import it.polimi.ingsw.Client.View.Gui.ParameterListener;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
-import it.polimi.ingsw.Server.Model.Player.Worker;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -38,6 +35,9 @@ public class MainViewController implements Initializable {
 
     @FXML
     private HBox hboxPlayers;
+
+    @FXML
+    private Button powerButton;
 
 
 
@@ -126,6 +126,8 @@ public class MainViewController implements Initializable {
         stage.setWidth(1280);
         stage.setHeight(720);
 
+        powerButton.setDisable(true);
+
         boardStackPane.setMinSize(0.0 , 0.0);
 
 
@@ -141,6 +143,14 @@ public class MainViewController implements Initializable {
         }
 
         Platform.runLater(this::setupImageView);
+    }
+
+    public void enablePowerButton(){
+        powerButton.setDisable(false);
+    }
+
+    public void disablePowerButton(){
+        powerButton.setDisable(true);
     }
 
     /*public void enablePosition(ArrayList<Position> nearlyPosValid) {
@@ -171,24 +181,5 @@ public class MainViewController implements Initializable {
 
     }
     */
-
-    public void selectWorker(Worker selectedWorker) {
-
-        Position pos = selectedWorker.getPosition();
-
-        AnchorPane ap = (AnchorPane) getNodeByRowColumnIndex(pos.getRow(), pos.getColumn());
-
-        ap.setStyle("-fx-opacity: 40%");
-
-    }
-
-    public void deselectWorker(Worker selectedWorker) {
-
-        Position pos = selectedWorker.getPosition();
-
-        AnchorPane ap = (AnchorPane) getNodeByRowColumnIndex(pos.getRow(), pos.getColumn());
-
-        ap.setStyle("-fx-opacity: 100%");
-    }
 
 }

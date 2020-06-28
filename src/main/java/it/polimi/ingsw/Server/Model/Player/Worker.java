@@ -37,6 +37,16 @@ public class Worker {
         this.imgView = new ImageView(this.setImg());
     }
 
+    public void selectedOnGUI(){
+        imgView.setOpacity(0.4);
+    }
+
+    public void deselectedOnGUI(){
+        imgView.setOpacity(1);
+    }
+
+
+
     private Image setImg() {
         String path = "/imgs/workers/";
         switch (getOwner().getColor()){

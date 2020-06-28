@@ -1,19 +1,16 @@
 package it.polimi.ingsw.Client;
 
-import it.polimi.ingsw.Client.View.Cli.CLI;
+
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Client.View.Gui.GUI;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ResourceBundle;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 public class GUImain extends Application {
@@ -24,11 +21,11 @@ public class GUImain extends Application {
     private static Stage mystage;
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
 
         mystage = stage;
 
-        setRoot("welcome", null);
+        setRoot("welcome");
 
         stage.setTitle("Santorini");
         stage.setScene(scene);
@@ -49,35 +46,29 @@ public class GUImain extends Application {
         myThread.start();
     }
 
-    public static void setRoot(String fxml, ResourceBundle resourceBundle) throws IOException {
-        Parent root = loadFXML(fxml, resourceBundle);
+    public static void setRoot(String fxml) {
 
-        if(scene == null) scene = new Scene(root);
-        else scene.setRoot(root);
+        Parent root = null;
+        try {
+            root = loadFXML(fxml);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
 
-        /*
-        final double initWidth  = scene.getWidth();
-        final double initHeight = scene.getHeight();
-        final double ratio      = initWidth / initHeight;
+        if(scene == null) {
+            assert root != null;
+            scene = new Scene(root);
+        }
+        else {
+            Parent finalRoot = root;
+            Platform.runLater(() -> {scene.setRoot(finalRoot);});
+        }
 
-        final double newWidth  = scene.getWidth();
-        final double newHeight = scene.getHeight();
-
-        double scaleFactor =
-                newWidth / newHeight > ratio
-                        ? newHeight / initHeight
-                        : newWidth / initWidth;
-
-        Scale scale = new Scale(scaleFactor, scaleFactor);
-        scale.setPivotX(0);
-        scale.setPivotY(0);
-        scene.getRoot().getTransforms().setAll(scale);
-        */
 
     }
 
-    private static Parent loadFXML(String fxml, ResourceBundle resourceBundle) throws IOException {
-        loader = new FXMLLoader(GUImain.class.getResource("/fxml/" + fxml + ".fxml"), resourceBundle);
+    private static Parent loadFXML(String fxml) throws IOException {
+        loader = new FXMLLoader(GUImain.class.getResource("/fxml/" + fxml + ".fxml"), null);
         return loader.load();
     }
 

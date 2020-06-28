@@ -76,7 +76,7 @@
                <left>
                   <AnchorPane prefHeight="548.0" prefWidth="374.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Button layoutX="63.0" layoutY="369.0" mnemonicParsing="false" onAction="#powerEvent" prefHeight="88.0" prefWidth="136.0" text="Power Button" />
+                        <Button fx:id="powerButton" layoutX="63.0" layoutY="369.0" mnemonicParsing="false" onAction="#powerEvent" prefHeight="88.0" prefWidth="136.0" text="Power Button" />
                      </children></AnchorPane>
                </left>
                <right>

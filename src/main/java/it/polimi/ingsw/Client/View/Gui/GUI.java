@@ -29,12 +29,10 @@ import java.util.Set;
 
 public class GUI extends ClientView {
 
-    private final boolean enaPopup = false;
-    private final boolean mainPlayer = false;
+    private final boolean enaPopup = true;
     private Worker selectedWorker = null;
 
     private final ParameterListener parameterListener;
-
     private MainViewController controller;
 
     public GUI(){
@@ -43,22 +41,14 @@ public class GUI extends ClientView {
 
 
     private void waitingOpponents(){
-        try {
-            GUImain.setRoot("waiting", null);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        GUImain.setRoot("waiting");
     }
 
 
     @Override
     public String askIpAddress() {
 
-        try {
-            GUImain.setRoot("askIpAddr", null);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        GUImain.setRoot("askIpAddr");
 
         while (ParameterListener.getParameter() == null){
 
@@ -80,11 +70,7 @@ public class GUI extends ClientView {
     @Override
     public String askUserName() {
 
-        try {
-            GUImain.setRoot("askUsername", null);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        GUImain.setRoot("askUsername");
 
         while (ParameterListener.getParameter() == null){
 
@@ -109,11 +95,7 @@ public class GUI extends ClientView {
     @Override
     public int askNumbOfPlayer() {
 
-        try {
-            GUImain.setRoot("askLobbySize", null);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        GUImain.setRoot("askLobbySize");
 
         while (ParameterListener.getParameter() == null){
 
@@ -129,29 +111,24 @@ public class GUI extends ClientView {
         int ret = (int) ParameterListener.getParameter();
         parameterListener.setToNull();
 
-        if(!mainPlayer)
-            waitingOpponents();
+        waitingOpponents();
 
         return ret;
     }
 
     @Override
     public void youAreNotTheGodLikePlayer(String godLikePlayer) {
-
+        // do nothing in GUI
     }
 
     @Override
     public void youAreTheGodLikePlayer() {
-
+        // do nothing in GUI
     }
 
     @Override
     public void showDeck() {
-        try {
-            GUImain.setRoot("showDeck", null);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        GUImain.setRoot("showDeck");
 
     }
 
@@ -192,41 +169,39 @@ public class GUI extends ClientView {
     @Override
     public void errorWhileChoosingGods(String gameManagerSays) {
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setHeaderText("There was a problem with the Gods you selected");
-        alert.setContentText("Game Manager says: " + gameManagerSays + "Please select the correct Gods");
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("There was a problem with the Gods you selected");
+            alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease select the correct Gods");
+
+            alert.showAndWait();
+        });
+
     }
 
     @Override
     public void godsSelectedSuccesfully() {
-        Platform.runLater(this::print_godsSelectedSuccesfully);
-    }
-
-    private void print_godsSelectedSuccesfully(){
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Gods selected successfully");
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Gods selected successfully");
+
+            alert.showAndWait();
+        });
     }
 
 
     @Override
     public God pickFromChosenGods(ArrayList<God> hand) {
 
-        try {
-            GUImain.setRoot("pickGod", null);
-            FXMLLoader fxmlLoader = GUImain.getFXMLLoader();
-            PickGodController controller = fxmlLoader.getController();
-            controller.setHand(hand);
-
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        GUImain.setRoot("pickGod");
+        FXMLLoader fxmlLoader = GUImain.getFXMLLoader();
+        PickGodController controller = fxmlLoader.getController();
+        controller.setHand(hand);
 
         while (ParameterListener.getParameter() == null){
 
@@ -256,46 +231,46 @@ public class GUI extends ClientView {
     @Override
     public void errorWhilePickinUpGod(String gameManagerSays) {
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setHeaderText("There was a problem with the God you selected");
-        alert.setContentText("Game Manager says: " + gameManagerSays + "Please select the correct God");
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("There was a problem with the God you selected");
+            alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease select the correct God");
+
+            alert.showAndWait();
+        });
+
     }
 
     @Override
     public void godPickedUpSuccessfully() {
-        Platform.runLater(this::print_godPickedUpSuccessfully);
-    }
-
-    private void print_godPickedUpSuccessfully(){
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("God picked successfully");
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("God picked successfully");
+
+            alert.showAndWait();
+        });
     }
 
     @Override
     public void showAllPlayersInGame(Set<Player> playerSet) {
 
-        try {
-            GUImain.setRoot("main2", null);
-            FXMLLoader fxmlLoader = GUImain.getFXMLLoader();
-            controller = fxmlLoader.<MainViewController>getController();
-            controller.setPlayers(playerSet);
-            controller.init();
-
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        GUImain.setRoot("main2");
+        FXMLLoader fxmlLoader = GUImain.getFXMLLoader();
+        controller = fxmlLoader.getController();
+        controller.setPlayers(playerSet);
+        controller.init();
 
     }
 
     @Override
     public Position placeWorker(String worker) {
+
+        parameterListener.setToNull();
 
         while (ParameterListener.getParameter() == null){
 
@@ -318,59 +293,82 @@ public class GUI extends ClientView {
     @Override
     public void errorWhilePlacingYourWorker(String gameManagerSays) {
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setHeaderText("There was a problem with the worker you wanted to place");
-        alert.setContentText("Game Manager says: " + gameManagerSays + "Please try place it again");
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("There was a problem with the worker you wanted to place");
+            alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease try place it again");
+
+            alert.showAndWait();
+        });
+
     }
 
     @Override
     public void workerPlacedSuccesfully() {
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Worker placed successfully!");
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Worker placed successfully!");
+
+            alert.showAndWait();
+        });
     }
 
     @Override
     public void startingTurn() {
-        Platform.runLater(this::print_startingTurn);
-    }
+        if(!enaPopup) return;
 
-    private void print_startingTurn(){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("It's your turn!");
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("It's your turn!");
 
-        alert.showAndWait();
+            alert.showAndWait();
+        });
     }
 
     @Override
     public int selectWorker() {
 
-        if (selectedWorker == null) {
+        parameterListener.setToNull();
+        boolean again = false;
 
-            while (ParameterListener.getParameter() == null) {
+        do {
+            System.out.println("selezione un tuo worker");
 
-                synchronized (parameterListener) {
-                    try {
-                        parameterListener.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+            if(again) {
+                parameterListener.setToNull();
+                selectedWorker = null;
+            }
+
+            if (selectedWorker == null) {
+
+                while (ParameterListener.getParameter() == null) {
+
+                    synchronized (parameterListener) {
+                        try {
+                            parameterListener.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+
+                Position pos = (Position) ParameterListener.getParameter();
+
+                selectedWorker = BabyGame.getInstance().getClientMap().getWorkerOnSquare(pos);
             }
+
+            again = selectedWorker == null || !selectedWorker.getColor().equals(ClientManager.me.getColor());
         }
+        while (again);
 
-        Position pos = (Position) ParameterListener.getParameter();
-
-        selectedWorker = BabyGame.getInstance().getClientMap().getWorkerOnSquare(pos);
-
-        controller.selectWorker(selectedWorker);
+        //controller.selectWorker(selectedWorker);
+        selectedWorker.selectedOnGUI();
 
         parameterListener.setToNull();
 
@@ -380,26 +378,39 @@ public class GUI extends ClientView {
     @Override
     public void errorWhileSelectingWorker(String gameManagerSays) {
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setHeaderText("There was a problem with the worker you selected");
-        alert.setContentText("Game Manager says: " + gameManagerSays + "Please select another worker");
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("There was a problem with the worker you selected");
+            alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease select another worker");
+
+            alert.showAndWait();
+        });
+
     }
 
     @Override
     public void workerSelectedSuccessfully() {
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Worker selected succesfully!");
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Worker selected succesfully!");
+
+            alert.showAndWait();
+        });
     }
 
     @Override
     public PossibleClientAction choseActionToPerform(List<PossibleClientAction> possibleActions) {
+
+        if(possibleActions.contains(PossibleClientAction.POWER_BUTTON)){
+            controller.enablePowerButton();
+        }
+        else controller.disablePowerButton();
+
 
         while (ParameterListener.getParameter() == null){
 
@@ -427,11 +438,9 @@ public class GUI extends ClientView {
             for (Worker worker : ClientManager.me.getPlayerWorkers()){
                 if(worker.getPosition().equals(parameter)) {
 
-                    controller.deselectWorker(selectedWorker);
+                    selectedWorker.deselectedOnGUI();
 
                     selectedWorker = BabyGame.getInstance().getClientMap().getWorkerOnSquare((Position) parameter);
-
-                    controller.selectWorker(selectedWorker);
 
                     parameterListener.setToNull();
                     return PossibleClientAction.SELECT_WORKER;
@@ -447,23 +456,29 @@ public class GUI extends ClientView {
     @Override
     public void errorWhileActivatingPower(String gameManagerSays) {
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setHeaderText("There was a problem with the power you want to use");
-        alert.setContentText("Game Manager says: " + gameManagerSays + "Please do a different action");
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("There was a problem with the power you want to use");
+            alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease do a different action");
+
+            alert.showAndWait();
+        });
     }
 
     @Override
     public void powerActivated(God god) {
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Power activated!");
-        alert.setContentText("Now you can:  " + god.getGodPower().getPowerDescription());
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Power activated!");
+            alert.setContentText("Now you can:  " + god.getGodPower().getPowerDescription());
+
+            alert.showAndWait();
+        });
     }
 
     @Override
@@ -496,34 +511,53 @@ public class GUI extends ClientView {
     public void errorWhileMovingWorker(String gameManagerSays) {
 
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setHeaderText("There was a problem with the move you performed");
-        alert.setContentText("Game Manager says: " + gameManagerSays + "Please move again");
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("There was a problem with the move you performed");
+            alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease move again");
+
+            alert.showAndWait();
+        });
     }
 
     @Override
     public boolean wantMoveAgain() {
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Do you want to move again?");
-        alert.setContentText("Choose your option.");
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Do you want to move again?");
+            alert.setContentText("Choose your option.");
 
-        ButtonType buttonTypeOne = new ButtonType("Yes");
-        ButtonType buttonTypeTwo = new ButtonType("No");
+            ButtonType buttonTypeOne = new ButtonType("Yes");
+            ButtonType buttonTypeTwo = new ButtonType("No");
 
-        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
+            alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
 
-        Optional<ButtonType> result = alert.showAndWait();
+            Optional<ButtonType> result = alert.showAndWait();
 
-        if (result.get() == buttonTypeOne) {
-            return true;
-        } else { //if (result.get() == buttonTypeTwo) {
-            return false;
+            // setta true se result.get() == buttonTypeOne, altrimenti false
+            parameterListener.setParameter(result.get() == buttonTypeOne);
+        });
+
+        while (ParameterListener.getParameter() == null) {
+
+            synchronized (parameterListener) {
+                try {
+                    parameterListener.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
+        boolean choice = (boolean) ParameterListener.getParameter();
+        parameterListener.setToNull();
+
+        return choice;
+
     }
 
     @Override
@@ -546,12 +580,15 @@ public class GUI extends ClientView {
     public void endMoveRequestError(String gameManagerSays) {
 
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setHeaderText("End Move Request Error");
-        alert.setContentText("Game Manager says: " + gameManagerSays);
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("End Move Request Error");
+            alert.setContentText("Game Manager says: " + gameManagerSays);
+
+            alert.showAndWait();
+        });
 
     }
 
@@ -566,6 +603,7 @@ public class GUI extends ClientView {
     @Override
     public Position build(ArrayList<Position> possiblePosToBuild) {
 
+        parameterListener.setToNull();
         //controller.enablePosition(possiblePosToBuild);
 
         while (ParameterListener.getParameter() == null){
@@ -582,9 +620,6 @@ public class GUI extends ClientView {
         Position ret = (Position) ParameterListener.getParameter();
         parameterListener.setToNull();
 
-        controller.deselectWorker(selectedWorker);
-        selectedWorker = null;
-
         //controller.disablePosition();
 
         return ret;
@@ -594,23 +629,38 @@ public class GUI extends ClientView {
     @Override
     public boolean wantBuildAgain() {
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Do you want to build again?");
-        alert.setContentText("Choose your option.");
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Do you want to build again?");
+            alert.setContentText("Choose your option.");
 
-        ButtonType buttonTypeOne = new ButtonType("Yes");
-        ButtonType buttonTypeTwo = new ButtonType("No");
+            ButtonType buttonTypeOne = new ButtonType("Yes");
+            ButtonType buttonTypeTwo = new ButtonType("No");
 
-        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
+            alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
 
-        Optional<ButtonType> result = alert.showAndWait();
+            Optional<ButtonType> result = alert.showAndWait();
 
-        if (result.get() == buttonTypeOne) {
-            return true;
-        } else { //if (result.get() == buttonTypeTwo) {
-            return false;
+            //setta true se result.get() == buttonTypeOne, altrimenti false
+            parameterListener.setParameter(result.get() == buttonTypeOne);
+        });
+
+        while (ParameterListener.getParameter() == null) {
+
+            synchronized (parameterListener) {
+                try {
+                    parameterListener.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
+        boolean choice = (boolean) ParameterListener.getParameter();
+        parameterListener.setToNull();
+
+        return choice;
 
     }
 
@@ -626,12 +676,15 @@ public class GUI extends ClientView {
     public void errorWhileBuilding(String gameManagerSays) {
 
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setHeaderText("There was a problem with the built you performed");
-        alert.setContentText("Game Manager says: " + gameManagerSays + "Please build again");
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("There was a problem with the built you performed");
+            alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease build again");
+
+            alert.showAndWait();
+        });
 
     }
 
@@ -639,11 +692,14 @@ public class GUI extends ClientView {
     public void builtSuccessfully() {
 
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Built successfully!");
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Built successfully!");
+
+            alert.showAndWait();
+        });
 
     }
 
@@ -651,12 +707,15 @@ public class GUI extends ClientView {
     public void endBuildRequestError(String gameManagerSays) {
 
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setHeaderText("End Build Request Error");
-        alert.setContentText("Game Manager says: " + gameManagerSays);
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("End Build Request Error");
+            alert.setContentText("Game Manager says: " + gameManagerSays);
+
+            alert.showAndWait();
+        });
 
     }
 
@@ -664,24 +723,34 @@ public class GUI extends ClientView {
     public void endBuildingPhase(String gameManagerSays) {
 
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setHeaderText("End Building Phase");
-        alert.setContentText("Game Manager says: " + gameManagerSays);
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("End Building Phase");
+            alert.setContentText("Game Manager says: " + gameManagerSays);
+
+            alert.showAndWait();
+        });
 
     }
 
     @Override
     public void endTurn() {
 
-        if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Ending turn!");
+        //controller.deselectWorker(selectedWorker);
+        selectedWorker.deselectedOnGUI();
+        selectedWorker = null;
 
-        alert.showAndWait();
+        if(!enaPopup) return;
+
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Ending turn!");
+
+            alert.showAndWait();
+        });
 
     }
 
@@ -759,11 +828,14 @@ public class GUI extends ClientView {
     public void youWon() {
 
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("YOU WIN");
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("YOU WIN");
+
+            alert.showAndWait();
+        });
 
     }
 
@@ -781,11 +853,14 @@ public class GUI extends ClientView {
     public void youLose(String winner) {
 
         if(!enaPopup) return;
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("YOU LOSE");
 
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("YOU LOSE");
+
+            alert.showAndWait();
+        });
 
     }
 

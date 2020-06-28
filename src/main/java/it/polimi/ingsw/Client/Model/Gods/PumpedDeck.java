@@ -9,15 +9,14 @@ import javafx.scene.image.Image;
 
 public class PumpedDeck extends Deck {
 
-    private final String path;
-
     public PumpedDeck(GameMap map) {
         super(map);
-        path = "/imgs/godCards/";
     }
 
     @Override
     protected God createGod(String godName, String godDescription, String godPowerType, String godPowerDescription) {
+
+        String path = "/imgs/godCards/";
 
         return switch (godName) {
             case "Apollo" -> new God(godName, godDescription, new ApolloPower(godPowerType, godPowerDescription, map), new Image(path + "01.png"));
