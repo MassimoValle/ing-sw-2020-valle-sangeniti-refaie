@@ -2,7 +2,6 @@ package it.polimi.ingsw.Controller.GodsPowerTest;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Server.Controller.MasterController;
-import it.polimi.ingsw.Server.Model.Action.Action;
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Player.Player;
@@ -33,7 +32,7 @@ public class HephaestusPowerTest {
         game.addPlayer(player2);
 
         masterController = new MasterController(game);
-        masterController.start(player1);
+        masterController.init(player1);
 
         setupUtility = new SetupGameUtilityClass();
         setupUtility.setup(masterController, 5,1, true );

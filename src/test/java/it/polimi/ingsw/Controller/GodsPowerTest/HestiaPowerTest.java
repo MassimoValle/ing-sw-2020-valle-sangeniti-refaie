@@ -1,7 +1,6 @@
 package it.polimi.ingsw.Controller.GodsPowerTest;
 
 import it.polimi.ingsw.Exceptions.DomePresentException;
-import it.polimi.ingsw.Exceptions.SantoriniException;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Game;
@@ -33,7 +32,7 @@ public class HestiaPowerTest {
         game.addPlayer(player2);
 
         masterController = new MasterController(game);
-        masterController.start(player1);
+        masterController.init(player1);
         setupUtility = new SetupGameUtilityClass();
 
 

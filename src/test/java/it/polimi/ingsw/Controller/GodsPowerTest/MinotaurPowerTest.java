@@ -6,7 +6,6 @@ import it.polimi.ingsw.Server.Model.Action.ActionOutcome;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
-import it.polimi.ingsw.Server.Model.Player.Worker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +32,7 @@ public class MinotaurPowerTest {
         game.addPlayer(player2);
 
         masterController = new MasterController(game);
-        masterController.start(player1);
+        masterController.init(player1);
 
         setupUtility = new SetupGameUtilityClass();
         setupUtility.setup(masterController, 6,1, true );

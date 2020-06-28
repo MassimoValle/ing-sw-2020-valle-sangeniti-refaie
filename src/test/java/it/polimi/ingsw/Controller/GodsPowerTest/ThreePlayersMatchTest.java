@@ -3,13 +3,9 @@ package it.polimi.ingsw.Controller.GodsPowerTest;
 import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Game;
-import it.polimi.ingsw.Server.Model.God.GodsPower.ApolloPower;
-import it.polimi.ingsw.Server.Model.God.GodsPower.ArtemisPower;
-import it.polimi.ingsw.Server.Model.God.GodsPower.AthenaPower;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import org.junit.After;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +36,7 @@ public class ThreePlayersMatchTest {
         game.addPlayer(player3);
 
         masterController = new MasterController(game);
-        masterController.start(player1);
+        masterController.init(player1);
         setupUtility = new SetupGameUtilityClass();
 
         pl1 = player1.getPlayerName();

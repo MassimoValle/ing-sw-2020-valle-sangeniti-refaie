@@ -24,9 +24,7 @@ public class MasterController {
 
     }
 
-    public void start(Player activePlayer) {
-
-        System.out.println("sono in masterController.start()");
+    public void init(Player activePlayer) {
 
         this.setUpGameManager = new SetUpGameManager(gameInstance, activePlayer);
 

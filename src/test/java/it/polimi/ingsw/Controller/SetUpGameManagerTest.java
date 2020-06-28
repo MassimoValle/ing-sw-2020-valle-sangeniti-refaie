@@ -55,7 +55,7 @@ public class SetUpGameManagerTest {
 
 
         masterController = new MasterController(game);
-        masterController.start(activePlayer);
+        masterController.init(activePlayer);
         setUpGameManager = masterController._getSetUpGameController();
 
     }

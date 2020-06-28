@@ -4,14 +4,11 @@ import it.polimi.ingsw.Exceptions.DomePresentException;
 import it.polimi.ingsw.Server.Controller.Enum.PossibleGameState;
 import it.polimi.ingsw.Server.Controller.MasterController;
 import it.polimi.ingsw.Server.Model.Game;
-import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.GodsPower.ApolloPower;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -36,7 +33,7 @@ public class WorkersStuckTest {
         game.addPlayer(player2);
 
         masterController = new MasterController(game);
-        masterController.start(player1);
+        masterController.init(player1);
         setupUtility = new SetupGameUtilityClass();
 
         pl1 = player1.getPlayerName();

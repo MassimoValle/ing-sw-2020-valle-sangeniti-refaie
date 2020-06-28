@@ -36,7 +36,7 @@ public class MasterControllerTest {
         game.addPlayer(player2);
 
         masterController = new MasterController(game);
-        masterController.start(player1);
+        masterController.init(player1);
     }
 
 

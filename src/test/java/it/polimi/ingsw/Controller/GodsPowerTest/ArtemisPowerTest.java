@@ -32,7 +32,7 @@ public class ArtemisPowerTest {
         game.addPlayer(player2);
 
         masterController = new MasterController(game);
-        masterController.start(player1);
+        masterController.init(player1);
         setupUtility = new SetupGameUtilityClass();
         setupUtility.setup(masterController, 1, 2, true);
 

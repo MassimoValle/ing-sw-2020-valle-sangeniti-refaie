@@ -33,7 +33,7 @@ public class ZeusPowerTest {
         game.addPlayer(player2);
 
         masterController = new MasterController(game);
-        masterController.start(player1);
+        masterController.init(player1);
         setupUtility = new SetupGameUtilityClass();
         setupUtility.setup(masterController, 12, 1, true);
 

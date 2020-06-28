@@ -142,9 +142,8 @@ public class Server {
 
             System.out.println("new game!");
 
-            Player finalActivePlayer = activePlayer;
-            masterController.start(finalActivePlayer);
-            //new Thread(() -> masterController.start(finalActivePlayer));
+            final Player finalActivePlayer = activePlayer;
+            new Thread(() -> masterController.init(finalActivePlayer)).start();
 
         }
 
