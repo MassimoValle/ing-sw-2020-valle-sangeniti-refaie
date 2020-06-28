@@ -2,6 +2,7 @@ package it.polimi.ingsw.Model;
 
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ public class DeckTest {
 
     @BeforeClass
     public static void initClass() {
-        deck = Deck.getInstance();
+        deck = new Deck(new GameMap());
     }
 
 
@@ -46,8 +47,8 @@ public class DeckTest {
 
     @Test
     public void checkGod() {
-        God apollo = Deck.getInstance().getGod(0);
-        God chronus = Deck.getInstance().getGod(9);
+        God apollo = deck.getGod(0);
+        God chronus = deck.getGod(9);
 
         assertTrue(apollo.is("Apollo"));
         assertFalse(apollo.is("Artemis"));

@@ -3,14 +3,12 @@ package it.polimi.ingsw.Server.Model;
 import it.polimi.ingsw.Network.Message.Server.ServerMessage;
 import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
-import it.polimi.ingsw.Server.Model.God.GodsPower.AthenaPower;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Player.ColorEnum;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 import it.polimi.ingsw.Network.Message.Message;
-import it.polimi.ingsw.Network.Message.Server.ServerResponse.ServerResponse;
 import it.polimi.ingsw.Server.View.Observable;
 
 import java.util.ArrayList;
@@ -34,8 +32,7 @@ public class Game extends Observable<Message> {
     public Game() {
         this.players = new ArrayList<>();
         this.gameMap = new GameMap();
-        this.deck = Deck.getInstance();
-        this.deck.setMap(gameMap);
+        this.deck = new Deck(gameMap);
 
         this.chosenGodsFromDeck = new ArrayList<>();
 
@@ -102,7 +99,7 @@ public class Game extends Observable<Message> {
     /**
      * Search {@link Player player} by name player.
      *
-     * @param name
+     * @param name is the name of player to search
      * @return the player with that username
      */
     public Player searchPlayerByName(String name) {

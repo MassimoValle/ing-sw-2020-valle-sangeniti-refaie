@@ -1,10 +1,12 @@
 package it.polimi.ingsw.Client.Model;
 
 import it.polimi.ingsw.Client.Controller.ClientManager;
+import it.polimi.ingsw.Client.Model.Gods.PumpedDeck;
 import it.polimi.ingsw.Client.Model.Map.CLIclientMap;
 import it.polimi.ingsw.Client.Model.Map.GUImap;
 import it.polimi.ingsw.Client.View.Gui.GUI;
 import it.polimi.ingsw.Network.Message.Server.UpdateMessage.UpdatePlayersMessage;
+import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Worker;
 
@@ -13,16 +15,21 @@ import java.util.Set;
 
 public class BabyGame {
 
-    private CLIclientMap clientMap;
-    public Set<Player> players = new HashSet<>();
+    private final CLIclientMap clientMap;
+    private final Set<Player> players = new HashSet<>();
+    private final Deck deck;
 
     private static BabyGame instance = null;
 
     public BabyGame(){
         if(ClientManager.clientView instanceof GUI) {
             clientMap = new GUImap();
+            deck = new PumpedDeck(clientMap);
         }
-        else clientMap = new CLIclientMap();
+        else{
+            clientMap = new CLIclientMap();
+            deck = new Deck(clientMap);
+        }
     }
 
     public static BabyGame getInstance() {
@@ -63,4 +70,7 @@ public class BabyGame {
         return players;
     }
 
+    public Deck getDeck() {
+        return deck;
+    }
 }

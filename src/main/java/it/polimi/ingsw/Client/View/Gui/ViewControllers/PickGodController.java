@@ -1,9 +1,9 @@
 package it.polimi.ingsw.Client.View.Gui.ViewControllers;
 
 import it.polimi.ingsw.Client.GUImain;
-import it.polimi.ingsw.Client.Model.Gods.PumpedDeck;
-import it.polimi.ingsw.Client.Model.Gods.PumpedGod;
+import it.polimi.ingsw.Client.Model.BabyGame;
 import it.polimi.ingsw.Client.View.Gui.ParameterListener;
+import it.polimi.ingsw.Server.Model.God.Deck;
 import it.polimi.ingsw.Server.Model.God.God;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -51,13 +51,14 @@ public class PickGodController implements Initializable {
         stage.setHeight(720);
 
         ArrayList<God> pumpedHand = new ArrayList<>();
+        Deck deck = BabyGame.getInstance().getDeck();
 
         for (God god : hand){
-            pumpedHand.add(PumpedDeck.getInstance().getGodByName(god.getGodName()));
+            pumpedHand.add(deck.getGodByName(god.getGodName()));
         }
 
         for (God god : pumpedHand){
-            ImageView imageView = ((PumpedGod)god).getImg();
+            ImageView imageView = god.getImgView();
 
 
             AnchorPane pane = new AnchorPane(imageView);

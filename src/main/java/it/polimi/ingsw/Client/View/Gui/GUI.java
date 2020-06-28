@@ -173,7 +173,9 @@ public class GUI extends ClientView {
                 }
             }
 
-            God god = Deck.getInstance().getGodByName((String) ParameterListener.getParameter());
+            Deck deck = BabyGame.getInstance().getDeck();
+
+            God god = deck.getGodByName((String) ParameterListener.getParameter());
             System.out.println("You choose " + god.getGodName() + "!");
             godsChosen.add(god);
             godsChosenNum++;

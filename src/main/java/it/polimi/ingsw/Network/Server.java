@@ -103,8 +103,8 @@ public class Server {
 
         if(clientsConnected.size() >= temp_lobbySize){
 
-            ArrayList<RemoteView> rvs = new ArrayList<>();
             Game game = new Game();
+            MasterController masterController = new MasterController(game);
             Player activePlayer = null;
 
             int loop = 0;
@@ -125,7 +125,7 @@ public class Server {
 
                     RemoteView rvPlayer = new RemoteView(player, (Connection) pair.getValue());
                     game.addObserver(rvPlayer);
-                    rvs.add(rvPlayer);
+                    rvPlayer.setController(masterController);
 
                     game.addPlayer(player);
                     playersInLobby.put(player.getPlayerName(), (Connection) pair.getValue());
@@ -141,15 +141,10 @@ public class Server {
             temp_lobbySize = 0;
 
             System.out.println("new game!");
-            MasterController masterController = new MasterController(game);
-
-            for (RemoteView rv : rvs){
-                rv.setController(masterController);
-            }
 
             Player finalActivePlayer = activePlayer;
-            //masterController.start(finalActivePlayer);
-            new Thread(() -> masterController.start(finalActivePlayer));
+            masterController.start(finalActivePlayer);
+            //new Thread(() -> masterController.start(finalActivePlayer));
 
         }
 

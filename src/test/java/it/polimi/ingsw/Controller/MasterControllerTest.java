@@ -60,8 +60,10 @@ public class MasterControllerTest {
 
         ArrayList<God> godsChosen = new ArrayList<>();
 
-        godsChosen.add(Deck.getInstance().getGod(0));
-        godsChosen.add(Deck.getInstance().getGod(1));
+        Deck deck = game.getDeck();
+
+        godsChosen.add(deck.getGod(0));
+        godsChosen.add(deck.getGod(1));
 
         //il godlike player (player1) invia i god scelti
         masterController.dispatcher(
@@ -76,18 +78,18 @@ public class MasterControllerTest {
 
         //player2 sceglie il suo god
         masterController.dispatcher(
-                new PickGodRequest(player2.getPlayerName(), Deck.getInstance().getGod(0))
+                new PickGodRequest(player2.getPlayerName(), deck.getGod(0))
         );
 
-        assertEquals(Deck.getInstance().getGod(0), player2.getPlayerGod());
+        assertEquals(deck.getGod(0), player2.getPlayerGod());
 
 
         //player1 sceglie il suo god
         masterController.dispatcher(
-                new PickGodRequest(player1.getPlayerName(), Deck.getInstance().getGod(1))
+                new PickGodRequest(player1.getPlayerName(), deck.getGod(1))
         );
 
-        assertEquals(Deck.getInstance().getGod(1), player1.getPlayerGod());
+        assertEquals(deck.getGod(1), player1.getPlayerGod());
 
 
 

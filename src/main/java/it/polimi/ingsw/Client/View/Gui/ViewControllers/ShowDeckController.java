@@ -1,8 +1,8 @@
 package it.polimi.ingsw.Client.View.Gui.ViewControllers;
 
 import it.polimi.ingsw.Client.GUImain;
+import it.polimi.ingsw.Client.Model.BabyGame;
 import it.polimi.ingsw.Client.Model.Gods.PumpedDeck;
-import it.polimi.ingsw.Client.Model.Gods.PumpedGod;
 import it.polimi.ingsw.Client.View.Gui.ParameterListener;
 import it.polimi.ingsw.Server.Model.God.God;
 import javafx.fxml.FXML;
@@ -40,10 +40,10 @@ public class ShowDeckController implements Initializable {
         stage.setWidth(1280);
         stage.setHeight(720);
 
-        PumpedDeck pumpedDeck = PumpedDeck.getInstance();
+        PumpedDeck pumpedDeck = (PumpedDeck) BabyGame.getInstance().getDeck();
 
         for (God god : pumpedDeck){
-            ImageView imageView = ((PumpedGod)god).getImg();
+            ImageView imageView = god.getImgView();
 
 
             AnchorPane pane = new AnchorPane(imageView);

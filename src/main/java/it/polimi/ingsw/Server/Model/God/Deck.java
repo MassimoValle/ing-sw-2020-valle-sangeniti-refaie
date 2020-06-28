@@ -14,20 +14,11 @@ import java.util.ArrayList;
 
 public class Deck extends ArrayList<God> implements Serializable {
 
-    private static Deck instance=null;
     protected GameMap map;
 
-    public Deck() { }
-
-    public void setMap(GameMap map){
+    public Deck(GameMap map) {
         this.map = map;
         loadXML();
-    }
-
-    public static Deck getInstance() {
-        if(instance==null)
-            instance = new Deck();
-        return instance;
     }
 
     protected boolean loadXML(){
@@ -63,20 +54,20 @@ public class Deck extends ArrayList<God> implements Serializable {
     protected God createGod(String godName, String godDescription, String godPowerType, String godPowerDescription) {
 
         return switch (godName) {
-            case "Apollo" -> new God(godName, godDescription, new ApolloPower(godPowerType, godPowerDescription, map));
-            case "Artemis" -> new God(godName, godDescription, new ArtemisPower(godPowerType, godPowerDescription, map));
-            case "Athena" -> new God(godName, godDescription, new AthenaPower(godPowerType, godPowerDescription, map));
-            case "Atlas" -> new God(godName, godDescription, new AtlasPower(godPowerType, godPowerDescription, map));
-            case "Demeter" -> new God(godName, godDescription, new DemeterPower(godPowerType, godPowerDescription, map));
-            case "Hephaestus" -> new God(godName, godDescription, new HephaestusPower(godPowerType, godPowerDescription, map));
-            case "Minotaur" -> new God(godName, godDescription, new MinotaurPower(godPowerType, godPowerDescription, map));
-            case "Pan" -> new God(godName, godDescription, new PanPower(godPowerType, godPowerDescription, map));
-            case "Prometheus" -> new God(godName, godDescription, new PrometheusPower(godPowerType, godPowerDescription, map));
-            case "Chronus" -> new God(godName, godDescription, new ChronusPower(godPowerType, godPowerDescription, map));
-            case "Hera" -> new God(godName, godDescription, new HeraPower(godPowerType, godPowerDescription, map));
-            case "Hestia" -> new God(godName, godDescription, new HestiaPower(godPowerType, godPowerDescription, map));
-            case "Zeus" -> new God(godName, godDescription, new ZeusPower(godPowerType, godPowerDescription, map));
-            case "Triton" -> new God(godName, godDescription, new TritonPower(godPowerType, godPowerDescription, map));
+            case "Apollo" -> new God(godName, godDescription, new ApolloPower(godPowerType, godPowerDescription, map), null);
+            case "Artemis" -> new God(godName, godDescription, new ArtemisPower(godPowerType, godPowerDescription, map), null);
+            case "Athena" -> new God(godName, godDescription, new AthenaPower(godPowerType, godPowerDescription, map), null);
+            case "Atlas" -> new God(godName, godDescription, new AtlasPower(godPowerType, godPowerDescription, map), null);
+            case "Demeter" -> new God(godName, godDescription, new DemeterPower(godPowerType, godPowerDescription, map), null);
+            case "Hephaestus" -> new God(godName, godDescription, new HephaestusPower(godPowerType, godPowerDescription, map), null);
+            case "Minotaur" -> new God(godName, godDescription, new MinotaurPower(godPowerType, godPowerDescription, map), null);
+            case "Pan" -> new God(godName, godDescription, new PanPower(godPowerType, godPowerDescription, map), null);
+            case "Prometheus" -> new God(godName, godDescription, new PrometheusPower(godPowerType, godPowerDescription, map), null);
+            case "Chronus" -> new God(godName, godDescription, new ChronusPower(godPowerType, godPowerDescription, map), null);
+            case "Hera" -> new God(godName, godDescription, new HeraPower(godPowerType, godPowerDescription, map), null);
+            case "Hestia" -> new God(godName, godDescription, new HestiaPower(godPowerType, godPowerDescription, map), null);
+            case "Zeus" -> new God(godName, godDescription, new ZeusPower(godPowerType, godPowerDescription, map), null);
+            case "Triton" -> new God(godName, godDescription, new TritonPower(godPowerType, godPowerDescription, map), null);
             default -> null;
         };
     }
@@ -93,13 +84,13 @@ public class Deck extends ArrayList<God> implements Serializable {
      * @return selectedGod god
      */
     public God getGod(int choice) {
-        God selectedGod = Deck.getInstance().get(choice);
+        God selectedGod = this.get(choice);
         return selectedGod;
     }
 
     public God getGodByName(String string) {
 
-        for (God god : Deck.getInstance()) {
+        for (God god : this) {
             if (god.getGodName().equals(string))
                 return god;
         }
@@ -113,8 +104,8 @@ public class Deck extends ArrayList<God> implements Serializable {
     @Override
     public String toString() {
         String string = "Vuota";
-        for ( int i = 0; i < getInstance().size(); i++) {
-            string = string.concat(getInstance().getGod(i).toString() + "\n");
+        for ( int i = 0; i < this.size(); i++) {
+            string = string.concat(this.getGod(i).toString() + "\n");
         }
         return string;
         }

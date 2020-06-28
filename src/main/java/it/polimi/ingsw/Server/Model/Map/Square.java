@@ -40,10 +40,6 @@ public class Square {
         GUI = true;
         imgWorker = null;
         stackPane = new StackPane();
-
-        // test
-        //ImageView imageView = new ImageView(new Image("/imgs/workers/brownWorker.png"));
-        //stackPane.getChildren().add(imageView);
     }
 
     public Worker getWorkerOnSquare() {

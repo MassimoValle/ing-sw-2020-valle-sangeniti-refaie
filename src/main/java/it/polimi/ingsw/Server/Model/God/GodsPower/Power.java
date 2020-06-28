@@ -16,7 +16,7 @@ public abstract class Power implements Serializable, GodsChecker {
 
     protected String powerDescription;
     protected PowerType powerType;
-    protected GameMap map;
+    transient protected GameMap map;
 
 
     protected Power(String powerType, String powerDescription, GameMap map) {

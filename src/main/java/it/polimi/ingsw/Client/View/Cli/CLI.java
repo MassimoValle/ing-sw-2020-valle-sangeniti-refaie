@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Client.View.Cli;
 
 import it.polimi.ingsw.Client.Controller.PossibleClientAction;
+import it.polimi.ingsw.Client.Model.BabyGame;
 import it.polimi.ingsw.Client.View.ClientView;
 import it.polimi.ingsw.Network.Client;
 import it.polimi.ingsw.Network.Message.Server.ServerResponse.SelectWorkerServerResponse;
@@ -99,7 +100,7 @@ public class CLI extends ClientView {
         consoleOut.println("\nLet's choose the gods!");
         consoleOut.println();
 
-        Deck deck = Deck.getInstance();
+        Deck deck = BabyGame.getInstance().getDeck();
 
         for(int i=0; i< deck.size(); i++) {
             consoleOut.println( i+1 + deck.getGod(i).toString() + "\n");
@@ -133,7 +134,8 @@ public class CLI extends ClientView {
                     break;
                 }
 
-                God god = Deck.getInstance().getGod(n - 1);
+                Deck deck = BabyGame.getInstance().getDeck();
+                God god = deck.getGod(n - 1);
                 consoleOut.println("You choose " + god.getGodName() + "!");
                 godsChosen.add(god);
                 godsChosenNum++;

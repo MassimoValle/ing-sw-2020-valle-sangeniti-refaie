@@ -49,9 +49,9 @@ public class SetUpGameManagerTest {
         game.addPlayer(p3);
 
         gods = new ArrayList<>();
-        gods.add(new God("apello", "desc", new ApolloPower("Your move", "desc", game.getGameMap())));
-        gods.add(new God("figlio", "desc", new ApolloPower("Your move", "desc", game.getGameMap())));
-        gods.add(new God("apollo", "desc", new ApolloPower("Your move", "desc", game.getGameMap())));
+        gods.add(new God("apello", "desc", new ApolloPower("Your move", "desc", game.getGameMap()), null));
+        gods.add(new God("figlio", "desc", new ApolloPower("Your move", "desc", game.getGameMap()), null));
+        gods.add(new God("apollo", "desc", new ApolloPower("Your move", "desc", game.getGameMap()), null));
 
 
         masterController = new MasterController(game);
@@ -64,7 +64,7 @@ public class SetUpGameManagerTest {
     @Test
     public void assignignGod(){
 
-        God god = new God("apollo", "desc", new ApolloPower("Your move", "desc", game.getGameMap()));
+        God god = new God("apollo", "desc", new ApolloPower("Your move", "desc", game.getGameMap()), null);
         setUpGameManager.assignGodToPlayer(activePlayer, god);
 
         int index = game.getPlayers().indexOf(activePlayer);
@@ -181,9 +181,11 @@ public class SetUpGameManagerTest {
 
         ArrayList<God> godsChosen = new ArrayList<>();
 
-        godsChosen.add(Deck.getInstance().getGod(0));
-        godsChosen.add(Deck.getInstance().getGod(1));
-        godsChosen.add(Deck.getInstance().getGod(2));
+        Deck deck = game.getDeck();
+
+        godsChosen.add(deck.getGod(0));
+        godsChosen.add(deck.getGod(1));
+        godsChosen.add(deck.getGod(2));
 
         //il godlike player invia i god scelti
         masterController.dispatcher(
@@ -198,26 +200,26 @@ public class SetUpGameManagerTest {
 
         //player1 sceglie il suo god
         masterController.dispatcher(
-                new PickGodRequest(players.get(1).getPlayerName(), Deck.getInstance().getGod(0))
+                new PickGodRequest(players.get(1).getPlayerName(), deck.getGod(0))
         );
 
-        assertEquals(Deck.getInstance().getGod(0), players.get(1).getPlayerGod());
+        assertEquals(deck.getGod(0), players.get(1).getPlayerGod());
 
 
         //player2 sceglie il suo god
         masterController.dispatcher(
-                new PickGodRequest(players.get(2).getPlayerName(), Deck.getInstance().getGod(1))
+                new PickGodRequest(players.get(2).getPlayerName(), deck.getGod(1))
         );
 
-        assertEquals(Deck.getInstance().getGod(1), players.get(2).getPlayerGod());
+        assertEquals(deck.getGod(1), players.get(2).getPlayerGod());
 
 
         //player0 sceglie il suo god
         masterController.dispatcher(
-                new PickGodRequest(players.get(0).getPlayerName(), Deck.getInstance().getGod(2))
+                new PickGodRequest(players.get(0).getPlayerName(), deck.getGod(2))
         );
 
-        assertEquals(Deck.getInstance().getGod(2), players.get(0).getPlayerGod());
+        assertEquals(deck.getGod(2), players.get(0).getPlayerGod());
 
 
         //player1 piazza i suoi god

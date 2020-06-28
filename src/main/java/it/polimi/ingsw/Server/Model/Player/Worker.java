@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Worker {
 
-    private int workersNumber;
+    private final int workersNumber;
     private final Player owner;
     private ColorEnum color;
 
