@@ -2,6 +2,7 @@ package it.polimi.ingsw.Server.Model.God;
 
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +52,17 @@ public class GodsInGame {
         }
 
         return powers;
+    }
+
+    public ArrayList<Power> getPowersByMap(GameMap map) {
+
+        for(Map.Entry<Game, ArrayList<God>> entry : godsInGame.entrySet()) {
+            Game key = entry.getKey();
+            if (key.getGameMap().equals(map))
+                return getPowers(key);
+        }
+
+        return null;
     }
 
 }

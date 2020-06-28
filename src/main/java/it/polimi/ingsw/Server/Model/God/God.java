@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Server.Model.God;
 
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
+import it.polimi.ingsw.Server.Model.Map.GameMap;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 

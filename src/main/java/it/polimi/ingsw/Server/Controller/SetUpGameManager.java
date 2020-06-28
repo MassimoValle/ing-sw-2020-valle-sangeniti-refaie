@@ -9,6 +9,7 @@ import it.polimi.ingsw.Server.Model.Action.Action;
 import it.polimi.ingsw.Server.Model.Action.PlaceWorkerAction;
 import it.polimi.ingsw.Server.Model.Game;
 import it.polimi.ingsw.Server.Model.God.God;
+import it.polimi.ingsw.Server.Model.God.GodsInGame;
 import it.polimi.ingsw.Server.Model.Map.Square;
 import it.polimi.ingsw.Server.Model.Player.Player;
 import it.polimi.ingsw.Server.Model.Player.Position;
@@ -76,6 +77,12 @@ public class SetUpGameManager {
      * @param god    the god
      */
     public void assignGodToPlayer(Player player, God god) {
+        //setta la mappa nel power
+        god.getGodPower().setMap(gameInstance.getGameMap());
+
+        //aggiunge i god alla partita nella hashMap della GodsInGame
+        GodsInGame.getIstance().addGodToGame(gameInstance, god);
+
         player.setPlayerGod(god);
         gameInstance.setGodAssigned(god);
         god.setAssigned(true);

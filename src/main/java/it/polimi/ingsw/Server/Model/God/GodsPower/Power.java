@@ -22,7 +22,7 @@ public abstract class Power implements Serializable, GodsChecker {
     protected Power(String powerType, String powerDescription, GameMap map) {
         this.powerType = PowerType.matchFromXml(powerType);
         this.powerDescription = powerDescription;
-        this.map = map;
+        this.map = null;
     }
 
     protected PowerType getPowerType() {
@@ -43,6 +43,10 @@ public abstract class Power implements Serializable, GodsChecker {
         } else
             return ActionOutcome.NOT_DONE;
 
+    }
+
+    public void setMap(GameMap gameMap) {
+        this.map = gameMap;
     }
 
     /**

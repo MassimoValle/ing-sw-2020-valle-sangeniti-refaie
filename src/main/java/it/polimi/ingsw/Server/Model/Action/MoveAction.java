@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Server.Model.Action;
 
 import it.polimi.ingsw.Server.Model.Game;
+import it.polimi.ingsw.Server.Model.God.GodsInGame;
 import it.polimi.ingsw.Server.Model.God.GodsPower.Power;
 import it.polimi.ingsw.Server.Model.Map.GameMap;
 import it.polimi.ingsw.Server.Model.Map.Square;
@@ -44,7 +45,7 @@ public class MoveAction implements Action {
         ArrayList<Position> adjacent = oldPositionSquare.getPosition().getAdjacentPlaces();
 
         //if some God Power is active that prevent you from doing this move
-        return !godsPowerActive(godsPowerPerformingAction) && !newPositionSquare.hasWorkerOn() &&
+        return !godsPowerActive(godsPowerPerformingAction, map) && !newPositionSquare.hasWorkerOn() &&
                 heightDifference >= -1 && !newPositionSquare.hasDome() &&
                 adjacent.contains(newPosition);
     }
@@ -84,9 +85,9 @@ public class MoveAction implements Action {
      *
      * @return true if action not permitted, false otherwise
      */
-    boolean godsPowerActive(Power godsPowerPerformingAction) {
+    boolean godsPowerActive(Power godsPowerPerformingAction, GameMap map) {
 
-        ArrayList<Power> powersInGame = null;//TODO (da sistemare con observer) = (ArrayList<Power>) Game.getInstance().getPowersInGame();
+        ArrayList<Power> powersInGame = GodsInGame.getIstance().getPowersByMap(map);           //TODO (da sistemare con observer) = (ArrayList<Power>) Game.getInstance().getPowersInGame();
         for (Power godPower: powersInGame) {
             if (!godPower.equals(godsPowerPerformingAction) && godPower.canPreventsFromPerformingAction() && godPower.checkIfActionNotPermitted(this)) {
                  return true;
