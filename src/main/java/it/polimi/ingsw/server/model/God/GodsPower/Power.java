@@ -11,6 +11,7 @@ import it.polimi.ingsw.server.model.Player.Worker;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public abstract class Power implements Serializable, GodsChecker {
 
@@ -184,4 +185,11 @@ public abstract class Power implements Serializable, GodsChecker {
     }
 
 
+    @Override
+    public int hashCode() {
+        int result = getPowerDescription().hashCode();
+        result = 31 * result + getPowerType().hashCode();
+        result = 31 * result + (map != null ? map.hashCode() : 0);
+        return result;
+    }
 }

@@ -286,6 +286,15 @@ public class Square {
                 this.getHeight() == square.getHeight();
     }
 
+    @Override
+    public int hashCode() {
+        int result = getRow();
+        result = 31 * result + getColumn();
+        result = 31 * result + (getWorkerOnSquare() != null ? getWorkerOnSquare().hashCode() : 0);
+        result = 31 * result + (tower != null ? tower.hashCode() : 0);
+        return result;
+    }
+
     public StackPane getStackPane() {
         return stackPane;
     }

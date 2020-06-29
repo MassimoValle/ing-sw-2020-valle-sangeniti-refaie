@@ -229,7 +229,7 @@ public class GameMap {
     @Override
     public String toString() {
         printBoard();
-        return null;
+        return "";
     }
 
 

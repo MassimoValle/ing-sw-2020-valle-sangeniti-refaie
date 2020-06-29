@@ -17,20 +17,13 @@ import it.polimi.ingsw.network.message.Enum.RequestContent;
 import it.polimi.ingsw.network.message.Enum.MessageStatus;
 import it.polimi.ingsw.server.model.Player.Worker;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+
 
 /**
  * The type Client manager.
  */
 public class ClientManager {
-    public static final Logger LOGR = Logger.getLogger("Santorini_log");
 
     public static ClientView clientView = null;
 
@@ -60,7 +53,7 @@ public class ClientManager {
 
 
     ServerMessage currentMessage = null;            //Qualsiasi messaggio che il client riceve dal server
-    Request currentRequest = null;                  //la richiesta corrente inviata da questo client
+    //Request currentRequest = null;                  //la richiesta corrente inviata da questo client
     ServerRequest currentServerRequest = null;      //la richiesta corrente che il client sta gestendo
 
 
@@ -81,18 +74,6 @@ public class ClientManager {
         this.babyGame = BabyGame.getInstance();
 
         this.clientBoardUpdater = new ClientBoardUpdater(babyGame);
-
-        Date date = GregorianCalendar.getInstance().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("dd-mm_HH.mm.ss");
-
-        try {
-            FileHandler fh = new FileHandler("log/client-" + dateFormat.format(date) + ".log");
-            fh.setFormatter(new SimpleFormatter());
-            LOGR.setUseParentHandlers(false);
-            LOGR.addHandler(fh);
-        } catch (IOException e) {
-            LOGR.severe(e.getMessage());
-        }
 
         clientState = PossibleClientState.LOGIN;
     }
@@ -166,7 +147,7 @@ public class ClientManager {
         }
 
         clientState = PossibleClientState.MOVING_WORKER;
-        
+
         ArrayList<PossibleClientAction> possibleActionList = (ArrayList<PossibleClientAction>) getPossibleActionBeforeMoving();
 
         PossibleClientAction actionToDo;
@@ -281,15 +262,9 @@ public class ClientManager {
         String username = askUsername();
         me = new Player(username);
 
-        try {
-            Client.sendMessage(
-                    new LoginRequest(me.getPlayerName())
-            );
-        }catch (IOException e){
-            LOGR.severe("Server disconnected!");
-        }
+        Request request = new LoginRequest(me.getPlayerName());
 
-
+        Client.sendRequest(request);
 
     }
 
@@ -310,16 +285,10 @@ public class ClientManager {
 
         Integer num = clientView.askNumbOfPlayer();
 
-        try {
-            Client.sendMessage(
-                    new SetPlayersRequest(me.getPlayerName(), Dispatcher.SETUP_GAME, RequestContent.NUM_PLAYER, num.toString())
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        Request request = new SetPlayersRequest(me.getPlayerName(), Dispatcher.SETUP_GAME, RequestContent.NUM_PLAYER, num.toString());
 
-        //Possibile dividere in modo tale che il server comunichi che effettivamente
-        // ha ricevuto il messaggio e abbia settato la partita su n giocatori
+        Client.sendRequest(request);
+
         clientState = PossibleClientState.PLAYERS_SET_UP;
 
     }
@@ -338,16 +307,9 @@ public class ClientManager {
 
         ArrayList<God> godChoosen = clientView.selectGods(howMany);
 
-        try {
+        Request request =  new ChoseGodsRequest(me.getPlayerName(), godChoosen);
 
-            Client.sendMessage(
-                    new ChoseGodsRequest(me.getPlayerName(), godChoosen)
-            );
-
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
+        Client.sendRequest(request);
     }
 
     private void pickGod(PickGodServerRequest serverRequest) {
@@ -360,14 +322,9 @@ public class ClientManager {
         God myGod = clientView.pickFromChosenGods(hand);
         me.setPlayerGod(myGod);
 
-        try {
-            Client.sendMessage(
-                    new PickGodRequest(me.getPlayerName(), myGod)
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        Request request = new PickGodRequest(me.getPlayerName(), myGod);
 
+        Client.sendRequest(request);
     }
 
     private void placeWorker(PlaceWorkerServerRequest serverRequest) {
@@ -378,13 +335,9 @@ public class ClientManager {
 
         Position p = clientView.placeWorker(serverRequest.getWorker().toString());
 
-        try {
-            Client.sendMessage(
-                    new PlaceWorkerRequest(me.getPlayerName(), serverRequest.getWorker(), p)
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        Request request = new PlaceWorkerRequest(me.getPlayerName(), serverRequest.getWorker(), p);
+
+        Client.sendRequest(request);
 
     }
 
@@ -411,14 +364,9 @@ public class ClientManager {
 
         this.workerSelected = clientView.selectWorker(workersPosition);
 
-        try {
-            Client.sendMessage(
-                    new SelectWorkerRequest(me.getPlayerName(), this.workerSelected)
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        Request request = new SelectWorkerRequest(me.getPlayerName(), this.workerSelected);
 
+        Client.sendRequest(request);
     }
 
     /**
@@ -428,14 +376,9 @@ public class ClientManager {
 
         clientState = PossibleClientState.ACTIVATING_POWER;
 
-        try {
-            Client.sendMessage(
-                    new PowerButtonRequest(me.getPlayerName())
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        Request request =  new PowerButtonRequest(me.getPlayerName());
 
+        Client.sendRequest(request);
     }
 
     private void moveWorker(MoveWorkerServerRequest serverRequest){
@@ -445,24 +388,16 @@ public class ClientManager {
 
         Position position = clientView.moveWorker(nearlyPositionsValid);
 
-        try {
-            Client.sendMessage(
-                    new MoveRequest(me.getPlayerName(), position)
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        Request request =  new MoveRequest(me.getPlayerName(), position);
 
+        Client.sendRequest(request);
     }
 
     private void sendEndMoveRequest() {
-        try {
-            Client.sendMessage(
-                    new EndMoveRequest(me.getPlayerName())
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+
+        Request request = new EndMoveRequest(me.getPlayerName());
+
+        Client.sendRequest(request);
     }
 
     private void build(BuildServerRequest serverRequest) {
@@ -477,47 +412,31 @@ public class ClientManager {
         God playerGod = me.getPlayerGod();
         boolean isAtlas = playerGod.is("Atlas");
 
+        Request request;
 
-        try {
-            if(powerUsed && isAtlas) {
-                Client.sendMessage(
-                        new BuildDomeRequest(me.getPlayerName(), position)
-                );
-            } else {
-                Client.sendMessage(
-                        new BuildRequest(me.getPlayerName(), position)
-                );
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(powerUsed && isAtlas) {
+            request = new BuildDomeRequest(me.getPlayerName(), position);
+        } else {
+            request = new BuildRequest(me.getPlayerName(), position);
         }
 
-
-
+        Client.sendRequest(request);
     }
 
     private void sendEndBuildRequest() {
-        try {
-            Client.sendMessage(
-                    new EndBuildRequest(me.getPlayerName())
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+
+        Request request = new EndBuildRequest(me.getPlayerName());
+
+        Client.sendRequest(request);
     }
 
     private void endTurn() {
         this.myTurn = false;
         clientView.endTurn();
 
-        try {
-            Client.sendMessage(
-                    new EndTurnRequest(me.getPlayerName())
-            );
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        Request request = new EndTurnRequest(me.getPlayerName());
 
+        Client.sendRequest(request);
     }
 
     /**

@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class GUI extends Application {
@@ -46,7 +48,11 @@ public class GUI extends Application {
         try {
             root = loadFXML(fxml);
         } catch (IOException exception) {
-            exception.printStackTrace();
+            //Logger.getLogger("santorini_log").log(Level.SEVERE, "Fatal error!", exception);
+            Thread.currentThread().interrupt();
+
+            //restart
+            Application.launch(GUI.class);
         }
 
         if(scene == null) {

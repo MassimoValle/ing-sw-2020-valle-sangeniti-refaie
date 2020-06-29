@@ -1,6 +1,5 @@
 package it.polimi.ingsw.client.view.gui;
 
-import it.polimi.ingsw.client.controller.ClientManager;
 import it.polimi.ingsw.client.controller.PossibleClientAction;
 import it.polimi.ingsw.client.model.BabyGame;
 import it.polimi.ingsw.client.view.ClientView;
@@ -30,7 +29,11 @@ import java.util.logging.Logger;
 
 public class GuiController extends ClientView {
 
-    private final boolean enaPopup = true;
+    private static final String ERROR_DIALOG = "Error dialog";
+    public static final String INFORMATION_DIALOG = "Information Dialog";
+
+
+    private static final boolean ENA_POPUP = true;
     private Player me = null;
     private Worker selectedWorker = null;
     private Worker opponentWorkerSelected = null;
@@ -43,6 +46,26 @@ public class GuiController extends ClientView {
     }
 
 
+    private Object getFromUser() {
+
+        while (ParameterListener.getParameter() == null){
+
+            synchronized (parameterListener){
+                try {
+                    parameterListener.wait();
+                }catch (InterruptedException e){
+                    //Logger.getLogger(LOGGER).log(Level.SEVERE, "Unexpected error!", e);
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+
+        Object ret = ParameterListener.getParameter();
+        parameterListener.setToNull();
+
+        return ret;
+    }
+
     private void waitingOpponents(){
         GUI.setRoot("waiting");
     }
@@ -53,22 +76,7 @@ public class GuiController extends ClientView {
 
         GUI.setRoot("askIpAddr");
 
-        while (ParameterListener.getParameter() == null){
-
-            synchronized (parameterListener){
-                try {
-                    parameterListener.wait();
-                }catch (InterruptedException e){
-                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-
-        String ipAddress = (String) ParameterListener.getParameter();
-        parameterListener.setToNull();
-
-        return ipAddress;
+        return (String) getFromUser();
     }
 
     @Override
@@ -76,20 +84,7 @@ public class GuiController extends ClientView {
 
         GUI.setRoot("askUsername");
 
-        while (ParameterListener.getParameter() == null){
-
-            synchronized (parameterListener){
-                try {
-                    parameterListener.wait();
-                }catch (InterruptedException e){
-                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-
-        String username = (String) ParameterListener.getParameter();
-        parameterListener.setToNull();
+        String username = (String) getFromUser();
 
         // se 1o player allora non fare la wait
         waitingOpponents();
@@ -102,24 +97,11 @@ public class GuiController extends ClientView {
 
         GUI.setRoot("askLobbySize");
 
-        while (ParameterListener.getParameter() == null){
-
-            synchronized (parameterListener){
-                try {
-                    parameterListener.wait();
-                }catch (InterruptedException e){
-                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-
-        int ret = (int) ParameterListener.getParameter();
-        parameterListener.setToNull();
+        int numbOfPlayers = (int) getFromUser();
 
         waitingOpponents();
 
-        return ret;
+        return numbOfPlayers;
     }
 
     @Override
@@ -140,33 +122,17 @@ public class GuiController extends ClientView {
 
     @Override
     public ArrayList<God> selectGods(int howMany) {
+        Deck deck = BabyGame.getInstance().getDeck();
         ArrayList<God> godsChosen = new ArrayList<>();
         int godsChosenNum = 0;
 
         do {
 
-            while (ParameterListener.getParameter() == null){
-
-                synchronized (parameterListener){
-                    try {
-                        parameterListener.wait();
-                    }catch (InterruptedException e){
-                        Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
-                        Thread.currentThread().interrupt();
-                    }
-                }
-            }
-
-            Deck deck = BabyGame.getInstance().getDeck();
-
-            God god = deck.getGodByName((String) ParameterListener.getParameter());
-            System.out.println("You choose " + god.getGodName() + "!");
+            God god = deck.getGodByName((String) getFromUser());
             godsChosen.add(god);
             godsChosenNum++;
 
-            parameterListener.setToNull();
-
-        }while (godsChosenNum < howMany);
+        } while (godsChosenNum < howMany);
 
         waitingOpponents();
 
@@ -175,11 +141,11 @@ public class GuiController extends ClientView {
 
     @Override
     public void errorWhileChoosingGods(String gameManagerSays) {
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
+            alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("There was a problem with the Gods you selected");
             alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease select the correct Gods");
 
@@ -190,11 +156,11 @@ public class GuiController extends ClientView {
 
     @Override
     public void godsSelectedSuccesfully() {
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
+            alert.setTitle(INFORMATION_DIALOG);
             alert.setHeaderText("Gods selected successfully");
 
             alert.showAndWait();
@@ -210,26 +176,13 @@ public class GuiController extends ClientView {
         PickGodController controller = fxmlLoader.getController();
         controller.setHand(hand);
 
-        while (ParameterListener.getParameter() == null){
-
-            synchronized (parameterListener){
-                try {
-                    parameterListener.wait();
-                }catch (InterruptedException e){
-                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-
         God ret = null;
+        String godName = (String) getFromUser();
 
-        String godName = (String) ParameterListener.getParameter();
         for(God god : hand){
             if(god.getGodName().equals(godName))
                 ret = god;
         }
-        parameterListener.setToNull();
 
         waitingOpponents();
 
@@ -238,11 +191,11 @@ public class GuiController extends ClientView {
 
     @Override
     public void errorWhilePickinUpGod(String gameManagerSays) {
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
+            alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("There was a problem with the God you selected");
             alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease select the correct God");
 
@@ -253,11 +206,11 @@ public class GuiController extends ClientView {
 
     @Override
     public void godPickedUpSuccessfully() {
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
+            alert.setTitle(INFORMATION_DIALOG);
             alert.setHeaderText("God picked successfully");
 
             alert.showAndWait();
@@ -281,32 +234,17 @@ public class GuiController extends ClientView {
 
         parameterListener.setToNull();
 
-        while (ParameterListener.getParameter() == null){
-
-            synchronized (parameterListener){
-                try {
-                    parameterListener.wait();
-                }catch (InterruptedException e){
-                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-
-        Position ret = (Position) ParameterListener.getParameter();
-        parameterListener.setToNull();
-
-        return ret;
+        return (Position) getFromUser();
 
     }
 
     @Override
     public void errorWhilePlacingYourWorker(String gameManagerSays) {
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
+            alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("There was a problem with the worker you wanted to place");
             alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease try place it again");
 
@@ -317,11 +255,11 @@ public class GuiController extends ClientView {
 
     @Override
     public void workerPlacedSuccesfully() {
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
+            alert.setTitle(INFORMATION_DIALOG);
             alert.setHeaderText("Worker placed successfully!");
 
             alert.showAndWait();
@@ -330,11 +268,11 @@ public class GuiController extends ClientView {
 
     @Override
     public void startingTurn() {
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
+            alert.setTitle(INFORMATION_DIALOG);
             alert.setHeaderText("It's your turn!");
 
             alert.showAndWait();
@@ -348,7 +286,7 @@ public class GuiController extends ClientView {
         boolean again = false;
 
         do {
-            System.out.println("selezione un tuo worker");
+            //Logger.getLogger(LOGGER).log(Level.INFO, "Selecting a worker");
 
             if(again) {
                 parameterListener.setToNull();
@@ -357,20 +295,7 @@ public class GuiController extends ClientView {
 
             if (selectedWorker == null) {
 
-                while (ParameterListener.getParameter() == null) {
-
-                    synchronized (parameterListener) {
-                        try {
-                            parameterListener.wait();
-                        } catch (InterruptedException e) {
-                            Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
-                            Thread.currentThread().interrupt();
-                        }
-                    }
-                }
-
-                Position pos = (Position) ParameterListener.getParameter();
-
+                Position pos = (Position) getFromUser();
                 selectedWorker = BabyGame.getInstance().getClientMap().getWorkerOnSquare(pos);
             }
 
@@ -378,6 +303,7 @@ public class GuiController extends ClientView {
         }
         while (again);
 
+        //da spostare sulla risposta positiva alla select worker
         selectedWorker.selectedOnGUI();
 
         parameterListener.setToNull();
@@ -387,11 +313,17 @@ public class GuiController extends ClientView {
 
     @Override
     public void errorWhileSelectingWorker(String gameManagerSays) {
-        if(!enaPopup) return;
+
+        if (selectedWorker != null) {
+            selectedWorker.deselectedOnGUI();
+            selectedWorker = null;
+        }
+
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
+            alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("There was a problem with the worker you selected");
             alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease select another worker");
 
@@ -402,11 +334,11 @@ public class GuiController extends ClientView {
 
     @Override
     public void workerSelectedSuccessfully() {
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
+            alert.setTitle(INFORMATION_DIALOG);
             alert.setHeaderText("Worker selected succesfully!");
 
             alert.showAndWait();
@@ -422,19 +354,7 @@ public class GuiController extends ClientView {
         else controller.disablePowerButton();
 
 
-        while (ParameterListener.getParameter() == null){
-
-            synchronized (parameterListener){
-                try {
-                    parameterListener.wait();
-                }catch (InterruptedException e){
-                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-
-        Object parameter = ParameterListener.getParameter();
+        Object parameter = getFromUser();
 
 
         if(parameter instanceof String){
@@ -471,11 +391,11 @@ public class GuiController extends ClientView {
 
     @Override
     public void errorWhileActivatingPower(String gameManagerSays) {
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
+            alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("There was a problem with the power you want to use");
             alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease do a different action");
 
@@ -485,11 +405,11 @@ public class GuiController extends ClientView {
 
     @Override
     public void powerActivated(God god) {
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
+            alert.setTitle(INFORMATION_DIALOG);
             alert.setHeaderText("Power activated!");
             alert.setContentText("Now you can:  " + god.getGodPower().getPowerDescription());
 
@@ -502,36 +422,20 @@ public class GuiController extends ClientView {
 
         //controller.enablePosition(nearlyPosValid);
 
-        while (ParameterListener.getParameter() == null){
-
-            synchronized (parameterListener){
-                try {
-                    parameterListener.wait();
-                }catch (InterruptedException e){
-                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-
-
-        Position ret = (Position) ParameterListener.getParameter();
-        parameterListener.setToNull();
-
         //controller.disablePosition();
 
-        return ret;
+        return (Position) getFromUser();
 
     }
 
     @Override
     public void errorWhileMovingWorker(String gameManagerSays) {
 
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
+            alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("There was a problem with the move you performed");
             alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease move again");
 
@@ -544,7 +448,7 @@ public class GuiController extends ClientView {
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Information Dialog");
+            alert.setTitle(INFORMATION_DIALOG);
             alert.setHeaderText("Do you want to move again?");
             alert.setContentText("Choose your option.");
 
@@ -559,47 +463,31 @@ public class GuiController extends ClientView {
             parameterListener.setParameter(result.get() == buttonTypeOne);
         });
 
-        while (ParameterListener.getParameter() == null) {
-
-            synchronized (parameterListener) {
-                try {
-                    parameterListener.wait();
-                } catch (InterruptedException e) {
-                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-
-        boolean choice = (boolean) ParameterListener.getParameter();
-        parameterListener.setToNull();
-
-        return choice;
-
+        return (boolean) getFromUser();
     }
 
     @Override
     public void printCanMoveAgain(String gameManagerSays) {
 
-        Logger.getLogger("santorini_log").log(Level.INFO, "Player can move again");
+        //Logger.getLogger(LOGGER).log(Level.INFO, "Player can move again");
 
     }
 
     @Override
     public void workerMovedSuccessfully() {
 
-        Logger.getLogger("santorini_log").log(Level.INFO, "Worker moved successfully");
+        //Logger.getLogger(LOGGER).log(Level.INFO, "Worker moved successfully");
 
     }
 
     @Override
     public void endMoveRequestError(String gameManagerSays) {
 
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
+            alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("End Move Request Error");
             alert.setContentText("Game Manager says: " + gameManagerSays);
 
@@ -611,7 +499,7 @@ public class GuiController extends ClientView {
     @Override
     public void endMovingPhase(String gameManagerSays) {
 
-        Logger.getLogger("santorini_log").log(Level.INFO, gameManagerSays);
+        //Logger.getLogger(LOGGER).log(Level.INFO, gameManagerSays);
 
     }
 
@@ -620,24 +508,9 @@ public class GuiController extends ClientView {
 
         //controller.enablePosition(possiblePosToBuild);
 
-        while (ParameterListener.getParameter() == null){
-
-            synchronized (parameterListener){
-                try {
-                    parameterListener.wait();
-                }catch (InterruptedException e){
-                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-
-        Position ret = (Position) ParameterListener.getParameter();
-        parameterListener.setToNull();
-
         //controller.disablePosition();
 
-        return ret;
+        return (Position) getFromUser();
 
     }
 
@@ -646,7 +519,7 @@ public class GuiController extends ClientView {
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Information Dialog");
+            alert.setTitle(INFORMATION_DIALOG);
             alert.setHeaderText("Do you want to build again?");
             alert.setContentText("Choose your option.");
 
@@ -659,49 +532,28 @@ public class GuiController extends ClientView {
 
             //setta true se result.get() == buttonTypeOne, altrimenti false
 
-            if (!result.isEmpty()) {
-                Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!");
-                Thread.currentThread().interrupt();
-            }
-
             parameterListener.setParameter(result.orElse(null) == buttonTypeOne);
         });
 
-        while (ParameterListener.getParameter() == null) {
-
-            synchronized (parameterListener) {
-                try {
-                    parameterListener.wait();
-                } catch (InterruptedException e) {
-                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-
-        boolean choice = (boolean) ParameterListener.getParameter();
-        parameterListener.setToNull();
-
-        return choice;
+        return (boolean) getFromUser();
 
     }
 
     @Override
     public void printCanBuildAgain(String gameManagerSays) {
 
-        System.out.println(gameManagerSays);
-        System.out.println();
+        //Logger.getLogger(LOGGER).log(Level.INFO, gameManagerSays);
 
     }
 
     @Override
     public void errorWhileBuilding(String gameManagerSays) {
 
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
+            alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("There was a problem with the built you performed");
             alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease build again");
 
@@ -713,11 +565,11 @@ public class GuiController extends ClientView {
     @Override
     public void builtSuccessfully() {
 
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
+            alert.setTitle(INFORMATION_DIALOG);
             alert.setHeaderText("Built successfully!");
 
             alert.showAndWait();
@@ -728,11 +580,11 @@ public class GuiController extends ClientView {
     @Override
     public void endBuildRequestError(String gameManagerSays) {
 
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
+            alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("End Build Request Error");
             alert.setContentText("Game Manager says: " + gameManagerSays);
 
@@ -744,11 +596,11 @@ public class GuiController extends ClientView {
     @Override
     public void endBuildingPhase(String gameManagerSays) {
 
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
+            alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("End Building Phase");
             alert.setContentText("Game Manager says: " + gameManagerSays);
 
@@ -764,11 +616,11 @@ public class GuiController extends ClientView {
         selectedWorker = null;
         controller.disablePowerButton();
 
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
+            alert.setTitle(INFORMATION_DIALOG);
             alert.setHeaderText("Ending turn!");
 
             alert.showAndWait();
@@ -865,11 +717,11 @@ public class GuiController extends ClientView {
     @Override
     public void youWon() {
 
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
+            alert.setTitle(INFORMATION_DIALOG);
             alert.setHeaderText("YOU WIN");
 
             alert.showAndWait();
@@ -890,11 +742,11 @@ public class GuiController extends ClientView {
     @Override
     public void youLose(String winner) {
 
-        if(!enaPopup) return;
+        if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
+            alert.setTitle(INFORMATION_DIALOG);
             alert.setHeaderText("YOU LOSE");
 
             alert.showAndWait();
@@ -925,7 +777,7 @@ public class GuiController extends ClientView {
         try {
             client.run();
         } catch (IOException ex) {
-            //ex.printStackTrace();
+            //Logger.getLogger(LOGGER).log(Level.SEVERE, "Ops, app just crashed", ex);
             run();
         }
     }

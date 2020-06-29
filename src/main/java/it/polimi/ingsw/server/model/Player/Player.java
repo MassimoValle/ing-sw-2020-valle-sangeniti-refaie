@@ -161,6 +161,11 @@ public class Player {
                 color == player.color;
     }
 
+    @Override
+    public int hashCode() {
+        return getPlayerName() != null ? getPlayerName().hashCode() : 0;
+    }
+
     public String printInfoInCLi() {
 
         return "Username:" + playerName + "\n" +

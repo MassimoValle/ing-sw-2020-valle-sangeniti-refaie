@@ -18,17 +18,13 @@ public class ParameterListener {
         parameter = null;
     }
 
-    public static Object getParameter() {
+    public static synchronized Object getParameter() {
         return parameter;
     }
 
-    public void setParameter(Object parameter) {
-
-        synchronized (this){
+    public synchronized void setParameter(Object parameter) {
             ParameterListener.parameter = parameter;
             this.notifyAll();
-        }
-
     }
 
     public void setToNull(){

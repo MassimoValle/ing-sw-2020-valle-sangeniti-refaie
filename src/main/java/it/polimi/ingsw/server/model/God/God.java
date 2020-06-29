@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class God implements Serializable {
 
@@ -50,6 +51,7 @@ public class God implements Serializable {
         return godPower;
     }
 
+    /*
     @Override
     public boolean equals(Object o) {
 
@@ -63,8 +65,11 @@ public class God implements Serializable {
 
         return  this.godName.equals(((God) o).godName); /*&&
                 this.godDescription.equals(((God) o).godDescription) &&
-                this.godPower.equals(((God) o).godPower);*/
+                this.godPower.equals(((God) o).godPower);
     }
+
+     */
+
 
     @Override
     public String toString() {
@@ -79,5 +84,21 @@ public class God implements Serializable {
     public boolean is(String name) {
         String godName = this.getGodName();
         return godName.equals(name);
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof God)) return false;
+        God god = (God) o;
+        return getGodName().equals(god.getGodName()) &&
+                getGodDescription().equals(god.getGodDescription()) &&
+                getGodPower().equals(god.getGodPower());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getGodName(), getGodDescription(), getGodPower());
     }
 }

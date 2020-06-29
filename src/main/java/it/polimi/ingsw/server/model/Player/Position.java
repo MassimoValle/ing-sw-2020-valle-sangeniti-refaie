@@ -232,6 +232,13 @@ public class Position implements Serializable {
     }
 
     @Override
+    public int hashCode() {
+        int result = getRow();
+        result = 31 * result + getColumn();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "( " + this.getRow() + " , " + this.getColumn() + " )";
         }

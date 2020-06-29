@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.controller.ClientManager;
 import it.polimi.ingsw.client.view.ClientView;
 import it.polimi.ingsw.network.message.*;
 import it.polimi.ingsw.network.message.Server.ServerMessage;
+import it.polimi.ingsw.network.message.clientrequests.Request;
 
 import java.io.*;
 import java.net.Socket;
@@ -40,8 +41,14 @@ public class Client {
 
     }
 
+    public static void sendRequest(Request request) {
 
-
+        try {
+            sendMessage(request);
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     private void ping(){
@@ -53,6 +60,7 @@ public class Client {
                 }
             } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }).start();
 
@@ -62,7 +70,8 @@ public class Client {
 
         while (!Thread.currentThread().isInterrupted()){
 
-            System.out.println("Socket keep alive: " + socket.getKeepAlive());
+            //QUESTO NON E' UN PING
+            //System.out.println("Socket keep alive: " + socket.getKeepAlive());
 
             if(!socket.getKeepAlive()) return false;
 
@@ -76,14 +85,14 @@ public class Client {
 
 
 
-    public static void sendMessage(Message message) throws IOException {
+    private static void sendMessage(Message message) throws IOException {
 
-            socketOut.writeObject(message); //printo sul server
+            socketOut.writeObject(message);
             socketOut.reset();
 
     }
 
-    public static void receiveMessage() throws IOException{
+    private static void receiveMessage() throws IOException{
         ServerMessage received;
         try {
             received = (ServerMessage) socketIn.readObject();

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.view.cli;
 
+import it.polimi.ingsw.client.controller.ClientManager;
 import it.polimi.ingsw.client.controller.PossibleClientAction;
 import it.polimi.ingsw.client.model.BabyGame;
 import it.polimi.ingsw.client.view.ClientView;

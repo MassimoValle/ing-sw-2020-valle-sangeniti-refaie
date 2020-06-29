@@ -145,7 +145,12 @@ public class Worker {
                 placed == worker.placed &&
                 selected == worker.selected &&
                 workerPosition.equals(worker.workerPosition);
+    }
 
-
+    @Override
+    public int hashCode() {
+        int result = getOwner() != null ? getOwner().hashCode() : 0;
+        result = 31 * result + (getColor() != null ? getColor().hashCode() : 0);
+        return result;
     }
 }
