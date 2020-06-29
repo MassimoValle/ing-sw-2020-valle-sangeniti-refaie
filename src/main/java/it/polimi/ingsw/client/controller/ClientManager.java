@@ -18,21 +18,26 @@ import it.polimi.ingsw.network.message.Enum.MessageStatus;
 import it.polimi.ingsw.server.model.Player.Worker;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 /**
  * The type Client manager.
  */
 public class ClientManager {
+    public static final Logger LOGR = Logger.getLogger("Santorini_log");
 
     public static ClientView clientView = null;
 
     private PossibleClientState clientState;
 
     // model
-    public static Player me;
+    private Player me;
     private final BabyGame babyGame;
 
     //Its use is intended to deal with message when the player is not the turn owner
@@ -76,6 +81,18 @@ public class ClientManager {
         this.babyGame = BabyGame.getInstance();
 
         this.clientBoardUpdater = new ClientBoardUpdater(babyGame);
+
+        Date date = GregorianCalendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("dd-mm_HH.mm.ss");
+
+        try {
+            FileHandler fh = new FileHandler("log/client-" + dateFormat.format(date) + ".log");
+            fh.setFormatter(new SimpleFormatter());
+            LOGR.setUseParentHandlers(false);
+            LOGR.addHandler(fh);
+        } catch (IOException e) {
+            LOGR.severe(e.getMessage());
+        }
 
         clientState = PossibleClientState.LOGIN;
     }
@@ -149,10 +166,7 @@ public class ClientManager {
         }
 
         clientState = PossibleClientState.MOVING_WORKER;
-
-        //TODO: da controllare sul client se ha la possibilità di fare una PowerButtonRequest
-
-        //Prendiamo tutte le azioni disponibili che ha il giocatore
+        
         ArrayList<PossibleClientAction> possibleActionList = (ArrayList<PossibleClientAction>) getPossibleActionBeforeMoving();
 
         PossibleClientAction actionToDo;
@@ -264,15 +278,15 @@ public class ClientManager {
      */
     public void login(){
 
-        me = new Player(askUsername());
+        String username = askUsername();
+        me = new Player(username);
 
         try {
             Client.sendMessage(
                     new LoginRequest(me.getPlayerName())
             );
         }catch (IOException e){
-            //e.printStackTrace();
-            System.out.println("Server disconnected while sending message to it");
+            LOGR.severe("Server disconnected!");
         }
 
 
@@ -800,7 +814,7 @@ public class ClientManager {
         Set<Player> players = babyGame.getPlayers();
         updateMyInfo();
 
-        clientView.showAllPlayersInGame(players);
+        clientView.showAllPlayersInGame(players, me);
     }
 
     /**

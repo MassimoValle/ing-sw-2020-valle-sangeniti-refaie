@@ -218,7 +218,7 @@ public class CLI extends ClientView {
     }
 
     @Override
-    public void showAllPlayersInGame(Set<Player> playerSet) {
+    public void showAllPlayersInGame(Set<Player> playerSet, Player me) {
 
         consoleOut.println("Players in game:");
         for (Player player: playerSet) {

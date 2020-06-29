@@ -25,10 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GuiController extends ClientView {
 
     private final boolean enaPopup = true;
+    private Player me = null;
     private Worker selectedWorker = null;
     private Worker opponentWorkerSelected = null;
 
@@ -56,7 +59,8 @@ public class GuiController extends ClientView {
                 try {
                     parameterListener.wait();
                 }catch (InterruptedException e){
-                    e.printStackTrace();
+                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -78,7 +82,8 @@ public class GuiController extends ClientView {
                 try {
                     parameterListener.wait();
                 }catch (InterruptedException e){
-                    e.printStackTrace();
+                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -103,7 +108,8 @@ public class GuiController extends ClientView {
                 try {
                     parameterListener.wait();
                 }catch (InterruptedException e){
-                    e.printStackTrace();
+                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -145,7 +151,8 @@ public class GuiController extends ClientView {
                     try {
                         parameterListener.wait();
                     }catch (InterruptedException e){
-                        e.printStackTrace();
+                        Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
+                        Thread.currentThread().interrupt();
                     }
                 }
             }
@@ -209,7 +216,8 @@ public class GuiController extends ClientView {
                 try {
                     parameterListener.wait();
                 }catch (InterruptedException e){
-                    e.printStackTrace();
+                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -257,12 +265,13 @@ public class GuiController extends ClientView {
     }
 
     @Override
-    public void showAllPlayersInGame(Set<Player> playerSet) {
+    public void showAllPlayersInGame(Set<Player> playerSet, Player user) {
 
         GUI.setRoot("mainView");
         FXMLLoader fxmlLoader = GUI.getFXMLLoader();
         controller = fxmlLoader.getController();
         controller.setPlayers(playerSet);
+        this.me = user;
         controller.init();
 
     }
@@ -278,7 +287,8 @@ public class GuiController extends ClientView {
                 try {
                     parameterListener.wait();
                 }catch (InterruptedException e){
-                    e.printStackTrace();
+                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -353,7 +363,8 @@ public class GuiController extends ClientView {
                         try {
                             parameterListener.wait();
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
+                            Thread.currentThread().interrupt();
                         }
                     }
                 }
@@ -363,7 +374,7 @@ public class GuiController extends ClientView {
                 selectedWorker = BabyGame.getInstance().getClientMap().getWorkerOnSquare(pos);
             }
 
-            again = selectedWorker == null || !selectedWorker.getColor().equals(ClientManager.me.getColor());
+            again = selectedWorker == null || !selectedWorker.getColor().equals(me.getColor());
         }
         while (again);
 
@@ -417,7 +428,8 @@ public class GuiController extends ClientView {
                 try {
                     parameterListener.wait();
                 }catch (InterruptedException e){
-                    e.printStackTrace();
+                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -434,7 +446,7 @@ public class GuiController extends ClientView {
         else
         if(parameter instanceof Position){
 
-            for (Worker worker : ClientManager.me.getPlayerWorkers()){
+            for (Worker worker : me.getPlayerWorkers()){
                 if(worker.getPosition().equals(parameter)) {
 
                     selectedWorker.deselectedOnGUI();
@@ -448,8 +460,8 @@ public class GuiController extends ClientView {
 
         }
 
-        possibleActions.removeIf((x) -> x.equals(PossibleClientAction.POWER_BUTTON));
-        possibleActions.removeIf((x) -> x.equals(PossibleClientAction.SELECT_WORKER));
+        possibleActions.removeIf(x -> x.equals(PossibleClientAction.POWER_BUTTON));
+        possibleActions.removeIf(x -> x.equals(PossibleClientAction.SELECT_WORKER));
 
         controller.disablePowerButton();
 
@@ -496,7 +508,8 @@ public class GuiController extends ClientView {
                 try {
                     parameterListener.wait();
                 }catch (InterruptedException e){
-                    e.printStackTrace();
+                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -552,7 +565,8 @@ public class GuiController extends ClientView {
                 try {
                     parameterListener.wait();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -567,16 +581,14 @@ public class GuiController extends ClientView {
     @Override
     public void printCanMoveAgain(String gameManagerSays) {
 
-        System.out.println(gameManagerSays);
-        System.out.println();
+        Logger.getLogger("santorini_log").log(Level.INFO, "Player can move again");
 
     }
 
     @Override
     public void workerMovedSuccessfully() {
 
-        System.out.println("Worker moved successfully!");
-        System.out.println();
+        Logger.getLogger("santorini_log").log(Level.INFO, "Worker moved successfully");
 
     }
 
@@ -599,8 +611,7 @@ public class GuiController extends ClientView {
     @Override
     public void endMovingPhase(String gameManagerSays) {
 
-        System.out.println(gameManagerSays);
-        System.out.println();
+        Logger.getLogger("santorini_log").log(Level.INFO, gameManagerSays);
 
     }
 
@@ -615,7 +626,8 @@ public class GuiController extends ClientView {
                 try {
                     parameterListener.wait();
                 }catch (InterruptedException e){
-                    e.printStackTrace();
+                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -646,7 +658,13 @@ public class GuiController extends ClientView {
             Optional<ButtonType> result = alert.showAndWait();
 
             //setta true se result.get() == buttonTypeOne, altrimenti false
-            parameterListener.setParameter(result.get() == buttonTypeOne);
+
+            if (!result.isEmpty()) {
+                Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!");
+                Thread.currentThread().interrupt();
+            }
+
+            parameterListener.setParameter(result.orElse(null) == buttonTypeOne);
         });
 
         while (ParameterListener.getParameter() == null) {
@@ -655,7 +673,8 @@ public class GuiController extends ClientView {
                 try {
                     parameterListener.wait();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Logger.getLogger("santorini_log").log(Level.SEVERE, "Unexpected error!", e);
+                    Thread.currentThread().interrupt();
                 }
             }
         }

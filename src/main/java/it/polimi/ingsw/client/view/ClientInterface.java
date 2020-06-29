@@ -38,7 +38,7 @@ public interface ClientInterface {
 
     void godPickedUpSuccessfully();
 
-    void showAllPlayersInGame(Set<Player> playerSet);
+    void showAllPlayersInGame(Set<Player> playerSet, Player me);
 
     Position placeWorker(String worker);
 

@@ -17,6 +17,7 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 public class Server {
 
@@ -28,6 +29,8 @@ public class Server {
     private static final List<Connection> connections = new ArrayList<>();
     private final Map<String, Connection> clientsConnected = new HashMap<>();
     private static final Map<MasterController, Map<String, Connection>> rooms = new HashMap<>();
+
+    public static final Logger LOGGER = Logger.getLogger("Server");
 
     int temp_lobbySize = -1;
     boolean lobbySizeAsked = false;
