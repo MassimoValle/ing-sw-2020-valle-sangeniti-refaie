@@ -1,0 +1,104 @@
+package it.polimi.ingsw.server.model.action;
+
+import it.polimi.ingsw.server.model.God.GodsInGame;
+import it.polimi.ingsw.server.model.God.GodsPower.Power;
+import it.polimi.ingsw.server.model.Map.GameMap;
+import it.polimi.ingsw.server.model.Map.Square;
+import it.polimi.ingsw.server.model.Player.Player;
+import it.polimi.ingsw.server.model.Player.Position;
+import it.polimi.ingsw.server.model.Player.Worker;
+
+import java.util.ArrayList;
+
+/**
+ * The MoveAction update the workers position & the gameMap
+ */
+public class MoveAction implements Action {
+
+
+    private final Power godsPowerPerformingAction;
+    public final Worker playerWorker;
+    public final Position newPosition;
+    public final Square oldPositionSquare;
+    public final Square newPositionSquare;
+
+
+
+    public MoveAction(Power godsPowerPerformingAction, Worker playerWorker, Position newPosition, Square oldPositionSquare, Square newPositionSquare) {
+        this.playerWorker = playerWorker;
+        this.newPosition = newPosition;
+        this.oldPositionSquare = oldPositionSquare;
+        this.newPositionSquare = newPositionSquare;
+        this.godsPowerPerformingAction = godsPowerPerformingAction;
+    }
+
+    /**
+     *This method chek if the {@link Action} is valid
+     *
+     * @return true if is valid, false otherwise
+     */
+    @Override
+    public boolean isValid(GameMap map) {
+
+        int heightDifference = map.getDifferenceInAltitude(oldPositionSquare.getPosition(), newPositionSquare.getPosition());
+        ArrayList<Position> adjacent = oldPositionSquare.getPosition().getAdjacentPlaces();
+
+        //if some God Power is active that prevent you from doing this move
+        return !godsPowerActive(godsPowerPerformingAction, map) && !newPositionSquare.hasWorkerOn() &&
+                heightDifference >= -1 && !newPositionSquare.hasDome() &&
+                adjacent.contains(newPosition);
+    }
+
+
+    public boolean clientValidation(GameMap clientMap) {
+
+        int heightDifference = clientMap.getDifferenceInAltitude(oldPositionSquare.getPosition(), newPositionSquare.getPosition());
+        ArrayList<Position> adjacent = oldPositionSquare.getPosition().getAdjacentPlaces();
+
+        //if some God Power is active that prevent you from doing this move
+        return !newPositionSquare.hasWorkerOn() && heightDifference >= -1 && !newPositionSquare.hasDome() &&
+                adjacent.contains(newPosition);
+    }
+
+
+    /**
+     * Move the selected {@link Worker playerWorker}  by {@link Player player} into the {@link Position newPosition} chose by the player;
+     * Also update the gamemap by setting {@link Square#hasWorkerOn()}
+     */
+    @Override
+    public void doAction() {
+
+        oldPositionSquare.freeSquare();
+        playerWorker.setPosition(newPosition);
+
+        newPositionSquare.setWorkerOn(playerWorker);
+
+    }
+
+
+
+    /**
+     * Check if this {@link MoveAction} can be prevented from some other players' gods power
+     *
+     * @return true if action not permitted, false otherwise
+     */
+    boolean godsPowerActive(Power godsPowerPerformingAction, GameMap map) {
+
+        ArrayList<Power> powersInGame = GodsInGame.getIstance().getPowersByMap(map);
+        for (Power godPower: powersInGame) {
+            if (!godPower.equals(godsPowerPerformingAction) && godPower.canPreventsFromPerformingAction() && godPower.checkIfActionNotPermitted(this)) {
+                 return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * It checks if moving from a lvl2 to lvl3 block
+     *
+     * @return true if so, false otherwise
+     */
+    public boolean winningMove() {
+        return oldPositionSquare.getHeight() == 2 && newPositionSquare.getHeight() == 3;
+    }
+}

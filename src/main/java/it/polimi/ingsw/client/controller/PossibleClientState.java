@@ -1,0 +1,28 @@
+package it.polimi.ingsw.client.controller;
+
+public enum PossibleClientState {
+    LOGIN,
+    LOGIN_DONE,
+    SETTING_UP_PLAYERS,
+    PLAYERS_SET_UP,
+    CHOOSING_GODS,
+    GODS_CHOSEN,
+    PICKING_UP_GOD,
+    GOD_ASSIGNED,
+    PLACING_WORKERS,
+    WORKERS_PLACED,
+
+    STARTING_TURN,
+
+    SELECTING_WORKER,
+    WORKER_SELECTED,
+    ACTIVATING_POWER,
+    POWER_ACTIVATED,
+    MOVING_WORKER,
+    WORKER_MOVED,
+    BUILDING,
+    BUILDING_DONE,
+    ENDING_TURN,
+
+
+}

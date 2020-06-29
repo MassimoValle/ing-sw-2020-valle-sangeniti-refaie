@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 
-<AnchorPane fx:id="showDeckAnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="setupBackground" stylesheets="@../css/mycss.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Client.View.Gui.ViewControllers.ShowDeckController">
+<AnchorPane fx:id="showDeckAnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="setupBackground" stylesheets="@../css/mycss.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.view.gui.viewcontrollers.ShowDeckController">
    <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
