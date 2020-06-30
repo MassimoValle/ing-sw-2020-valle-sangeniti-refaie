@@ -37,6 +37,7 @@ public class GuiController extends ClientView {
     private Player me = null;
     private Worker selectedWorker = null;
     private Worker opponentWorkerSelected = null;
+    private boolean godLikePlayer = false;
 
     private final ParameterListener parameterListener;
     private MainViewController controller;
@@ -60,10 +61,7 @@ public class GuiController extends ClientView {
             }
         }
 
-        Object ret = ParameterListener.getParameter();
-        ParameterListener.setToNull();
-
-        return ret;
+        return ParameterListener.getParameter();
     }
 
     private void waitingOpponents(){
@@ -76,7 +74,10 @@ public class GuiController extends ClientView {
 
         GUI.setRoot("askIpAddr");
 
-        return (String) getFromUser();
+        String ret = (String) getFromUser();
+        parameterListener.setToNull();
+
+        return ret;
     }
 
     @Override
@@ -85,9 +86,11 @@ public class GuiController extends ClientView {
         GUI.setRoot("askUsername");
 
         String username = (String) getFromUser();
+        parameterListener.setToNull();
 
         // se 1o player allora non fare la wait
-        waitingOpponents();
+        if(godLikePlayer)
+            waitingOpponents();
 
         return username;
     }
@@ -98,6 +101,7 @@ public class GuiController extends ClientView {
         GUI.setRoot("askLobbySize");
 
         int numbOfPlayers = (int) getFromUser();
+        parameterListener.setToNull();
 
         waitingOpponents();
 
@@ -111,7 +115,8 @@ public class GuiController extends ClientView {
 
     @Override
     public void youAreTheGodLikePlayer() {
-        // do nothing in GUI
+        this.godLikePlayer = true;
+
     }
 
     @Override
@@ -129,6 +134,7 @@ public class GuiController extends ClientView {
         do {
 
             God god = deck.getGodByName((String) getFromUser());
+            parameterListener.setToNull();
             godsChosen.add(god);
             godsChosenNum++;
 
@@ -178,6 +184,7 @@ public class GuiController extends ClientView {
 
         God ret = null;
         String godName = (String) getFromUser();
+        parameterListener.setToNull();
 
         for(God god : hand){
             if(god.getGodName().equals(godName))
@@ -234,7 +241,10 @@ public class GuiController extends ClientView {
 
         parameterListener.setToNull();
 
-        return (Position) getFromUser();
+        Position ret = (Position) getFromUser();
+        parameterListener.setToNull();
+
+        return ret;
 
     }
 
@@ -296,6 +306,7 @@ public class GuiController extends ClientView {
             if (selectedWorker == null) {
 
                 Position pos = (Position) getFromUser();
+                parameterListener.setToNull();
                 selectedWorker = BabyGame.getInstance().getClientMap().getWorkerOnSquare(pos);
             }
 
@@ -348,6 +359,8 @@ public class GuiController extends ClientView {
     @Override
     public PossibleClientAction choseActionToPerform(List<PossibleClientAction> possibleActions) {
 
+        parameterListener.setToNull();
+
         if(possibleActions.contains(PossibleClientAction.POWER_BUTTON)){
             controller.enablePowerButton();
         }
@@ -355,7 +368,7 @@ public class GuiController extends ClientView {
 
 
         Object parameter = getFromUser();
-
+        // don't set to null parameterListener
 
         if(parameter instanceof String){
             if(parameter.equals("power")) {
@@ -424,7 +437,10 @@ public class GuiController extends ClientView {
 
         //controller.disablePosition();
 
-        return (Position) getFromUser();
+        Position ret =  (Position) getFromUser();
+        parameterListener.setToNull();
+
+        return  ret;
 
     }
 
@@ -448,7 +464,10 @@ public class GuiController extends ClientView {
 
         choicePopup(1);
 
-        return (boolean) getFromUser();
+        boolean ret = (boolean) getFromUser();
+        parameterListener.setToNull();
+
+        return ret;
     }
 
     @Override
@@ -495,7 +514,10 @@ public class GuiController extends ClientView {
 
         //controller.disablePosition();
 
-        return (Position) getFromUser();
+        Position ret =( Position) getFromUser();
+        parameterListener.setToNull();
+
+        return ret;
 
     }
 
@@ -536,6 +558,12 @@ public class GuiController extends ClientView {
             //setta true se result.get() == buttonTypeOne, altrimenti false
             parameterListener.setParameter(result.orElse(null) == buttonTypeOne);
         });
+
+        boolean ret = (boolean) getFromUser();
+        parameterListener.setToNull();
+
+        return ret;
+
     }
 
     @Override

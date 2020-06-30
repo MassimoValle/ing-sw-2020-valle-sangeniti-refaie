@@ -10,6 +10,14 @@
   -fx-font-family: "Comic Sans MS";
 }
 
+.playButton{
+  -fx-background-image: url("../imgs/textBox/button-play-normal.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
 .setupBackground{
   -fx-background-image: url("../imgs/setup.jpg");
   -fx-background-repeat: stretch;
@@ -42,72 +50,16 @@
   -fx-vgap: 8;
 }
 
-.player{
-  -fx-background-image: url("../imgs/nuvolaSpeedysmall.jpg");
-  -fx-background-repeat: stretch;
-  -fx-background-position: center center;
-  -fx-background-size: 100% 100%;
-
-  -fx-font-family: "Comic Sans MS";
-  -fx-font-size: 20;
-}
-
-.leftCLiff{
-  -fx-background-image: url("../imgs/cliff/left.png");
-  -fx-background-repeat: stretch;
-  -fx-background-position: center center;
-  -fx-background-size: 100% 100%;
-  -fx-pref-width: 42000%;
-}
-
-.topCLiff{
-  -fx-background-image: url("../imgs/cliff/top.png");
-  -fx-background-repeat: stretch;
-  -fx-background-position: center center;
-  -fx-background-size: 100% 100%;
-  -fx-pref-height: 10000%;
-}
-
-.rightCLiff {
-  -fx-background-image: url("../imgs/cliff/right.png");
-  -fx-background-repeat: stretch;
-  -fx-background-position: center center;
-  -fx-background-size: 100% 100%;
-  -fx-min-width: 42000%;
-}
-
-.bottomCLiff{
-  -fx-background-image: url("../imgs/cliff/bottom.png");
-  -fx-background-repeat: stretch;
-  -fx-background-position: center center;
-  -fx-background-size: 100% 100%;
-  -fx-pref-height: 10000%;
-}
-
-
-
-
-
-.cliff{
-  -fx-background-image: url("../imgs/cliff/SantoriniBoard.png");
-  -fx-background-size: 100% 100%;
-  -fx-background-repeat: stretch;
-}
-
-
 .godInfo{
   -fx-background-repeat: stretch;
   -fx-background-position: center center;
   -fx-background-size: 100% 100%;
 }
 
-
-.playButton{
-  -fx-background-image: url("../imgs/textBox/button-play-normal.png");
-  -fx-border-insets: 3px;
+.cliff{
+  -fx-background-image: url("../imgs/cliff/SantoriniBoard.png");
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
-  -fx-background-color: transparent;
 }
 
 .nextButton{
@@ -278,6 +230,11 @@
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
   -fx-background-color: transparent;
+}
+
+.PlayerLabel{
+  -fx-font-family: "Comic Sans MS";
+  -fx-font-size: 40;
 }
 
 

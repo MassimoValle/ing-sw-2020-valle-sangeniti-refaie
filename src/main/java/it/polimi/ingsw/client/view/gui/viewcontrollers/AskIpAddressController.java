@@ -1,7 +1,6 @@
 package it.polimi.ingsw.client.view.gui.viewcontrollers;
 
 import it.polimi.ingsw.client.view.gui.ParameterListener;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
@@ -19,7 +18,7 @@ public class AskIpAddressController implements Initializable {
 
 
     @FXML
-    void getIpEvent(ActionEvent event) {
+    void getIpEvent() {
         String ipAddress = txtFieldIP.getText();
         parameterListener.setParameter(ipAddress);
     }

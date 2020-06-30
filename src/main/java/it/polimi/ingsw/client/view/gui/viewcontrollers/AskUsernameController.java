@@ -2,7 +2,6 @@ package it.polimi.ingsw.client.view.gui.viewcontrollers;
 
 import it.polimi.ingsw.client.view.gui.ParameterListener;
 import javafx.beans.binding.Bindings;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -24,7 +23,7 @@ public class AskUsernameController implements Initializable {
     ParameterListener parameterListener = ParameterListener.getInstance();
 
     @FXML
-    void getUsernameEvent(ActionEvent event) {
+    void getUsernameEvent() {
         String username = txtFieldUsername.getText();
         parameterListener.setParameter(username);
     }

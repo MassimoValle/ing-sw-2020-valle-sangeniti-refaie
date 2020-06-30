@@ -119,6 +119,7 @@ public class PickGodController implements Initializable {
                     ClientManager.LOGGER.severe(exception.getMessage());
                 }
 
+                assert root != null;
                 Scene scene = new Scene(root);
 
                 newWindow.setTitle("God info");

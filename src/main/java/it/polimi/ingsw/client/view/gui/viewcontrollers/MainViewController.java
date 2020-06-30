@@ -13,7 +13,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -31,6 +33,9 @@ public class MainViewController implements Initializable {
 
     @FXML
     private StackPane boardStackPane;
+
+    @FXML
+    private AnchorPane topLayer;
 
     @FXML
     private VBox vbox1;
@@ -131,11 +136,13 @@ public class MainViewController implements Initializable {
         stage.setWidth(1280);
         stage.setHeight(720);
 
+        topLayer.setPickOnBounds(false);
+
         powerButton.setDisable(true);
 
         boardStackPane.setMinSize(0.0 , 0.0);
 
-        /*int counter = 1;
+        int counter = 1;
         Label playerLabel;
         Label godLabel;
         for (Player player : players){
@@ -144,23 +151,26 @@ public class MainViewController implements Initializable {
                 case 1 -> {
                     playerLabel = (Label) vbox1.getChildren().get(0);
                     playerLabel.setText(player.getPlayerName());
+
                     godLabel = (Label) vbox1.getChildren().get(1);
                     godLabel.getStyleClass().add(player.getPlayerGod().getGodName());
-                    godLabel.setMinSize(300, 300);
+                    godLabel.setMinSize(200, 200);
                 }
                 case 2 -> {
                     playerLabel = (Label) vbox2.getChildren().get(0);
                     playerLabel.setText(player.getPlayerName());
+
                     godLabel = (Label) vbox2.getChildren().get(1);
                     godLabel.getStyleClass().add(player.getPlayerGod().getGodName());
-                    godLabel.setMinSize(300, 300);
+                    godLabel.setMinSize(200, 200);
                 }
                 case 3 -> {
                     playerLabel = (Label) vbox3.getChildren().get(0);
                     playerLabel.setText(player.getPlayerName());
+
                     godLabel = (Label) vbox3.getChildren().get(1);
                     godLabel.getStyleClass().add(player.getPlayerGod().getGodName());
-                    godLabel.setMinSize(300, 300);
+                    godLabel.setMinSize(200, 200);
                 }
                 default -> System.out.println("error");
             }
@@ -169,7 +179,7 @@ public class MainViewController implements Initializable {
 
 
 
-        }*/
+        }
 
         Platform.runLater(this::setupImageView);
     }
