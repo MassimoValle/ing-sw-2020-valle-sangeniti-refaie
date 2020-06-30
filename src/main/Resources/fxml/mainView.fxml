@@ -84,7 +84,7 @@
             </BorderPane>
             <AnchorPane fx:id="topLayer" prefHeight="200.0" prefWidth="200.0" styleClass="PlayerLabel" stylesheets="@../css/mycss.css">
                <children>
-                  <Button fx:id="powerButton" layoutX="80.0" layoutY="249.0" mnemonicParsing="false" onAction="#powerEvent" prefHeight="31.0" prefWidth="200.0" styleClass="PowerButton" stylesheets="@../css/mycss.css" />
+                  <Button fx:id="powerButton" layoutX="80.0" layoutY="181.0" mnemonicParsing="false" onAction="#powerEvent" prefHeight="56.0" prefWidth="223.0" styleClass="PowerButton" stylesheets="@../css/mycss.css" />
                   <VBox fx:id="vbox1" layoutY="520.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
                      <children>
                         <Label />
@@ -101,6 +101,7 @@
                         <Label />
                      </children>
                   </VBox>
+                  <Label fx:id="gamePhase" layoutX="80.0" layoutY="102.0" prefHeight="56.0" prefWidth="223.0" />
                </children>
             </AnchorPane>
          </children>

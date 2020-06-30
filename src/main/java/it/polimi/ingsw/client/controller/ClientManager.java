@@ -295,7 +295,10 @@ public class ClientManager {
     }
 
     private void handlePlayerDisconnected(ServerResponse serverResponse) {
+
         clientView.playerLeftTheGame(serverResponse.getMessageRecipient());
+
+        clientView.closeClient();
 
     }
 

@@ -49,6 +49,9 @@ public class MainViewController implements Initializable {
     @FXML
     private Button powerButton;
 
+    @FXML
+    private Label gamePhase;
+
 
 
     GUImap guiMap = (GUImap) BabyGame.getInstance().getClientMap();
@@ -182,6 +185,12 @@ public class MainViewController implements Initializable {
         }
 
         Platform.runLater(this::setupImageView);
+    }
+
+    public void changePhase(String phase){
+        //Platform.runLater(() -> {
+            gamePhase.getStyleClass().add(phase);
+        //});
     }
 
 

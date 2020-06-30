@@ -1,10 +1,13 @@
 package it.polimi.ingsw.controller.godspowertest;
 
+import it.polimi.ingsw.network.Server;
 import it.polimi.ingsw.server.controller.MasterController;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.player.Position;
 import org.junit.*;
+
+import java.io.IOException;
 
 import static org.junit.Assert.*;
 
@@ -28,7 +31,7 @@ public class DemeterPowerTest {
         game.addPlayer(player1);
         game.addPlayer(player2);
 
-        masterController = new MasterController(game);
+        masterController = new MasterController(game, null);
         masterController.init(player1);
         setupUtility = new SetupGameUtilityClass();
         setupUtility.setup(masterController, 4, 1, true);

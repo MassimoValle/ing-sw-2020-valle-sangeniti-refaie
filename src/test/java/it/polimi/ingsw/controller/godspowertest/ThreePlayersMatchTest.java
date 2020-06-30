@@ -35,7 +35,7 @@ public class ThreePlayersMatchTest {
         game.addPlayer(player2);
         game.addPlayer(player3);
 
-        masterController = new MasterController(game);
+        masterController = new MasterController(game, null);
         masterController.init(player1);
         setupUtility = new SetupGameUtilityClass();
 

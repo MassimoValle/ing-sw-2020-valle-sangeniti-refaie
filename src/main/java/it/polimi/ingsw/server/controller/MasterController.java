@@ -17,14 +17,16 @@ public class MasterController {
 
 
     private final Game gameInstance;
+    private final Server server;
 
 
 
 
 
-    public MasterController(Game gameInstance){
+    public MasterController(Game gameInstance, Server server){
 
         this.gameInstance = gameInstance;
+        this.server = server;
 
     }
 
@@ -64,7 +66,7 @@ public class MasterController {
 
     public void gameOver() {
 
-        Server.cleanLobby(this);
+        server.cleanLobby(this);
 
     }
 

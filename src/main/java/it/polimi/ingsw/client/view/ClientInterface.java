@@ -117,6 +117,7 @@ public interface ClientInterface {
     void someoneHasLost(String loser);
 
     void playerLeftTheGame(String user);
+    void closeClient();
 
     void youLose(String winner);
 

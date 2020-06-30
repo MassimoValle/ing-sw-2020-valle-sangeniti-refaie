@@ -19,6 +19,7 @@ public class Connection extends Observable<Message> implements Runnable {
     private ObjectOutputStream socketOut;
 
     private boolean active;
+    private String name;
 
     private final Object outLock = new Object();
     private final Object inLock = new Object();
@@ -92,10 +93,10 @@ public class Connection extends Observable<Message> implements Runnable {
         closeConnection();
         Server.LOGGER.info("Deregistering client...");
 
-        Server.clientConnectionException(this);
+        server.clientConnectionException(this);
 
-        Server.LOGGER.info("Done!");
         Thread.currentThread().interrupt();
+        Server.LOGGER.info("Done!");
     }
 
 
@@ -123,5 +124,12 @@ public class Connection extends Observable<Message> implements Runnable {
     }
 
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
 

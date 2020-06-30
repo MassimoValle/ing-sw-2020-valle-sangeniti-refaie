@@ -33,7 +33,7 @@ public class AtlasPowerTest {
         game.addPlayer(player1);
         game.addPlayer(player2);
 
-        masterController = new MasterController(game);
+        masterController = new MasterController(game, null);
         masterController.init(player1);
         setupUtility = new SetupGameUtilityClass();
         setupUtility.setup(masterController, 3, 1, true);

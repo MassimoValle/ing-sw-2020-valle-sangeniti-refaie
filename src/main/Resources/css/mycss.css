@@ -120,6 +120,12 @@
   -fx-background-color: transparent;
 }
 
+
+
+
+/* #########
+    GODS */
+
 .Apollo{
   -fx-background-image: url("../imgs/godspng/apollo.png");
   -fx-border-insets: 3px;
@@ -231,6 +237,52 @@
   -fx-background-repeat: stretch;
   -fx-background-color: transparent;
 }
+
+/* #########
+    GAME PHASE */
+
+.SelectWorker{
+  -fx-background-image: url("../imgs/textBox/GamePhase/selectWorker.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.MoveWorker{
+  -fx-background-image: url("../imgs/textBox/GamePhase/moveWorker.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.BuildWorker{
+  -fx-background-image: url("../imgs/textBox/GamePhase/build.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.NotYourTurn{
+  -fx-background-image: url("../imgs/textBox/GamePhase/notYourTurn.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+.MultipleAction{
+  -fx-background-image: url("../imgs/textBox/GamePhase/gameState.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
+
+
+
 
 .PlayerLabel{
   -fx-font-family: "Comic Sans MS";

@@ -20,7 +20,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
+import java.io.EOFException;
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -292,6 +295,8 @@ public class GuiController extends ClientView {
     @Override
     public int selectWorker(List<Position> workersPositions) {
 
+        controller.changePhase("SelectWorker");
+
         ParameterListener.setToNull();
         boolean again = false;
 
@@ -358,6 +363,8 @@ public class GuiController extends ClientView {
 
     @Override
     public PossibleClientAction choseActionToPerform(List<PossibleClientAction> possibleActions) {
+
+        controller.changePhase("MultipleAction");
 
         ParameterListener.setToNull();
 
@@ -432,6 +439,8 @@ public class GuiController extends ClientView {
 
     @Override
     public Position moveWorker(List<Position> nearlyPosValid) {
+
+        controller.changePhase("MoveWorker");
 
         //controller.enablePosition(nearlyPosValid);
 
@@ -509,6 +518,8 @@ public class GuiController extends ClientView {
 
     @Override
     public Position build(ArrayList<Position> possiblePosToBuild) {
+
+        controller.changePhase("BuildWorker");
 
         //controller.enablePosition(possiblePosToBuild);
 
@@ -637,6 +648,8 @@ public class GuiController extends ClientView {
     @Override
     public void endTurn() {
 
+        controller.changePhase("NotYourTurn");
+
         selectedWorker.deselectedOnGUI();
         selectedWorker = null;
         controller.disablePowerButton();
@@ -761,7 +774,19 @@ public class GuiController extends ClientView {
 
     @Override
     public void playerLeftTheGame(String user) {
-        //TODO
+        
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(ERROR_DIALOG);
+            alert.setHeaderText(user + " left the game\nRestart the client to play again");
+
+            alert.showAndWait();
+        });
+    }
+
+    @Override
+    public void closeClient() {
+
     }
 
     @Override
@@ -801,9 +826,48 @@ public class GuiController extends ClientView {
 
         try {
             client.run();
-        } catch (IOException ex) {
-            //Logger.getLogger(LOGGER).log(Level.SEVERE, "Ops, app just crashed", ex);
+        } catch (EOFException ex) {
+            //this is thrown when the end of the stream is reached
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(ERROR_DIALOG);
+                alert.setHeaderText("Server disconnected while sending message to it!");
+
+                alert.showAndWait();
+            });
+
+        } catch (UnknownHostException ex) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(ERROR_DIALOG);
+                alert.setHeaderText("Unknown host, please insert again!");
+
+                alert.showAndWait();
+            });
+
             run();
+
+        } catch (ConnectException ex) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(ERROR_DIALOG);
+                alert.setHeaderText("Server refused to connect");
+
+                alert.showAndWait();
+            });
+
+            run();
+
+        } catch (IOException ex) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(ERROR_DIALOG);
+                alert.setHeaderText("Error server side");
+
+                alert.showAndWait();
+            });
+            ClientManager.LOGGER.severe(ex.getMessage());
+            Thread.currentThread().interrupt();
         }
     }
 }

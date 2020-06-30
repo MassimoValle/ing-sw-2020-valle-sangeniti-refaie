@@ -54,7 +54,7 @@ public class SetUpGameManagerTest {
         gods.add(new God("apollo", "desc", new ApolloPower("Your move", "desc", game.getGameMap()), null));
 
 
-        masterController = new MasterController(game);
+        masterController = new MasterController(game, null);
         masterController.init(activePlayer);
         setUpGameManager = masterController._getSetUpGameController();
 

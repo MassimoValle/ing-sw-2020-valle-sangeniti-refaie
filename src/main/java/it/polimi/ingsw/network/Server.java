@@ -43,7 +43,7 @@ public class Server {
     }
 
     //Deregister connection
-    private static synchronized void deregisterConnection(Connection c){
+    private synchronized void deregisterConnection(Connection c){
 
         connections.remove(c);
 
@@ -52,17 +52,25 @@ public class Server {
 
 
     // if there is an exception by client connection
-    public static void clientConnectionException(Connection c) {
+    public void clientConnectionException(Connection c) {
 
         //TODO da scollegare anche gli altri client in gioco facenti parte della stessa partita, max, ancora, roba tua con ste cazzo di hash map
 
-        if (connections.contains(c))
+        if (connections.contains(c) && !rooms.containsKey(searchConnectionInRooms(c))) {
+
+            clientsConnected.remove(c.getName());
             deregisterConnection(c);
+
+            Map.Entry<String, Connection> entry = clientsConnected.entrySet().iterator().next();
+            Connection value = entry.getValue();
+            askLobbySize(value);
+            return;
+        }
+        else deregisterConnection(c);
 
         MasterController masterController = searchConnectionInRooms(c);
 
-        //TODO da prendere dalla hasmap, ma non ne sono capace, grazie max
-        String userDisconnected = "";
+        String userDisconnected = c.getName();
 
         assert masterController != null;
         masterController.clientConnectionException(userDisconnected);
@@ -132,7 +140,7 @@ public class Server {
         if(clientsConnected.size() >= tempLobbySize){
 
             Game game = new Game();
-            MasterController masterController = new MasterController(game);
+            MasterController masterController = new MasterController(game, this);
             Player activePlayer = null;
 
             int loop = 0;
@@ -180,12 +188,12 @@ public class Server {
 
 
     // game over
-    public static void cleanLobby(MasterController masterController){
+    public void cleanLobby(MasterController masterController){
 
         removeConnectionInRooms(masterController);
     }
 
-    private static void removeConnectionInRooms(MasterController masterController){
+    private void removeConnectionInRooms(MasterController masterController){
 
         Map<String, Connection> room = rooms.get(masterController);
 
@@ -268,6 +276,7 @@ public class Server {
     // Register client in clientsConnected
     public synchronized void registerClient(String username, Connection connection){
 
+        connection.setName(username);
         clientsConnected.put(username, connection);
 
         Server.LOGGER.info("Registered client:  " + username);

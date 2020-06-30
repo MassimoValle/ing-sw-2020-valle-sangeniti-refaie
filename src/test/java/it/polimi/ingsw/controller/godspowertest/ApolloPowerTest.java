@@ -34,7 +34,7 @@ public class ApolloPowerTest {
         game.addPlayer(player1);
         game.addPlayer(player2);
 
-        masterController = new MasterController(game);
+        masterController = new MasterController(game, null);
         masterController.init(player1);
         setupUtility = new SetupGameUtilityClass();
 

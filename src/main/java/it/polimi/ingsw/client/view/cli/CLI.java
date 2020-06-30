@@ -13,10 +13,7 @@ import it.polimi.ingsw.server.model.map.GameMap;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.player.Position;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.EOFException;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.ConnectException;
@@ -41,7 +38,7 @@ public class CLI extends ClientView {
     @Override
     public String askIpAddress() {
         consoleOut.println("\nLet's get started!\n");
-        consoleOut.println("Please, enter the SERVER IP address (just leave blank for 'localhost')" );
+        consoleOut.print("Please, enter the SERVER IP address (just leave blank for 'localhost'): " );
 
         String ip = consoleIn.nextLine();
 
@@ -63,8 +60,6 @@ public class CLI extends ClientView {
                 username = consoleIn.nextLine();
             }
         } while (username == null);
-
-        consoleOut.println("Invalid username, please insert a valid username: " + username);
 
         return username;
     }
@@ -132,7 +127,13 @@ public class CLI extends ClientView {
                     break;
                 }
 
-                int n = Integer.parseInt(entered);
+                int n;
+                try {
+                    n = Integer.parseInt(entered);
+                }catch (NumberFormatException e){
+                    break;
+                }
+
 
                 if (n < 1 || n >= 15) {
                     consoleOut.println("Index not valid, please insert a valid index");
@@ -243,51 +244,39 @@ public class CLI extends ClientView {
         int row = -1;
         int col = -1;
 
-        do {
-            consoleOut.print("row: ");
+        row = getCoordinate("row");
 
-            if (consoleIn.hasNextLine()) {
-                String entered = consoleIn.nextLine();
-
-                try {
-                    row = Integer.parseInt(entered);
-
-                    if (row < 0 || row > 4) {
-                        consoleOut.println("You must select one of the insert a number between 0 and 4");
-                    }
-
-                } catch (NumberFormatException e) {
-                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
-                }
-
-                consoleOut.println();
-            }
-
-        }while ( row < 0 || row > 4);
-
-        do {
-            consoleOut.print("col: ");
-
-            if (consoleIn.hasNextLine()) {
-                String entered = consoleIn.nextLine();
-
-                try {
-                    col = Integer.parseInt(entered);
-
-                    if (col < 0 || col > 4) {
-                        consoleOut.println("You must select one of the insert a number between 0 and 4");
-                    }
-
-                } catch (NumberFormatException e) {
-                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
-                }
-
-                consoleOut.println();
-            }
-
-        }while ( col < 0 || col > 4);
+        col = getCoordinate("col");
 
         return new Position(row, col);
+    }
+
+    private int getCoordinate(String s){
+
+        int par = -1;
+        do {
+            consoleOut.print(s + ": ");
+
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    par = Integer.parseInt(entered);
+
+                    if (par < 0 || par > 4) {
+                        consoleOut.println("You must select one of the insert a number between 0 and 4");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
+                }
+
+                consoleOut.println();
+            }
+
+        }while ( par < 0 || par > 4);
+
+        return par;
     }
 
 
@@ -429,49 +418,9 @@ public class CLI extends ClientView {
         int row = -1;
         int col = -1;
 
-        do {
-            consoleOut.print("row: ");
+        row = getCoordinate("row");
 
-            if (consoleIn.hasNextLine()) {
-                String entered = consoleIn.nextLine();
-
-                try {
-                    row = Integer.parseInt(entered);
-
-                    if (row < 0 || row > 4) {
-                        consoleOut.println("You must select one of the insert a number between 0 and 4");
-                    }
-
-                } catch (NumberFormatException e) {
-                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
-                }
-
-                consoleOut.println();
-            }
-
-        }while ( row < 0 || row > 4);
-
-        do {
-            consoleOut.print("col: ");
-
-            if (consoleIn.hasNextLine()) {
-                String entered = consoleIn.nextLine();
-
-                try {
-                    col = Integer.parseInt(entered);
-
-                    if (col < 0 || col > 4) {
-                        consoleOut.println("You must select one of the insert a number between 0 and 4");
-                    }
-
-                } catch (NumberFormatException e) {
-                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
-                }
-
-                consoleOut.println();
-            }
-
-        }while ( col < 0 || col > 4);
+        col = getCoordinate("col");
 
         p = new Position(row, col);
 
@@ -562,49 +511,9 @@ public class CLI extends ClientView {
         int row = -1;
         int col = -1;
 
-        do {
-            consoleOut.print("row: ");
+        row = getCoordinate("row");
 
-            if (consoleIn.hasNextLine()) {
-                String entered = consoleIn.nextLine();
-
-                try {
-                    row = Integer.parseInt(entered);
-
-                    if (row < 0 || row > 4) {
-                        consoleOut.println("You must select one of the insert a number between 0 and 4");
-                    }
-
-                } catch (NumberFormatException e) {
-                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
-                }
-
-                consoleOut.println();
-            }
-
-        }while ( row < 0 || row > 4);
-
-        do {
-            consoleOut.print("col: ");
-
-            if (consoleIn.hasNextLine()) {
-                String entered = consoleIn.nextLine();
-
-                try {
-                    col = Integer.parseInt(entered);
-
-                    if (col < 0 || col > 4) {
-                        consoleOut.println("You must select one of the insert a number between 0 and 4");
-                    }
-
-                } catch (NumberFormatException e) {
-                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
-                }
-
-                consoleOut.println();
-            }
-
-        }while ( col < 0 || col > 4);
+        col = getCoordinate("col");
 
         Position p = new Position(row, col);
 
@@ -825,6 +734,14 @@ public class CLI extends ClientView {
     }
 
     @Override
+    public void closeClient() {
+        consoleOut.println("Press any key to terminate");
+        consoleIn.nextLine();
+        Thread.currentThread().interrupt();
+
+    }
+
+    @Override
     public void debug(ServerResponse serverResponse) {
 
         printMessageFromServer(serverResponse);
@@ -837,18 +754,10 @@ public class CLI extends ClientView {
     }
 
 
-    private void welcomeToSantorini() throws IOException {
+    private void welcomeToSantorini() {
 
         String santorini = "Welcome to Santorini! \nThe most incredible board game ever created!\n\n\nI know it could look like shit but I'm okay with that!";
         consoleOut.println(santorini);
-
-        BufferedImage image = ImageIO.read(new File("/imgs/santorini-logo.png"));
-
-        image.getGraphics().drawLine(1, 1, image.getWidth()-1, image.getHeight()-1);
-        image.getGraphics().drawLine(1, image.getHeight()-1, image.getWidth()-1, 1);
-
-        ImageIO.write(image, "png", new File("/imgs/santorini-logo.png"));
-
 
     }
 
@@ -866,11 +775,7 @@ public class CLI extends ClientView {
     @Override
     public void run() {
 
-        try {
-            welcomeToSantorini();
-        } catch (IOException e) {
-            ClientManager.LOGGER.severe(e.getMessage());
-        }
+        welcomeToSantorini();
 
         String ip = askIpAddress();
 
@@ -884,14 +789,13 @@ public class CLI extends ClientView {
             consoleOut.println("Server disconnected while sending message to it!");
         } catch (UnknownHostException ex) {
             consoleOut.println("Unknown host, please insert again:");
+            run();
         } catch (ConnectException ex) {
             consoleOut.println("Server refused to connect");
         } catch (IOException ex) {
             consoleOut.println("Error server side");
             ClientManager.LOGGER.severe(ex.getMessage());
             Thread.currentThread().interrupt();
-        } finally {
-            run();
         }
     }
 }
