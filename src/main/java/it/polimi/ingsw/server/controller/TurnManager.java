@@ -34,7 +34,6 @@ public class TurnManager {
 
         this.lastActivePlayer = null;
         this.lastActiveWorker = null;
-        //this.activePlayer = null;
         this.activePlayer = players.get(1);
         this.activeWorker = null;
         this.inGamePlayers = new ArrayList<>(players);

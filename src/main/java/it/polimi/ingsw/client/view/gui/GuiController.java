@@ -760,6 +760,11 @@ public class GuiController extends ClientView {
     }
 
     @Override
+    public void playerLeftTheGame(String user) {
+        //TODO
+    }
+
+    @Override
     public void youLose(String winner) {
 
         if(!ENA_POPUP) return;

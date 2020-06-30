@@ -62,7 +62,7 @@ public class SetUpGameManagerTest {
 
 
     @Test
-    public void assignignGod(){
+    public void assigningGod(){
 
         God god = new God("apollo", "desc", new ApolloPower("Your move", "desc", game.getGameMap()), null);
         setUpGameManager.assignGodToPlayer(activePlayer, god);
@@ -114,7 +114,7 @@ public class SetUpGameManagerTest {
     }
 
     @Ignore
-    public void flow_assigningGodRequest(){
+    public void flowAssigningGodRequest(){
         God god = gods.get(idx);
         idx++;
         if(idx == players.size()) idx = 0;
@@ -135,14 +135,14 @@ public class SetUpGameManagerTest {
     public void assigningGodFlow(){
         chosenGodRequest();
 
-        flow_assigningGodRequest();
-        flow_assigningGodRequest();
-        flow_assigningGodRequest();
+        flowAssigningGodRequest();
+        flowAssigningGodRequest();
+        flowAssigningGodRequest();
 
     }
 
     @Ignore
-    public void flow_placingWorkerRequest(){
+    public void flowPlacingWorkerRequest(){
         setUpGameManager.setSetupGameState(PossibleGameState.FILLING_BOARD);
         List<Worker> workers = players.get(idx).getPlayerWorkers();
         activePlayer = players.get(idx);
@@ -161,17 +161,17 @@ public class SetUpGameManagerTest {
         idx++;
     }
 
-    //da cambaire i god dei player
+
     public void placingWorkerFlow(){
 
         // player1
-        flow_placingWorkerRequest();
+        flowPlacingWorkerRequest();
 
         //player2
-        flow_placingWorkerRequest();
+        flowPlacingWorkerRequest();
 
         //player3
-        flow_placingWorkerRequest();
+        flowPlacingWorkerRequest();
 
     }
 

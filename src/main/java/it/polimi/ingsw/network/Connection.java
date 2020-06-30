@@ -67,6 +67,7 @@ public class Connection extends Observable<Message> implements Runnable {
             } catch (IOException ex) {
                 Server.LOGGER.severe(ex.getMessage());
                 closeConnection();
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -90,8 +91,11 @@ public class Connection extends Observable<Message> implements Runnable {
     private void close(){
         closeConnection();
         Server.LOGGER.info("Deregistering client...");
+
         Server.clientConnectionException(this);
+
         Server.LOGGER.info("Done!");
+        Thread.currentThread().interrupt();
     }
 
 
@@ -112,6 +116,7 @@ public class Connection extends Observable<Message> implements Runnable {
                 }
             } catch (IOException | ClassNotFoundException e) {
                 Server.LOGGER.severe(e.getMessage());
+
                 close();
             }
         }

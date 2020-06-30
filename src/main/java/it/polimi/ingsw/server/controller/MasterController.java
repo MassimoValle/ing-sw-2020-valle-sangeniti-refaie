@@ -1,6 +1,8 @@
 package it.polimi.ingsw.server.controller;
 
 import it.polimi.ingsw.network.Server;
+import it.polimi.ingsw.network.message.Enum.Dispatcher;
+import it.polimi.ingsw.network.message.Enum.ResponseContent;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.network.message.clientrequests.Request;
@@ -11,6 +13,8 @@ public class MasterController {
     private SetUpGameManager setUpGameManager;
     private TurnManager turnManager;
     private ActionManager actionManager;
+    private OutgoingMessageManager messageManager;
+
 
     private final Game gameInstance;
 
@@ -26,11 +30,14 @@ public class MasterController {
 
     public void init(Player activePlayer) {
 
-        this.setUpGameManager = new SetUpGameManager(gameInstance, activePlayer);
-
         this.turnManager = new TurnManager(gameInstance.getPlayers());
 
-        this.actionManager = new ActionManager(gameInstance, turnManager);
+        this.messageManager = new OutgoingMessageManager(gameInstance, turnManager);
+
+        this.setUpGameManager = new SetUpGameManager(gameInstance, activePlayer, messageManager);
+
+
+        this.actionManager = new ActionManager(gameInstance, turnManager, messageManager);
 
     }
 
@@ -46,8 +53,11 @@ public class MasterController {
         actionManager.startNextRound(true);
     }
 
-    public void clientConnectionException() {
-        // TODO
+    public void clientConnectionException(String userDisconnected) {
+
+        Player playerDisconnected = gameInstance.searchPlayerByName(userDisconnected);
+
+        messageManager.buildNegativeResponse(playerDisconnected, ResponseContent.DISCONNECT, "");
 
         gameOver();
     }
@@ -68,13 +78,15 @@ public class MasterController {
      */
     public void dispatcher(Request request){
 
-        switch (request.getMessageDispatcher()) {
-            case SETUP_GAME -> {
-                if(setUpGameManager.handleMessage(request)) startFirstRound();
-            }
-            case TURN -> actionManager.handleRequest(request);
-        }
+        if (request.getMessageDispatcher() == Dispatcher.SETUP_GAME) {
 
+            if(setUpGameManager.handleMessage(request))
+                startFirstRound();
+
+        } else if (request.getMessageDispatcher() == Dispatcher.TURN) {
+
+            actionManager.handleRequest(request);
+        }
     }
 
 

@@ -41,12 +41,12 @@ public class SetUpGameManager {
 
 
 
-    public SetUpGameManager(Game game, Player activePlayer){
+    public SetUpGameManager(Game game, Player activePlayer, OutgoingMessageManager messageManager){
 
         this.setupGameState = PossibleGameState.GAME_INIT;
 
         this.gameInstance = game;
-        this.outgoingMessageManager = new OutgoingMessageManager(gameInstance, null);
+        this.outgoingMessageManager = messageManager;
         this.activePlayer = activePlayer;
         currentPlayer = gameInstance.getPlayers().indexOf(activePlayer);
 

@@ -13,7 +13,10 @@ import it.polimi.ingsw.server.model.map.GameMap;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.player.Position;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.EOFException;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.ConnectException;
@@ -37,7 +40,8 @@ public class CLI extends ClientView {
 
     @Override
     public String askIpAddress() {
-        consoleOut.print("IP Address: ");
+        consoleOut.println("\nLet's get started!\n");
+        consoleOut.println("Please, enter the SERVER IP address (just leave blank for 'localhost')" );
 
         String ip = consoleIn.nextLine();
 
@@ -60,7 +64,7 @@ public class CLI extends ClientView {
             }
         } while (username == null);
 
-        consoleOut.println("YOUR USERNAME: " + username);
+        consoleOut.println("Invalid username, please insert a valid username: " + username);
 
         return username;
     }
@@ -69,7 +73,8 @@ public class CLI extends ClientView {
     public int askNumbOfPlayer() {
         int input;
         do{
-            consoleOut.print("lobby size [MIN: 2, MAX: 3]: ");
+            consoleOut.println("How many opponents do you want?");
+            consoleOut.print("[MIN: 2, MAX: 3]: ");
             input = Integer.parseInt(consoleIn.nextLine());
         }while (input != 2 && input != 3);
 
@@ -801,14 +806,22 @@ public class CLI extends ClientView {
         consoleOut.println("\t#############");
         consoleOut.println("\t\tYOU LOSE");
         consoleOut.println("\t#############");
+        consoleOut.println("Restart the client to play again");
     }
 
     @Override
     public void someoneHasLost(String loser) {
         consoleOut.println("#############");
-        consoleOut.println(loser + "cannot complete a full round, he is out of the game");
+        consoleOut.println(loser + " cannot complete a full round, he is out of the game");
         consoleOut.println("\t#############");
 
+    }
+
+    @Override
+    public void playerLeftTheGame(String user) {
+        consoleOut.println("#############");
+        consoleOut.println(user + " left the game \nRestart the client to play again");
+        consoleOut.println("\t#############");
     }
 
     @Override
@@ -821,6 +834,22 @@ public class CLI extends ClientView {
     @Override
     public void showMap(GameMap clientMap) {
         clientMap.printBoard();
+    }
+
+
+    private void welcomeToSantorini() throws IOException {
+
+        String santorini = "Welcome to Santorini! \nThe most incredible board game ever created!\n\n\nI know it could look like shit but I'm okay with that!";
+        consoleOut.println(santorini);
+
+        BufferedImage image = ImageIO.read(new File("/imgs/santorini-logo.png"));
+
+        image.getGraphics().drawLine(1, 1, image.getWidth()-1, image.getHeight()-1);
+        image.getGraphics().drawLine(1, image.getHeight()-1, image.getWidth()-1, 1);
+
+        ImageIO.write(image, "png", new File("/imgs/santorini-logo.png"));
+
+
     }
 
     // test
@@ -836,6 +865,13 @@ public class CLI extends ClientView {
 
     @Override
     public void run() {
+
+        try {
+            welcomeToSantorini();
+        } catch (IOException e) {
+            ClientManager.LOGGER.severe(e.getMessage());
+        }
+
         String ip = askIpAddress();
 
 

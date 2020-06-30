@@ -54,13 +54,18 @@ public class Server {
     // if there is an exception by client connection
     public static void clientConnectionException(Connection c) {
 
+        //TODO da scollegare anche gli altri client in gioco facenti parte della stessa partita, max, ancora, roba tua con ste cazzo di hash map
+
         if (connections.contains(c))
             deregisterConnection(c);
 
         MasterController masterController = searchConnectionInRooms(c);
 
+        //TODO da prendere dalla hasmap, ma non ne sono capace, grazie max
+        String userDisconnected = "";
+
         assert masterController != null;
-        masterController.clientConnectionException();
+        masterController.clientConnectionException(userDisconnected);
 
     }
 

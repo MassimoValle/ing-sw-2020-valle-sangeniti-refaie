@@ -32,10 +32,10 @@ public class ActionManager {
     private Request currentRequest;                                 //currentRequest by the turnOwner
     private Player winner;                                          //this is set when during someone else's turn one player wins
 
-    public ActionManager(Game game, TurnManager turnManager) {
+    public ActionManager(Game game, TurnManager turnManager, OutgoingMessageManager messageManager) {
         this.gameInstance = game;
         this.turnManager = turnManager;
-        this.outgoingMessageManager = new OutgoingMessageManager(gameInstance, turnManager);
+        this.outgoingMessageManager = messageManager;
         this.gameState = PossibleGameState.START_ROUND;
     }
 

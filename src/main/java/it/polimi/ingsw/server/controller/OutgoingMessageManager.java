@@ -27,7 +27,7 @@ public class OutgoingMessageManager {
 
 
 
-    // RESPONSE
+
     public OutgoingMessageManager(Game gameInstance, TurnManager turnManager){
 
         this.gameInstance = gameInstance;
@@ -130,6 +130,12 @@ public class OutgoingMessageManager {
                     gameInstance.putInChanges(player,
                             new EndTurnServerResponse(status, gameManagerSays)
                     );
+
+            case DISCONNECT ->
+                    gameInstance.putInChanges(player,
+                            new PlayerDisconnectedResponse(status, "")
+                    );
+
             default ->
                     gameInstance.putInChanges(player,
                             new ServerResponse(content, status, gameManagerSays)

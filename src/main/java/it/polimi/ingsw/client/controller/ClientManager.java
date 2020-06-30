@@ -244,6 +244,9 @@ public class ClientManager {
         if (responseContent == ResponseContent.PLAYER_HAS_LOST && !myTurn) {
             someoneHasLost((LostServerResponse) serverResponse);
             return;
+        } else if (responseContent == ResponseContent.DISCONNECT) {
+            handlePlayerDisconnected(serverResponse);
+            return;
         }
 
         if (!myTurn && responseContent != ResponseContent.LOGIN && responseContent != ResponseContent.NUM_PLAYER) {
@@ -289,6 +292,11 @@ public class ClientManager {
                 }
             }
         }
+    }
+
+    private void handlePlayerDisconnected(ServerResponse serverResponse) {
+        clientView.playerLeftTheGame(serverResponse.getMessageRecipient());
+
     }
 
 

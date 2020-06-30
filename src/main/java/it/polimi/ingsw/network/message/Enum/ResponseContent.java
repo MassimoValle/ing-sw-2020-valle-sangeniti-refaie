@@ -32,7 +32,8 @@ public enum ResponseContent {
     PLAYER_HAS_LOST ("The player has lost"),
 
     CHECK ("Not sure where this should be really used"),
-    GAME_SERIALIZED ("...");
+
+    DISCONNECT ("Whether a client gets disconnected");
 
     private final String description;
     private final RequestContent follows;
