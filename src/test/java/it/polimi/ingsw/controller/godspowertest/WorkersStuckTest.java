@@ -1,11 +1,11 @@
 package it.polimi.ingsw.controller.godspowertest;
 
 import it.polimi.ingsw.exceptions.DomePresentException;
-import it.polimi.ingsw.server.controller.Enum.PossibleGameState;
+import it.polimi.ingsw.server.controller.PossibleGameState;
 import it.polimi.ingsw.server.controller.MasterController;
 import it.polimi.ingsw.server.model.Game;
-import it.polimi.ingsw.server.model.God.GodsPower.ApolloPower;
-import it.polimi.ingsw.server.model.Player.Player;
+import it.polimi.ingsw.server.model.god.godspower.ApolloPower;
+import it.polimi.ingsw.server.model.player.Player;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,12 +61,19 @@ public class WorkersStuckTest {
         setupUtility.endMove(pl2);
         setupUtility.build(pl2, 2, 0);
 
+        assertTrue(player1.getPlayerGod().getGodPower().isWorkerStuck(setupUtility.w1pl1));
+        assertFalse(player1.getPlayerGod().getGodPower().isWorkerStuck(setupUtility.w2pl1));
+
+
+
         //chiudo l'altro worker, adesso sono entrambi bloccati
         setupUtility.addDome(0, 4);
         setupUtility.addDome(0, 3);
         setupUtility.addDome(1, 3);
         setupUtility.addDome(2, 3);
         setupUtility.addDome(2, 4);
+
+        assertTrue(player1.getPlayerGod().getGodPower().isWorkerStuck(setupUtility.w2pl1));
 
         setupUtility.endTurn(pl2);
 

@@ -11,7 +11,7 @@ import it.polimi.ingsw.network.message.Enum.MessageStatus;
 public class Request extends Message {
 
     private final Dispatcher messageDispatcher;
-    private RequestContent requestContent;
+    private final RequestContent requestContent;
 
     public Request(String messageSender, Dispatcher messageDispatcher, RequestContent requestContent, MessageStatus messageStatus) {
         super(messageSender, messageStatus);

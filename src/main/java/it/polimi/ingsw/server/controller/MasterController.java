@@ -2,7 +2,7 @@ package it.polimi.ingsw.server.controller;
 
 import it.polimi.ingsw.network.Server;
 import it.polimi.ingsw.server.model.Game;
-import it.polimi.ingsw.server.model.Player.Player;
+import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.network.message.clientrequests.Request;
 
 

@@ -29,7 +29,7 @@ public class Connection extends Observable<Message> implements Runnable {
         this.server = server;
         this.active = true;
 
-        System.out.println("Connessione stabilita con un client");
+        Server.LOGGER.info("Connessione stabilita con un client");
 
         try {
             synchronized (inLock) {
@@ -40,7 +40,7 @@ public class Connection extends Observable<Message> implements Runnable {
                 this.socketOut = new ObjectOutputStream(socket.getOutputStream());
             }
         } catch (IOException e) {
-            System.out.println(e.toString());
+            Server.LOGGER.severe(e.getMessage());
         }
 
     }
@@ -65,7 +65,7 @@ public class Connection extends Observable<Message> implements Runnable {
                     socketOut.flush();
                 }
             } catch (IOException ex) {
-                ex.printStackTrace();
+                Server.LOGGER.severe(ex.getMessage());
                 closeConnection();
             }
         }
@@ -79,7 +79,7 @@ public class Connection extends Observable<Message> implements Runnable {
             try {
                 socket.close();
             } catch (IOException e){
-                e.printStackTrace();
+                Server.LOGGER.severe(e.getMessage());
             }
 
             active = false;
@@ -89,9 +89,9 @@ public class Connection extends Observable<Message> implements Runnable {
 
     private void close(){
         closeConnection();
-        System.out.println("Deregistering client...");
+        Server.LOGGER.info("Deregistering client...");
         Server.clientConnectionException(this);
-        System.out.println("Done!");
+        Server.LOGGER.info("Done!");
     }
 
 
@@ -111,7 +111,7 @@ public class Connection extends Observable<Message> implements Runnable {
                     server.handleMessage(message, this);
                 }
             } catch (IOException | ClassNotFoundException e) {
-                System.err.println(e.getMessage());
+                Server.LOGGER.severe(e.getMessage());
                 close();
             }
         }

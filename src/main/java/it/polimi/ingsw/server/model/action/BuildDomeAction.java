@@ -1,7 +1,8 @@
 package it.polimi.ingsw.server.model.action;
 
 import it.polimi.ingsw.exceptions.DomePresentException;
-import it.polimi.ingsw.server.model.Map.Square;
+import it.polimi.ingsw.network.Server;
+import it.polimi.ingsw.server.model.map.Square;
 
 
 /**
@@ -22,7 +23,8 @@ public class BuildDomeAction extends BuildAction{
         try {
             squareWhereToBuildOn.addBlock(true);
         } catch (DomePresentException e) {
-            e.printStackTrace();
+            Server.LOGGER.severe("Misalignment GameMap, build hasn't been done");
+            Thread.currentThread().interrupt();
         }
 
     }

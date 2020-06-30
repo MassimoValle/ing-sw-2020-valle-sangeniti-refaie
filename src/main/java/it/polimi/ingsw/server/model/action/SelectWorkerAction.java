@@ -1,9 +1,9 @@
 package it.polimi.ingsw.server.model.action;
 
-import it.polimi.ingsw.server.model.God.GodsPower.Power;
-import it.polimi.ingsw.server.model.Map.GameMap;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Worker;
+import it.polimi.ingsw.server.model.god.godspower.Power;
+import it.polimi.ingsw.server.model.map.GameMap;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Worker;
 
 
 /**
@@ -34,7 +34,6 @@ public class SelectWorkerAction implements Action{
     /**
      *  Set the {@link Worker#isSelected()} true
      *
-     * @return always true
      */
     @Override
     public void doAction() {

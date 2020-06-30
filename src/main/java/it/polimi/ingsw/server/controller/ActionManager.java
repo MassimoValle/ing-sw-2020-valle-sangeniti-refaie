@@ -3,19 +3,18 @@ package it.polimi.ingsw.server.controller;
 import it.polimi.ingsw.network.message.Enum.RequestContent;
 import it.polimi.ingsw.network.message.Enum.ServerRequestContent;
 import it.polimi.ingsw.network.message.Enum.UpdateType;
-import it.polimi.ingsw.network.message.Server.ServerRequests.StartTurnServerRequest;
-import it.polimi.ingsw.network.message.Server.ServerResponse.LostServerResponse;
-import it.polimi.ingsw.network.message.Server.ServerResponse.WonServerResponse;
-import it.polimi.ingsw.server.controller.Enum.PossibleGameState;
+import it.polimi.ingsw.network.message.server.serverrequests.StartTurnServerRequest;
+import it.polimi.ingsw.network.message.server.serverresponse.LostServerResponse;
+import it.polimi.ingsw.network.message.server.serverresponse.WonServerResponse;
 import it.polimi.ingsw.server.model.action.*;
 import it.polimi.ingsw.server.model.Game;
-import it.polimi.ingsw.server.model.God.God;
-import it.polimi.ingsw.server.model.God.GodsPower.Power;
-import it.polimi.ingsw.server.model.Map.Square;
+import it.polimi.ingsw.server.model.god.God;
+import it.polimi.ingsw.server.model.god.godspower.Power;
+import it.polimi.ingsw.server.model.map.Square;
 import it.polimi.ingsw.server.model.Outcome;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Position;
-import it.polimi.ingsw.server.model.Player.Worker;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Position;
+import it.polimi.ingsw.server.model.player.Worker;
 import it.polimi.ingsw.network.message.Enum.ResponseContent;
 import it.polimi.ingsw.network.message.clientrequests.*;
 
@@ -420,9 +419,9 @@ public class ActionManager {
 
             case PLAYER_TURN_ENDING -> startNextRound(false);
 
-            default ->
-                    // will never be executed
-                    doNothing();
+            default -> {
+                // will never be executed
+            }
         }
     }
 

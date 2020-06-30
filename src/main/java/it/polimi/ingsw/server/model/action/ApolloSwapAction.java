@@ -1,10 +1,10 @@
 package it.polimi.ingsw.server.model.action;
 
-import it.polimi.ingsw.server.model.God.GodsPower.ApolloPower;
-import it.polimi.ingsw.server.model.Map.GameMap;
-import it.polimi.ingsw.server.model.Map.Square;
-import it.polimi.ingsw.server.model.Player.Position;
-import it.polimi.ingsw.server.model.Player.Worker;
+import it.polimi.ingsw.server.model.god.godspower.ApolloPower;
+import it.polimi.ingsw.server.model.map.GameMap;
+import it.polimi.ingsw.server.model.map.Square;
+import it.polimi.ingsw.server.model.player.Position;
+import it.polimi.ingsw.server.model.player.Worker;
 
 import java.util.ArrayList;
 

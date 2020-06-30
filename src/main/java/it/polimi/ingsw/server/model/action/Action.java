@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.model.action;
 
 
-import it.polimi.ingsw.server.model.Map.GameMap;
+import it.polimi.ingsw.server.model.map.GameMap;
 
 /**
  * Every action performed by the player that alter the Model has to implements this interface

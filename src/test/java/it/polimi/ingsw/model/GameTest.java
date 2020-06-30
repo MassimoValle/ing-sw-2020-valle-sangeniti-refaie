@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.server.model.Game;
-import it.polimi.ingsw.server.model.God.God;
-import it.polimi.ingsw.server.model.Player.Player;
+import it.polimi.ingsw.server.model.god.God;
+import it.polimi.ingsw.server.model.player.Player;
 import org.junit.Before;
 import org.junit.Test;
 

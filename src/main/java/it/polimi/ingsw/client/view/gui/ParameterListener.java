@@ -14,10 +14,6 @@ public class ParameterListener {
     }
 
 
-    public ParameterListener(){
-        parameter = null;
-    }
-
     public static synchronized Object getParameter() {
         return parameter;
     }
@@ -27,7 +23,7 @@ public class ParameterListener {
             this.notifyAll();
     }
 
-    public void setToNull(){
+    public static synchronized void setToNull(){
         parameter = null;
     }
 }

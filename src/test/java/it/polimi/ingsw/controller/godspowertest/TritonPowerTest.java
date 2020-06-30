@@ -5,8 +5,8 @@ import it.polimi.ingsw.network.message.clientrequests.*;
 import it.polimi.ingsw.server.controller.MasterController;
 import it.polimi.ingsw.server.model.action.ActionOutcome;
 import it.polimi.ingsw.server.model.Game;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Position;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Position;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -158,6 +158,8 @@ public class TritonPowerTest {
         masterController.dispatcher(
                 new EndMoveRequest(pl2)
         );
+
+        assertEquals(ActionOutcome.DONE, setupUtility.getOutcome());
 
         masterController.dispatcher(
                 new BuildRequest(pl2, new Position(0,4))

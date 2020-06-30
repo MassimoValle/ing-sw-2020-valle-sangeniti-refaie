@@ -1,10 +1,10 @@
 package it.polimi.ingsw.model.Map;
 
 import it.polimi.ingsw.exceptions.DomePresentException;
-import it.polimi.ingsw.server.model.Map.GameMap;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Position;
-import it.polimi.ingsw.server.model.Player.Worker;
+import it.polimi.ingsw.server.model.map.GameMap;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Position;
+import it.polimi.ingsw.server.model.player.Worker;
 import org.junit.Before;
 import org.junit.Test;
 

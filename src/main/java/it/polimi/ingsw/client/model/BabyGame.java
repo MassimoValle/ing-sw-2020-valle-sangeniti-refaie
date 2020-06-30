@@ -1,14 +1,14 @@
 package it.polimi.ingsw.client.model;
 
 import it.polimi.ingsw.client.controller.ClientManager;
-import it.polimi.ingsw.client.model.Gods.PumpedDeck;
+import it.polimi.ingsw.client.model.gods.PumpedDeck;
 import it.polimi.ingsw.client.model.map.CLIclientMap;
 import it.polimi.ingsw.client.model.map.GUImap;
 import it.polimi.ingsw.client.view.gui.GuiController;
-import it.polimi.ingsw.network.message.Server.UpdateMessage.UpdatePlayersMessage;
-import it.polimi.ingsw.server.model.God.Deck;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Worker;
+import it.polimi.ingsw.network.message.server.updatemessage.UpdatePlayersMessage;
+import it.polimi.ingsw.server.model.god.Deck;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Worker;
 
 import java.util.HashSet;
 import java.util.Set;

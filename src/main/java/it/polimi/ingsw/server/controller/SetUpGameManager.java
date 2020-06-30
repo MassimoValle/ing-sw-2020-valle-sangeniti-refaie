@@ -1,21 +1,22 @@
 package it.polimi.ingsw.server.controller;
 
 import it.polimi.ingsw.network.message.Enum.UpdateType;
-import it.polimi.ingsw.network.message.Server.ServerRequests.ChooseGodsServerRequest;
-import it.polimi.ingsw.network.message.Server.ServerRequests.PickGodServerRequest;
-import it.polimi.ingsw.network.message.Server.ServerRequests.PlaceWorkerServerRequest;
-import it.polimi.ingsw.server.controller.Enum.PossibleGameState;
+import it.polimi.ingsw.network.message.server.serverrequests.ChooseGodsServerRequest;
+import it.polimi.ingsw.network.message.server.serverrequests.PickGodServerRequest;
+import it.polimi.ingsw.network.message.server.serverrequests.PlaceWorkerServerRequest;
 import it.polimi.ingsw.server.model.action.Action;
 import it.polimi.ingsw.server.model.action.PlaceWorkerAction;
 import it.polimi.ingsw.server.model.Game;
-import it.polimi.ingsw.server.model.God.God;
-import it.polimi.ingsw.server.model.God.GodsInGame;
-import it.polimi.ingsw.server.model.Map.Square;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Position;
+import it.polimi.ingsw.server.model.god.God;
+import it.polimi.ingsw.server.model.god.GodsInGame;
+import it.polimi.ingsw.server.model.map.Square;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Position;
 import it.polimi.ingsw.network.message.Enum.ResponseContent;
 import it.polimi.ingsw.network.message.clientrequests.*;
-import it.polimi.ingsw.server.model.Player.Worker;
+import it.polimi.ingsw.server.model.player.Worker;
+
+import java.util.ArrayList;
 
 
 /**
@@ -174,7 +175,7 @@ public class SetUpGameManager {
             return;
         }
 
-        gameInstance.setChosenGodsFromDeck(request.getChosenGods());
+        gameInstance.setChosenGodsFromDeck( (ArrayList<God>) request.getChosenGods());
         outgoingMessageManager.buildPositiveResponse(activePlayer, responseContent, "Gods selected!");
 
         //Turno del giocatore successivo
@@ -183,7 +184,6 @@ public class SetUpGameManager {
 
         // response: scegli un god
         PickGodServerRequest pickGodServerRequest = new PickGodServerRequest(gameInstance.getChosenGodsFromDeck());
-        //PickGodServerResponse pickGodResponse = new PickGodServerResponse("Pick a god", (ArrayList<God>) gameInstance.getChosenGodsFromDeck());
         gameInstance.putInChanges(activePlayer, pickGodServerRequest);
 
     }

@@ -9,7 +9,7 @@ import javafx.scene.image.ImageView;
 public class LevelTwoBlock extends Block {
 
     public LevelTwoBlock(){
-
+        //Doesn't need anything
     }
 
     public void initGUIObj(){

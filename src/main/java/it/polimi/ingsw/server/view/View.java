@@ -2,7 +2,7 @@ package it.polimi.ingsw.server.view;
 
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.server.controller.TurnManager;
-import it.polimi.ingsw.server.model.Player.Player;
+import it.polimi.ingsw.server.model.player.Player;
 
 public abstract class View extends Observable<TurnManager> implements Observer<Message> {
 

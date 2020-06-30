@@ -1,9 +1,9 @@
 package it.polimi.ingsw.client.controller;
 
 import it.polimi.ingsw.network.message.Enum.MessageStatus;
-import it.polimi.ingsw.network.message.Server.ServerRequests.ServerRequest;
-import it.polimi.ingsw.network.message.Server.ServerResponse.SelectWorkerServerResponse;
-import it.polimi.ingsw.network.message.Server.ServerResponse.ServerResponse;
+import it.polimi.ingsw.network.message.server.serverrequests.ServerRequest;
+import it.polimi.ingsw.network.message.server.serverresponse.SelectWorkerServerResponse;
+import it.polimi.ingsw.network.message.server.serverresponse.ServerResponse;
 
 /**
  * This class is used whenever the client receive a message but the player isn't the turnOwner

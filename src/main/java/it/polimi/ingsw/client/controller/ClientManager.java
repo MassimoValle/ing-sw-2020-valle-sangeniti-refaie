@@ -4,18 +4,18 @@ import it.polimi.ingsw.client.model.BabyGame;
 import it.polimi.ingsw.network.Client;
 import it.polimi.ingsw.network.message.clientrequests.*;
 import it.polimi.ingsw.network.message.Enum.ResponseContent;
-import it.polimi.ingsw.network.message.Server.ServerResponse.*;
-import it.polimi.ingsw.network.message.Server.ServerMessage;
-import it.polimi.ingsw.network.message.Server.ServerRequests.*;
-import it.polimi.ingsw.network.message.Server.UpdateMessage.*;
-import it.polimi.ingsw.server.model.God.God;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Position;
+import it.polimi.ingsw.network.message.server.serverresponse.*;
+import it.polimi.ingsw.network.message.server.ServerMessage;
+import it.polimi.ingsw.network.message.server.serverrequests.*;
+import it.polimi.ingsw.network.message.server.updatemessage.*;
+import it.polimi.ingsw.server.model.god.God;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Position;
 import it.polimi.ingsw.client.view.ClientView;
 import it.polimi.ingsw.network.message.Enum.Dispatcher;
 import it.polimi.ingsw.network.message.Enum.RequestContent;
 import it.polimi.ingsw.network.message.Enum.MessageStatus;
-import it.polimi.ingsw.server.model.Player.Worker;
+import it.polimi.ingsw.server.model.player.Worker;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -159,7 +159,7 @@ public class ClientManager {
 
             case MOVE_WORKER -> handleMoveWorkerServerRequest((MoveWorkerServerRequest) serverRequest);
 
-            case BUILD -> handleBuildServerRequest((BuildServerRequest) serverRequest);
+            case BUILD -> handleBuildServerRequest();
 
             case END_TURN -> endTurn();
         }
@@ -196,7 +196,7 @@ public class ClientManager {
 
     }
 
-    private void handleBuildServerRequest(BuildServerRequest serverRequest) {
+    private void handleBuildServerRequest() {
 
         if (canBuildAgain && !clientView.wantBuildAgain()) {
             canBuildAgain = false;
@@ -205,8 +205,6 @@ public class ClientManager {
         }
 
         clientState = PossibleClientState.BUILDING;
-
-        //TODO: da controllare sul client se ha la possibilità di fare una PowerButtonRequest
 
         //Prendiamo tutte le azioni disponibili che ha il giocatore
         ArrayList<PossibleClientAction> possibleActionList = (ArrayList<PossibleClientAction>) getPossibleActionBeforeBuilding();
@@ -662,7 +660,7 @@ public class ClientManager {
 
 
             if (clientState == PossibleClientState.BUILDING) {
-                handleBuildServerRequest((BuildServerRequest) currentServerRequest);
+                handleBuildServerRequest();
                 return;
             }
         }
@@ -756,7 +754,7 @@ public class ClientManager {
      * @param updatePlayersMessage the update players message
      */
     public void updatePlayerInfo(UpdatePlayersMessage updatePlayersMessage) {
-        ArrayList<UpdatePlayersMessage.ClientPlayer> clientPlayers = updatePlayersMessage.getClientPlayers();
+        ArrayList<UpdatePlayersMessage.ClientPlayer> clientPlayers = (ArrayList<UpdatePlayersMessage.ClientPlayer>) updatePlayersMessage.getClientPlayers();
 
         for(UpdatePlayersMessage.ClientPlayer clientPlayer : clientPlayers)
             babyGame.addPlayer(clientPlayer);

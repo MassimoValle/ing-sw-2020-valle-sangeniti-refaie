@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.view;
 
 import it.polimi.ingsw.server.controller.MasterController;
-import it.polimi.ingsw.server.model.Player.Player;
+import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.network.Connection;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.clientrequests.Request;

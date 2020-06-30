@@ -10,6 +10,7 @@ public class Dome extends Block {
 
 
     public Dome(){
+        //Doesn't need anything
     }
 
     public void initGUIObj(){

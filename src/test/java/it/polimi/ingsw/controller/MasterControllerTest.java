@@ -2,10 +2,10 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.server.controller.MasterController;
 import it.polimi.ingsw.server.model.Game;
-import it.polimi.ingsw.server.model.God.Deck;
-import it.polimi.ingsw.server.model.God.God;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Position;
+import it.polimi.ingsw.server.model.god.Deck;
+import it.polimi.ingsw.server.model.god.God;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Position;
 import it.polimi.ingsw.network.message.Enum.Dispatcher;
 import it.polimi.ingsw.network.message.Enum.RequestContent;
 import it.polimi.ingsw.network.message.Enum.MessageStatus;

@@ -1,9 +1,9 @@
 package it.polimi.ingsw.server.model.action;
 
-import it.polimi.ingsw.server.model.Map.GameMap;
-import it.polimi.ingsw.server.model.Map.Square;
-import it.polimi.ingsw.server.model.Player.Position;
-import it.polimi.ingsw.server.model.Player.Worker;
+import it.polimi.ingsw.server.model.map.GameMap;
+import it.polimi.ingsw.server.model.map.Square;
+import it.polimi.ingsw.server.model.player.Position;
+import it.polimi.ingsw.server.model.player.Worker;
 
 /**
  * The Place worker action lets you place the worker on the board in the square you want if it is free

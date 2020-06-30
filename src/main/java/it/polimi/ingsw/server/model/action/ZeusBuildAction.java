@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.model.action;
 
-import it.polimi.ingsw.server.model.Map.GameMap;
-import it.polimi.ingsw.server.model.Map.Square;
+import it.polimi.ingsw.server.model.map.GameMap;
+import it.polimi.ingsw.server.model.map.Square;
 
 public class ZeusBuildAction extends BuildAction{
 
@@ -15,11 +15,6 @@ public class ZeusBuildAction extends BuildAction{
 
     @Override
     public boolean isValid(GameMap map) {
-        return true;
-    }
-
-    @Override
-    public boolean clientValidation() {
         return true;
     }
 

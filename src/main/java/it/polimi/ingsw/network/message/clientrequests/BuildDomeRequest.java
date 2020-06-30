@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.message.clientrequests;
 
-import it.polimi.ingsw.server.model.Player.Position;
+import it.polimi.ingsw.server.model.player.Position;
 
 public class BuildDomeRequest extends BuildRequest {
 

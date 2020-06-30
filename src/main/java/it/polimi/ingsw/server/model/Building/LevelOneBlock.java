@@ -11,7 +11,7 @@ public class LevelOneBlock extends Block {
 
 
     public LevelOneBlock(){
-
+        //Doesn't need anything
     }
 
     public void initGUIObj(){

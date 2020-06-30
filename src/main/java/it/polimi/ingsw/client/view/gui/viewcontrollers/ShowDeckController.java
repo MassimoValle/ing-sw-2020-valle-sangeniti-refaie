@@ -1,10 +1,11 @@
 package it.polimi.ingsw.client.view.gui.viewcontrollers;
 
+import it.polimi.ingsw.client.controller.ClientManager;
 import it.polimi.ingsw.client.view.gui.GUI;
 import it.polimi.ingsw.client.model.BabyGame;
-import it.polimi.ingsw.client.model.Gods.PumpedDeck;
+import it.polimi.ingsw.client.model.gods.PumpedDeck;
 import it.polimi.ingsw.client.view.gui.ParameterListener;
-import it.polimi.ingsw.server.model.God.God;
+import it.polimi.ingsw.server.model.god.God;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -34,7 +35,7 @@ public class ShowDeckController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("ShowDeckController created!");
+        ClientManager.LOGGER.info("ShowDeckController created!");
 
         Stage stage = GUI.getStage();
         stage.setWidth(1280);
@@ -65,7 +66,6 @@ public class ShowDeckController implements Initializable {
                 parameterListener.setParameter(parameter);
             });
 
-
             // info
             AnchorPane ap_info = new AnchorPane();
             ap_info.setId(god.getGodName());
@@ -95,7 +95,7 @@ public class ShowDeckController implements Initializable {
                 try {
                     root = loader.load();
                 } catch (IOException exception) {
-                    exception.printStackTrace();
+                    ClientManager.LOGGER.severe(exception.getMessage());
                 }
 
                 Scene scene = new Scene(root);

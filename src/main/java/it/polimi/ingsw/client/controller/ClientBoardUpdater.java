@@ -2,9 +2,9 @@ package it.polimi.ingsw.client.controller;
 
 import it.polimi.ingsw.client.model.BabyGame;
 import it.polimi.ingsw.client.model.map.CLIclientMap;
-import it.polimi.ingsw.network.message.Server.UpdateMessage.UpdateBoardMessage;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Position;
+import it.polimi.ingsw.network.message.server.updatemessage.UpdateBoardMessage;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Position;
 
 public class ClientBoardUpdater {
 

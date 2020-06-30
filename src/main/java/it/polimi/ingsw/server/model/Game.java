@@ -1,13 +1,13 @@
 package it.polimi.ingsw.server.model;
 
-import it.polimi.ingsw.network.message.Server.ServerMessage;
-import it.polimi.ingsw.server.model.God.Deck;
-import it.polimi.ingsw.server.model.God.God;
-import it.polimi.ingsw.server.model.God.GodsPower.Power;
-import it.polimi.ingsw.server.model.Map.GameMap;
-import it.polimi.ingsw.server.model.Player.ColorEnum;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Worker;
+import it.polimi.ingsw.network.message.server.ServerMessage;
+import it.polimi.ingsw.server.model.god.Deck;
+import it.polimi.ingsw.server.model.god.God;
+import it.polimi.ingsw.server.model.god.godspower.Power;
+import it.polimi.ingsw.server.model.map.GameMap;
+import it.polimi.ingsw.server.model.player.ColorEnum;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Worker;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.server.view.Observable;
 

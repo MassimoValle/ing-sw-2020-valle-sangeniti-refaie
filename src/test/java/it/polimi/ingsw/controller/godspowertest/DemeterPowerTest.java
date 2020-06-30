@@ -2,8 +2,8 @@ package it.polimi.ingsw.controller.godspowertest;
 
 import it.polimi.ingsw.server.controller.MasterController;
 import it.polimi.ingsw.server.model.Game;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Position;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Position;
 import org.junit.*;
 
 import static org.junit.Assert.*;

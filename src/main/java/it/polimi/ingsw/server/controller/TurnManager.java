@@ -1,12 +1,11 @@
 package it.polimi.ingsw.server.controller;
 
-import it.polimi.ingsw.server.controller.Enum.PossibleGameState;
 import it.polimi.ingsw.server.model.action.Action;
 import it.polimi.ingsw.server.model.action.BuildAction;
 import it.polimi.ingsw.server.model.action.MoveAction;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.PossiblePlayerState;
-import it.polimi.ingsw.server.model.Player.Worker;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.PossiblePlayerState;
+import it.polimi.ingsw.server.model.player.Worker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,6 +146,10 @@ public class TurnManager {
                 updatePlayerState(PossiblePlayerState.GAME_OVER);
                 giveTurnOwnership();
             }
+
+            default -> {
+                //can't happen
+            }
         }
 
     }
@@ -161,7 +164,9 @@ public class TurnManager {
         Player nextPlayer;
 
         switch (inGamePlayers.size()) {
+
             case 2:
+
                 if (playerIndex == 0) {
                     nextPlayer = inGamePlayers.get(playerIndex + 1);
                     nextTurn(nextPlayer);
@@ -172,6 +177,7 @@ public class TurnManager {
                 break;
 
             case 3:
+
                 if (playerIndex == 0) {
                     nextPlayer = inGamePlayers.get(playerIndex + 1);
                     nextTurn(nextPlayer);
@@ -182,6 +188,11 @@ public class TurnManager {
                     nextPlayer = inGamePlayers.get(0);
                     nextTurn(nextPlayer);
                 }
+                break;
+
+            default:
+                //can't happen
+                break;
            }
 
     }

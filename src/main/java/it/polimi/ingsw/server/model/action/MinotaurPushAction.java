@@ -1,12 +1,13 @@
 package it.polimi.ingsw.server.model.action;
 
+import it.polimi.ingsw.client.controller.ClientManager;
 import it.polimi.ingsw.client.model.map.CLIclientMap;
 import it.polimi.ingsw.exceptions.PositionOutsideBoardException;
-import it.polimi.ingsw.server.model.God.GodsPower.MinotaurPower;
-import it.polimi.ingsw.server.model.Map.GameMap;
-import it.polimi.ingsw.server.model.Map.Square;
-import it.polimi.ingsw.server.model.Player.Position;
-import it.polimi.ingsw.server.model.Player.Worker;
+import it.polimi.ingsw.server.model.god.godspower.MinotaurPower;
+import it.polimi.ingsw.server.model.map.GameMap;
+import it.polimi.ingsw.server.model.map.Square;
+import it.polimi.ingsw.server.model.player.Position;
+import it.polimi.ingsw.server.model.player.Worker;
 
 import java.util.ArrayList;
 
@@ -51,6 +52,8 @@ public class MinotaurPushAction extends MoveAction {
             otherWorker = map.getWorkerOnSquare(newPosition);
         } catch (PositionOutsideBoardException e) {
             //It must be never reached unless data misalignment
+            ClientManager.LOGGER.severe("Data misalignment!");
+            Thread.currentThread().interrupt();
         }
     }
 

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.Player;
 
-import it.polimi.ingsw.server.model.Player.Position;
+import it.polimi.ingsw.server.model.player.Position;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,8 +22,7 @@ public class PositionTest {
         Position position = new Position(1,1);
         ArrayList<Position> list = new ArrayList<>();
         list = position.getAdjacentPlaces();
-        System.out.println(list.toString());
-        System.out.println(list.size());
+        assertEquals(8, list.size());
     }
 
     @Test

@@ -1,12 +1,12 @@
 package it.polimi.ingsw.server.model.action;
 
-import it.polimi.ingsw.server.model.God.GodsInGame;
-import it.polimi.ingsw.server.model.God.GodsPower.Power;
-import it.polimi.ingsw.server.model.Map.GameMap;
-import it.polimi.ingsw.server.model.Map.Square;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Position;
-import it.polimi.ingsw.server.model.Player.Worker;
+import it.polimi.ingsw.server.model.god.GodsInGame;
+import it.polimi.ingsw.server.model.god.godspower.Power;
+import it.polimi.ingsw.server.model.map.GameMap;
+import it.polimi.ingsw.server.model.map.Square;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Position;
+import it.polimi.ingsw.server.model.player.Worker;
 
 import java.util.ArrayList;
 
@@ -49,16 +49,6 @@ public class MoveAction implements Action {
                 adjacent.contains(newPosition);
     }
 
-
-    public boolean clientValidation(GameMap clientMap) {
-
-        int heightDifference = clientMap.getDifferenceInAltitude(oldPositionSquare.getPosition(), newPositionSquare.getPosition());
-        ArrayList<Position> adjacent = oldPositionSquare.getPosition().getAdjacentPlaces();
-
-        //if some God Power is active that prevent you from doing this move
-        return !newPositionSquare.hasWorkerOn() && heightDifference >= -1 && !newPositionSquare.hasDome() &&
-                adjacent.contains(newPosition);
-    }
 
 
     /**

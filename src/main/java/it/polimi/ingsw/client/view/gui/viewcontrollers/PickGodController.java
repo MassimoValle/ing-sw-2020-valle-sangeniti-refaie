@@ -1,10 +1,11 @@
 package it.polimi.ingsw.client.view.gui.viewcontrollers;
 
+import it.polimi.ingsw.client.controller.ClientManager;
 import it.polimi.ingsw.client.view.gui.GUI;
 import it.polimi.ingsw.client.model.BabyGame;
 import it.polimi.ingsw.client.view.gui.ParameterListener;
-import it.polimi.ingsw.server.model.God.Deck;
-import it.polimi.ingsw.server.model.God.God;
+import it.polimi.ingsw.server.model.god.Deck;
+import it.polimi.ingsw.server.model.god.God;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class PickGodController implements Initializable {
@@ -38,12 +40,12 @@ public class PickGodController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("PickGodController created!");
+        ClientManager.LOGGER.info("PickGodController created!");
     }
     
-    public void setHand(ArrayList<God> hand){
+    public void setHand(List<God> hand){
 
-        this.hand = hand;
+        this.hand = (ArrayList<God>) hand;
 
         // usato per far preparare a javafx il container prima di lavorarci
         Platform.runLater(this::setScene);
@@ -86,18 +88,18 @@ public class PickGodController implements Initializable {
             });
 
             // info
-            AnchorPane ap_info = new AnchorPane();
-            ap_info.setId(god.getGodName());
+            AnchorPane apInfo = new AnchorPane();
+            apInfo.setId(god.getGodName());
 
             ImageView imageView1 = new ImageView(new Image("/imgs/info.png"));
-            ap_info.getChildren().add(imageView1);
+            apInfo.getChildren().add(imageView1);
 
-            pane.getChildren().add(ap_info);
-            AnchorPane.setTopAnchor(ap_info, 5.0);
-            AnchorPane.setRightAnchor(ap_info, 5.0);
+            pane.getChildren().add(apInfo);
+            AnchorPane.setTopAnchor(apInfo, 5.0);
+            AnchorPane.setRightAnchor(apInfo, 5.0);
 
 
-            ap_info.setOnMouseClicked(event -> {
+            apInfo.setOnMouseClicked(event -> {
 
                 event.consume();
 
@@ -114,7 +116,7 @@ public class PickGodController implements Initializable {
                 try {
                     root = loader.load();
                 } catch (IOException exception) {
-                    exception.printStackTrace();
+                    ClientManager.LOGGER.severe(exception.getMessage());
                 }
 
                 Scene scene = new Scene(root);

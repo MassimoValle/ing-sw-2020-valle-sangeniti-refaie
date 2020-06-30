@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.server.model.God.Deck;
-import it.polimi.ingsw.server.model.God.God;
-import it.polimi.ingsw.server.model.Map.GameMap;
+import it.polimi.ingsw.server.model.god.Deck;
+import it.polimi.ingsw.server.model.god.God;
+import it.polimi.ingsw.server.model.map.GameMap;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

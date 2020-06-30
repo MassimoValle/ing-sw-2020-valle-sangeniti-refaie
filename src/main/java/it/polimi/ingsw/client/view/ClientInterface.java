@@ -1,12 +1,12 @@
 package it.polimi.ingsw.client.view;
 
 import it.polimi.ingsw.client.controller.PossibleClientAction;
-import it.polimi.ingsw.network.message.Server.ServerResponse.SelectWorkerServerResponse;
-import it.polimi.ingsw.network.message.Server.ServerResponse.ServerResponse;
-import it.polimi.ingsw.server.model.God.God;
-import it.polimi.ingsw.server.model.Map.GameMap;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Position;
+import it.polimi.ingsw.network.message.server.serverresponse.SelectWorkerServerResponse;
+import it.polimi.ingsw.network.message.server.serverresponse.ServerResponse;
+import it.polimi.ingsw.server.model.god.God;
+import it.polimi.ingsw.server.model.map.GameMap;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Position;
 
 import java.util.ArrayList;
 import java.util.List;

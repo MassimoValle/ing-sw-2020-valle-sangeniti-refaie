@@ -5,9 +5,9 @@ import it.polimi.ingsw.server.model.Building.Dome;
 import it.polimi.ingsw.server.model.Building.LevelOneBlock;
 import it.polimi.ingsw.server.model.Building.LevelThreeBlock;
 import it.polimi.ingsw.server.model.Building.LevelTwoBlock;
-import it.polimi.ingsw.server.model.Map.Square;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Worker;
+import it.polimi.ingsw.server.model.map.Square;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Worker;
 import org.junit.Before;
 import org.junit.Test;
 

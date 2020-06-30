@@ -1,19 +1,20 @@
 package it.polimi.ingsw.client.view.gui;
 
+import it.polimi.ingsw.client.controller.ClientManager;
 import it.polimi.ingsw.client.controller.PossibleClientAction;
 import it.polimi.ingsw.client.model.BabyGame;
 import it.polimi.ingsw.client.view.ClientView;
 import it.polimi.ingsw.client.view.gui.viewcontrollers.MainViewController;
 import it.polimi.ingsw.client.view.gui.viewcontrollers.PickGodController;
 import it.polimi.ingsw.network.Client;
-import it.polimi.ingsw.network.message.Server.ServerResponse.SelectWorkerServerResponse;
-import it.polimi.ingsw.network.message.Server.ServerResponse.ServerResponse;
-import it.polimi.ingsw.server.model.God.Deck;
-import it.polimi.ingsw.server.model.God.God;
-import it.polimi.ingsw.server.model.Map.GameMap;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Position;
-import it.polimi.ingsw.server.model.Player.Worker;
+import it.polimi.ingsw.network.message.server.serverresponse.SelectWorkerServerResponse;
+import it.polimi.ingsw.network.message.server.serverresponse.ServerResponse;
+import it.polimi.ingsw.server.model.god.Deck;
+import it.polimi.ingsw.server.model.god.God;
+import it.polimi.ingsw.server.model.map.GameMap;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Position;
+import it.polimi.ingsw.server.model.player.Worker;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
@@ -53,14 +54,14 @@ public class GuiController extends ClientView {
                 try {
                     parameterListener.wait();
                 }catch (InterruptedException e){
-                    //Logger.getLogger(LOGGER).log(Level.SEVERE, "Unexpected error!", e);
+                    ClientManager.LOGGER.severe(e.getMessage());
                     Thread.currentThread().interrupt();
                 }
             }
         }
 
         Object ret = ParameterListener.getParameter();
-        parameterListener.setToNull();
+        ParameterListener.setToNull();
 
         return ret;
     }

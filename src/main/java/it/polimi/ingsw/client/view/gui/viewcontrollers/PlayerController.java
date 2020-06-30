@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.view.gui.viewcontrollers;
 
-import it.polimi.ingsw.server.model.Player.Player;
+import it.polimi.ingsw.server.model.player.Player;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;

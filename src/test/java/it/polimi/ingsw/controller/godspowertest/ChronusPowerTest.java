@@ -3,7 +3,7 @@ package it.polimi.ingsw.controller.godspowertest;
 import it.polimi.ingsw.exceptions.DomePresentException;
 import it.polimi.ingsw.server.controller.MasterController;
 import it.polimi.ingsw.server.model.Game;
-import it.polimi.ingsw.server.model.Player.Player;
+import it.polimi.ingsw.server.model.player.Player;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -5,13 +5,13 @@ import it.polimi.ingsw.client.controller.PossibleClientAction;
 import it.polimi.ingsw.client.model.BabyGame;
 import it.polimi.ingsw.client.view.ClientView;
 import it.polimi.ingsw.network.Client;
-import it.polimi.ingsw.network.message.Server.ServerResponse.SelectWorkerServerResponse;
-import it.polimi.ingsw.network.message.Server.ServerResponse.ServerResponse;
-import it.polimi.ingsw.server.model.God.Deck;
-import it.polimi.ingsw.server.model.God.God;
-import it.polimi.ingsw.server.model.Map.GameMap;
-import it.polimi.ingsw.server.model.Player.Player;
-import it.polimi.ingsw.server.model.Player.Position;
+import it.polimi.ingsw.network.message.server.serverresponse.SelectWorkerServerResponse;
+import it.polimi.ingsw.network.message.server.serverresponse.ServerResponse;
+import it.polimi.ingsw.server.model.god.Deck;
+import it.polimi.ingsw.server.model.god.God;
+import it.polimi.ingsw.server.model.map.GameMap;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Position;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class CLI extends ClientView {
 
     public CLI(){
         consoleIn = new Scanner(System.in);
-        consoleOut = new PrintStream(System.out);
+        consoleOut = new SantoriniStream();
 
     }
 
@@ -114,7 +114,7 @@ public class CLI extends ClientView {
 
         int godsChosenNum = 0;
 
-        consoleOut.println("\ntype in the the index or the gods name you want to play with: [ONLY INDEX WORKING FOR NOW]");
+        consoleOut.println("\nType in the respective god's index you want to play with: [ONLY INDEX WORKING FOR NOW]");
 
         do {
             consoleOut.println(">>>");
@@ -152,7 +152,7 @@ public class CLI extends ClientView {
     public void errorWhileChoosingGods(String gameManagerSays) {
 
         consoleOut.println("\n There was a problem with the Gods you selected" +
-                "\nGame Manager says: " + gameManagerSays +
+                SantoriniStream.GAME_MANAGER_SAYS + gameManagerSays +
                 "\nPlease select the correct Gods");
 
     }
@@ -190,7 +190,7 @@ public class CLI extends ClientView {
                     }
 
                 } catch (NumberFormatException e) {
-                    consoleOut.println("Please insert a number!");
+                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
                 }
 
                 consoleOut.println();
@@ -205,7 +205,7 @@ public class CLI extends ClientView {
     public void errorWhilePickinUpGod(String gameManagerSays) {
 
         consoleOut.println("\n There was a problem with the God you selected" +
-                "\nGame Manager says: " + gameManagerSays +
+                SantoriniStream.GAME_MANAGER_SAYS + gameManagerSays +
                 "\nPlease select the correct God");
 
     }
@@ -252,7 +252,7 @@ public class CLI extends ClientView {
                     }
 
                 } catch (NumberFormatException e) {
-                    consoleOut.println("Please insert a number!");
+                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
                 }
 
                 consoleOut.println();
@@ -274,7 +274,7 @@ public class CLI extends ClientView {
                     }
 
                 } catch (NumberFormatException e) {
-                    consoleOut.println("Please insert a number!");
+                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
                 }
 
                 consoleOut.println();
@@ -290,7 +290,7 @@ public class CLI extends ClientView {
     public void errorWhilePlacingYourWorker(String gameManagerSays) {
 
         consoleOut.println("\n There was a problem with the worker you wanted to place" +
-                "\nGame Manager says: " + gameManagerSays +
+                SantoriniStream.GAME_MANAGER_SAYS + gameManagerSays +
                 "\nPlease try place it again");
     }
 
@@ -332,7 +332,7 @@ public class CLI extends ClientView {
                 }
 
             } catch (NumberFormatException e) {
-                consoleOut.println("Please insert a number!");
+                consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
             }
 
         }while (worker != 1 && worker != 2);
@@ -372,7 +372,7 @@ public class CLI extends ClientView {
                 }
 
             } catch (NumberFormatException e) {
-                consoleOut.println("Please insert a number!");
+                consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
             }
 
         }while (actionToDo < 0 || actionToDo > possibleActions.size());
@@ -386,7 +386,7 @@ public class CLI extends ClientView {
     public void errorWhileActivatingPower(String gameManagerSays) {
 
         consoleOut.println("\n There was a problem with the power you want to use" +
-                "\nGame Manager says: " + gameManagerSays +
+                SantoriniStream.GAME_MANAGER_SAYS + gameManagerSays +
                 "\nPlease do a different action");
 
     }
@@ -405,7 +405,7 @@ public class CLI extends ClientView {
     public void errorWhileSelectingWorker(String gameManagerSays) {
 
         consoleOut.println("\n There was a problem with the worker you selected" +
-                "\nGame Manager says: " + gameManagerSays +
+                SantoriniStream.GAME_MANAGER_SAYS + gameManagerSays +
                 "\nPlease select another worker");
 
     }
@@ -438,7 +438,7 @@ public class CLI extends ClientView {
                     }
 
                 } catch (NumberFormatException e) {
-                    consoleOut.println("Please insert a number!");
+                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
                 }
 
                 consoleOut.println();
@@ -460,7 +460,7 @@ public class CLI extends ClientView {
                     }
 
                 } catch (NumberFormatException e) {
-                    consoleOut.println("Please insert a number!");
+                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
                 }
 
                 consoleOut.println();
@@ -480,7 +480,7 @@ public class CLI extends ClientView {
     public void errorWhileMovingWorker(String gameManagerSays) {
 
         consoleOut.println("\n There was a problem with the move you performed" +
-                "\nGame Manager says: " + gameManagerSays +
+                SantoriniStream.GAME_MANAGER_SAYS + gameManagerSays +
                 "\nPlease move again");
 
     }
@@ -504,7 +504,7 @@ public class CLI extends ClientView {
                     }
 
                 } catch (NumberFormatException e) {
-                    consoleOut.println("Please insert a number!");
+                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
                 }
 
                 consoleOut.println();
@@ -571,7 +571,7 @@ public class CLI extends ClientView {
                     }
 
                 } catch (NumberFormatException e) {
-                    consoleOut.println("Please insert a number!");
+                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
                 }
 
                 consoleOut.println();
@@ -593,7 +593,7 @@ public class CLI extends ClientView {
                     }
 
                 } catch (NumberFormatException e) {
-                    consoleOut.println("Please insert a number!");
+                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
                 }
 
                 consoleOut.println();
@@ -613,7 +613,7 @@ public class CLI extends ClientView {
     public void errorWhileBuilding(String gameManagerSays) {
 
         consoleOut.println("\n There was a problem with the built you performed" +
-                "\nGame Manager says: " + gameManagerSays +
+                SantoriniStream.GAME_MANAGER_SAYS + gameManagerSays +
                 "\nPlease build again");
 
     }
@@ -645,7 +645,7 @@ public class CLI extends ClientView {
                     }
 
                 } catch (NumberFormatException e) {
-                    consoleOut.println("Please insert a number!");
+                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
                 }
 
                 consoleOut.println();
@@ -845,14 +845,15 @@ public class CLI extends ClientView {
             client.run();
         } catch (EOFException ex) {
             //this is thrown when the end of the stream is reached
-            System.out.println("Server disconnected while sending message to it!");
+            consoleOut.println("Server disconnected while sending message to it!");
         } catch (UnknownHostException ex) {
-            System.out.println("Unknown host, please insert again:");
+            consoleOut.println("Unknown host, please insert again:");
         } catch (ConnectException ex) {
-            System.out.println("Server refused to connect");
+            consoleOut.println("Server refused to connect");
         } catch (IOException ex) {
-            ex.printStackTrace();
-            System.out.println("Error server side");
+            consoleOut.println("Error server side");
+            ClientManager.LOGGER.severe(ex.getMessage());
+            Thread.currentThread().interrupt();
         } finally {
             run();
         }

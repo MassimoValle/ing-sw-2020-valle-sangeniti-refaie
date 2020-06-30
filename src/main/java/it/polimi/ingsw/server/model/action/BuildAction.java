@@ -1,9 +1,10 @@
 package it.polimi.ingsw.server.model.action;
 
 import it.polimi.ingsw.exceptions.DomePresentException;
-import it.polimi.ingsw.server.model.Map.GameMap;
-import it.polimi.ingsw.server.model.Map.Square;
-import it.polimi.ingsw.server.model.Player.Position;
+import it.polimi.ingsw.network.Server;
+import it.polimi.ingsw.server.model.map.GameMap;
+import it.polimi.ingsw.server.model.map.Square;
+import it.polimi.ingsw.server.model.player.Position;
 
 import java.util.ArrayList;
 
@@ -33,13 +34,6 @@ public class BuildAction implements Action {
     }
 
 
-    public boolean clientValidation() {
-
-        ArrayList<Position> adjacent = squareWhereTheWorkerIs.getPosition().getAdjacentPlaces();
-
-        return !squareWhereToBuildOn.hasWorkerOn() && adjacent.contains(squareWhereToBuildOn.getPosition()) &&
-                !squareWhereToBuildOn.hasDome();
-    }
 
     @Override
     public void doAction() {
@@ -47,7 +41,8 @@ public class BuildAction implements Action {
         try {
             squareWhereToBuildOn.addBlock(false);
         } catch (DomePresentException e) {
-            e.printStackTrace();
+            Server.LOGGER.severe("Misalignment GameMap, build hasn't been done");
+            Thread.currentThread().interrupt();
         }
 
     }

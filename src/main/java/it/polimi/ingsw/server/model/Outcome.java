@@ -2,9 +2,9 @@ package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.server.model.action.Action;
 import it.polimi.ingsw.server.model.action.MoveAction;
-import it.polimi.ingsw.server.model.God.GodsPower.*;
-import it.polimi.ingsw.server.model.Map.GameMap;
-import it.polimi.ingsw.server.model.Player.*;
+import it.polimi.ingsw.server.model.god.godspower.*;
+import it.polimi.ingsw.server.model.map.GameMap;
+import it.polimi.ingsw.server.model.player.*;
 
 import java.util.List;
 

@@ -2,8 +2,9 @@ package it.polimi.ingsw.network;
 
 import it.polimi.ingsw.client.controller.ClientManager;
 import it.polimi.ingsw.client.view.ClientView;
+import it.polimi.ingsw.client.view.cli.CLI;
 import it.polimi.ingsw.network.message.*;
-import it.polimi.ingsw.network.message.Server.ServerMessage;
+import it.polimi.ingsw.network.message.server.ServerMessage;
 import it.polimi.ingsw.network.message.clientrequests.Request;
 
 import java.io.*;
@@ -16,12 +17,12 @@ public class Client {
 
     private static ClientManager clientManager;
 
-    private Socket socket;
+    private static Socket socket;
 
-    private final String ip;
-    private final int port;
+    private static String ip;
+    private static int port;
 
-    private static LinkedList<ServerMessage> queue;
+    private static LinkedList<ServerMessage> queue = new LinkedList<>();
 
     private static ObjectInputStream socketIn;
     private static ObjectOutputStream socketOut;
@@ -32,10 +33,8 @@ public class Client {
 
     public Client(String ip, int port, ClientView clientView){
 
-        this.ip = ip;
-        this.port = port;
-
-        queue = new LinkedList();
+        Client.ip = ip;
+        Client.port = port;
 
         clientManager = new ClientManager(clientView);
 
@@ -47,6 +46,7 @@ public class Client {
             sendMessage(request);
         }catch (IOException e) {
             ClientManager.LOGGER.severe(e.getMessage());
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -130,7 +130,7 @@ public class Client {
         
     }
 
-    public void startConnection() throws  IOException{
+    public static synchronized void startConnection() throws  IOException{
 
         socket = new Socket(ip, port);
         ClientManager.LOGGER.info("Connection established");
