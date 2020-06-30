@@ -61,7 +61,7 @@ public class GUI extends Application {
         }
         else {
             Parent finalRoot = root;
-            Platform.runLater(() -> {scene.setRoot(finalRoot);});
+            Platform.runLater(() -> scene.setRoot(finalRoot));
         }
 
 
