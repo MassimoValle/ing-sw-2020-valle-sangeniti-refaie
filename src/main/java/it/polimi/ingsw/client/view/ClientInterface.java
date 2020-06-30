@@ -112,8 +112,6 @@ public interface ClientInterface {
     void anotherPlayerHasBuilt(String turnOwner);
     void anotherPlayerHasEndedHisTurn(String turnOwner);
 
-    void doNothing();
-
     void youWon();
     void iLost();
     void someoneHasLost(String loser);

@@ -22,7 +22,7 @@ public class BabyGame {
     private static BabyGame instance = null;
 
     public BabyGame(){
-        if(ClientManager.clientView instanceof GuiController) {
+        if(ClientManager.getClientView() instanceof GuiController) {
             clientMap = new GUImap();
             deck = new PumpedDeck(clientMap);
         }
@@ -44,7 +44,7 @@ public class BabyGame {
         player.setPlayerGod(clientPlayer.getGod());
         player.setColor(clientPlayer.getColor());
 
-        if(ClientManager.clientView instanceof GuiController) {
+        if(ClientManager.getClientView() instanceof GuiController) {
             for (Worker worker : player.getPlayerWorkers()) {
                 worker.initGUIObj();
             }

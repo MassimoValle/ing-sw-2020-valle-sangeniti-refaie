@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network;
 
+import it.polimi.ingsw.network.message.Enum.RequestContent;
 import it.polimi.ingsw.network.message.clientrequests.LoginRequest;
 import it.polimi.ingsw.network.message.clientrequests.SetPlayersRequest;
 import it.polimi.ingsw.network.message.Server.ServerResponse.ServerResponse;
@@ -32,7 +33,7 @@ public class Server {
 
     public static final Logger LOGGER = Logger.getLogger("Server");
 
-    int temp_lobbySize = -1;
+    int tempLobbySize = -1;
     boolean lobbySizeAsked = false;
 
 
@@ -53,7 +54,8 @@ public class Server {
     // if there is an exception by client connection
     public static void clientConnectionException(Connection c) {
 
-        deregisterConnection(c);
+        if (connections.contains(c))
+            deregisterConnection(c);
 
         MasterController masterController = searchConnectionInRooms(c);
 
@@ -90,7 +92,7 @@ public class Server {
             Connection value = entry.getValue();
             askLobbySize(value);
         }
-        else if(temp_lobbySize > 1) // nel caso in cui temp_lobbySize = 3 ma ci sono 2 giocatori in clientsConnected, quando arriva il 3o fa partire la lobby
+        else if(tempLobbySize > 1) // nel caso in cui temp_lobbySize = 3 ma ci sono 2 giocatori in clientsConnected, quando arriva il 3o fa partire la lobby
             initLobby();
     }
 
@@ -105,7 +107,9 @@ public class Server {
 
     private synchronized void setLobbySize(SetPlayersRequest request) {
 
-        temp_lobbySize = Integer.parseInt(request.getHowMany());
+        tempLobbySize = Integer.parseInt(request.getHowMany());
+
+        Server.LOGGER.info("A new " + tempLobbySize + " players lobby has been created!");
         initLobby();
 
         if(clientsConnected.size() > 1){
@@ -120,7 +124,7 @@ public class Server {
      */
     public synchronized void initLobby() {
 
-        if(clientsConnected.size() >= temp_lobbySize){
+        if(clientsConnected.size() >= tempLobbySize){
 
             Game game = new Game();
             MasterController masterController = new MasterController(game);
@@ -131,23 +135,23 @@ public class Server {
             Map<String, Connection> playersInLobby = new HashMap<>();
 
 
-            Iterator it = clientsConnected.entrySet().iterator();
+            Iterator < Map.Entry <String, Connection>> it = clientsConnected.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry)it.next();
+                Map.Entry <String, Connection> pair = it.next();
 
-                if(loop < temp_lobbySize){
+                if(loop < tempLobbySize){
 
-                    System.out.println(pair.getKey() + " = " + pair.getValue());
+                    Server.LOGGER.info(pair.getKey() + " = " + pair.getValue());
 
-                    Player player = new Player((String) pair.getKey());
+                    Player player = new Player( pair.getKey());
                     if(loop == 0) activePlayer = player;
 
-                    RemoteView rvPlayer = new RemoteView(player, (Connection) pair.getValue());
+                    RemoteView rvPlayer = new RemoteView(player, pair.getValue());
                     game.addObserver(rvPlayer);
                     rvPlayer.setController(masterController);
 
                     game.addPlayer(player);
-                    playersInLobby.put(player.getPlayerName(), (Connection) pair.getValue());
+                    playersInLobby.put(player.getPlayerName(), pair.getValue());
 
                     loop++;
                 }
@@ -156,10 +160,10 @@ public class Server {
             }
 
             rooms.put(masterController, playersInLobby);
-            temp_lobbySize = -1;
+            tempLobbySize = -1;
             lobbySizeAsked = false;
 
-            System.out.println("new game!");
+            Server.LOGGER.info("New game created!");
 
             final Player finalActivePlayer = activePlayer;
             new Thread(() -> masterController.init(finalActivePlayer)).start();
@@ -200,7 +204,7 @@ public class Server {
     }
 
     public void run(){
-        System.out.println("Server listening on port: " + PORT);
+        Server.LOGGER.info("Server listening on port: " + PORT);
 
         while(!Thread.currentThread().isInterrupted()){
             try {
@@ -209,7 +213,7 @@ public class Server {
 
 
             } catch (IOException e){
-                System.err.println("Connection error!");
+                Server.LOGGER.info("Connection error!");
             }
         }
     }
@@ -227,11 +231,10 @@ public class Server {
     // handle message
     public synchronized void handleMessage(Request request, Connection connection) {
 
-
-        switch (request.getRequestContent()){
-            case LOGIN -> checkLogin((LoginRequest) request, connection);
-            case NUM_PLAYER -> setLobbySize((SetPlayersRequest) request);
-
+        if (request.getRequestContent() == RequestContent.LOGIN) {
+            checkLogin((LoginRequest) request, connection);
+        } else if (request.getRequestContent() == RequestContent.NUM_PLAYER) {
+            setLobbySize((SetPlayersRequest) request);
         }
 
     }
@@ -243,22 +246,12 @@ public class Server {
 
         setUpLobbySize();
 
-        /*if(connections.size() == 1) {
-            registerClient(request.getMessageSender(), connection);
-
-        } else {
-            login(request.getMessageSender(), connection);
-
-            setUpLobbySize();
-
-        }*/
-
     }
 
     // Check if there is a client with same name
     public synchronized void login(String username, Connection connection) {
         //UserName taken
-        if( clientsConnected.containsKey(username) ) {
+        if( clientsConnected.containsKey(username) || username.equals("") ) {
             connection.sendMessage(
                     new ServerResponse(ResponseContent.LOGIN, MessageStatus.ERROR, "Username taken")
             );
@@ -272,7 +265,7 @@ public class Server {
 
         clientsConnected.put(username, connection);
 
-        System.out.println("Registered client:  " + username);
+        Server.LOGGER.info("Registered client:  " + username);
 
         connection.sendMessage(
                 new ServerResponse(ResponseContent.LOGIN, MessageStatus.OK, "Connected! Ready to play!")

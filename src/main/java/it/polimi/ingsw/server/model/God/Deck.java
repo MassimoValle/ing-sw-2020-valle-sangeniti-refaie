@@ -8,6 +8,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,6 +25,14 @@ public class Deck extends ArrayList<God> implements Serializable {
     protected boolean loadXML(){
         File file = new File("src/main/Resources/XMLs/gods.xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+
+        try {
+            String feature = "http://apache.org/xml/features/disallow-doctype-decl";
+            dbFactory.setFeature(feature, true);
+        } catch (ParserConfigurationException e) {
+
+        }
+
         DocumentBuilder dBuilder;
         try {
             dBuilder = dbFactory.newDocumentBuilder();

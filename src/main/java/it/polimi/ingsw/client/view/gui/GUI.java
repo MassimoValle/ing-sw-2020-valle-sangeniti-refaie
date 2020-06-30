@@ -10,8 +10,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class GUI extends Application {
@@ -24,7 +22,7 @@ public class GUI extends Application {
     @Override
     public void start(Stage stage) {
 
-        mystage = stage;
+        setStage(stage);
 
         setRoot("welcome");
 
@@ -32,8 +30,16 @@ public class GUI extends Application {
         stage.setScene(scene);
         stage.show();
 
-        clientView = new GuiController();
+        setClientView();
 
+    }
+
+    private static void setClientView() {
+        GUI.clientView = new GuiController();
+    }
+
+    private static void setStage(Stage stage) {
+        GUI.mystage = stage;
     }
 
 

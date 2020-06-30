@@ -781,11 +781,6 @@ public class CLI extends ClientView {
 
     }
 
-    @Override
-    public void doNothing() {
-
-    }
-
 
     @Override
     public void youWon() {

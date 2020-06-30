@@ -26,14 +26,14 @@ public class ServerMessageManager {
 
 
         switch (serverRequest.getContent()) {
-            case CHOOSE_GODS_SERVER_REQUEST -> ClientManager.clientView.youAreNotTheGodLikePlayer(turnOwner);
-            case PICK_GOD                   -> ClientManager.clientView.anotherPlayerIsPickingUpGod(turnOwner);
-            case PLACE_WORKER               -> ClientManager.clientView.anotherPlayerIsPlacingWorker(turnOwner);
-            case START_TURN                 -> ClientManager.clientView.startingPlayerTurn(turnOwner);
-            case SELECT_WORKER              -> ClientManager.clientView.anotherPlayerIsSelectingWorker(turnOwner);
-            case MOVE_WORKER                -> ClientManager.clientView.anotherPlayerIsMoving(turnOwner);
-            case BUILD                      -> ClientManager.clientView.anotherPlayerIsBuilding(turnOwner);
-            default                         -> ClientManager.clientView.doNothing();
+            case CHOOSE_GODS_SERVER_REQUEST -> ClientManager.getClientView().youAreNotTheGodLikePlayer(turnOwner);
+            case PICK_GOD                   -> ClientManager.getClientView().anotherPlayerIsPickingUpGod(turnOwner);
+            case PLACE_WORKER               -> ClientManager.getClientView().anotherPlayerIsPlacingWorker(turnOwner);
+            case START_TURN                 -> ClientManager.getClientView().startingPlayerTurn(turnOwner);
+            case SELECT_WORKER              -> ClientManager.getClientView().anotherPlayerIsSelectingWorker(turnOwner);
+            case MOVE_WORKER                -> ClientManager.getClientView().anotherPlayerIsMoving(turnOwner);
+            case BUILD                      -> ClientManager.getClientView().anotherPlayerIsBuilding(turnOwner);
+            default                         -> { }
         }
     }
 
@@ -51,15 +51,15 @@ public class ServerMessageManager {
 
         switch (serverResponse.getResponseContent()) {
 
-            case CHOOSE_GODS                -> ClientManager.clientView.anotherPlayerHasSelectedGods(turnOwner);
-            case PICK_GOD                   -> ClientManager.clientView.anotherPlayerHasPickedUpGod(turnOwner);
-            case PLACE_WORKER               -> ClientManager.clientView.anotherPlayerHasPlacedWorker(turnOwner);
-            case SELECT_WORKER              -> ClientManager.clientView.anotherPlayerHasSelectedWorker((SelectWorkerServerResponse) serverResponse);
-            case MOVE_WORKER                -> ClientManager.clientView.anotherPlayerHasMoved(turnOwner);
-            case BUILD                      -> ClientManager.clientView.anotherPlayerHasBuilt(turnOwner);
-            case END_TURN                   -> ClientManager.clientView.anotherPlayerHasEndedHisTurn(turnOwner);
-            case PLAYER_HAS_WON             -> ClientManager.clientView.youLose(turnOwner);
-            default                         -> ClientManager.clientView.doNothing();
+            case CHOOSE_GODS                -> ClientManager.getClientView().anotherPlayerHasSelectedGods(turnOwner);
+            case PICK_GOD                   -> ClientManager.getClientView().anotherPlayerHasPickedUpGod(turnOwner);
+            case PLACE_WORKER               -> ClientManager.getClientView().anotherPlayerHasPlacedWorker(turnOwner);
+            case SELECT_WORKER              -> ClientManager.getClientView().anotherPlayerHasSelectedWorker((SelectWorkerServerResponse) serverResponse);
+            case MOVE_WORKER                -> ClientManager.getClientView().anotherPlayerHasMoved(turnOwner);
+            case BUILD                      -> ClientManager.getClientView().anotherPlayerHasBuilt(turnOwner);
+            case END_TURN                   -> ClientManager.getClientView().anotherPlayerHasEndedHisTurn(turnOwner);
+            case PLAYER_HAS_WON             -> ClientManager.getClientView().youLose(turnOwner);
+            default                         -> {}
         }
     }
 

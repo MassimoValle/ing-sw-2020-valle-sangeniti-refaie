@@ -24,13 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class GuiController extends ClientView {
 
     private static final String ERROR_DIALOG = "Error dialog";
-    public static final String INFORMATION_DIALOG = "Information Dialog";
+    private static final String INFORMATION_DIALOG = "Information Dialog";
+    private static final String GAME_MANAGER_SAYS = "Game Manager says: ";
 
 
     private static final boolean ENA_POPUP = true;
@@ -147,7 +146,7 @@ public class GuiController extends ClientView {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("There was a problem with the Gods you selected");
-            alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease select the correct Gods");
+            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays + "\nPlease select the correct Gods");
 
             alert.showAndWait();
         });
@@ -173,8 +172,8 @@ public class GuiController extends ClientView {
 
         GUI.setRoot("pickGod");
         FXMLLoader fxmlLoader = GUI.getFXMLLoader();
-        PickGodController controller = fxmlLoader.getController();
-        controller.setHand(hand);
+        PickGodController pickGodController = fxmlLoader.getController();
+        pickGodController.setHand(hand);
 
         God ret = null;
         String godName = (String) getFromUser();
@@ -197,7 +196,7 @@ public class GuiController extends ClientView {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("There was a problem with the God you selected");
-            alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease select the correct God");
+            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays + "\nPlease select the correct God");
 
             alert.showAndWait();
         });
@@ -246,7 +245,7 @@ public class GuiController extends ClientView {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("There was a problem with the worker you wanted to place");
-            alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease try place it again");
+            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays + "\nPlease try place it again");
 
             alert.showAndWait();
         });
@@ -325,7 +324,7 @@ public class GuiController extends ClientView {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("There was a problem with the worker you selected");
-            alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease select another worker");
+            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays + "\nPlease select another worker");
 
             alert.showAndWait();
         });
@@ -397,7 +396,7 @@ public class GuiController extends ClientView {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("There was a problem with the power you want to use");
-            alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease do a different action");
+            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays + "\nPlease do a different action");
 
             alert.showAndWait();
         });
@@ -437,7 +436,7 @@ public class GuiController extends ClientView {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("There was a problem with the move you performed");
-            alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease move again");
+            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays + "\nPlease move again");
 
             alert.showAndWait();
         });
@@ -446,22 +445,7 @@ public class GuiController extends ClientView {
     @Override
     public boolean wantMoveAgain() {
 
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle(INFORMATION_DIALOG);
-            alert.setHeaderText("Do you want to move again?");
-            alert.setContentText("Choose your option.");
-
-            ButtonType buttonTypeOne = new ButtonType("Yes");
-            ButtonType buttonTypeTwo = new ButtonType("No");
-
-            alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
-
-            Optional<ButtonType> result = alert.showAndWait();
-
-            // setta true se result.get() == buttonTypeOne, altrimenti false
-            parameterListener.setParameter(result.get() == buttonTypeOne);
-        });
+        choicePopup(1);
 
         return (boolean) getFromUser();
     }
@@ -489,7 +473,7 @@ public class GuiController extends ClientView {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("End Move Request Error");
-            alert.setContentText("Game Manager says: " + gameManagerSays);
+            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays);
 
             alert.showAndWait();
         });
@@ -517,10 +501,28 @@ public class GuiController extends ClientView {
     @Override
     public boolean wantBuildAgain() {
 
+        choicePopup(2);
+
+        return (boolean) getFromUser();
+
+    }
+
+    /**
+     * Based on the parameter change what to show
+     *
+     * @param i 1 for move, 2 for build
+     */
+    private void choicePopup(int i) {
+
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle(INFORMATION_DIALOG);
-            alert.setHeaderText("Do you want to build again?");
+
+            if (i == 1)
+                alert.setHeaderText("Do you want to move again?");
+            else if (i == 2)
+                alert.setHeaderText("Do you want to build again?");
+
             alert.setContentText("Choose your option.");
 
             ButtonType buttonTypeOne = new ButtonType("Yes");
@@ -531,12 +533,8 @@ public class GuiController extends ClientView {
             Optional<ButtonType> result = alert.showAndWait();
 
             //setta true se result.get() == buttonTypeOne, altrimenti false
-
             parameterListener.setParameter(result.orElse(null) == buttonTypeOne);
         });
-
-        return (boolean) getFromUser();
-
     }
 
     @Override
@@ -555,7 +553,7 @@ public class GuiController extends ClientView {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("There was a problem with the built you performed");
-            alert.setContentText("Game Manager says: " + gameManagerSays + "\nPlease build again");
+            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays + "\nPlease build again");
 
             alert.showAndWait();
         });
@@ -586,7 +584,7 @@ public class GuiController extends ClientView {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("End Build Request Error");
-            alert.setContentText("Game Manager says: " + gameManagerSays);
+            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays);
 
             alert.showAndWait();
         });
@@ -602,7 +600,7 @@ public class GuiController extends ClientView {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(ERROR_DIALOG);
             alert.setHeaderText("End Building Phase");
-            alert.setContentText("Game Manager says: " + gameManagerSays);
+            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays);
 
             alert.showAndWait();
         });
@@ -707,11 +705,6 @@ public class GuiController extends ClientView {
             opponentWorkerSelected.deselectedOnGUI();
 
         opponentWorkerSelected = null;
-    }
-
-    @Override
-    public void doNothing() {
-
     }
 
     @Override

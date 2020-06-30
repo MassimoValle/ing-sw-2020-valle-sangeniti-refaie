@@ -46,7 +46,7 @@ public class Client {
         try {
             sendMessage(request);
         }catch (IOException e) {
-            e.printStackTrace();
+            ClientManager.LOGGER.severe(e.getMessage());
         }
     }
 
@@ -59,7 +59,7 @@ public class Client {
                     socket.close();
                 }
             } catch (InterruptedException | IOException e) {
-                e.printStackTrace();
+                ClientManager.LOGGER.severe(e.getMessage());
                 Thread.currentThread().interrupt();
             }
         }).start();
@@ -71,7 +71,6 @@ public class Client {
         while (!Thread.currentThread().isInterrupted()){
 
             //QUESTO NON E' UN PING
-            //System.out.println("Socket keep alive: " + socket.getKeepAlive());
 
             if(!socket.getKeepAlive()) return false;
 
@@ -103,7 +102,7 @@ public class Client {
                 clientManager.handleMessageFromServer(queue.pop());
 
         } catch (ClassNotFoundException e){
-            e.printStackTrace();
+            ClientManager.LOGGER.severe(e.getMessage());
         }
     }
 
@@ -123,7 +122,8 @@ public class Client {
                     receiveMessage();
 
             } catch(NoSuchElementException e){
-                System.out.println("Connection closed from the client side");
+                ClientManager.LOGGER.info("Connection closed from the client side");
+                ClientManager.LOGGER.severe(e.getMessage());
             }
 
         }
@@ -133,7 +133,7 @@ public class Client {
     public void startConnection() throws  IOException{
 
         socket = new Socket(ip, port);
-        System.out.println("Connection established");
+        ClientManager.LOGGER.info("Connection established");
 
         socket.setKeepAlive(true);
         //ping();
