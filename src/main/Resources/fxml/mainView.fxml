@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -8,6 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.view.gui.viewcontrollers.MainViewController">
    <children>
@@ -15,7 +17,7 @@
          <children>
             <BorderPane prefHeight="448.0" prefWidth="648.0">
                <center>
-                  <GridPane fx:id="gridPane" style="-fx-border-color: red;" BorderPane.alignment="CENTER">
+                  <GridPane fx:id="gridPane" BorderPane.alignment="CENTER">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -74,15 +76,33 @@
                   <AnchorPane prefHeight="81.0" prefWidth="1280.0" BorderPane.alignment="CENTER" />
                </bottom>
                <left>
-                  <AnchorPane prefHeight="548.0" prefWidth="374.0" BorderPane.alignment="CENTER">
-                     <children>
-                        <Button fx:id="powerButton" layoutX="63.0" layoutY="399.0" mnemonicParsing="false" onAction="#powerEvent" prefHeight="58.0" prefWidth="211.0" styleClass="PowerButton" stylesheets="@../css/mycss.css" />
-                     </children></AnchorPane>
+                  <AnchorPane prefHeight="548.0" prefWidth="374.0" BorderPane.alignment="CENTER" />
                </left>
                <right>
                   <AnchorPane prefHeight="548.0" prefWidth="374.0" BorderPane.alignment="CENTER" />
                </right>
             </BorderPane>
+            <AnchorPane fx:id="topLayer" prefHeight="200.0" prefWidth="200.0" styleClass="PlayerLabel" stylesheets="@../css/mycss.css">
+               <children>
+                  <Button fx:id="powerButton" layoutX="80.0" layoutY="249.0" mnemonicParsing="false" onAction="#powerEvent" prefHeight="31.0" prefWidth="200.0" styleClass="PowerButton" stylesheets="@../css/mycss.css" />
+                  <VBox fx:id="vbox1" layoutY="520.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                     <children>
+                        <Label />
+                        <Label />
+                     </children></VBox>
+                  <VBox fx:id="vbox2" layoutX="478.0" layoutY="246.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <children>
+                        <Label />
+                        <Label />
+                     </children></VBox>
+                  <VBox fx:id="vbox3" layoutX="1290.0" layoutY="618.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label />
+                        <Label />
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
          </children>
       </StackPane>
    </children>

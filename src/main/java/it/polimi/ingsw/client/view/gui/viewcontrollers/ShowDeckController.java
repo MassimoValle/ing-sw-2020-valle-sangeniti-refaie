@@ -98,6 +98,7 @@ public class ShowDeckController implements Initializable {
                     exception.printStackTrace();
                 }
 
+                assert root != null;
                 Scene scene = new Scene(root);
 
                 newWindow.setTitle("God info");
