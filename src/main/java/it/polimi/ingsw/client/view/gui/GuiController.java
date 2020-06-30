@@ -75,7 +75,7 @@ public class GuiController extends ClientView {
         GUI.setRoot("askIpAddr");
 
         String ret = (String) getFromUser();
-        parameterListener.setToNull();
+        ParameterListener.setToNull();
 
         return ret;
     }
@@ -86,7 +86,7 @@ public class GuiController extends ClientView {
         GUI.setRoot("askUsername");
 
         String username = (String) getFromUser();
-        parameterListener.setToNull();
+        ParameterListener.setToNull();
 
         // se 1o player allora non fare la wait
         if(godLikePlayer)
@@ -101,7 +101,7 @@ public class GuiController extends ClientView {
         GUI.setRoot("askLobbySize");
 
         int numbOfPlayers = (int) getFromUser();
-        parameterListener.setToNull();
+        ParameterListener.setToNull();
 
         waitingOpponents();
 
@@ -134,7 +134,7 @@ public class GuiController extends ClientView {
         do {
 
             God god = deck.getGodByName((String) getFromUser());
-            parameterListener.setToNull();
+            ParameterListener.setToNull();
             godsChosen.add(god);
             godsChosenNum++;
 
@@ -184,7 +184,7 @@ public class GuiController extends ClientView {
 
         God ret = null;
         String godName = (String) getFromUser();
-        parameterListener.setToNull();
+        ParameterListener.setToNull();
 
         for(God god : hand){
             if(god.getGodName().equals(godName))
@@ -239,10 +239,10 @@ public class GuiController extends ClientView {
     @Override
     public Position placeWorker(String worker) {
 
-        parameterListener.setToNull();
+        ParameterListener.setToNull();
 
         Position ret = (Position) getFromUser();
-        parameterListener.setToNull();
+        ParameterListener.setToNull();
 
         return ret;
 
@@ -292,21 +292,21 @@ public class GuiController extends ClientView {
     @Override
     public int selectWorker(List<Position> workersPositions) {
 
-        parameterListener.setToNull();
+        ParameterListener.setToNull();
         boolean again = false;
 
         do {
-            //Logger.getLogger(LOGGER).log(Level.INFO, "Selecting a worker");
+            ClientManager.LOGGER.info("Selecting a worker");
 
             if(again) {
-                parameterListener.setToNull();
+                ParameterListener.setToNull();
                 selectedWorker = null;
             }
 
             if (selectedWorker == null) {
 
                 Position pos = (Position) getFromUser();
-                parameterListener.setToNull();
+                ParameterListener.setToNull();
                 selectedWorker = BabyGame.getInstance().getClientMap().getWorkerOnSquare(pos);
             }
 
@@ -317,7 +317,7 @@ public class GuiController extends ClientView {
         //da spostare sulla risposta positiva alla select worker
         selectedWorker.selectedOnGUI();
 
-        parameterListener.setToNull();
+        ParameterListener.setToNull();
 
         return selectedWorker.getNumber();
     }
@@ -359,7 +359,7 @@ public class GuiController extends ClientView {
     @Override
     public PossibleClientAction choseActionToPerform(List<PossibleClientAction> possibleActions) {
 
-        parameterListener.setToNull();
+        ParameterListener.setToNull();
 
         if(possibleActions.contains(PossibleClientAction.POWER_BUTTON)){
             controller.enablePowerButton();
@@ -372,7 +372,7 @@ public class GuiController extends ClientView {
 
         if(parameter instanceof String){
             if(parameter.equals("power")) {
-                parameterListener.setToNull();
+                ParameterListener.setToNull();
                 return PossibleClientAction.POWER_BUTTON;
             }
         }
@@ -386,7 +386,7 @@ public class GuiController extends ClientView {
 
                     selectedWorker = BabyGame.getInstance().getClientMap().getWorkerOnSquare((Position) parameter);
 
-                    parameterListener.setToNull();
+                    ParameterListener.setToNull();
                     return PossibleClientAction.SELECT_WORKER;
                 }
             }
@@ -438,7 +438,7 @@ public class GuiController extends ClientView {
         //controller.disablePosition();
 
         Position ret =  (Position) getFromUser();
-        parameterListener.setToNull();
+        ParameterListener.setToNull();
 
         return  ret;
 
@@ -465,7 +465,7 @@ public class GuiController extends ClientView {
         choicePopup(1);
 
         boolean ret = (boolean) getFromUser();
-        parameterListener.setToNull();
+        ParameterListener.setToNull();
 
         return ret;
     }
@@ -515,7 +515,7 @@ public class GuiController extends ClientView {
         //controller.disablePosition();
 
         Position ret =( Position) getFromUser();
-        parameterListener.setToNull();
+        ParameterListener.setToNull();
 
         return ret;
 
@@ -526,7 +526,10 @@ public class GuiController extends ClientView {
 
         choicePopup(2);
 
-        return (boolean) getFromUser();
+        boolean ret = (boolean) getFromUser();
+        ParameterListener.setToNull();
+
+        return ret;
 
     }
 
@@ -558,11 +561,6 @@ public class GuiController extends ClientView {
             //setta true se result.get() == buttonTypeOne, altrimenti false
             parameterListener.setParameter(result.orElse(null) == buttonTypeOne);
         });
-
-        boolean ret = (boolean) getFromUser();
-        parameterListener.setToNull();
-
-        return ret;
 
     }
 
