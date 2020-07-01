@@ -16,10 +16,8 @@ import java.util.Objects;
 
 public class Deck extends ArrayList<God> implements Serializable {
 
-    protected transient GameMap map;
 
-    public Deck(GameMap map) {
-        this.map = map;
+    public Deck() {
         loadXML();
     }
 
@@ -117,21 +115,4 @@ public class Deck extends ArrayList<God> implements Serializable {
         return string;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Deck)) return false;
-        if (!super.equals(o)) return false;
-
-        Deck gods = (Deck) o;
-
-        return Objects.equals(map, gods.map);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (map != null ? map.hashCode() : 0);
-        return result;
-    }
 }

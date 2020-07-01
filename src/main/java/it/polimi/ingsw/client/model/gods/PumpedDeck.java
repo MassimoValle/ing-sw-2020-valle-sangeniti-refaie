@@ -15,11 +15,8 @@ public class PumpedDeck extends Deck {
     /**
      * Instantiates a new Pumped deck.
      *
-     * @param map the map is used by
      */
-    public PumpedDeck(GameMap map) {
-        super(map);
-    }
+    public PumpedDeck() { }
 
     @Override
     protected God createGod(String godName, String godDescription, String godPowerType, String godPowerDescription) {

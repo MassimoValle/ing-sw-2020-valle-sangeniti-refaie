@@ -31,11 +31,11 @@ public class BabyGame {
     public BabyGame(){
         if(ClientManager.getClientView() instanceof GuiController) {
             clientMap = new GUImap();
-            deck = new PumpedDeck(clientMap);
+            deck = new PumpedDeck();
         }
         else{
             clientMap = new CLIclientMap();
-            deck = new Deck(clientMap);
+            deck = new Deck();
         }
     }
 

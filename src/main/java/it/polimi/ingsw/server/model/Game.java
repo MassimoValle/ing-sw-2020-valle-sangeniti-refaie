@@ -32,7 +32,7 @@ public class Game extends Observable<Message> {
     public Game() {
         this.players = new ArrayList<>();
         this.gameMap = new GameMap();
-        this.deck = new Deck(gameMap);
+        this.deck = new Deck();
 
         this.chosenGodsFromDeck = new ArrayList<>();
 

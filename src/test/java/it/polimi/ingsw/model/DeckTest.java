@@ -14,7 +14,7 @@ public class DeckTest {
 
     @BeforeClass
     public static void initClass() {
-        deck = new Deck(new GameMap());
+        deck = new Deck();
     }
 
 
