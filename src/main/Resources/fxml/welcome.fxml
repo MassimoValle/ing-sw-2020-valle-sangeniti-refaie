@@ -9,7 +9,7 @@
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
-            <Button mnemonicParsing="false" onAction="#newGameEvent" prefHeight="165.0" prefWidth="178.0" styleClass="playButton" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER">
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#newGameEvent" prefHeight="165.0" prefWidth="178.0" styleClass="playButton" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER">
                <font>
                   <Font name="Comic Sans MS" size="24.0" />
                </font></Button>
