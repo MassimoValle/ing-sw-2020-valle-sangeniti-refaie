@@ -66,5 +66,6 @@ public class PickGodController implements Initializable {
 
             godsFlowPane.getChildren().add(godPane);
         }
+
     }
 }

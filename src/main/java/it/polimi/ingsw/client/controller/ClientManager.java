@@ -147,17 +147,26 @@ public class ClientManager {
 
         switch (serverRequest.getContent()) {
 
-            case CHOOSE_GODS_SERVER_REQUEST -> chooseGodFromDeck((ChooseGodsServerRequest) serverRequest);
+            case CHOOSE_GODS_SERVER_REQUEST -> {
+                assert serverRequest instanceof ChooseGodsServerRequest;
+                chooseGodFromDeck((ChooseGodsServerRequest) serverRequest);
+            }
 
-            case PICK_GOD -> pickGod((PickGodServerRequest) serverRequest);
+            case PICK_GOD -> {
+                assert serverRequest instanceof PickGodServerRequest;
+                pickGod((PickGodServerRequest) serverRequest);
+            }
 
-            case PLACE_WORKER -> placeWorker((PlaceWorkerServerRequest) serverRequest);
+            case PLACE_WORKER -> {
+                assert serverRequest instanceof PlaceWorkerServerRequest;
+                placeWorker((PlaceWorkerServerRequest) serverRequest);
+            }
 
             case START_TURN -> startTurn();
 
             case SELECT_WORKER -> selectWorker();
 
-            case MOVE_WORKER -> handleMoveWorkerServerRequest((MoveWorkerServerRequest) serverRequest);
+            case MOVE_WORKER -> handleMoveWorkerServerRequest();
 
             case BUILD -> handleBuildServerRequest();
 
@@ -166,7 +175,7 @@ public class ClientManager {
 
     }
 
-    private void handleMoveWorkerServerRequest(MoveWorkerServerRequest serverRequest) {
+    private void handleMoveWorkerServerRequest() {
         if (canMoveAgain && !clientView.wantMoveAgain()) {
             canMoveAgain = false;
             sendEndMoveRequest();
@@ -665,7 +674,7 @@ public class ClientManager {
             clientView.errorWhileActivatingPower(serverResponse.getGameManagerSays());
 
             if (clientState == PossibleClientState.MOVING_WORKER) {
-                handleMoveWorkerServerRequest((MoveWorkerServerRequest) currentServerRequest);
+                handleMoveWorkerServerRequest();
                 return;
             }
 

@@ -10,7 +10,7 @@ public class TritonPower extends Power {
 
 
     public TritonPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+        super(powerType, powerDescription);
     }
 
     @Override

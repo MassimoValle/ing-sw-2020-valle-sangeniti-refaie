@@ -28,6 +28,7 @@ public class GUI extends Application {
 
         stage.setTitle("Santorini");
         stage.setScene(scene);
+        stage.centerOnScreen();
         stage.show();
 
         setClientView();
@@ -67,8 +68,12 @@ public class GUI extends Application {
         }
         else {
             Parent finalRoot = root;
-            Platform.runLater(() -> scene.setRoot(finalRoot));
+            Platform.runLater(() -> {
+                scene.setRoot(finalRoot);
+                mystage.centerOnScreen();
+            });
         }
+
 
 
     }
@@ -83,6 +88,7 @@ public class GUI extends Application {
     }
 
     public static Stage getStage(){
+
         return mystage;
     }
 

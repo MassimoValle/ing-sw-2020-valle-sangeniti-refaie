@@ -19,7 +19,7 @@ public abstract class Power implements Serializable, GodsChecker {
     protected transient GameMap map;
 
 
-    protected Power(String powerType, String powerDescription, GameMap map) {
+    protected Power(String powerType, String powerDescription) {
         this.powerType = PowerType.matchFromXml(powerType);
         this.powerDescription = powerDescription;
         this.map = null;

@@ -5,10 +5,6 @@ import it.polimi.ingsw.server.model.map.Square;
 
 public class ZeusBuildAction extends BuildAction{
 
-    public ZeusBuildAction(Square squareWhereTheWorkerIs, Square squareWhereToBuildOn) {
-        super(squareWhereTheWorkerIs, squareWhereToBuildOn);
-    }
-
     public ZeusBuildAction(Square squareWhereToBuild) {
         super(squareWhereToBuild, squareWhereToBuild);
     }

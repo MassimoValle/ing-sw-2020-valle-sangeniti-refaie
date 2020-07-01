@@ -37,11 +37,6 @@ public class GodsInGame {
         }
     }
 
-    // ritorna la lista di gods relativi al game
-    public ArrayList<God> getGods(Game game){
-        return godsInGame.get(game);
-    }
-
     // ritorna la lista di poteri relativa al game
     public ArrayList<Power> getPowers(Game game){
 

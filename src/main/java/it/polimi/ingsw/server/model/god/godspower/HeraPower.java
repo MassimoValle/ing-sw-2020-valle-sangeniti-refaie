@@ -6,7 +6,7 @@ import it.polimi.ingsw.server.model.map.GameMap;
 public class HeraPower extends Power {
 
     public HeraPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+        super(powerType, powerDescription);
     }
 
 }

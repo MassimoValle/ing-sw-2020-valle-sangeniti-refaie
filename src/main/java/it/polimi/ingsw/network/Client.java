@@ -2,7 +2,6 @@ package it.polimi.ingsw.network;
 
 import it.polimi.ingsw.client.controller.ClientManager;
 import it.polimi.ingsw.client.view.ClientView;
-import it.polimi.ingsw.client.view.cli.CLI;
 import it.polimi.ingsw.network.message.*;
 import it.polimi.ingsw.network.message.server.ServerMessage;
 import it.polimi.ingsw.network.message.clientrequests.Request;
@@ -22,7 +21,7 @@ public class Client {
     private static String ip;
     private static int port;
 
-    private static LinkedList<ServerMessage> queue = new LinkedList<>();
+    private static final LinkedList<ServerMessage> queue = new LinkedList<>();
 
     private static ObjectInputStream socketIn;
     private static ObjectOutputStream socketOut;
@@ -51,7 +50,7 @@ public class Client {
     }
 
 
-    private void ping(){
+    private static void ping(){
 
         new Thread(() -> {
             try {
@@ -66,7 +65,7 @@ public class Client {
 
     }
 
-    private boolean getKeepAlive() throws SocketException, InterruptedException {
+    private static boolean getKeepAlive() throws SocketException, InterruptedException {
 
         while (!Thread.currentThread().isInterrupted()){
 
@@ -136,7 +135,7 @@ public class Client {
         ClientManager.LOGGER.info("Connection established");
 
         socket.setKeepAlive(true);
-        //ping();
+        ping();
 
         socketOut = new ObjectOutputStream(socket.getOutputStream());
         socketIn = new ObjectInputStream(socket.getInputStream());

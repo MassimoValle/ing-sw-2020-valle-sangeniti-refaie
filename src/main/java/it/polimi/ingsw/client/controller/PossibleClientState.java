@@ -21,7 +21,6 @@ public enum PossibleClientState {
     MOVING_WORKER,
     WORKER_MOVED,
     BUILDING,
-    BUILDING_DONE,
     ENDING_TURN,
 
 

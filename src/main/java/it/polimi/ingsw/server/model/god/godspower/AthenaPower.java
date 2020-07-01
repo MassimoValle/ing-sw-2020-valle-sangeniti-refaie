@@ -13,7 +13,7 @@ public class AthenaPower extends Power {
     private transient boolean goneUp;
 
     public AthenaPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+        super(powerType, powerDescription);
     }
 
     @Override

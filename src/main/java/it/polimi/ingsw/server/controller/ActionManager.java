@@ -527,10 +527,6 @@ public class ActionManager {
     }
 
 
-    private void doNothing() {
-        //nothing happens
-    }
-
     public TurnManager getTurnManager() {
         return this.turnManager;
     }

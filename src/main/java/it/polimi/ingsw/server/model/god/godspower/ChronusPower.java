@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class ChronusPower extends Power implements Serializable {
 
     public ChronusPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+        super(powerType, powerDescription);
     }
 
 }

@@ -18,7 +18,7 @@ public class MinotaurPower extends Power {
     private transient Position backWardPosition;
 
     public MinotaurPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+        super(powerType, powerDescription);
     }
 
     @Override

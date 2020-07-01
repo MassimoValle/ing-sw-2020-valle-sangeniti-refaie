@@ -17,7 +17,7 @@ public class ArtemisPower extends Power implements Serializable {
     private ActionOutcome outcome;
 
     public ArtemisPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+        super(powerType, powerDescription);
         this.firstMove = true;
     }
 

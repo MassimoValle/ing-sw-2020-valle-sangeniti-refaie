@@ -40,6 +40,7 @@ public class ShowDeckController implements Initializable {
         PumpedDeck pumpedDeck = (PumpedDeck) BabyGame.getInstance().getDeck();
 
         for (God god : pumpedDeck){
+
             ImageView imageView = god.getImgView();
 
 

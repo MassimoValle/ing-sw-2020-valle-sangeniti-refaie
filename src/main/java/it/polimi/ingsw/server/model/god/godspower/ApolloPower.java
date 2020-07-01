@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class ApolloPower extends Power {
 
     public ApolloPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+        super(powerType, powerDescription);
     }
 
     @Override

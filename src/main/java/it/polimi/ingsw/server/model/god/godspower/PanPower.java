@@ -11,7 +11,7 @@ public class PanPower extends Power {
 
 
     public PanPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+        super(powerType, powerDescription);
     }
 
     @Override

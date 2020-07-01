@@ -5,5 +5,4 @@ public enum PossibleClientAction {
     POWER_BUTTON,
     MOVE,
     BUILD,
-    BUILD_DOME,
 }
