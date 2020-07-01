@@ -2,7 +2,6 @@ package it.polimi.ingsw.network;
 
 import it.polimi.ingsw.client.controller.ClientManager;
 import it.polimi.ingsw.client.view.ClientView;
-import it.polimi.ingsw.client.view.cli.CLI;
 import it.polimi.ingsw.network.message.*;
 import it.polimi.ingsw.network.message.server.ServerMessage;
 import it.polimi.ingsw.network.message.clientrequests.Request;
@@ -22,7 +21,7 @@ public class Client {
     private static String ip;
     private static int port;
 
-    private static LinkedList<ServerMessage> queue = new LinkedList<>();
+    private final LinkedList<ServerMessage> queue = new LinkedList<>();
 
     private static ObjectInputStream socketIn;
     private static ObjectOutputStream socketOut;
@@ -36,11 +35,11 @@ public class Client {
         Client.ip = ip;
         Client.port = port;
 
-        clientManager = new ClientManager(clientView);
+        clientManager = new ClientManager(clientView, this);
 
     }
 
-    public static void sendRequest(Request request) {
+    public static synchronized void sendRequest(Request request) {
 
         try {
             sendMessage(request);
@@ -91,19 +90,29 @@ public class Client {
 
     }
 
-    private static void receiveMessage() throws IOException{
+    private void receiveMessage() throws IOException{
         ServerMessage received;
+
         try {
             received = (ServerMessage) socketIn.readObject();
 
-            queue.add(received);
-
-            if(!queue.isEmpty())
-                clientManager.handleMessageFromServer(queue.pop());
+            synchronized (queue) {
+                queue.add(received);
+            }
 
         } catch (ClassNotFoundException e){
             ClientManager.LOGGER.severe(e.getMessage());
         }
+    }
+
+    public ServerMessage getMessageFromQueue() {
+
+        synchronized (queue) {
+            if (!queue.isEmpty())
+                return queue.pop();
+        }
+
+        return null;
     }
 
 

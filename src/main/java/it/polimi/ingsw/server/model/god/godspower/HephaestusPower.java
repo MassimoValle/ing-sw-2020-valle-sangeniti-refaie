@@ -9,8 +9,8 @@ public class HephaestusPower extends Power {
     private transient boolean firstBuild;
     private transient Square firstBlockBuilt;
 
-    public HephaestusPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+    public HephaestusPower(String powerType, String powerDescription) {
+        super(powerType, powerDescription);
         firstBuild = true;
         firstBlockBuilt = null;
     }

@@ -6,8 +6,8 @@ import it.polimi.ingsw.server.model.map.Square;
 
 public class AtlasPower extends Power {
 
-    public AtlasPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+    public AtlasPower(String powerType, String powerDescription) {
+        super(powerType, powerDescription);
     }
 
     @Override

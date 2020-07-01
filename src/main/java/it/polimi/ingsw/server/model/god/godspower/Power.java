@@ -11,6 +11,8 @@ import it.polimi.ingsw.server.model.player.Worker;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class Power implements Serializable, GodsChecker {
 
@@ -19,10 +21,9 @@ public abstract class Power implements Serializable, GodsChecker {
     protected transient GameMap map;
 
 
-    protected Power(String powerType, String powerDescription, GameMap map) {
+    protected Power(String powerType, String powerDescription) {
         this.powerType = PowerType.matchFromXml(powerType);
         this.powerDescription = powerDescription;
-        this.map = null;
     }
 
     protected PowerType getPowerType() {
@@ -164,6 +165,20 @@ public abstract class Power implements Serializable, GodsChecker {
     public void resetPower() {
 
     }
+
+    protected List<Square> getPowerSquares(Worker worker) {
+        ArrayList<Square> adjacents = new ArrayList<>();
+
+        for (Position position : worker.getPosition().getAdjacentPlaces())
+            adjacents.add(map.getSquare(position));
+
+        return adjacents.stream()
+                .filter((Square::hasWorkerOn))
+                .filter((square -> !square.getWorkerOnSquare().getColor().equals(worker.getColor())))
+                .collect(Collectors.toList());
+
+    }
+
 
 
     @Override

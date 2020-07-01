@@ -42,7 +42,6 @@ public class ClientManager {
 
     //Its use is intended to deal with message when the player is not the turn owner
     private final ServerMessageManager serverMessageManager;
-
     private final ClientBoardUpdater clientBoardUpdater;
 
     // variabili di controllo
@@ -69,8 +68,9 @@ public class ClientManager {
      * Instantiates a new Client manager.
      *
      * @param clientView the client view
+     * @param client the network entity
      */
-    public ClientManager(ClientView clientView){
+    public ClientManager(ClientView clientView, Client client){
 
         setClientView(clientView);
 
@@ -79,6 +79,9 @@ public class ClientManager {
         this.babyGame = BabyGame.getInstance();
 
         this.clientBoardUpdater = new ClientBoardUpdater(babyGame);
+
+        initMessageReceiver(client);
+        //this.messageReceiver = new MessageReceiver(client, this);
 
         Date date = GregorianCalendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("dd-mm_HH.mm.ss");
@@ -95,6 +98,10 @@ public class ClientManager {
         }
 
         clientState = PossibleClientState.LOGIN;
+    }
+
+    private void initMessageReceiver(Client client) {
+        new MessageReceiver(client, this);
     }
 
     private static synchronized void setClientView(ClientView clientView) {
@@ -115,9 +122,10 @@ public class ClientManager {
         takeMessage(serverMessage);
     }
 
+
     //mette il messaggio in arrivo in current message e
     // setta il client sul messaggio per poter fare l'azione desiderata sul client
-    private void takeMessage(ServerMessage updateServerMessage) {
+    public void takeMessage(ServerMessage updateServerMessage) {
         this.currentMessage = updateServerMessage;
         currentMessage.setClientManager(this);
         currentMessage.update();
@@ -505,12 +513,14 @@ public class ClientManager {
 
         //REMOVE THIS PLAYER FROM THE MATCH
         removePlayerFromMatch(me);
-
-        //POSSIAMO FAR SI CHE IL CLIENT POSSA CHIEDERE SE VOGLIA RIMANERE A VEDERE IL PROSEGUIO DELLA PARTITA INVIANDOGLI SEMPRE LE INFORMAZIONI
-        //OPPURE POSSIAMO SEMPLICEMENTE TAGLIARLO FUORI
     }
 
 
+    /**
+     * This method is called when someone lose (not this client)
+     *
+      * @param serverResponse containing loser info
+     */
     private void someoneHasLost(LostServerResponse serverResponse) {
         clientView.someoneHasLost(serverResponse.getMessageRecipient());
         removePlayerFromMatch(babyGame.getPlayerByName(serverResponse.getMessageRecipient()));
@@ -524,7 +534,7 @@ public class ClientManager {
     }
 
 
-    //SERVER RESPONSE
+
     private void handleChooseGodsServerResponse(ChooseGodsServerResponse serverResponse) {
 
         if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {
@@ -533,7 +543,7 @@ public class ClientManager {
             return;
         }
 
-        clientView.godsSelectedSuccesfully();
+        clientView.godsSelectedSuccessfully();
         myTurn = false;
         clientState = PossibleClientState.GODS_CHOSEN;
     }
@@ -541,7 +551,7 @@ public class ClientManager {
     private void handlePickGodServerResponse(PickGodServerResponse serverResponse) {
 
         if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {
-            clientView.errorWhilePickinUpGod(serverResponse.getGameManagerSays());
+            clientView.errorWhilePickingUpGod(serverResponse.getGameManagerSays());
             pickGod((PickGodServerRequest) currentServerRequest);
             return;
         }
@@ -558,7 +568,7 @@ public class ClientManager {
             return;
         }
 
-        clientView.workerPlacedSuccesfully();
+        clientView.workerPlacedSuccessfully();
         workerPlaced++;
 
         if(workerPlaced == 2) {

@@ -10,8 +10,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -25,7 +24,8 @@ public class Deck extends ArrayList<God> implements Serializable {
     }
 
     protected boolean loadXML(){
-        File file = new File("src/main/Resources/XMLs/gods.xml");
+
+        InputStream in = getClass().getResourceAsStream("/XMLs/gods.xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 
         try {
@@ -38,7 +38,7 @@ public class Deck extends ArrayList<God> implements Serializable {
         DocumentBuilder dBuilder;
         try {
             dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(file);
+            Document doc = dBuilder.parse(in);
             doc.getDocumentElement().normalize();
 
             NodeList nodeList = doc.getElementsByTagName("god");
@@ -65,20 +65,20 @@ public class Deck extends ArrayList<God> implements Serializable {
     protected God createGod(String godName, String godDescription, String godPowerType, String godPowerDescription) {
 
         return switch (godName) {
-            case "Apollo" -> new God(godName, godDescription, new ApolloPower(godPowerType, godPowerDescription, map), null);
-            case "Artemis" -> new God(godName, godDescription, new ArtemisPower(godPowerType, godPowerDescription, map), null);
-            case "Athena" -> new God(godName, godDescription, new AthenaPower(godPowerType, godPowerDescription, map), null);
-            case "Atlas" -> new God(godName, godDescription, new AtlasPower(godPowerType, godPowerDescription, map), null);
-            case "Demeter" -> new God(godName, godDescription, new DemeterPower(godPowerType, godPowerDescription, map), null);
-            case "Hephaestus" -> new God(godName, godDescription, new HephaestusPower(godPowerType, godPowerDescription, map), null);
-            case "Minotaur" -> new God(godName, godDescription, new MinotaurPower(godPowerType, godPowerDescription, map), null);
-            case "Pan" -> new God(godName, godDescription, new PanPower(godPowerType, godPowerDescription, map), null);
-            case "Prometheus" -> new God(godName, godDescription, new PrometheusPower(godPowerType, godPowerDescription, map), null);
-            case "Chronus" -> new God(godName, godDescription, new ChronusPower(godPowerType, godPowerDescription, map), null);
-            case "Hera" -> new God(godName, godDescription, new HeraPower(godPowerType, godPowerDescription, map), null);
-            case "Hestia" -> new God(godName, godDescription, new HestiaPower(godPowerType, godPowerDescription, map), null);
-            case "Zeus" -> new God(godName, godDescription, new ZeusPower(godPowerType, godPowerDescription, map), null);
-            case "Triton" -> new God(godName, godDescription, new TritonPower(godPowerType, godPowerDescription, map), null);
+            case "Apollo" -> new God(godName, godDescription, new ApolloPower(godPowerType, godPowerDescription), null);
+            case "Artemis" -> new God(godName, godDescription, new ArtemisPower(godPowerType, godPowerDescription), null);
+            case "Athena" -> new God(godName, godDescription, new AthenaPower(godPowerType, godPowerDescription), null);
+            case "Atlas" -> new God(godName, godDescription, new AtlasPower(godPowerType, godPowerDescription), null);
+            case "Demeter" -> new God(godName, godDescription, new DemeterPower(godPowerType, godPowerDescription), null);
+            case "Hephaestus" -> new God(godName, godDescription, new HephaestusPower(godPowerType, godPowerDescription), null);
+            case "Minotaur" -> new God(godName, godDescription, new MinotaurPower(godPowerType, godPowerDescription), null);
+            case "Pan" -> new God(godName, godDescription, new PanPower(godPowerType, godPowerDescription), null);
+            case "Prometheus" -> new God(godName, godDescription, new PrometheusPower(godPowerType, godPowerDescription), null);
+            case "Chronus" -> new God(godName, godDescription, new ChronusPower(godPowerType, godPowerDescription), null);
+            case "Hera" -> new God(godName, godDescription, new HeraPower(godPowerType, godPowerDescription), null);
+            case "Hestia" -> new God(godName, godDescription, new HestiaPower(godPowerType, godPowerDescription), null);
+            case "Zeus" -> new God(godName, godDescription, new ZeusPower(godPowerType, godPowerDescription), null);
+            case "Triton" -> new God(godName, godDescription, new TritonPower(godPowerType, godPowerDescription), null);
             default -> null;
         };
     }

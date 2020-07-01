@@ -12,8 +12,8 @@ public class HestiaPower extends Power {
 
     private transient boolean firstBuild;
 
-    public HestiaPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+    public HestiaPower(String powerType, String powerDescription) {
+        super(powerType, powerDescription);
         firstBuild = true;
     }
 

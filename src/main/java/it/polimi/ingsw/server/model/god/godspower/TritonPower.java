@@ -9,8 +9,8 @@ import it.polimi.ingsw.server.model.player.Worker;
 public class TritonPower extends Power {
 
 
-    public TritonPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+    public TritonPower(String powerType, String powerDescription) {
+        super(powerType, powerDescription);
     }
 
     @Override

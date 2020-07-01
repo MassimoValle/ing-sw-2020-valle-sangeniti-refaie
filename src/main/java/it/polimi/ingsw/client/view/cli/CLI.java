@@ -164,7 +164,7 @@ public class CLI extends ClientView {
     }
 
     @Override
-    public void godsSelectedSuccesfully() {
+    public void godsSelectedSuccessfully() {
 
         consoleOut.println("Gods selected successfully");
         consoleOut.println();
@@ -208,7 +208,7 @@ public class CLI extends ClientView {
     }
 
     @Override
-    public void errorWhilePickinUpGod(String gameManagerSays) {
+    public void errorWhilePickingUpGod(String gameManagerSays) {
 
         consoleOut.println("\n There was a problem with the God you selected" +
                 SantoriniStream.GAME_MANAGER_SAYS + gameManagerSays +
@@ -289,7 +289,7 @@ public class CLI extends ClientView {
     }
 
     @Override
-    public void workerPlacedSuccesfully() {
+    public void workerPlacedSuccessfully() {
 
         consoleOut.println("Worker placed successfully!");
         consoleOut.println();

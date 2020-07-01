@@ -10,8 +10,8 @@ public class DemeterPower extends Power {
     private transient Square firstBlockBuilt = null;
 
 
-    public DemeterPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+    public DemeterPower(String powerType, String powerDescription) {
+        super(powerType, powerDescription);
     }
 
     @Override

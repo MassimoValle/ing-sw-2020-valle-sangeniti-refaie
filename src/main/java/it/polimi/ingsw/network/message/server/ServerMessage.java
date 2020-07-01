@@ -1,11 +1,11 @@
 package it.polimi.ingsw.network.message.server;
 
 import it.polimi.ingsw.client.controller.ClientManager;
-import it.polimi.ingsw.client.controller.Updater;
+import it.polimi.ingsw.client.controller.CommandInterface;
 import it.polimi.ingsw.network.message.Enum.MessageStatus;
 import it.polimi.ingsw.network.message.Message;
 
-public abstract class ServerMessage extends Message implements Updater {
+public abstract class ServerMessage extends Message implements CommandInterface {
 
     private transient ClientManager clientManager;
     private String messageRecipient;

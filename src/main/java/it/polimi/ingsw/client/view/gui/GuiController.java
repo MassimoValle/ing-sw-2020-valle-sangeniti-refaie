@@ -164,7 +164,7 @@ public class GuiController extends ClientView {
     }
 
     @Override
-    public void godsSelectedSuccesfully() {
+    public void godsSelectedSuccessfully() {
         if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
@@ -200,7 +200,7 @@ public class GuiController extends ClientView {
     }
 
     @Override
-    public void errorWhilePickinUpGod(String gameManagerSays) {
+    public void errorWhilePickingUpGod(String gameManagerSays) {
         if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
@@ -267,7 +267,7 @@ public class GuiController extends ClientView {
     }
 
     @Override
-    public void workerPlacedSuccesfully() {
+    public void workerPlacedSuccessfully() {
         if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
@@ -481,16 +481,12 @@ public class GuiController extends ClientView {
 
     @Override
     public void printCanMoveAgain(String gameManagerSays) {
-
-        //Logger.getLogger(LOGGER).log(Level.INFO, "Player can move again");
-
+        //nothing to show
     }
 
     @Override
     public void workerMovedSuccessfully() {
-
-        //Logger.getLogger(LOGGER).log(Level.INFO, "Worker moved successfully");
-
+        //nothing to show
     }
 
     @Override
@@ -511,9 +507,7 @@ public class GuiController extends ClientView {
 
     @Override
     public void endMovingPhase(String gameManagerSays) {
-
-        //Logger.getLogger(LOGGER).log(Level.INFO, gameManagerSays);
-
+        //nothing to show
     }
 
     @Override
@@ -577,9 +571,7 @@ public class GuiController extends ClientView {
 
     @Override
     public void printCanBuildAgain(String gameManagerSays) {
-
-        //Logger.getLogger(LOGGER).log(Level.INFO, gameManagerSays);
-
+        //nothing to show
     }
 
     @Override
@@ -668,52 +660,52 @@ public class GuiController extends ClientView {
 
     @Override
     public void someoneElseDoingStuff() {
-
+        //nothing to show
     }
 
     @Override
     public void anotherPlayerIsPickingUpGod(String turnOwner) {
-
+        //nothing to show
     }
 
     @Override
     public void anotherPlayerIsPlacingWorker(String turnOwner) {
-
+        //nothing to show
     }
 
     @Override
     public void startingPlayerTurn(String turnOwner) {
-
+        //nothing to show
     }
 
     @Override
     public void anotherPlayerIsSelectingWorker(String turnOwner) {
-
+        //nothing to show
     }
 
     @Override
     public void anotherPlayerIsMoving(String turnOwner) {
-
+        //nothing to show
     }
 
     @Override
     public void anotherPlayerIsBuilding(String turnOwner) {
-
+        //nothing to show
     }
 
     @Override
     public void anotherPlayerHasSelectedGods(String turnOwner) {
-
+        //nothing to show
     }
 
     @Override
     public void anotherPlayerHasPickedUpGod(String turnOwner) {
-
+        //nothing to show
     }
 
     @Override
     public void anotherPlayerHasPlacedWorker(String turnOwner) {
-
+        //nothing to show
     }
 
     @Override
@@ -731,12 +723,12 @@ public class GuiController extends ClientView {
 
     @Override
     public void anotherPlayerHasMoved(String turnOwner) {
-
+        //nothing to show
     }
 
     @Override
     public void anotherPlayerHasBuilt(String turnOwner) {
-
+        //nothing to show
     }
 
     @Override
@@ -764,12 +756,12 @@ public class GuiController extends ClientView {
 
     @Override
     public void iLost() {
-
+        //nothing to show
     }
 
     @Override
     public void someoneHasLost(String loser) {
-
+        //nothing to show
     }
 
     @Override
@@ -786,7 +778,7 @@ public class GuiController extends ClientView {
 
     @Override
     public void closeClient() {
-
+        //nothing to show
     }
 
     @Override

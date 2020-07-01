@@ -13,8 +13,8 @@ public class ZeusPower extends Power implements Serializable {
 
     private transient Position newZeusPosition = null;
 
-    public ZeusPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+    public ZeusPower(String powerType, String powerDescription) {
+        super(powerType, powerDescription);
     }
 
     @Override

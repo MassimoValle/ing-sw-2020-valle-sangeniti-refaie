@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.controller;
 
-public interface Updater {
+public interface CommandInterface {
 
     void execute();
 

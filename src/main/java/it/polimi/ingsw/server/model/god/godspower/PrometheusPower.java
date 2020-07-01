@@ -14,8 +14,8 @@ public class PrometheusPower extends Power implements Serializable {
 
     private transient boolean buildBefore = false;
 
-    public PrometheusPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+    public PrometheusPower(String powerType, String powerDescription) {
+        super(powerType, powerDescription);
     }
 
 

@@ -10,8 +10,8 @@ import it.polimi.ingsw.server.model.player.Worker;
 public class PanPower extends Power {
 
 
-    public PanPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+    public PanPower(String powerType, String powerDescription) {
+        super(powerType, powerDescription);
     }
 
     @Override

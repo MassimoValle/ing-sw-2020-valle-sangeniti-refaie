@@ -8,17 +8,15 @@ import it.polimi.ingsw.server.model.map.Square;
 import it.polimi.ingsw.server.model.player.Position;
 import it.polimi.ingsw.server.model.player.Worker;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class MinotaurPower extends Power {
 
     private transient Position backWardPosition;
 
-    public MinotaurPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+    public MinotaurPower(String powerType, String powerDescription) {
+        super(powerType, powerDescription);
     }
 
     @Override
@@ -42,15 +40,7 @@ public class MinotaurPower extends Power {
     @Override
     public boolean isWorkerStuck(Worker worker) {
 
-        ArrayList<Square> adjacents = new ArrayList<>();
-
-        for (Position position: worker.getPosition().getAdjacentPlaces())
-            adjacents.add(map.getSquare(position));
-
-        List<Square> pushable = adjacents.stream()
-                .filter((Square::hasWorkerOn))
-                .filter((square -> !square.getWorkerOnSquare().getColor().equals(worker.getColor())))
-                .collect(Collectors.toList());
+        List<Square> pushable = super.getPowerSquares(worker);
 
         Square workerSquare = map.getSquare(worker.getPosition());
 

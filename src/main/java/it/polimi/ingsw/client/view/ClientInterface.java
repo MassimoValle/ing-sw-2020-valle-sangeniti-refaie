@@ -30,11 +30,11 @@ public interface ClientInterface {
 
     void errorWhileChoosingGods(String gameManagerSays);
 
-    void godsSelectedSuccesfully();
+    void godsSelectedSuccessfully();
 
     God pickFromChosenGods(ArrayList<God> hand);
 
-    void errorWhilePickinUpGod(String gameManagerSays);
+    void errorWhilePickingUpGod(String gameManagerSays);
 
     void godPickedUpSuccessfully();
 
@@ -44,7 +44,7 @@ public interface ClientInterface {
 
     void errorWhilePlacingYourWorker(String gameManagerSays);
 
-    void workerPlacedSuccesfully();
+    void workerPlacedSuccessfully();
 
     void startingTurn();
 

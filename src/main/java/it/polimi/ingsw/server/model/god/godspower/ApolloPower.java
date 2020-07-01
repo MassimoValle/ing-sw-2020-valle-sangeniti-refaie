@@ -10,12 +10,11 @@ import it.polimi.ingsw.server.model.player.Worker;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ApolloPower extends Power {
 
-    public ApolloPower(String powerType, String powerDescription, GameMap map) {
-        super(powerType, powerDescription, map);
+    public ApolloPower(String powerType, String powerDescription) {
+        super(powerType, powerDescription);
     }
 
     @Override
@@ -42,17 +41,10 @@ public class ApolloPower extends Power {
     @Override
     public boolean isWorkerStuck(Worker worker) {
 
-        ArrayList<Square> adjacents = new ArrayList<>();
-
-        for (Position position: worker.getPosition().getAdjacentPlaces())
-            adjacents.add(map.getSquare(position));
-
-        List<Square> swappable = adjacents.stream()
-                .filter((Square::hasWorkerOn))
-                .filter((square -> !square.getWorkerOnSquare().getColor().equals(worker.getColor())))
-                .collect(Collectors.toList());
+        List<Square> swappable = super.getPowerSquares(worker);
 
         Square apolloStartingSquare = map.getSquare(worker.getPosition());
+
 
         for (Square opponentSquare: swappable) {
             ApolloSwapAction apolloSwapAction = new ApolloSwapAction(this, worker, opponentSquare.getPosition(), apolloStartingSquare, opponentSquare);

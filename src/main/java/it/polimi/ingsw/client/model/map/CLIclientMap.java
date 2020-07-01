@@ -28,32 +28,32 @@ public class CLIclientMap extends GameMap {
         Worker worker = player.getPlayerWorkers().get(workerIndex);
         Power power = player.getPlayerGod().getGodPower();
 
-        moveWorker(worker, position, power);
-
-    }
-
-    private void moveWorker(Worker worker, Position positionWhereToMove, Power power){
-
         Square startingSquare = getSquare(worker.getPosition());
-        Square squareWhereToMove = getSquare(positionWhereToMove);
+        Square squareWhereToMove = getSquare(position);
 
         //this handles the apollo swap client side
         if(power instanceof ApolloPower && squareWhereToMove.hasWorkerOn()) {
-            ApolloSwapAction swap = new ApolloSwapAction((ApolloPower) power, worker, positionWhereToMove, startingSquare, squareWhereToMove);
+            ApolloSwapAction swap = new ApolloSwapAction((ApolloPower) power, worker, position, startingSquare, squareWhereToMove);
             swap.doAction();
             return;
         }
 
         //this handle the minotaur push client side
         if (power instanceof MinotaurPower && squareWhereToMove.hasWorkerOn()) {
-            MinotaurPushAction pushAction = new MinotaurPushAction((MinotaurPower) power, worker, positionWhereToMove, startingSquare, squareWhereToMove);
+            MinotaurPushAction pushAction = new MinotaurPushAction((MinotaurPower) power, worker, position, startingSquare, squareWhereToMove);
             pushAction.getBackwardInfo(this);
             pushAction.doAction();
             return;
         }
 
-        MoveAction moveAction = new MoveAction(power, worker, positionWhereToMove, startingSquare, squareWhereToMove);
+        MoveAction moveAction = new MoveAction(power, worker, position, startingSquare, squareWhereToMove);
         moveAction.doAction();
+
+    }
+
+    private void moveWorker(Worker worker, Position positionWhereToMove, Power power){
+
+
 
     }
 

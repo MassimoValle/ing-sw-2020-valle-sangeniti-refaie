@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.view.gui;
 
 
+import it.polimi.ingsw.client.controller.ClientManager;
 import it.polimi.ingsw.client.view.ClientView;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 
 public class GUI extends Application {
@@ -54,7 +56,7 @@ public class GUI extends Application {
         try {
             root = loadFXML(fxml);
         } catch (IOException exception) {
-            //Logger.getLogger("santorini_log").log(Level.SEVERE, "Fatal error!", exception);
+            ClientManager.LOGGER.severe(exception.getMessage());
             Thread.currentThread().interrupt();
 
             //restart
