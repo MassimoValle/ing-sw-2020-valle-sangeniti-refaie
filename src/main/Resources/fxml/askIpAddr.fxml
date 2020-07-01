@@ -21,7 +21,7 @@
             </FlowPane>
          </center>
          <bottom>
-            <Button mnemonicParsing="false" onAction="#getIpEvent" prefHeight="30.0" prefWidth="135.0" styleClass="nextButton" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER">
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#getIpEvent" prefHeight="30.0" prefWidth="135.0" styleClass="nextButton" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>

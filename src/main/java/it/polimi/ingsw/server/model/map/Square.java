@@ -104,7 +104,8 @@ public class Square {
     }
 
     private void loadImgWorker(){
-        stackPane.getChildren().add(imgWorker);
+        Platform.runLater(() -> stackPane.getChildren().add(imgWorker));
+
     }
 
     /**
@@ -114,11 +115,13 @@ public class Square {
         this.workerOnSquare = null;
 
         if(GUI) {
-            Platform.runLater(() ->
-                    getStackPane().getChildren().remove(imgWorker)
-                    );
 
             imgWorker = null;
+
+            /*Platform.runLater(() -> {
+                getStackPane().getChildren().remove(imgWorker);
+            });*/
+
         }
     }
 

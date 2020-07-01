@@ -36,7 +36,7 @@ public class GuiController extends ClientView {
     private static final String GAME_MANAGER_SAYS = "Game Manager says: ";
 
 
-    private static final boolean ENA_POPUP = true;
+    private static final boolean ENA_POPUP = false;
     private Player me = null;
     private Worker selectedWorker = null;
     private Worker opponentWorkerSelected = null;
@@ -150,7 +150,7 @@ public class GuiController extends ClientView {
 
     @Override
     public void errorWhileChoosingGods(String gameManagerSays) {
-        if(!ENA_POPUP) return;
+        //if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -201,7 +201,7 @@ public class GuiController extends ClientView {
 
     @Override
     public void errorWhilePickingUpGod(String gameManagerSays) {
-        if(!ENA_POPUP) return;
+        //if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -253,7 +253,7 @@ public class GuiController extends ClientView {
 
     @Override
     public void errorWhilePlacingYourWorker(String gameManagerSays) {
-        if(!ENA_POPUP) return;
+        //if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -281,7 +281,7 @@ public class GuiController extends ClientView {
 
     @Override
     public void startingTurn() {
-        if(!ENA_POPUP) return;
+        //if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -335,7 +335,7 @@ public class GuiController extends ClientView {
             selectedWorker = null;
         }
 
-        if(!ENA_POPUP) return;
+        //if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -364,14 +364,18 @@ public class GuiController extends ClientView {
     @Override
     public PossibleClientAction choseActionToPerform(List<PossibleClientAction> possibleActions) {
 
-        controller.changePhase("MultipleAction");
+
 
         ParameterListener.setToNull();
 
         if(possibleActions.contains(PossibleClientAction.POWER_BUTTON)){
             controller.enablePowerButton();
+            controller.changePhase("MultipleAction");
         }
-        else controller.disablePowerButton();
+        else {
+            controller.disablePowerButton();
+            controller.changePhase("MoveWorker");
+        }
 
 
         Object parameter = getFromUser();
@@ -411,7 +415,7 @@ public class GuiController extends ClientView {
 
     @Override
     public void errorWhileActivatingPower(String gameManagerSays) {
-        if(!ENA_POPUP) return;
+        //if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -425,7 +429,7 @@ public class GuiController extends ClientView {
 
     @Override
     public void powerActivated(God god) {
-        if(!ENA_POPUP) return;
+        //if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -456,7 +460,7 @@ public class GuiController extends ClientView {
     @Override
     public void errorWhileMovingWorker(String gameManagerSays) {
 
-        if(!ENA_POPUP) return;
+        //if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -471,6 +475,8 @@ public class GuiController extends ClientView {
     @Override
     public boolean wantMoveAgain() {
 
+
+        ParameterListener.setToNull();
         choicePopup(1);
 
         boolean ret = (boolean) getFromUser();
@@ -529,6 +535,7 @@ public class GuiController extends ClientView {
     @Override
     public boolean wantBuildAgain() {
 
+        ParameterListener.setToNull();
         choicePopup(2);
 
         boolean ret = (boolean) getFromUser();
@@ -577,7 +584,7 @@ public class GuiController extends ClientView {
     @Override
     public void errorWhileBuilding(String gameManagerSays) {
 
-        if(!ENA_POPUP) return;
+        //if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -608,7 +615,7 @@ public class GuiController extends ClientView {
     @Override
     public void endBuildRequestError(String gameManagerSays) {
 
-        if(!ENA_POPUP) return;
+        //if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -639,8 +646,6 @@ public class GuiController extends ClientView {
 
     @Override
     public void endTurn() {
-
-        controller.changePhase("NotYourTurn");
 
         selectedWorker.deselectedOnGUI();
         selectedWorker = null;
@@ -675,7 +680,9 @@ public class GuiController extends ClientView {
 
     @Override
     public void startingPlayerTurn(String turnOwner) {
-        //nothing to show
+
+        controller.changePhase("NotYourTurn");
+
     }
 
     @Override
@@ -742,7 +749,7 @@ public class GuiController extends ClientView {
     @Override
     public void youWon() {
 
-        if(!ENA_POPUP) return;
+        //if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -784,7 +791,7 @@ public class GuiController extends ClientView {
     @Override
     public void youLose(String winner) {
 
-        if(!ENA_POPUP) return;
+        //if(!ENA_POPUP) return;
 
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);

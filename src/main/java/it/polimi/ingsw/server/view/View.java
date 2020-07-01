@@ -6,15 +6,15 @@ import it.polimi.ingsw.server.model.player.Player;
 
 public abstract class View extends Observable<TurnManager> implements Observer<Message> {
 
-    private Player player;
+    private final Player player;
 
     protected View(Player player){
         this.player = player;
     }
 
-    protected Player getPlayer(){
+    /*protected Player getPlayer(){
         return player;
-    }
+    }*/
 
     protected abstract void sendMessage(Message game);
 

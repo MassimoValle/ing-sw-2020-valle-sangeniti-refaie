@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server.model.god.godspower;
 
 import it.polimi.ingsw.server.model.action.ActionOutcome;
-import it.polimi.ingsw.server.model.map.GameMap;
 import it.polimi.ingsw.server.model.map.Square;
 
 public class AtlasPower extends Power {

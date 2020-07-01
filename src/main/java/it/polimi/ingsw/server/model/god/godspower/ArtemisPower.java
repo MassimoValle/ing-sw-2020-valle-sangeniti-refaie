@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server.model.god.godspower;
 
 import it.polimi.ingsw.server.model.action.ActionOutcome;
-import it.polimi.ingsw.server.model.map.GameMap;
 import it.polimi.ingsw.server.model.map.Square;
 import it.polimi.ingsw.server.model.player.Position;
 import it.polimi.ingsw.server.model.player.Worker;
@@ -11,14 +10,10 @@ import java.util.ArrayList;
 
 public class ArtemisPower extends Power implements Serializable {
 
-    private transient boolean firstMove;
     private transient Square startingPlace = null;
-
-    private ActionOutcome outcome;
 
     public ArtemisPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
-        this.firstMove = true;
     }
 
 
@@ -27,9 +22,8 @@ public class ArtemisPower extends Power implements Serializable {
     public ActionOutcome move(Worker activeWorker, Position positionWhereToMove, Square squareWhereTheWorkerIs, Square squareWhereToMove) {
 
         if (startingPlace == null) {
-            outcome = super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
+            ActionOutcome outcome = super.move(activeWorker, positionWhereToMove, squareWhereTheWorkerIs, squareWhereToMove);
             if (outcome == ActionOutcome.DONE && hasNewMoveAvailable(squareWhereTheWorkerIs.getPosition(), positionWhereToMove) ) {
-                firstMove = false;
                 startingPlace = squareWhereTheWorkerIs;
                 return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
             } else if (outcome == ActionOutcome.DONE) {
@@ -66,7 +60,6 @@ public class ArtemisPower extends Power implements Serializable {
 
     @Override
     public void resetPower() {
-        firstMove = true;
         startingPlace = null;
     }
 }

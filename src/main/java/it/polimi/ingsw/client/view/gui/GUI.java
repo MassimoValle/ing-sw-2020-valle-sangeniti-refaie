@@ -11,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 
 public class GUI extends Application {
@@ -30,6 +29,7 @@ public class GUI extends Application {
 
         stage.setTitle("Santorini");
         stage.setScene(scene);
+        stage.centerOnScreen();
         stage.show();
 
         setClientView();
@@ -69,8 +69,12 @@ public class GUI extends Application {
         }
         else {
             Parent finalRoot = root;
-            Platform.runLater(() -> scene.setRoot(finalRoot));
+            Platform.runLater(() -> {
+                scene.setRoot(finalRoot);
+                mystage.centerOnScreen();
+            });
         }
+
 
 
     }
@@ -85,6 +89,7 @@ public class GUI extends Application {
     }
 
     public static Stage getStage(){
+
         return mystage;
     }
 

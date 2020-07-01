@@ -9,10 +9,10 @@ import java.util.List;
 
 public class Player {
 
-    private String playerName;                  /** Name chosen by the player */
+    private final String playerName;                  /** Name chosen by the player */
     private God playerGod;                      /** God card chosen by the player */
-    private List<Worker> playerWorkers;         /** List of workers assigned to the player */
-    private int numWorker = 2;                  /** Number of workers per player */
+    private final List<Worker> playerWorkers;
+    /** Number of workers per player */
     private ColorEnum color;
 
     private boolean eliminated = false;
@@ -31,6 +31,7 @@ public class Player {
     public Player(String playerName) {
         this.playerName = playerName;
         this.playerWorkers = new ArrayList<>();
+        int numWorker = 2;
         for (int i = 0; i < numWorker; i++) { this.playerWorkers.add(new Worker(this, i)); }   // 2 workers
     }
 
