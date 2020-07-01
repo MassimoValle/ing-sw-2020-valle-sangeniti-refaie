@@ -8,7 +8,7 @@ import it.polimi.ingsw.network.message.server.serverresponse.ServerResponse;
 /**
  * This class is used whenever the client receive a message but the player isn't the turnOwner
  */
-public class ServerMessageManager {
+public class OpponentTurnManager {
 
     /**
      * The Turn owner.

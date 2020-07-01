@@ -41,7 +41,7 @@ public class ClientManager {
     private final BabyGame babyGame;
 
     //Its use is intended to deal with message when the player is not the turn owner
-    private final ServerMessageManager serverMessageManager;
+    private final OpponentTurnManager opponentTurnManager;
     private final ClientBoardUpdater clientBoardUpdater;
 
     // variabili di controllo
@@ -74,7 +74,7 @@ public class ClientManager {
 
         setClientView(clientView);
 
-        this.serverMessageManager = new ServerMessageManager();
+        this.opponentTurnManager = new OpponentTurnManager();
 
         this.babyGame = BabyGame.getInstance();
 
@@ -147,7 +147,7 @@ public class ClientManager {
             startTurn();
             return;
         } else if (!messageForMe(serverRequest)) {
-            serverMessageManager.serverRequestNotForYou(serverRequest);
+            opponentTurnManager.serverRequestNotForYou(serverRequest);
             return;
         }
 
@@ -290,7 +290,7 @@ public class ClientManager {
         }
 
         if (!myTurn && responseContent != ResponseContent.LOGIN && responseContent != ResponseContent.NUM_PLAYER) {
-            serverMessageManager.serverResponseNotForYou(serverResponse);
+            opponentTurnManager.serverResponseNotForYou(serverResponse);
             return;
         }
 
