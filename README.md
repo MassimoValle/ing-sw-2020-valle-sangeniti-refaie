@@ -7,7 +7,7 @@ Santorini project of group GC54 (Massimo Valle, Simone Sangeniti, Magdy Refaie)
 
 ## Getting Started
 
-The goal of the project is to implement Statorini's game using the Model View Controller (MVC) architectural pattern and Object Orientied programming. The network is managed via a socket created between clients and server to send specific type of messages. There are two version of client: a Command Line Interface (CLI) version showed in terminal and a Graphic User Interface (GUI) version showed in a windows, each one started by a jar.
+The project's goal is to implement Santorini's game using the Model View Controller (MVC) architectural pattern and Object Oriented programming. The network is managed via a socket created between clients and server to send specific type of messages. There are two version of the client: a Command Line Interface (CLI) version showed in terminal and a Graphic User Interface (GUI) version showed in a windows, each one started by a jar.
 
 ### Documentation
 
@@ -16,9 +16,9 @@ The follow documentation contains documents and charts used for the design of th
 #### UML
 
 
-* [Initial UML](https://www.jetbrains.com/idea/)
+* [Initial UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Initial/PNG/UML_Santorini_initial.png)
 
-* [Final UML](https://www.jetbrains.com/idea/)
+* [Final UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/final/PNG/UML_Santorini_final.png)
 
 #### JavaDoc
 The major part of Server code is documented by JavaDoc, expecially Model and Controller packages.
@@ -56,7 +56,7 @@ The following jars have been used for the delivery of the project, therefore the
 
 ## JAR Execution
 
-First of all, you have to start the server using the command below and then you colud start one of the client's interfaces.
+First of all, you have to start the server using the command below and then you could start one of the client's interfaces.
 
 ### Client
 
@@ -94,6 +94,6 @@ java -jar server.jar
 
 ## Authors
 
-* **Massimo Valle** - *Developer* - [PurpleBooth](https://github.com/MassimoValle)
-* **Simone Sangeniti** - *Developer* - [PurpleBooth](https://github.com/Sn4k3ss)
-* **Magdy Refaie** - *Developer* - [PurpleBooth](https://github.com/magfly)
+* **Massimo Valle** - *Developer* - [Github](https://github.com/MassimoValle)
+* **Simone Sangeniti** - *Developer* - [Github](https://github.com/Sn4k3ss)
+* **Magdy Refaie** - *Developer* - [Github](https://github.com/magfly)
