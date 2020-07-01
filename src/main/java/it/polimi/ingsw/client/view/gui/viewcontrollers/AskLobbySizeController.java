@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.view.gui.viewcontrollers;
 
+import it.polimi.ingsw.client.controller.ClientManager;
 import it.polimi.ingsw.client.view.gui.ParameterListener;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -32,8 +33,7 @@ public class AskLobbySizeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //TODO LOGGER
-        //System.out.println("AskLobbySizeController created!");
+        ClientManager.LOGGER.info("AskLobbySizeController created!");
 
         // string array
         String[] st = { "2", "3"};

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.view.gui.viewcontrollers;
 
+import it.polimi.ingsw.client.controller.ClientManager;
 import it.polimi.ingsw.client.view.gui.ParameterListener;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -31,8 +32,7 @@ public class AskUsernameController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //TODO LOGGER
-        //System.out.println("AskUsernameController created!");
+        ClientManager.LOGGER.info("AskUsernameController created!");
 
         getUsernameButton.disableProperty().bind(
                 Bindings.isEmpty(txtFieldUsername.textProperty())

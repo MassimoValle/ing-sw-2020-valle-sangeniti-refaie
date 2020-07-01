@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.view.gui.viewcontrollers;
 
+import it.polimi.ingsw.client.controller.ClientManager;
 import it.polimi.ingsw.client.view.gui.ParameterListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,7 +26,7 @@ public class AskIpAddressController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //Use a logger //TODO
-        //System.out.println("AskIpAddressController created!");
+
+        ClientManager.LOGGER.info("AskIpAddressController created!");
     }
 }

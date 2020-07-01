@@ -81,7 +81,6 @@ public class ClientManager {
         this.clientBoardUpdater = new ClientBoardUpdater(babyGame);
 
         initMessageReceiver(client);
-        //this.messageReceiver = new MessageReceiver(client, this);
 
         Date date = GregorianCalendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("dd-mm_HH.mm.ss");
@@ -156,18 +155,42 @@ public class ClientManager {
         switch (serverRequest.getContent()) {
 
             case CHOOSE_GODS_SERVER_REQUEST -> {
-                assert serverRequest instanceof ChooseGodsServerRequest;
-                chooseGodFromDeck((ChooseGodsServerRequest) serverRequest);
+
+                ChooseGodsServerRequest request;
+                    if (serverRequest instanceof ChooseGodsServerRequest) {
+                        request = (ChooseGodsServerRequest) serverRequest;
+                    } else {
+                        LOGGER.severe( new ClassCastException().getMessage());
+                        return;
+                    }
+
+                chooseGodFromDeck(request);
             }
 
             case PICK_GOD -> {
-                assert serverRequest instanceof PickGodServerRequest;
-                pickGod((PickGodServerRequest) serverRequest);
+
+                PickGodServerRequest request;
+                if (serverRequest instanceof PickGodServerRequest) {
+                    request = (PickGodServerRequest) serverRequest;
+                } else {
+                    LOGGER.severe( new ClassCastException().getMessage());
+                    return;
+                }
+
+                pickGod(request);
             }
 
             case PLACE_WORKER -> {
-                assert serverRequest instanceof PlaceWorkerServerRequest;
-                placeWorker((PlaceWorkerServerRequest) serverRequest);
+
+                PlaceWorkerServerRequest request;
+                if (serverRequest instanceof PlaceWorkerServerRequest) {
+                    request = (PlaceWorkerServerRequest) serverRequest;
+                } else {
+                    LOGGER.severe( new ClassCastException().getMessage());
+                    return;
+                }
+
+                placeWorker(request);
             }
 
             case START_TURN -> startTurn();

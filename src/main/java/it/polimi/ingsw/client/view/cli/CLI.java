@@ -408,9 +408,6 @@ public class CLI extends ClientView {
 
         Position p;
 
-        //consoleOut.println("These are all the possible position where you can move:");
-        //nearlyPosValid.forEach(consoleOut::println);
-
         consoleOut.println("Let's move!");
         consoleOut.println("\n(x,y)");
 
@@ -508,8 +505,6 @@ public class CLI extends ClientView {
     @Override
     public Position build(ArrayList<Position> possiblePosToBuild) {
 
-        //consoleOut.println("These are all the possible position where you can build:");
-        //possiblePosToBuild.forEach(consoleOut::println);
         consoleOut.println("Let's build!");
         consoleOut.println("\n(x,y)");
 
@@ -590,12 +585,12 @@ public class CLI extends ClientView {
 
     @Override
     public void anotherPlayerIsPickingUpGod(String turnOwner) {
-
+        //do nothing
     }
 
     @Override
     public void anotherPlayerIsPlacingWorker(String turnOwner) {
-
+        //do nothing
     }
 
     @Override
@@ -666,17 +661,17 @@ public class CLI extends ClientView {
 
     @Override
     public void anotherPlayerHasMoved(String turnOwner) {
-
+        //do nothing
     }
 
     @Override
     public void anotherPlayerHasBuilt(String turnOwner) {
-
+        //do nothing
     }
 
     @Override
     public void anotherPlayerHasEndedHisTurn(String turnOwner) {
-
+        //do nothing
     }
 
 
