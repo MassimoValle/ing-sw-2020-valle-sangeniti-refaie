@@ -13,6 +13,4 @@ public class GUImap extends CLIclientMap {
         }
     }
 
-
-
 }

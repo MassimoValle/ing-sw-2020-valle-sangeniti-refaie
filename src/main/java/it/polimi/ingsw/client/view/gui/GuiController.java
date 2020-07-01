@@ -290,6 +290,8 @@ public class GuiController extends ClientView {
     @Override
     public Position placeWorker(String worker) {
 
+        controller.changePhase("PlaceWorker");
+
         ParameterListener.setToNull();
 
         Position ret = (Position) getFromUser();

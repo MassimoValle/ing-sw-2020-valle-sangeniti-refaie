@@ -2,7 +2,7 @@
 /* Stile per welcome.fxml */
 
 .welcomeBackground{
-  -fx-background-image: url("../imgs/welcome.jpg");
+  -fx-background-image: url("../imgs/backgrounds/welcome.jpg");
   -fx-background-repeat: stretch;
   -fx-background-position: center center;
   -fx-background-size: 100% 100%;
@@ -19,7 +19,7 @@
 }
 
 .setupBackground{
-  -fx-background-image: url("../imgs/setup.jpg");
+  -fx-background-image: url("../imgs/backgrounds/setup.jpg");
   -fx-background-repeat: stretch;
   -fx-background-position: center center;
   -fx-background-size: 100% 100%;
@@ -63,7 +63,7 @@
 }
 
 .nextButton{
-  -fx-background-image: url("../imgs/textBox/next.png");
+  -fx-background-image: url("../imgs/textBox/SetUp/next.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -71,49 +71,49 @@
 }
 
 .IpAddressLabel{
-  -fx-background-image: url("../imgs/textBox/IpAddress.png");
+  -fx-background-image: url("../imgs/textBox/SetUp/IpAddress.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
 }
 
 .LobbySizeLabel{
-  -fx-background-image: url("../imgs/textBox/lobbysize.png");
+  -fx-background-image: url("../imgs/textBox/SetUp/lobbysize.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
 }
 
 .UsernameLabel{
-  -fx-background-image: url("../imgs/textBox/Username.png");
+  -fx-background-image: url("../imgs/textBox/SetUp/Username.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
 }
 
 .PickGodLabel{
-  -fx-background-image: url("../imgs/textBox/PickGod.png");
+  -fx-background-image: url("../imgs/textBox/SetUp/PickGod.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
 }
 
 .SelectGodLabel{
-  -fx-background-image: url("../imgs/textBox/SelectGods.png");
+  -fx-background-image: url("../imgs/textBox/GamePhase2/SelectGods.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
 }
 
 .WaitingLabel{
-  -fx-background-image: url("../imgs/textBox/waiting.png");
+  -fx-background-image: url("../imgs/textBox/SetUp/waiting.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
 }
 
 .PowerButton{
-  -fx-background-image: url("../imgs/textBox/ActivatePower.png");
+  -fx-background-image: url("../imgs/textBox/GamePhase2/ActivatePower.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -127,7 +127,7 @@
     GODS */
 
 .Apollo{
-  -fx-background-image: url("../imgs/godspng/apollo.png");
+  -fx-background-image: url("../imgs/godsGraphics/apollo.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -135,7 +135,7 @@
 }
 
 .Artemis{
-  -fx-background-image: url("../imgs/godspng/artemis.png");
+  -fx-background-image: url("../imgs/godsGraphics/artemis.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -143,7 +143,7 @@
 }
 
 .Athena{
-  -fx-background-image: url("../imgs/godspng/athena.png");
+  -fx-background-image: url("../imgs/godsGraphics/athena.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -151,7 +151,7 @@
 }
 
 .Atlas{
-  -fx-background-image: url("../imgs/godspng/atlas.png");
+  -fx-background-image: url("../imgs/godsGraphics/atlas.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -159,7 +159,7 @@
 }
 
 .Chronus{
-  -fx-background-image: url("../imgs/godspng/chronus.png");
+  -fx-background-image: url("../imgs/godsGraphics/chronus.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -167,7 +167,7 @@
 }
 
 .Demeter{
-  -fx-background-image: url("../imgs/godspng/demeter.png");
+  -fx-background-image: url("../imgs/godsGraphics/demeter.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -175,7 +175,7 @@
 }
 
 .Hephaestus{
-  -fx-background-image: url("../imgs/godspng/hephaestus.png");
+  -fx-background-image: url("../imgs/godsGraphics/hephaestus.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -183,7 +183,7 @@
 }
 
 .Hera{
-  -fx-background-image: url("../imgs/godspng/hera.png");
+  -fx-background-image: url("../imgs/godsGraphics/hera.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -191,7 +191,7 @@
 }
 
 .Hestia{
-  -fx-background-image: url("../imgs/godspng/hestia.png");
+  -fx-background-image: url("../imgs/godsGraphics/hestia.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -199,7 +199,7 @@
 }
 
 .Minotaur{
-  -fx-background-image: url("../imgs/godspng/minotaur.png");
+  -fx-background-image: url("../imgs/godsGraphics/minotaur.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -207,7 +207,7 @@
 }
 
 .Pan{
-  -fx-background-image: url("../imgs/godspng/pan.png");
+  -fx-background-image: url("../imgs/godsGraphics/pan.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -215,7 +215,7 @@
 }
 
 .Prometheus{
-  -fx-background-image: url("../imgs/godspng/prometheus.png");
+  -fx-background-image: url("../imgs/godsGraphics/prometheus.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -223,7 +223,7 @@
 }
 
 .Triton{
-  -fx-background-image: url("../imgs/godspng/triton.png");
+  -fx-background-image: url("../imgs/godsGraphics/triton.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -231,7 +231,7 @@
 }
 
 .Zeus{
-  -fx-background-image: url("../imgs/godspng/zeus.png");
+  -fx-background-image: url("../imgs/godsGraphics/zeus.png");
   -fx-border-insets: 3px;
   -fx-background-size: 100% 100%;
   -fx-background-repeat: stretch;
@@ -240,6 +240,14 @@
 
 /* #########
     GAME PHASE */
+
+.PlaceWorker{
+  -fx-background-image: url("../imgs/textBox/GamePhase/placeWorkers.png");
+  -fx-border-insets: 3px;
+  -fx-background-size: 100% 100%;
+  -fx-background-repeat: stretch;
+  -fx-background-color: transparent;
+}
 
 .SelectWorker{
   -fx-background-image: url("../imgs/textBox/GamePhase/selectWorker.png");
