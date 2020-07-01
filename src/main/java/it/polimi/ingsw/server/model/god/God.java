@@ -17,7 +17,7 @@ public class God implements Serializable {
     private boolean assigned;
 
     //GUI
-    transient private final ImageView imgView;
+    transient private ImageView imgView;
 
 
     public God(String godName, String godDescription, Power godPower, Image img){
@@ -26,7 +26,8 @@ public class God implements Serializable {
         this.godPower = godPower;
         this.assigned = false;
 
-        this.imgView = new ImageView(img);
+        if(img != null)
+            this.imgView = new ImageView(img);
 
     }
 
