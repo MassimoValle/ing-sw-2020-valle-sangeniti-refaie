@@ -1,8 +1,9 @@
 # Santorini GC54
 
+![alt text](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/src/main/Resources/imgs/santorini-logo.png)
+
 Santorini project of group GC54 (Massimo Valle, Simone Sangeniti, Magdy Refaie)
 
-![alt text](http://src/main/Resources/imgs/santorini-logo.png)
 
 ## Getting Started
 
