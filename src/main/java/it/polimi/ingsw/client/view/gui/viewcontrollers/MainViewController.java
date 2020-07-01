@@ -122,13 +122,8 @@ public class MainViewController implements Initializable {
 
     }
 
-    public void init(){
 
-        Platform.runLater(this::setScene);
-    }
-
-
-    private void setScene() {
+    public void setScene() {
 
         Stage stage = GUI.getStage();
 

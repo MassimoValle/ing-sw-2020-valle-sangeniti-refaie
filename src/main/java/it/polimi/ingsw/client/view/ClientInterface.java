@@ -31,6 +31,10 @@ public interface ClientInterface {
      */
     String askUserName();
 
+    void loginError();
+
+    void loginSuccessful();
+
     /**
      * Ask numb of player int.
      *

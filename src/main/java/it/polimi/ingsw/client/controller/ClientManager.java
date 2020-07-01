@@ -319,9 +319,13 @@ public class ClientManager {
                 case LOGIN -> {
 
                     if(responseStatus == MessageStatus.OK) {
+                        clientView.loginSuccessful();
                         clientState = PossibleClientState.LOGIN_DONE;
                     }
-                    else login();
+                    else {
+                        clientView.loginError();
+                        login();
+                    }
 
                 }
 
@@ -445,6 +449,7 @@ public class ClientManager {
 
         clientState = PossibleClientState.PLACING_WORKERS;
 
+        clientView.showMap(babyGame.getClientMap());
         Position p = clientView.placeWorker(serverRequest.getWorker().toString());
 
         Request request = new PlaceWorkerRequest(me.getPlayerName(), serverRequest.getWorker(), p);

@@ -65,6 +65,20 @@ public class CLI extends ClientView {
     }
 
     @Override
+    public void loginError() {
+
+        consoleOut.println("\nYou cannot choose this username!");
+        consoleOut.println();
+
+    }
+
+    @Override
+    public void loginSuccessful() {
+        consoleOut.println("\nYou are now logged in!");
+        consoleOut.println();
+    }
+
+    @Override
     public int askNumbOfPlayer() {
         int input;
         do{

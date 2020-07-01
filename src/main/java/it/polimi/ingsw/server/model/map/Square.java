@@ -97,15 +97,14 @@ public class Square {
 
         this.workerOnSquare = worker;
 
-        if(GUI) {
-            imgWorker = worker.getImgView();
-            Platform.runLater(this::loadImgWorker);
-        }
-    }
+            if (GUI) {
+                imgWorker = worker.getImgView();
 
-    private void loadImgWorker(){
-        Platform.runLater(() -> stackPane.getChildren().add(imgWorker));
+                Platform.runLater(
+                        () -> stackPane.getChildren().add(imgWorker)
+                );
 
+            }
     }
 
     /**
@@ -114,15 +113,16 @@ public class Square {
     public void freeSquare() {
         this.workerOnSquare = null;
 
-        if(GUI) {
 
-            imgWorker = null;
+            if (GUI) {
 
-            /*Platform.runLater(() -> {
-                getStackPane().getChildren().remove(imgWorker);
-            });*/
+                imgWorker = null;
 
-        }
+            Platform.runLater(() ->
+                getStackPane().getChildren().remove(imgWorker)
+            );
+
+            }
     }
 
 

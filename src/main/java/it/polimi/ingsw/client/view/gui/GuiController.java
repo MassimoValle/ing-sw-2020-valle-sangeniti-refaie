@@ -146,6 +146,25 @@ public class GuiController extends ClientView {
     }
 
     @Override
+    public void loginError() {
+
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(ERROR_DIALOG);
+            alert.setHeaderText("You cannot choose this username!");
+
+            alert.showAndWait();
+        });
+
+    }
+
+    @Override
+    public void loginSuccessful() {
+
+        waitingOpponents();
+    }
+
+    @Override
     public int askNumbOfPlayer() {
 
         GUI.setRoot("askLobbySize");
@@ -283,7 +302,7 @@ public class GuiController extends ClientView {
         controller = fxmlLoader.getController();
         controller.setPlayers(playerSet);
         this.me = user;
-        controller.init();
+        Platform.runLater(controller::setScene);
 
     }
 

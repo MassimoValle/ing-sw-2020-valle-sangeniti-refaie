@@ -26,7 +26,7 @@ public class MessageReceiver implements Runnable {
     }
 
     /**
-     * It pop a message from {@link Client} message queue and,
+     * It pops a message from {@link Client} message queue and,
      * after waiting for 100 ms, pass the message to the clientManager
      */
     @Override

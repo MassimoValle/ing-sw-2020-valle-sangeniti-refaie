@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.controller;
 
+import it.polimi.ingsw.network.Client;
 import it.polimi.ingsw.network.message.Enum.MessageStatus;
 import it.polimi.ingsw.network.message.server.serverrequests.ServerRequest;
 import it.polimi.ingsw.network.message.server.serverresponse.SelectWorkerServerResponse;
@@ -34,7 +35,8 @@ public class OpponentTurnManager {
             case SELECT_WORKER              -> ClientManager.getClientView().anotherPlayerIsSelectingWorker(turnOwner);
             case MOVE_WORKER                -> ClientManager.getClientView().anotherPlayerIsMoving(turnOwner);
             case BUILD                      -> ClientManager.getClientView().anotherPlayerIsBuilding(turnOwner);
-            default                         -> throw new IllegalStateException("Invalid serverRequest content in serverRequestNotForYou()");
+            case END_TURN                   -> {}
+            default                         -> ClientManager.LOGGER.severe(new IllegalStateException("Invalid serverRequest content in serverRequestNotForYou()").getMessage());
         }
     }
 
@@ -61,6 +63,8 @@ public class OpponentTurnManager {
             case BUILD                      -> ClientManager.getClientView().anotherPlayerHasBuilt(turnOwner);
             case END_TURN                   -> ClientManager.getClientView().anotherPlayerHasEndedHisTurn(turnOwner);
             case PLAYER_HAS_WON             -> ClientManager.getClientView().youLose(turnOwner);
+            case MOVE_WORKER_AGAIN          -> { }
+            case BUILD_AGAIN                -> { }
             default                         -> throw new IllegalStateException("Invalid serverResponse content in serverResponseNotForYou()");
         }
     }
