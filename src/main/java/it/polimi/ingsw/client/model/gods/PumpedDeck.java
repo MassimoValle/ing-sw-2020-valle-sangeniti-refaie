@@ -3,7 +3,6 @@ package it.polimi.ingsw.client.model.gods;
 import it.polimi.ingsw.server.model.god.Deck;
 import it.polimi.ingsw.server.model.god.God;
 import it.polimi.ingsw.server.model.god.godspower.*;
-import it.polimi.ingsw.server.model.map.GameMap;
 import javafx.scene.image.Image;
 
 
@@ -13,7 +12,7 @@ import javafx.scene.image.Image;
 public class PumpedDeck extends Deck {
 
     /**
-     * Instantiates a new Pumped deck.
+     * Instantiates a new Pumped deck initializing the graphics resources.
      *
      */
     public PumpedDeck() { }

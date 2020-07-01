@@ -35,7 +35,7 @@ public class ClientBoardUpdater {
      * Board update.
      * It manages the {@link UpdateBoardMessage} to client modifying element on board
      *
-     * @param message the message
+     * @param message the message contains the update to do on the board
      */
     void boardUpdate(UpdateBoardMessage message) {
 
