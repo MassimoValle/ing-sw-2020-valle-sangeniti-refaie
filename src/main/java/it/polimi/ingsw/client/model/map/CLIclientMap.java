@@ -51,12 +51,6 @@ public class CLIclientMap extends GameMap {
 
     }
 
-    private void moveWorker(Worker worker, Position positionWhereToMove, Power power){
-
-
-
-    }
-
     public void buildUpdate(Player player, Integer workerIndex, Position position, boolean domePresent) {
 
         Square startingSquare = getSquare(player.getPlayerWorkers().get(workerIndex).getPosition());
