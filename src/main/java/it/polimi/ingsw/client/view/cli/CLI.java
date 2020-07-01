@@ -676,14 +676,14 @@ public class CLI extends ClientView {
 
 
     @Override
-    public void youWon() {
+    public void youWin() {
         consoleOut.println("\t#############");
         consoleOut.println("\t\tYOU WIN");
         consoleOut.println("\t#############");
     }
 
     @Override
-    public void iLost() {
+    public void iLose() {
         consoleOut.println("\t#############");
         consoleOut.println("\t\tYOU LOST");
         consoleOut.println("\t#############");

@@ -533,7 +533,7 @@ public class ClientManager {
      *
      */
     private void playerWon(){
-        clientView.youWon();
+        clientView.youWin();
     }
 
     /**
@@ -541,7 +541,7 @@ public class ClientManager {
      *
      */
     private void playerLost() {
-        clientView.iLost();
+        clientView.iLose();
 
         //REMOVE THIS PLAYER FROM THE MATCH
         removePlayerFromMatch(me);

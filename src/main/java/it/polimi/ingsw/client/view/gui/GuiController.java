@@ -40,7 +40,6 @@ public class GuiController extends ClientView {
     private Player me = null;
     private Worker selectedWorker = null;
     private Worker opponentWorkerSelected = null;
-    private boolean godLikePlayer = false;
 
     private final ParameterListener parameterListener;
     private MainViewController controller;
@@ -49,6 +48,9 @@ public class GuiController extends ClientView {
         parameterListener = ParameterListener.getInstance();
     }
 
+
+
+    // helper
 
     private Object getFromUser() {
 
@@ -71,6 +73,55 @@ public class GuiController extends ClientView {
         GUI.setRoot("waiting");
     }
 
+    /**
+     * Based on the parameter change what to show
+     *
+     * @param i 1 for move, 2 for build
+     */
+    private void choicePopup(int i) {
+
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle(INFORMATION_DIALOG);
+
+            if (i == 1)
+                alert.setHeaderText("Do you want to move again?");
+            else if (i == 2)
+                alert.setHeaderText("Do you want to build again?");
+
+            alert.setContentText("Choose your option.");
+
+            ButtonType buttonTypeOne = new ButtonType("Yes");
+            ButtonType buttonTypeTwo = new ButtonType("No");
+
+            alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            //setta true se result.get() == buttonTypeOne, altrimenti false
+            parameterListener.setParameter(result.orElse(null) == buttonTypeOne);
+        });
+
+    }
+
+    private void lose(){
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(INFORMATION_DIALOG);
+            alert.setHeaderText("YOU LOSE");
+            alert.setContentText("Click OK to quit");
+
+            alert.showAndWait();
+
+            Platform.exit();
+            System.exit(0);
+        });
+    }
+
+
+
+
+    // main methods
 
     @Override
     public String askIpAddress() {
@@ -91,10 +142,6 @@ public class GuiController extends ClientView {
         String username = (String) getFromUser();
         ParameterListener.setToNull();
 
-        // se 1o player allora non fare la wait
-        if(godLikePlayer)
-            waitingOpponents();
-
         return username;
     }
 
@@ -114,11 +161,13 @@ public class GuiController extends ClientView {
     @Override
     public void youAreNotTheGodLikePlayer(String godLikePlayer) {
         // do nothing in GUI
+
+        // se 1o player allora non fare la wait
+        waitingOpponents();
     }
 
     @Override
     public void youAreTheGodLikePlayer() {
-        this.godLikePlayer = true;
 
     }
 
@@ -175,7 +224,6 @@ public class GuiController extends ClientView {
             alert.showAndWait();
         });
     }
-
 
     @Override
     public God pickFromChosenGods(ArrayList<God> hand) {
@@ -545,37 +593,6 @@ public class GuiController extends ClientView {
 
     }
 
-    /**
-     * Based on the parameter change what to show
-     *
-     * @param i 1 for move, 2 for build
-     */
-    private void choicePopup(int i) {
-
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle(INFORMATION_DIALOG);
-
-            if (i == 1)
-                alert.setHeaderText("Do you want to move again?");
-            else if (i == 2)
-                alert.setHeaderText("Do you want to build again?");
-
-            alert.setContentText("Choose your option.");
-
-            ButtonType buttonTypeOne = new ButtonType("Yes");
-            ButtonType buttonTypeTwo = new ButtonType("No");
-
-            alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
-
-            Optional<ButtonType> result = alert.showAndWait();
-
-            //setta true se result.get() == buttonTypeOne, altrimenti false
-            parameterListener.setParameter(result.orElse(null) == buttonTypeOne);
-        });
-
-    }
-
     @Override
     public void printCanBuildAgain(String gameManagerSays) {
         //nothing to show
@@ -747,7 +764,7 @@ public class GuiController extends ClientView {
     }
 
     @Override
-    public void youWon() {
+    public void youWin() {
 
         //if(!ENA_POPUP) return;
 
@@ -757,13 +774,16 @@ public class GuiController extends ClientView {
             alert.setHeaderText("YOU WIN");
 
             alert.showAndWait();
+
+            Platform.exit();
+            System.exit(0);
         });
 
     }
 
     @Override
-    public void iLost() {
-        //nothing to show
+    public void iLose() {
+        lose();
     }
 
     @Override
@@ -777,9 +797,12 @@ public class GuiController extends ClientView {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(ERROR_DIALOG);
-            alert.setHeaderText(user + " left the game\nRestart the client to play again");
+            alert.setHeaderText(user + " left the game\nClick OK to quit");
 
             alert.showAndWait();
+
+            Platform.exit();
+            System.exit(0);
         });
     }
 
@@ -793,13 +816,7 @@ public class GuiController extends ClientView {
 
         //if(!ENA_POPUP) return;
 
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(INFORMATION_DIALOG);
-            alert.setHeaderText("YOU LOSE");
-
-            alert.showAndWait();
-        });
+        lose();
 
     }
 

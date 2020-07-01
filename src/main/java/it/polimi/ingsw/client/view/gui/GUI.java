@@ -66,6 +66,7 @@ public class GUI extends Application {
         if(scene == null) {
             assert root != null;
             scene = new Scene(root);
+            mystage.centerOnScreen();
         }
         else {
             Parent finalRoot = root;
