@@ -84,7 +84,7 @@ public class ClientManager {
         DateFormat dateFormat = new SimpleDateFormat("dd-mm_HH.mm.ss");
 
         try {
-            FileHandler fileHandler = new FileHandler("santorini_client" + dateFormat.format(date) + ".log");
+            FileHandler fileHandler = new FileHandler("log/santorini_client" + dateFormat.format(date) + ".log");
 
             LOGGER.setUseParentHandlers(false);
 

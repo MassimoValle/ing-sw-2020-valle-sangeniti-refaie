@@ -241,8 +241,8 @@ public class CLI extends ClientView {
         consoleOut.println("Let's place your worker!\nWhere do you want to place it?\n");
         consoleOut.println("(You are placing your "+ n + "° worker)");
 
-        int row = -1;
-        int col = -1;
+        int row;
+        int col;
 
         row = getCoordinate("row");
 
@@ -415,8 +415,8 @@ public class CLI extends ClientView {
         consoleOut.println("Let's move!");
         consoleOut.println("\n(x,y)");
 
-        int row = -1;
-        int col = -1;
+        int row;
+        int col;
 
         row = getCoordinate("row");
 
@@ -508,8 +508,8 @@ public class CLI extends ClientView {
         consoleOut.println("\n(x,y)");
 
 
-        int row = -1;
-        int col = -1;
+        int row;
+        int col;
 
         row = getCoordinate("row");
 
