@@ -57,8 +57,8 @@ public class ClientManager {
 
 
 
-    ServerMessage currentMessage = null;            //Qualsiasi messaggio che il client riceve dal server
-    ServerRequest currentServerRequest = null;      //la richiesta corrente che il client sta gestendo
+    ServerMessage currentMessage = null;            //Every message which the client receive from server
+    ServerRequest currentServerRequest = null;      //The current request which the client is managing
 
 
 
@@ -82,6 +82,12 @@ public class ClientManager {
 
         initMessageReceiver(client);
 
+        initLogger();
+
+        clientState = PossibleClientState.LOGIN;
+    }
+
+    private void initLogger(){
         Date date = GregorianCalendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("dd-mm_HH.mm.ss");
 
@@ -95,8 +101,6 @@ public class ClientManager {
         } catch (IOException e) {
             LOGGER.severe(e.getMessage());
         }
-
-        clientState = PossibleClientState.LOGIN;
     }
 
     private void initMessageReceiver(Client client) {
@@ -206,6 +210,12 @@ public class ClientManager {
 
     }
 
+    /**
+     * handleMoveWorkerServerRequest used to managed the possibility of multiple choices
+     * when the normal flow is in move phase.
+     *
+     */
+
     private void handleMoveWorkerServerRequest() {
         if (canMoveAgain && !clientView.wantMoveAgain()) {
             canMoveAgain = false;
@@ -235,6 +245,13 @@ public class ClientManager {
         }
 
     }
+
+
+    /**
+     * handleBuildServerRequest used to managed the possibility of multiple choices
+     * when the normal flow is in build phase.
+     *
+     */
 
     private void handleBuildServerRequest() {
 
@@ -333,6 +350,12 @@ public class ClientManager {
             }
         }
     }
+
+    /**
+     * It manages the disconnection of a player in game
+     *
+     * @param serverResponse contains the name of user disconnected
+     */
 
     private void handlePlayerDisconnected(ServerResponse serverResponse) {
 

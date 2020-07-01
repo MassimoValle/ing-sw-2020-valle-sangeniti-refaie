@@ -13,6 +13,9 @@ import it.polimi.ingsw.server.model.player.Worker;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The type Baby game.
+ */
 public class BabyGame {
 
     private final CLIclientMap clientMap;
@@ -21,6 +24,10 @@ public class BabyGame {
 
     private static BabyGame instance = null;
 
+    /**
+     * Instantiates a new Baby game.
+     *
+     */
     public BabyGame(){
         if(ClientManager.getClientView() instanceof GuiController) {
             clientMap = new GUImap();
@@ -32,12 +39,24 @@ public class BabyGame {
         }
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static BabyGame getInstance() {
         if(instance==null)
             instance = new BabyGame();
         return instance;
     }
 
+    /**
+     * Add player.
+     * Add the player to players list and
+     * if clientview is GUI, initialize graphics resource of workers
+     *
+     * @param clientPlayer the client player
+     */
     public void addPlayer(UpdatePlayersMessage.ClientPlayer clientPlayer){
 
         Player player = new Player(clientPlayer.getName());
@@ -53,6 +72,12 @@ public class BabyGame {
         players.add(player);
     }
 
+    /**
+     * Get player by name player.
+     *
+     * @param name the name
+     * @return the player
+     */
     public Player getPlayerByName(String name){
 
         for (Player player : players)
@@ -62,14 +87,29 @@ public class BabyGame {
         return null;
     }
 
+    /**
+     * Gets client map.
+     *
+     * @return the client map
+     */
     public CLIclientMap getClientMap() {
         return clientMap;
     }
 
+    /**
+     * Gets players.
+     *
+     * @return the players
+     */
     public Set<Player> getPlayers() {
         return players;
     }
 
+    /**
+     * Gets deck.
+     *
+     * @return the deck
+     */
     public Deck getDeck() {
         return deck;
     }

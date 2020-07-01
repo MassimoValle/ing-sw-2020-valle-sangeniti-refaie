@@ -6,17 +6,37 @@ import it.polimi.ingsw.network.message.server.updatemessage.UpdateBoardMessage;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.player.Position;
 
+/**
+ * The type Client board updater.
+ */
 public class ClientBoardUpdater {
 
+    /**
+     * The Baby game.
+     */
     BabyGame babyGame;
+    /**
+     * The Client map.
+     */
     CLIclientMap clientMap;
 
+    /**
+     * Instantiates a new Client board updater.
+     *
+     * @param babyGame the baby game
+     */
     public ClientBoardUpdater(BabyGame babyGame) {
         this.babyGame = babyGame;
         this.clientMap = babyGame.getClientMap();
     }
 
 
+    /**
+     * Board update.
+     * It manages the {@link UpdateBoardMessage} to client modifying element on board
+     *
+     * @param message the message
+     */
     void boardUpdate(UpdateBoardMessage message) {
 
         Player player = babyGame.getPlayerByName(message.getPlayerName());

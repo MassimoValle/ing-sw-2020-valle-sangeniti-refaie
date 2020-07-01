@@ -18,6 +18,7 @@ public class OpponentTurnManager {
 
     /**
      * Server request not for you.
+     * It manages the opponent's game phase on client view by opponent's {@link ServerRequest}
      *
      * @param serverRequest the server request
      */
@@ -39,6 +40,7 @@ public class OpponentTurnManager {
 
     /**
      * Server response not for you.
+     * It manages the opponent's game phase on client view by opponent's {@link ServerResponse}
      *
      * @param serverResponse the server response
      */

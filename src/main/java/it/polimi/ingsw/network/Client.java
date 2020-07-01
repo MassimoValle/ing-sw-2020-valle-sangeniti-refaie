@@ -12,6 +12,9 @@ import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
+/**
+ * The type Client.
+ */
 public class Client {
 
     private static ClientManager clientManager;
@@ -27,9 +30,13 @@ public class Client {
     private static ObjectOutputStream socketOut;
 
 
-
-
-
+    /**
+     * Instantiates a new Client.
+     *
+     * @param ip         the ip
+     * @param port       the port
+     * @param clientView the client view
+     */
     public Client(String ip, int port, ClientView clientView){
 
         Client.ip = ip;
@@ -39,6 +46,12 @@ public class Client {
 
     }
 
+    /**
+     * Send request.
+     * Send the request (message) to server
+     *
+     * @param request the request
+     */
     public static synchronized void sendRequest(Request request) {
 
         try {
@@ -105,6 +118,11 @@ public class Client {
         }
     }
 
+    /**
+     * Gets message from queue.
+     *
+     * @return the message from queue
+     */
     public ServerMessage getMessageFromQueue() {
 
         synchronized (queue) {
@@ -116,9 +134,12 @@ public class Client {
     }
 
 
-
-
-
+    /**
+     * Run.
+     * Start the connection, ask to user his username and send it
+     *
+     * @throws IOException the io exception
+     */
     public void run() throws IOException {
 
         startConnection();
@@ -139,6 +160,12 @@ public class Client {
         
     }
 
+    /**
+     * Start connection.
+     * Create the socket and start ping function to server
+     *
+     * @throws IOException the io exception
+     */
     public static synchronized void startConnection() throws  IOException{
 
         socket = new Socket(ip, port);

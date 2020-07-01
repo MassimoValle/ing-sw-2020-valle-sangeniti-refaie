@@ -10,8 +10,18 @@ import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.player.Position;
 import it.polimi.ingsw.server.model.player.Worker;
 
+/**
+ * The type Cl iclient map.
+ */
 public class CLIclientMap extends GameMap {
 
+    /**
+     * Place update.
+     *
+     * @param player      the player who place this worker
+     * @param workerIndex the worker index of player's workers
+     * @param position    the position where to place the worker
+     */
     public void placeUpdate(Player player, Integer workerIndex, Position position){
 
         Worker worker = player.getPlayerWorkers().get(workerIndex);
@@ -23,6 +33,13 @@ public class CLIclientMap extends GameMap {
 
     }
 
+    /**
+     * Move update.
+     *
+     * @param player      the player who move this worker
+     * @param workerIndex the worker index of player's workers
+     * @param position    the position where to move the worker
+     */
     public void moveUpdate(Player player, Integer workerIndex, Position position){
 
         Worker worker = player.getPlayerWorkers().get(workerIndex);
@@ -51,6 +68,14 @@ public class CLIclientMap extends GameMap {
 
     }
 
+    /**
+     * Build update.
+     *
+     * @param player      the player who build with this worker
+     * @param workerIndex the worker index of player's workers
+     * @param position    the position where to build the worker
+     * @param domePresent true if it have to create a dome
+     */
     public void buildUpdate(Player player, Integer workerIndex, Position position, boolean domePresent) {
 
         Square startingSquare = getSquare(player.getPlayerWorkers().get(workerIndex).getPosition());

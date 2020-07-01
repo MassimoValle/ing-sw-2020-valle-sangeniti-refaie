@@ -1,8 +1,15 @@
 package it.polimi.ingsw.client.model.map;
 
 
+/**
+ * The type Gu imap.
+ */
 public class GUImap extends CLIclientMap {
 
+    /**
+     * Instantiates a new GUI map.
+     * Initialize graphics resource of squares
+     */
     public GUImap(){
         super();
 

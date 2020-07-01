@@ -7,8 +7,16 @@ import it.polimi.ingsw.server.model.map.GameMap;
 import javafx.scene.image.Image;
 
 
+/**
+ * The type Pumped deck contains gods with the ImageView set.
+ */
 public class PumpedDeck extends Deck {
 
+    /**
+     * Instantiates a new Pumped deck.
+     *
+     * @param map the map is used by
+     */
     public PumpedDeck(GameMap map) {
         super(map);
     }
