@@ -20,7 +20,7 @@
             </FlowPane>
          </center>
          <bottom>
-            <Button fx:id="getUsernameButton" mnemonicParsing="false" onAction="#getUsernameEvent" prefHeight="30.0" prefWidth="135.0" styleClass="nextButton" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER">
+            <Button fx:id="getUsernameButton" defaultButton="true" mnemonicParsing="false" onAction="#getUsernameEvent" prefHeight="30.0" prefWidth="135.0" styleClass="nextButton" stylesheets="@../css/mycss.css" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="20.0" />
                </BorderPane.margin></Button>

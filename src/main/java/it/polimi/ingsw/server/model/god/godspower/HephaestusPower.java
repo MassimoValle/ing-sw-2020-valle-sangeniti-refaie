@@ -1,17 +1,14 @@
 package it.polimi.ingsw.server.model.god.godspower;
 
 import it.polimi.ingsw.server.model.action.ActionOutcome;
-import it.polimi.ingsw.server.model.map.GameMap;
 import it.polimi.ingsw.server.model.map.Square;
 
 public class HephaestusPower extends Power {
 
-    private transient boolean firstBuild;
     private transient Square firstBlockBuilt;
 
     public HephaestusPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);
-        firstBuild = true;
         firstBlockBuilt = null;
     }
 
@@ -26,7 +23,6 @@ public class HephaestusPower extends Power {
 
             outcome = super.build(squareWhereTheWorkerIs, squareWhereToBuild);
             if (outcome == ActionOutcome.DONE) {
-                firstBuild = false;
                 firstBlockBuilt = squareWhereToBuild;
                 return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;
             } else {
@@ -47,7 +43,6 @@ public class HephaestusPower extends Power {
 
     @Override
     public void resetPower() {
-        firstBuild = true;
         firstBlockBuilt = null;
     }
 }

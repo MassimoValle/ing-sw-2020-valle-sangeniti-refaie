@@ -41,7 +41,7 @@ public class MinotaurPushAction extends MoveAction {
         int heightDifference = map.getDifferenceInAltitude(playerWorker.getPosition(), newPosition);
         ArrayList<Position> adjacent = oldPositionSquare.getPosition().getAdjacentPlaces();
 
-        return heightDifference >= -1 && adjacent.contains(newPosition) && !super.godsPowerActive(minotaurPower, map) &&
+        return heightDifference >= -1 && adjacent.contains(newPosition) && super.checkGodsPowerActive(minotaurPower, map) &&
                 !backwardSquare.hasWorkerOn() && !backwardSquare.hasDome();
     }
 

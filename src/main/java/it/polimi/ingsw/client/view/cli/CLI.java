@@ -150,7 +150,6 @@ public class CLI extends ClientView {
 
         } while (godsChosenNum != howMany);
 
-
         return godsChosen;
     }
 
@@ -241,8 +240,8 @@ public class CLI extends ClientView {
         consoleOut.println("Let's place your worker!\nWhere do you want to place it?\n");
         consoleOut.println("(You are placing your "+ n + "° worker)");
 
-        int row = -1;
-        int col = -1;
+        int row;
+        int col;
 
         row = getCoordinate("row");
 
@@ -415,8 +414,8 @@ public class CLI extends ClientView {
         consoleOut.println("Let's move!");
         consoleOut.println("\n(x,y)");
 
-        int row = -1;
-        int col = -1;
+        int row;
+        int col;
 
         row = getCoordinate("row");
 
@@ -441,7 +440,14 @@ public class CLI extends ClientView {
 
     @Override
     public boolean wantMoveAgain() {
-        consoleOut.println("Do you want to move again?");
+
+        int input = doItAgain("move");
+
+        return input == 1;
+    }
+
+    private int doItAgain(String string){
+        consoleOut.println("Do you want to " + string + " again?");
         consoleOut.println("1) sì ");
         consoleOut.println("2) no \n");
         int input = -1;
@@ -465,7 +471,7 @@ public class CLI extends ClientView {
             }
         }while (input != 1 && input != 2);
 
-        return input == 1;
+        return input;
     }
 
     @Override
@@ -508,8 +514,8 @@ public class CLI extends ClientView {
         consoleOut.println("\n(x,y)");
 
 
-        int row = -1;
-        int col = -1;
+        int row;
+        int col;
 
         row = getCoordinate("row");
 
@@ -542,29 +548,7 @@ public class CLI extends ClientView {
 
     @Override
     public boolean wantBuildAgain() {
-        consoleOut.println("Do you want to build again?");
-        consoleOut.println("1) sì");
-        consoleOut.println("2) no ");
-        int input = -1;
-
-        do{
-            if (consoleIn.hasNextLine()) {
-                String entered = consoleIn.nextLine();
-
-                try {
-                    input = Integer.parseInt(entered);
-
-                    if (input != 1 && input != 2) {
-                        consoleOut.println("You have to choose between this 2 options");
-                    }
-
-                } catch (NumberFormatException e) {
-                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
-                }
-
-                consoleOut.println();
-            }
-        }while (input != 1 && input != 2);
+        int input = doItAgain("build");
 
         return input == 1;
     }

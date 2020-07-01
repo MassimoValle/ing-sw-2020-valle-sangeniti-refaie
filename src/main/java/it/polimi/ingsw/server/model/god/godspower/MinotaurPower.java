@@ -3,7 +3,6 @@ package it.polimi.ingsw.server.model.god.godspower;
 import it.polimi.ingsw.server.model.action.Action;
 import it.polimi.ingsw.server.model.action.ActionOutcome;
 import it.polimi.ingsw.server.model.action.MinotaurPushAction;
-import it.polimi.ingsw.server.model.map.GameMap;
 import it.polimi.ingsw.server.model.map.Square;
 import it.polimi.ingsw.server.model.player.Position;
 import it.polimi.ingsw.server.model.player.Worker;
@@ -12,8 +11,6 @@ import java.util.List;
 
 
 public class MinotaurPower extends Power {
-
-    private transient Position backWardPosition;
 
     public MinotaurPower(String powerType, String powerDescription) {
         super(powerType, powerDescription);

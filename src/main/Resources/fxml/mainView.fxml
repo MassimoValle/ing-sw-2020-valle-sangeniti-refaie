@@ -84,24 +84,11 @@
             </BorderPane>
             <AnchorPane fx:id="topLayer" prefHeight="200.0" prefWidth="200.0" styleClass="PlayerLabel" stylesheets="@../css/mycss.css">
                <children>
-                  <Button fx:id="powerButton" layoutX="80.0" layoutY="181.0" mnemonicParsing="false" onAction="#powerEvent" prefHeight="56.0" prefWidth="223.0" styleClass="PowerButton" stylesheets="@../css/mycss.css" />
-                  <VBox fx:id="vbox1" layoutY="520.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
-                     <children>
-                        <Label />
-                        <Label />
-                     </children></VBox>
-                  <VBox fx:id="vbox2" layoutX="478.0" layoutY="246.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                     <children>
-                        <Label />
-                        <Label />
-                     </children></VBox>
-                  <VBox fx:id="vbox3" layoutX="1290.0" layoutY="618.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <Label />
-                        <Label />
-                     </children>
-                  </VBox>
-                  <Label fx:id="gamePhase" layoutX="80.0" layoutY="102.0" prefHeight="56.0" prefWidth="223.0" />
+                  <Button fx:id="powerButton" layoutX="38.0" layoutY="184.0" minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#powerEvent" prefHeight="43.0" prefWidth="172.0" styleClass="PowerButton" stylesheets="@../css/mycss.css" />
+                  <VBox fx:id="vbox1" layoutY="520.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
+                  <VBox fx:id="vbox2" layoutX="478.0" layoutY="246.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <VBox fx:id="vbox3" layoutX="1290.0" layoutY="618.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label fx:id="gamePhase" layoutX="13.0" layoutY="121.0" prefHeight="56.0" prefWidth="223.0" />
                </children>
             </AnchorPane>
          </children>

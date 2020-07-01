@@ -36,9 +36,7 @@ public class RemoteView extends View {
 
     public void setController(MasterController masterController){
         this.masterController = masterController;
-    };
-
-
+    }
 
 
     @Override

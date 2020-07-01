@@ -3,7 +3,6 @@ package it.polimi.ingsw.server.model.player;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.util.List;
 
 public class Worker {
 
@@ -19,10 +18,6 @@ public class Worker {
 
     //GUI
     private ImageView imgView;
-
-
-    //ArayList contenente le posizioni in cui il worker selezionato può muoversi
-    private List<Position> adjacentPosition;
 
 
     public Worker(Player owner, int workersNumber) {

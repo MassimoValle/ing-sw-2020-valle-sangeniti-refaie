@@ -44,7 +44,7 @@ public class MoveAction implements Action {
         ArrayList<Position> adjacent = oldPositionSquare.getPosition().getAdjacentPlaces();
 
         //if some God Power is active that prevent you from doing this move
-        return !godsPowerActive(godsPowerPerformingAction, map) && !newPositionSquare.hasWorkerOn() &&
+        return checkGodsPowerActive(godsPowerPerformingAction, map) && !newPositionSquare.hasWorkerOn() &&
                 heightDifference >= -1 && !newPositionSquare.hasDome() &&
                 adjacent.contains(newPosition);
     }
@@ -72,15 +72,15 @@ public class MoveAction implements Action {
      *
      * @return true if action not permitted, false otherwise
      */
-    boolean godsPowerActive(Power godsPowerPerformingAction, GameMap map) {
+    boolean checkGodsPowerActive(Power godsPowerPerformingAction, GameMap map) {
 
         ArrayList<Power> powersInGame = GodsInGame.getIstance().getPowersByMap(map);
         for (Power godPower: powersInGame) {
             if (!godPower.equals(godsPowerPerformingAction) && godPower.canPreventsFromPerformingAction() && godPower.checkIfActionNotPermitted(this)) {
-                 return true;
+                 return false;
             }
         }
-        return false;
+        return true;
     }
 
     /**
