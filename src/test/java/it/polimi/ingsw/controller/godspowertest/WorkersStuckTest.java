@@ -132,7 +132,6 @@ public class WorkersStuckTest {
 
         masterController.getGameInstance().getGameMap().printBoard();
 
-        assertTrue( ((ApolloPower) player1.getPlayerGod().getGodPower()).canSwapOnlyGoingUp(masterController.getGameInstance().getGameMap(), setupUtility.w1pl1));
         setupUtility.selectWorker(pl1, 0);
         assertTrue(setupUtility.w1pl1.isSelected());
 

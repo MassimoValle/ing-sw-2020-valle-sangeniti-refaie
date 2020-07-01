@@ -363,9 +363,15 @@ public class ClientManager {
 
     private void handlePlayerDisconnected(ServerResponse serverResponse) {
 
+        Player playerDisconnected = babyGame.getPlayerByName(serverResponse.getMessageRecipient());
+
+        if (playerDisconnected.isEliminated())
+            return;
+
         clientView.playerLeftTheGame(serverResponse.getMessageRecipient());
 
-        clientView.closeClient();
+        if (babyGame.getPlayers().size() < 3)
+            clientView.closeClient();
 
     }
 
@@ -572,7 +578,7 @@ public class ClientManager {
         clientView.iLose();
 
         //REMOVE THIS PLAYER FROM THE MATCH
-        removePlayerFromMatch(me);
+        //removePlayerFromMatch(me);
     }
 
 
@@ -587,9 +593,11 @@ public class ClientManager {
     }
 
     private void removePlayerFromMatch(Player playerToRemove) {
+
         babyGame.getClientMap().removePlayerWorkers(playerToRemove);
         playerToRemove.removeWorkers();
-        babyGame.getPlayers().remove(playerToRemove);
+        playerToRemove.setEliminated(true);
+        //babyGame.getPlayers().remove(playerToRemove);
 
     }
 

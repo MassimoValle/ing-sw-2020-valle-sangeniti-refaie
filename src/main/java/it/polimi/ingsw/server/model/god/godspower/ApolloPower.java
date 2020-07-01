@@ -55,26 +55,5 @@ public class ApolloPower extends Power {
         return super.isWorkerStuck(worker);
     }
 
-    public boolean canSwapOnlyGoingUp(GameMap map, Worker worker) {
-        ArrayList<Position> adjacent = worker.getPosition().getAdjacentPlaces();
-        ArrayList<Position> swapNotHigherAvailable = new ArrayList<>();
-        ArrayList<Position> swapHigherAvailable = new ArrayList<>();
-
-
-        for (Position pos : adjacent) {
-            Square square = map.getSquare(pos);
-            if (square.hasWorkerOn() && !square.getWorkerOnSquare().getColor().equals(worker.getColor()) ) {
-                if (map.getDifferenceInAltitude(worker.getPosition(), pos) >= 0)
-                    swapNotHigherAvailable.add(pos);
-                else if (map.getDifferenceInAltitude(worker.getPosition(), pos) == -1) {
-                        swapHigherAvailable.add(pos);
-                }
-            }
-        }
-
-        if (!swapNotHigherAvailable.isEmpty())
-            return false;
-        else return !swapHigherAvailable.isEmpty();
-    }
 }
 

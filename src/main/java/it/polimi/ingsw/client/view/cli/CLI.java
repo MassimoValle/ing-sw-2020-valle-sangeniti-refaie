@@ -52,7 +52,7 @@ public class CLI extends ClientView {
     public String askUserName() {
 
         String username = "";
-        consoleOut.println("Enter your username: ");
+        consoleOut.print("\nEnter your username: ");
 
         //Setto il nome utente
         do {
@@ -128,10 +128,10 @@ public class CLI extends ClientView {
 
         int godsChosenNum = 0;
 
-        consoleOut.println("\nType in the respective god's index you want to play with: [ONLY INDEX WORKING FOR NOW]");
+        consoleOut.print("\nType in the respective god's index you want to play with:");
 
         do {
-            consoleOut.println(">>>");
+            consoleOut.print("\n>>>");
 
             if (consoleIn.hasNextLine()) {
                 String entered = consoleIn.nextLine();
@@ -156,7 +156,7 @@ public class CLI extends ClientView {
 
                 Deck deck = BabyGame.getInstance().getDeck();
                 God god = deck.getGod(n - 1);
-                consoleOut.println("You choose " + god.getGodName() + "!");
+                consoleOut.println("\nYou choose " + god.getGodName() + "!");
                 godsChosen.add(god);
                 godsChosenNum++;
             }
@@ -382,7 +382,7 @@ public class CLI extends ClientView {
                 consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
             }
 
-        }while (actionToDo < 0 || actionToDo > possibleActions.size());
+        }while (actionToDo < 1 || actionToDo > possibleActions.size());
 
         return possibleActions.get(actionToDo - 1);
 
@@ -721,14 +721,16 @@ public class CLI extends ClientView {
 
     @Override
     public void playerLeftTheGame(String user) {
+
         consoleOut.println("#############");
-        consoleOut.println(user + " left the game \nRestart the client to play again");
+        consoleOut.println(user + " left the game \n");
         consoleOut.println("\t#############");
+
     }
 
     @Override
     public void closeClient() {
-        consoleOut.println("Press any key to terminate");
+        consoleOut.println("\nRestart the client to play again\nPress any key to terminate");
         consoleIn.nextLine();
         Thread.currentThread().interrupt();
 
@@ -781,7 +783,7 @@ public class CLI extends ClientView {
             //this is thrown when the end of the stream is reached
             consoleOut.println("Server disconnected while sending message to it!");
         } catch (UnknownHostException ex) {
-            consoleOut.println("Unknown host, please insert again:");
+            consoleOut.println("Unknown host! Restarting cli...\n\n\n");
             run();
         } catch (ConnectException ex) {
             consoleOut.println("Server refused to connect");

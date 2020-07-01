@@ -113,8 +113,6 @@ public class GuiController extends ClientView {
 
             alert.showAndWait();
 
-            Platform.exit();
-            System.exit(0);
         });
     }
 
@@ -247,10 +245,13 @@ public class GuiController extends ClientView {
     @Override
     public God pickFromChosenGods(ArrayList<God> hand) {
 
-        GUI.setRoot("pickGod");
-        FXMLLoader fxmlLoader = GUI.getFXMLLoader();
-        PickGodController pickGodController = fxmlLoader.getController();
-        pickGodController.setHand(hand);
+        Platform.runLater(() -> {
+            GUI.setRoot("pickGod");
+            FXMLLoader fxmlLoader = GUI.getFXMLLoader();
+            PickGodController pickGodController = fxmlLoader.getController();
+            pickGodController.setHand(hand);
+        });
+
 
         God ret = null;
         String godName = (String) getFromUser();
@@ -809,7 +810,13 @@ public class GuiController extends ClientView {
 
     @Override
     public void someoneHasLost(String loser) {
-        //nothing to show
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(ERROR_DIALOG);
+            alert.setHeaderText(loser + " has lost!\n");
+
+            alert.showAndWait();
+        });
     }
 
     @Override
@@ -818,18 +825,16 @@ public class GuiController extends ClientView {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(ERROR_DIALOG);
-            alert.setHeaderText(user + " left the game\nClick OK to quit");
+            alert.setHeaderText(user + " left the game\n");
 
             alert.showAndWait();
-
-            Platform.exit();
-            System.exit(0);
         });
     }
 
     @Override
     public void closeClient() {
-        //nothing to show
+        Platform.exit();
+        System.exit(0);
     }
 
     @Override

@@ -61,7 +61,9 @@ public class MasterController {
 
         messageManager.buildNegativeResponse(playerDisconnected, ResponseContent.DISCONNECT, "");
 
-        gameOver();
+       if (gameInstance.getPlayers().size() <=2) {
+           gameOver();
+       }
     }
 
     public void gameOver() {
