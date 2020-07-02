@@ -365,7 +365,7 @@ public class ClientManager {
 
         Player playerDisconnected = babyGame.getPlayerByName(serverResponse.getMessageRecipient());
 
-        if (playerDisconnected.isEliminated())
+        if (playerDisconnected != null && playerDisconnected.isEliminated())
             return;
 
         clientView.playerLeftTheGame(serverResponse.getMessageRecipient());

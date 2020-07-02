@@ -18,8 +18,8 @@ The following documentation contains documents and charts used for the design of
 
 * [Initial UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Initial/PNG/UML_Santorini_initial.png)
 
-* [Final Client UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Final/PNG/UML_Client_Summary.png)   [[Advanced]](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Final/PNG/UML_Client_Detail.png)
-* [Final Server UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Final/PNG/UML_Server_Summary.png)   [[Advanced]](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Final/PNG/UML_Server_Detail.png)
+* [Final Client UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/master/deliveries/UML/Final/Client/UML_Client_Summary.png)   [[Advanced]](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/master/deliveries/UML/Final/Client/UML_Client_Detail.png)
+* [Final Server UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/tree/master/deliveries/UML/Final/Server/UML_Server_Summary.png)   [[Advanced]](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/tree/master/deliveries/UML/Final/Server)
 
 #### JavaDoc
 The major part of Server code is documented by JavaDoc, expecially Model and Controller packages.
