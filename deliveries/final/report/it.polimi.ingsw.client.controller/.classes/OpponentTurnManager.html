@@ -1,0 +1,180 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: OpponentTurnManager</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.client.controller</a> ]
+</div>
+
+<h1>Coverage Summary for Class: OpponentTurnManager (it.polimi.ingsw.client.controller)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OpponentTurnManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">OpponentTurnManager$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 28)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.client.controller;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.network.Client;
+<i>4</i>&nbsp;import it.polimi.ingsw.network.message.Enum.MessageStatus;
+<i>5</i>&nbsp;import it.polimi.ingsw.network.message.server.serverrequests.ServerRequest;
+<i>6</i>&nbsp;import it.polimi.ingsw.network.message.server.serverresponse.SelectWorkerServerResponse;
+<i>7</i>&nbsp;import it.polimi.ingsw.network.message.server.serverresponse.ServerResponse;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;/**
+<i>10</i>&nbsp; * This class is used whenever the client receive a message but the player isn&#39;t the turnOwner
+<i>11</i>&nbsp; */
+<b class="nc"><i>12</i>&nbsp;public class OpponentTurnManager {</b>
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;    /**
+<i>15</i>&nbsp;     * The Turn owner.
+<i>16</i>&nbsp;     */
+<b class="nc"><i>17</i>&nbsp;    String turnOwner = null;</b>
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    /**
+<i>21</i>&nbsp;     * Server request not for you.
+<i>22</i>&nbsp;     * It manages the opponent&#39;s game phase on client view by opponent&#39;s {@link ServerRequest}
+<i>23</i>&nbsp;     *
+<i>24</i>&nbsp;     * @param serverRequest the server request
+<i>25</i>&nbsp;     */
+<i>26</i>&nbsp;    public void serverRequestNotForYou(ServerRequest serverRequest) {
+<b class="nc"><i>27</i>&nbsp;        turnOwner = serverRequest.getMessageRecipient();</b>
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;
+<b class="nc"><i>30</i>&nbsp;        switch (serverRequest.getContent()) {</b>
+<b class="nc"><i>31</i>&nbsp;            case CHOOSE_GODS_SERVER_REQUEST -&gt; ClientManager.getClientView().youAreNotTheGodLikePlayer(turnOwner);</b>
+<b class="nc"><i>32</i>&nbsp;            case PICK_GOD                   -&gt; ClientManager.getClientView().anotherPlayerIsPickingUpGod(turnOwner);</b>
+<b class="nc"><i>33</i>&nbsp;            case PLACE_WORKER               -&gt; ClientManager.getClientView().anotherPlayerIsPlacingWorker(turnOwner);</b>
+<b class="nc"><i>34</i>&nbsp;            case START_TURN                 -&gt; ClientManager.getClientView().startingPlayerTurn(turnOwner);</b>
+<b class="nc"><i>35</i>&nbsp;            case SELECT_WORKER              -&gt; ClientManager.getClientView().anotherPlayerIsSelectingWorker(turnOwner);</b>
+<b class="nc"><i>36</i>&nbsp;            case MOVE_WORKER                -&gt; ClientManager.getClientView().anotherPlayerIsMoving(turnOwner);</b>
+<b class="nc"><i>37</i>&nbsp;            case BUILD                      -&gt; ClientManager.getClientView().anotherPlayerIsBuilding(turnOwner);</b>
+<b class="nc"><i>38</i>&nbsp;            case END_TURN                   -&gt; {}</b>
+<b class="nc"><i>39</i>&nbsp;            default                         -&gt; ClientManager.LOGGER.severe(new IllegalStateException(&quot;Invalid serverRequest content in serverRequestNotForYou()&quot;).getMessage());</b>
+<i>40</i>&nbsp;        }
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    /**
+<i>44</i>&nbsp;     * Server response not for you.
+<i>45</i>&nbsp;     * It manages the opponent&#39;s game phase on client view by opponent&#39;s {@link ServerResponse}
+<i>46</i>&nbsp;     *
+<i>47</i>&nbsp;     * @param serverResponse the server response
+<i>48</i>&nbsp;     */
+<i>49</i>&nbsp;    public void serverResponseNotForYou(ServerResponse serverResponse) {
+<i>50</i>&nbsp;
+<b class="nc"><i>51</i>&nbsp;        turnOwner = serverResponse.getMessageRecipient();</b>
+<i>52</i>&nbsp;
+<b class="nc"><i>53</i>&nbsp;        if(serverResponse.getResponseStatus() == MessageStatus.ERROR)</b>
+<i>54</i>&nbsp;            return;
+<i>55</i>&nbsp;
+<b class="nc"><i>56</i>&nbsp;        switch (serverResponse.getResponseContent()) {</b>
+<i>57</i>&nbsp;
+<b class="nc"><i>58</i>&nbsp;            case CHOOSE_GODS                -&gt; ClientManager.getClientView().anotherPlayerHasSelectedGods(turnOwner);</b>
+<b class="nc"><i>59</i>&nbsp;            case PICK_GOD                   -&gt; ClientManager.getClientView().anotherPlayerHasPickedUpGod(turnOwner);</b>
+<b class="nc"><i>60</i>&nbsp;            case PLACE_WORKER               -&gt; ClientManager.getClientView().anotherPlayerHasPlacedWorker(turnOwner);</b>
+<b class="nc"><i>61</i>&nbsp;            case SELECT_WORKER              -&gt; ClientManager.getClientView().anotherPlayerHasSelectedWorker((SelectWorkerServerResponse) serverResponse);</b>
+<b class="nc"><i>62</i>&nbsp;            case MOVE_WORKER                -&gt; ClientManager.getClientView().anotherPlayerHasMoved(turnOwner);</b>
+<b class="nc"><i>63</i>&nbsp;            case BUILD                      -&gt; ClientManager.getClientView().anotherPlayerHasBuilt(turnOwner);</b>
+<b class="nc"><i>64</i>&nbsp;            case END_TURN                   -&gt; ClientManager.getClientView().anotherPlayerHasEndedHisTurn(turnOwner);</b>
+<b class="nc"><i>65</i>&nbsp;            case PLAYER_HAS_WON             -&gt; ClientManager.getClientView().youLose(turnOwner);</b>
+<b class="nc"><i>66</i>&nbsp;            case MOVE_WORKER_AGAIN, BUILD_AGAIN -&gt; { }</b>
+<b class="nc"><i>67</i>&nbsp;            default                         -&gt; ClientManager.LOGGER.severe(new IllegalStateException(&quot;Invalid serverResponse content in serverResponseNotForYou()&quot;).getMessage());</b>
+<i>68</i>&nbsp;        }
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 23:21</div>
+</div>
+</body>
+</html>

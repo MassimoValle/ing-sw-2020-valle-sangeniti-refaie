@@ -1,0 +1,132 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: HephaestusPower</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.server.model.god.godspower</a> ]
+</div>
+
+<h1>Coverage Summary for Class: HephaestusPower (it.polimi.ingsw.server.model.god.godspower)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HephaestusPower</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    94,1%
+  </span>
+  <span class="absValue">
+    (16/ 17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.server.model.god.godspower;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.server.model.action.ActionOutcome;
+<i>4</i>&nbsp;import it.polimi.ingsw.server.model.map.Square;
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;public class HephaestusPower extends Power {
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;    private transient Square firstBlockBuilt;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;    public HephaestusPower(String powerType, String powerDescription) {
+<b class="fc"><i>11</i>&nbsp;        super(powerType, powerDescription);</b>
+<b class="fc"><i>12</i>&nbsp;        firstBlockBuilt = null;</b>
+<b class="fc"><i>13</i>&nbsp;    }</b>
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;    @Override
+<i>17</i>&nbsp;    public ActionOutcome build(Square squareWhereTheWorkerIs, Square squareWhereToBuild) {
+<i>18</i>&nbsp;        ActionOutcome outcome;
+<i>19</i>&nbsp;
+<b class="fc"><i>20</i>&nbsp;        if (firstBlockBuilt == null) {</b>
+<b class="fc"><i>21</i>&nbsp;            if (squareWhereToBuild.getHeight() &gt;= 2)</b>
+<b class="fc"><i>22</i>&nbsp;                return super.build(squareWhereTheWorkerIs, squareWhereToBuild);</b>
+<i>23</i>&nbsp;
+<b class="fc"><i>24</i>&nbsp;            outcome = super.build(squareWhereTheWorkerIs, squareWhereToBuild);</b>
+<b class="fc"><i>25</i>&nbsp;            if (outcome == ActionOutcome.DONE) {</b>
+<b class="fc"><i>26</i>&nbsp;                firstBlockBuilt = squareWhereToBuild;</b>
+<b class="fc"><i>27</i>&nbsp;                return ActionOutcome.DONE_CAN_BE_DONE_AGAIN;</b>
+<i>28</i>&nbsp;            } else {
+<b class="nc"><i>29</i>&nbsp;                return ActionOutcome.NOT_DONE;</b>
+<i>30</i>&nbsp;            }
+<b class="fc"><i>31</i>&nbsp;        } else if (firstBlockBuilt.equals(squareWhereToBuild)) {</b>
+<b class="fc"><i>32</i>&nbsp;            return super.build(squareWhereTheWorkerIs, squareWhereToBuild);</b>
+<i>33</i>&nbsp;        } else {
+<b class="fc"><i>34</i>&nbsp;            return ActionOutcome.NOT_DONE;</b>
+<i>35</i>&nbsp;        }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    @Override
+<i>40</i>&nbsp;    public boolean powerMustBeReset() {
+<b class="fc"><i>41</i>&nbsp;        return true;</b>
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    @Override
+<i>45</i>&nbsp;    public void resetPower() {
+<b class="fc"><i>46</i>&nbsp;        firstBlockBuilt = null;</b>
+<b class="fc"><i>47</i>&nbsp;    }</b>
+<i>48</i>&nbsp;}
+<i>49</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 23:21</div>
+</div>
+</body>
+</html>

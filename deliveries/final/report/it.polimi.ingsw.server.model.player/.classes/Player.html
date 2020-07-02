@@ -1,0 +1,275 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Player</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.server.model.player</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Player (it.polimi.ingsw.server.model.player)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Player</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    94,4%
+  </span>
+  <span class="absValue">
+    (17/ 18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    94,6%
+  </span>
+  <span class="absValue">
+    (53/ 56)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.server.model.player;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.server.model.action.SelectWorkerAction;
+<i>4</i>&nbsp;import it.polimi.ingsw.server.model.god.God;
+<i>5</i>&nbsp;import it.polimi.ingsw.server.model.god.godspower.Power;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;import java.util.ArrayList;
+<i>8</i>&nbsp;import java.util.List;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;public class Player {
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;    private final String playerName;                  /** Name chosen by the player */
+<i>13</i>&nbsp;    private God playerGod;                      /** God card chosen by the player */
+<i>14</i>&nbsp;    private final List&lt;Worker&gt; playerWorkers;
+<i>15</i>&nbsp;    /** Number of workers per player */
+<i>16</i>&nbsp;    private ColorEnum color;
+<i>17</i>&nbsp;
+<b class="fc"><i>18</i>&nbsp;    private boolean eliminated = false;</b>
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    //private LastTurnAction[] lastTurnActions;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    /**
+<i>24</i>&nbsp;     *
+<i>25</i>&nbsp;     * Create a player with the name specified by input user
+<i>26</i>&nbsp;     * &lt;p&gt;&lt;/p&gt;
+<i>27</i>&nbsp;     * The for loop is used to assign a distinctive number to workers
+<i>28</i>&nbsp;     *
+<i>29</i>&nbsp;     * @param playerName the player name
+<i>30</i>&nbsp;     */
+<b class="fc"><i>31</i>&nbsp;    public Player(String playerName) {</b>
+<b class="fc"><i>32</i>&nbsp;        this.playerName = playerName;</b>
+<b class="fc"><i>33</i>&nbsp;        this.playerWorkers = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>34</i>&nbsp;        int numWorker = 2;</b>
+<b class="fc"><i>35</i>&nbsp;        for (int i = 0; i &lt; numWorker; i++) { this.playerWorkers.add(new Worker(this, i)); }   // 2 workers</b>
+<b class="fc"><i>36</i>&nbsp;    }</b>
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    /**
+<i>39</i>&nbsp;     * Gets player god.
+<i>40</i>&nbsp;     * &lt;p&gt;&lt;/p&gt;
+<i>41</i>&nbsp;     * @return the god card chosen by the player among those available
+<i>42</i>&nbsp;     */
+<i>43</i>&nbsp;    public God getPlayerGod() {
+<b class="fc"><i>44</i>&nbsp;        return this.playerGod;</b>
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    /**
+<i>49</i>&nbsp;     * Set the {@link God} passed as parameter to {@link Player this}
+<i>50</i>&nbsp;     *
+<i>51</i>&nbsp;     * @param selectedGod the selected god
+<i>52</i>&nbsp;     */
+<i>53</i>&nbsp;    public void setPlayerGod(God selectedGod) {
+<b class="fc"><i>54</i>&nbsp;        this.playerGod = selectedGod;</b>
+<b class="fc"><i>55</i>&nbsp;    }</b>
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    public void setColor(ColorEnum color) {
+<b class="fc"><i>59</i>&nbsp;        this.color = color;</b>
+<b class="fc"><i>60</i>&nbsp;        this.getPlayerWorkers().get(0).setColor(color);</b>
+<b class="fc"><i>61</i>&nbsp;        this.getPlayerWorkers().get(1).setColor(color);</b>
+<b class="fc"><i>62</i>&nbsp;    }</b>
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public ColorEnum getColor() {
+<b class="fc"><i>65</i>&nbsp;        return color;</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    /**
+<i>69</i>&nbsp;     * Gets player name.
+<i>70</i>&nbsp;     * &lt;p&gt;&lt;/p&gt;
+<i>71</i>&nbsp;     * @return the name chosen by the player at game start
+<i>72</i>&nbsp;     */
+<b class="fc"><i>73</i>&nbsp;    public String getPlayerName() {return playerName; }</b>
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    /**
+<i>77</i>&nbsp;     * Gets player workers.
+<i>78</i>&nbsp;     * &lt;p&gt;&lt;/p&gt;
+<i>79</i>&nbsp;     * This list contains 2 elements as 2 is the number of workers per player.
+<i>80</i>&nbsp;     * &lt;p&gt;&lt;/p&gt;
+<i>81</i>&nbsp;     * @return the list of workers assigned to the player.
+<i>82</i>&nbsp;     */
+<b class="fc"><i>83</i>&nbsp;    public List&lt;Worker&gt; getPlayerWorkers() { return playerWorkers; }</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    /**
+<i>86</i>&nbsp;     * Add new {@link Worker} to {@link Player this player}
+<i>87</i>&nbsp;     * &lt;p&gt;&lt;/p&gt;
+<i>88</i>&nbsp;     * Probably this method will never be used but just in case just leave it here
+<i>89</i>&nbsp;     * &lt;p&gt;&lt;/p&gt;
+<i>90</i>&nbsp;     * @return the worker
+<i>91</i>&nbsp;     */
+<i>92</i>&nbsp;    public Worker addNewWorker() {
+<b class="fc"><i>93</i>&nbsp;        Worker newWorker = new Worker(this, getPlayerWorkers().size() + 1);</b>
+<b class="fc"><i>94</i>&nbsp;        getPlayerWorkers().add(newWorker);</b>
+<b class="fc"><i>95</i>&nbsp;        return newWorker;</b>
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    //public String toString() { return &quot;Player Name: &quot; + this.playerName.toUpperCase(); }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    public boolean godAssigned() {
+<b class="fc"><i>102</i>&nbsp;        return playerGod != null;</b>
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    public boolean areWorkersPlaced() {
+<b class="fc"><i>106</i>&nbsp;        for (Worker worker : playerWorkers) {</b>
+<b class="fc"><i>107</i>&nbsp;            if (!worker.isPlaced())</b>
+<b class="fc"><i>108</i>&nbsp;                return false;</b>
+<b class="fc"><i>109</i>&nbsp;        }</b>
+<b class="fc"><i>110</i>&nbsp;        return true;</b>
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    /**
+<i>114</i>&nbsp;     * This method checks if the player cannot select any worker due to them being stuck
+<i>115</i>&nbsp;     *
+<i>116</i>&nbsp;     * @return true if all workers are stuck, false otherwise
+<i>117</i>&nbsp;     */
+<i>118</i>&nbsp;    public boolean allWorkersStuck() {
+<b class="fc"><i>119</i>&nbsp;        Power power = this.getPlayerGod().getGodPower();</b>
+<b class="fc"><i>120</i>&nbsp;        int workersStuck = 0;</b>
+<i>121</i>&nbsp;
+<b class="fc"><i>122</i>&nbsp;        for (Worker worker : playerWorkers) {</b>
+<b class="fc"><i>123</i>&nbsp;            SelectWorkerAction selectWorker = new SelectWorkerAction(power, worker, this);</b>
+<b class="fc"><i>124</i>&nbsp;            if (!selectWorker.isValid(null))</b>
+<b class="fc"><i>125</i>&nbsp;                workersStuck++;</b>
+<b class="fc"><i>126</i>&nbsp;        }</b>
+<i>127</i>&nbsp;
+<b class="fc"><i>128</i>&nbsp;        return workersStuck == playerWorkers.size();</b>
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    @Override
+<i>132</i>&nbsp;    public String toString() {
+<i>133</i>&nbsp;
+<b class="fc"><i>134</i>&nbsp;        if (playerGod == null) {</b>
+<b class="fc"><i>135</i>&nbsp;            return &quot;\n&quot; + playerName + &quot;\n&quot; +</b>
+<i>136</i>&nbsp;                    &quot; &quot; +
+<b class="fc"><i>137</i>&nbsp;                    playerWorkers.toString() + &quot;\n&quot;;</b>
+<i>138</i>&nbsp;        }
+<i>139</i>&nbsp;
+<b class="fc"><i>140</i>&nbsp;        return &quot;\n&quot; + playerName + &quot;\n&quot; +</b>
+<b class="fc"><i>141</i>&nbsp;                &quot;God: &quot; + playerGod.getGodName() +</b>
+<i>142</i>&nbsp;                &quot; &quot; +
+<b class="fc"><i>143</i>&nbsp;                playerWorkers.toString() + &quot;\n&quot;;</b>
+<i>144</i>&nbsp;    }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    @Override
+<i>147</i>&nbsp;    public boolean equals(Object obj) {
+<i>148</i>&nbsp;
+<b class="fc"><i>149</i>&nbsp;        if (obj == this) {</b>
+<b class="fc"><i>150</i>&nbsp;            return true;</b>
+<i>151</i>&nbsp;        }
+<i>152</i>&nbsp;
+<b class="fc"><i>153</i>&nbsp;        if (!(obj instanceof Player)) {</b>
+<b class="nc"><i>154</i>&nbsp;            return false;</b>
+<i>155</i>&nbsp;        }
+<i>156</i>&nbsp;
+<b class="fc"><i>157</i>&nbsp;        Player player = (Player) obj;</b>
+<i>158</i>&nbsp;
+<b class="fc"><i>159</i>&nbsp;        return playerName.equals(player.playerName) &amp;&amp;</b>
+<i>160</i>&nbsp;                playerGod == player.playerGod &amp;&amp;
+<i>161</i>&nbsp;                playerWorkers == player.playerWorkers &amp;&amp;
+<i>162</i>&nbsp;                color == player.color;
+<i>163</i>&nbsp;    }
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    @Override
+<i>166</i>&nbsp;    public int hashCode() {
+<b class="fc"><i>167</i>&nbsp;        return getPlayerName() != null ? getPlayerName().hashCode() : 0;</b>
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    public String printInfoInCLi() {
+<i>171</i>&nbsp;
+<b class="nc"><i>172</i>&nbsp;        return &quot;Username:&quot; + playerName + &quot;\n&quot; +</b>
+<b class="nc"><i>173</i>&nbsp;                &quot;God: &quot; + playerGod.getGodName() + &quot;\n&quot; ;</b>
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    public void removeWorkers() {
+<b class="fc"><i>179</i>&nbsp;        for (Worker worker : playerWorkers) {</b>
+<b class="fc"><i>180</i>&nbsp;            worker.remove();</b>
+<b class="fc"><i>181</i>&nbsp;        }</b>
+<b class="fc"><i>182</i>&nbsp;    }</b>
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;    public boolean isEliminated() {
+<b class="fc"><i>185</i>&nbsp;        return this.eliminated;</b>
+<i>186</i>&nbsp;    }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    public void setEliminated(boolean eliminated) {
+<b class="fc"><i>189</i>&nbsp;        this.eliminated = eliminated;</b>
+<b class="fc"><i>190</i>&nbsp;    }</b>
+<i>191</i>&nbsp;}
+<i>192</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 23:21</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,285 @@
+@startuml
+
+title __MODEL Class Diagram__\n
+
+
+
+        class model.Game {
+            - chosenGodsFromDeck : List<God>
+            - colorAvailable : List<ColorEnum>
+            - playerColor : HashMap<Player, ColorEnum>
+            - players : List<Player>
+            + Game()
+            + addPlayer()
+            + getChosenGodsFromDeck()
+            + getDeck()
+            + getGameMap()
+            + getNumberOfPlayers()
+            + getPlayers()
+            + getPowersInGame()
+            + getUnassignedGods()
+            + godsPickedByEveryone()
+            + printGameInfo()
+            + putInChanges()
+            + searchPlayerByName()
+            + setChosenGodsFromDeck()
+            + setGodAssigned()
+            + workersPlacedByEveryone()
+            - initColorAvailable()
+        }
+
+
+  
+
+
+
+        class model.Outcome {
+            - playersInGame : List<Player>
+            - powersInGame : List<Power>
+            + Outcome()
+            + getWinner()
+            + playerHasWonAfterBuilding()
+            + playerHasWonAfterMoving()
+
+        }
+
+
+      class model.map.GameMap {
+                    # COLUMNS : int
+                    # ROWS : int
+                    # board : Square[][]
+                    + forcedToMoveUp()
+                    + getDifferenceInAltitude()
+                    + getPlacesWhereYouCanBuildOn()
+                    + getReachableAdjacentPlaces()
+                    + hasAtLeastFiveFullTower()
+                    + isPositionFree()
+                    + isPositionOnMapReal()
+                    + isPositionValid()
+                    + printBoard()
+                    + prometheusBuildsFirst()
+                    + removePlayerWorkers()
+                    + squareMinusOneAvailable()
+                    + squareSameHeightAvailable()
+                    + twoSquaresSameHeightAvailable()
+                }
+
+       class model.map.Square {
+                     # column : int
+                     # row : int
+                     # tower : ArrayList<Block>
+                     + addBlock()
+                     + freeSquare()
+                     + getWorkerOnSquare()
+                     + hasBeenBuiltOver()
+                     + hasDome()
+                     + hasWorkerOn()
+                     + isFull()
+                     + setWorkerOn()
+                     - addWorkerColor()
+                 }
+
+
+          class model.god.Deck {
+              + Deck()
+              + getGod()
+              + getGodByName()
+              + toString()
+              # createGod()
+              # loadXML()
+          }
+
+
+
+
+
+
+          class model.god.God {
+              - assigned : boolean
+              - godDescription : String
+              - godName : String
+              - imgView : ImageView
+              + God()
+              + equals()
+              + getGodDescription()
+              + getGodName()
+              + getGodPower()
+              + getImgView()
+              + hashCode()
+              + is()
+              + isAssigned()
+              + setAssigned()
+              + toString()
+          }
+
+
+
+
+
+
+
+          class model.god.GodsInGame {
+              - godsInGame : Map<Game, ArrayList<God>>
+              {static} - istance : GodsInGame
+              + addGodToGame()
+              {static} + getIstance()
+              + getPowers()
+              + getPowersByMap()
+              - GodsInGame()
+          }
+
+
+
+
+          class model.player.Player {
+              - playerName : String
+              - playerGod : God
+              - playerWorkers: List<Worker>
+              - eliminated : boolean
+              - playerWorkers : List<Worker>
+              + Player()
+              + addNewWorker()
+              + allWorkersStuck()
+              + areWorkersPlaced()
+              + godAssigned()
+              + isEliminated()
+              + removeWorkers()
+          }
+
+
+
+
+
+
+
+
+          class model.player.Position {
+              - column : int
+              - row : int
+              + Position()
+              + getAdjacentPlaces()
+              + getBackwardPosition()
+              + isClose()
+              + isInCorner()
+              + isPerimetral()
+              + sameColumn()
+              + sameRow()
+              - getEast()
+              - getNorth()
+              - getNorthEast()
+              - getNorthWest()
+              - getSouth()
+              - getSouthEast()
+              - getSouthWest()
+              - getWest()
+          }
+
+
+
+
+
+
+          class model.player.Worker {
+              - placed : boolean
+              - selected : boolean
+              - workersNumber : int
+              + Worker()
+              + deselectedOnGUI()
+              + isPlaced()
+              + isSelected()
+              + remove()
+          }
+
+          abstract class model.Building.Block {
+              # imageView : ImageView
+              # path : String
+              + getImageView()
+              + initGUIObj()
+          }
+
+
+
+
+
+          class model.Building.Dome {
+              + Dome()
+              + initGUIObj()
+          }
+
+
+
+
+
+
+          class model.Building.LevelOneBlock {
+              + LevelOneBlock()
+              + initGUIObj()
+          }
+
+
+
+
+
+
+          class model.Building.LevelThreeBlock {
+              + LevelThreeBlock()
+              + initGUIObj()
+          }
+
+
+
+
+
+
+          class model.Building.LevelTwoBlock {
+              + LevelTwoBlock()
+              + initGUIObj()
+          }
+
+
+
+  model.map.Square --> model.Building.Block
+ model.Building.Dome -up-|> model.Building.Block
+  model.Building.LevelOneBlock -up-|> model.Building.Block
+ model.Building.LevelThreeBlock -up-|> model.Building.Block
+  model.Building.LevelTwoBlock -up-|> model.Building.Block
+
+
+
+
+    model.player.Player -- model.player.ColorEnum : color
+
+  model.player.Position .up.|> java.io.Serializable
+  model.player.Worker -- model.player.ColorEnum : color
+  model.player.Worker --> model.player.Player
+  model.player.Worker -- model.player.Position : workerPosition
+
+
+
+
+
+ model.god.Deck .up.|> java.io.Serializable
+ model.god.God .up.|> java.io.Serializable
+ model.god.God o-- model.god.godspower.Power : godPower
+ model.player.Player --> model.god.God
+
+
+  
+
+  model.map.GameMap *-- model.map.Square
+  model.Game -up-|> view.Observable
+  model.Game o-- model.map.GameMap : gameMap
+  model.Outcome -- model.map.GameMap : gameMap
+  model.Outcome -- model.action.Action : lastAction
+  model.Outcome -- model.player.Player : player
+  model.Outcome -- model.player.Player : winner
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

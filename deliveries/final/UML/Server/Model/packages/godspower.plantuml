@@ -1,0 +1,266 @@
+@startuml
+
+title __GODSPOWER Class Diagram__\n
+
+
+
+
+
+            class model.god.godspower.ApolloPower {
+                + ApolloPower()
+                + isWorkerStuck()
+                + move()
+            }
+
+
+
+
+  
+
+
+
+
+            class model.god.godspower.ArtemisPower {
+                + ArtemisPower()
+                + move()
+                + powerMustBeReset()
+                + resetPower()
+                - hasNewMoveAvailable()
+            }
+
+
+
+  
+
+
+            class model.god.godspower.AthenaPower {
+                - goneUp : boolean
+                + AthenaPower()
+                + canPreventsFromPerformingAction()
+                + checkIfActionNotPermitted()
+                + hasGoneUp()
+                + move()
+            }
+
+
+
+  
+
+
+
+
+            class model.god.godspower.AtlasPower {
+                + AtlasPower()
+                + buildDome()
+                + canBuildDomeAtAnyLevel()
+                + canUsePowerBeforeBuilding()
+            }
+
+
+
+  
+
+
+
+
+            class model.god.godspower.ChronusPower {
+                + ChronusPower()
+            }
+
+
+
+  
+
+
+
+            class model.god.godspower.DemeterPower {
+                + DemeterPower()
+                + build()
+                + powerMustBeReset()
+                + resetPower()
+            }
+
+
+
+  
+
+
+
+
+            interface model.god.godspower.GodsChecker {
+                {abstract} + canBuildBeforeMoving()
+                {abstract} + canBuildDomeAtAnyLevel()
+                {abstract} + canPreventsFromPerformingAction()
+                {abstract} + canUsePowerBeforeBuilding()
+                {abstract} + canUsePowerBeforeMoving()
+                {abstract} + checkIfActionNotPermitted()
+                {abstract} + resetPower()
+                {abstract} + setBuildBefore()
+            }
+
+
+
+  
+
+
+
+
+
+            class model.god.godspower.HephaestusPower {
+                + HephaestusPower()
+                + build()
+                + powerMustBeReset()
+                + resetPower()
+            }
+
+
+
+  
+
+
+
+
+            class model.god.godspower.HeraPower {
+                + HeraPower()
+            }
+
+
+
+  
+
+
+
+            class model.god.godspower.HestiaPower {
+                - firstBuild : boolean
+                + HestiaPower()
+                + build()
+                + powerMustBeReset()
+                + resetPower()
+                - hasNewBuildAvailable()
+            }
+
+
+
+
+
+
+            class model.god.godspower.MinotaurPower {
+                + MinotaurPower()
+                + isWorkerStuck()
+                + move()
+            }
+
+
+
+  
+
+
+
+
+            class model.god.godspower.PanPower {
+                + PanPower()
+                + move()
+            }
+
+
+
+  
+
+
+
+
+            abstract class model.god.godspower.Power {
+                # powerDescription : String
+                + build()
+                + buildDome()
+                + canBuildBeforeMoving()
+                + canBuildDomeAtAnyLevel()
+                + canPreventsFromPerformingAction()
+                + canUsePowerBeforeBuilding()
+                + canUsePowerBeforeMoving()
+                + checkIfActionNotPermitted()
+                + isWorkerStuck()
+                + move()
+                + powerMustBeReset()
+                + resetPower()
+                + selectWorker()
+                + setBuildBefore()
+                # athenaPowerActivated()
+
+            }
+
+
+
+  
+
+
+
+
+            class model.god.godspower.PrometheusPower {
+                - buildBefore : boolean
+                + PrometheusPower()
+                + build()
+                + canBuildBeforeMoving()
+                + canUsePowerBeforeMoving()
+                + move()
+                + setBuildBefore()
+            }
+
+
+
+
+
+
+
+            class model.god.godspower.TritonPower {
+                + TritonPower()
+                + move()
+            }
+
+
+
+  
+
+
+
+            class model.god.godspower.ZeusPower {
+                + ZeusPower()
+                + build()
+                + move()
+            }
+
+
+
+
+model.god.godspower.ApolloPower -up-|> model.god.godspower.Power
+model.god.godspower.ArtemisPower .up.|> java.io.Serializable
+model.god.godspower.ArtemisPower -up-|> model.god.godspower.Power
+model.god.godspower.AthenaPower -up-|> model.god.godspower.Power
+model.god.godspower.AtlasPower -up-|> model.god.godspower.Power
+model.god.godspower.ChronusPower .up.|> java.io.Serializable
+model.god.godspower.ChronusPower -up-|> model.god.godspower.Power
+model.god.godspower.DemeterPower -up-|> model.god.godspower.Power
+model.god.godspower.HephaestusPower -up-|> model.god.godspower.Power
+model.god.godspower.HeraPower -up-|> model.god.godspower.Power
+model.god.godspower.HestiaPower -up-|> model.god.godspower.Power
+model.god.godspower.MinotaurPower -up-|> model.god.godspower.Power
+model.god.godspower.PanPower -up-|> model.god.godspower.Power
+model.god.godspower.Power .up.|> model.god.godspower.GodsChecker
+model.god.godspower.Power .up.|> java.io.Serializable
+model.god.godspower.Power o-- model.god.PowerType : powerType
+model.god.godspower.PrometheusPower .up.|> java.io.Serializable
+model.god.godspower.PrometheusPower -up-|> model.god.godspower.Power
+model.god.godspower.TritonPower -up-|> model.god.godspower.Power
+model.god.godspower.ZeusPower .up.|> java.io.Serializable
+model.god.godspower.ZeusPower -up-|> model.god.godspower.Power
+
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

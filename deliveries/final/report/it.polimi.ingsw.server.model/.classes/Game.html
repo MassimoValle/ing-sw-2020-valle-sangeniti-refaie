@@ -1,0 +1,314 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Game</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.server.model</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Game (it.polimi.ingsw.server.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Game</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (17/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    97,2%
+  </span>
+  <span class="absValue">
+    (69/ 71)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.server.model;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.network.message.server.ServerMessage;
+<i>4</i>&nbsp;import it.polimi.ingsw.server.model.god.Deck;
+<i>5</i>&nbsp;import it.polimi.ingsw.server.model.god.God;
+<i>6</i>&nbsp;import it.polimi.ingsw.server.model.god.godspower.Power;
+<i>7</i>&nbsp;import it.polimi.ingsw.server.model.map.GameMap;
+<i>8</i>&nbsp;import it.polimi.ingsw.server.model.player.ColorEnum;
+<i>9</i>&nbsp;import it.polimi.ingsw.server.model.player.Player;
+<i>10</i>&nbsp;import it.polimi.ingsw.server.model.player.Worker;
+<i>11</i>&nbsp;import it.polimi.ingsw.network.message.Message;
+<i>12</i>&nbsp;import it.polimi.ingsw.server.view.Observable;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;import java.util.ArrayList;
+<i>15</i>&nbsp;import java.util.HashMap;
+<i>16</i>&nbsp;import java.util.List;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;public class Game extends Observable&lt;Message&gt; {
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    private final List&lt;Player&gt; players;
+<i>23</i>&nbsp;    private final Deck deck;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    private final List&lt;God&gt; chosenGodsFromDeck;
+<i>26</i>&nbsp;    private final GameMap gameMap;
+<i>27</i>&nbsp;
+<b class="fc"><i>28</i>&nbsp;    private final List&lt;ColorEnum&gt; colorAvailable = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>29</i>&nbsp;    private final HashMap&lt;Player, ColorEnum&gt; playerColor = new HashMap&lt;&gt;();</b>
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;
+<b class="fc"><i>32</i>&nbsp;    public Game() {</b>
+<b class="fc"><i>33</i>&nbsp;        this.players = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>34</i>&nbsp;        this.gameMap = new GameMap();</b>
+<b class="fc"><i>35</i>&nbsp;        this.deck = new Deck();</b>
+<i>36</i>&nbsp;
+<b class="fc"><i>37</i>&nbsp;        this.chosenGodsFromDeck = new ArrayList&lt;&gt;();</b>
+<i>38</i>&nbsp;
+<b class="fc"><i>39</i>&nbsp;        initColorAvailable();</b>
+<i>40</i>&nbsp;
+<b class="fc"><i>41</i>&nbsp;    }</b>
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    // getter
+<i>44</i>&nbsp;    public List&lt;Player&gt; getPlayers() {
+<b class="fc"><i>45</i>&nbsp;        return this.players;</b>
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public Deck getDeck() {
+<b class="fc"><i>49</i>&nbsp;        return this.deck;</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public List&lt;God&gt; getChosenGodsFromDeck() {
+<b class="fc"><i>53</i>&nbsp;        return chosenGodsFromDeck;</b>
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    /**
+<i>57</i>&nbsp;     * Gets the Gods&#39; powers from the game.
+<i>58</i>&nbsp;     *
+<i>59</i>&nbsp;     * @return the Gods&#39; powers
+<i>60</i>&nbsp;     */
+<i>61</i>&nbsp;    public List&lt;Power&gt; getPowersInGame() {
+<b class="fc"><i>62</i>&nbsp;        List&lt;Power&gt; powers = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>63</i>&nbsp;        for (God god: chosenGodsFromDeck) {</b>
+<b class="fc"><i>64</i>&nbsp;            powers.add(god.getGodPower());</b>
+<b class="fc"><i>65</i>&nbsp;        }</b>
+<b class="fc"><i>66</i>&nbsp;        return powers;</b>
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<b class="fc"><i>69</i>&nbsp;    public int getNumberOfPlayers() { return players.size(); }</b>
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    public GameMap getGameMap() {
+<b class="fc"><i>72</i>&nbsp;        return this.gameMap;</b>
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    private void initColorAvailable() {
+<b class="fc"><i>77</i>&nbsp;        colorAvailable.add(ColorEnum.RED);</b>
+<b class="fc"><i>78</i>&nbsp;        colorAvailable.add(ColorEnum.BLUE);</b>
+<b class="fc"><i>79</i>&nbsp;        colorAvailable.add(ColorEnum.GREEN);</b>
+<b class="fc"><i>80</i>&nbsp;    }</b>
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    /**
+<i>83</i>&nbsp;     * Add {@link Player} to the {@link Game}
+<i>84</i>&nbsp;     *
+<i>85</i>&nbsp;     * @param player the player we want to add
+<i>86</i>&nbsp;     */
+<i>87</i>&nbsp;    public void addPlayer(Player player) {
+<i>88</i>&nbsp;        //Aggiungi il player alla partita
+<b class="fc"><i>89</i>&nbsp;        players.add(player);</b>
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;        //Aggiorni l&#39;hasmap
+<b class="fc"><i>92</i>&nbsp;        playerColor.put(player, colorAvailable.get(0));</b>
+<b class="fc"><i>93</i>&nbsp;        colorAvailable.remove(0);</b>
+<i>94</i>&nbsp;
+<b class="fc"><i>95</i>&nbsp;        player.setColor(playerColor.get(player));</b>
+<i>96</i>&nbsp;
+<b class="fc"><i>97</i>&nbsp;    }</b>
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    /**
+<i>100</i>&nbsp;     * Search {@link Player player} by name player.
+<i>101</i>&nbsp;     *
+<i>102</i>&nbsp;     * @param name is the name of player to search
+<i>103</i>&nbsp;     * @return the player with that username
+<i>104</i>&nbsp;     */
+<i>105</i>&nbsp;    public Player searchPlayerByName(String name) {
+<b class="fc"><i>106</i>&nbsp;        Player result = null;</b>
+<b class="fc"><i>107</i>&nbsp;        for (Player playerInGame : players) {</b>
+<b class="fc"><i>108</i>&nbsp;            if (playerInGame.getPlayerName().equals(name)) {</b>
+<b class="fc"><i>109</i>&nbsp;                result = playerInGame;</b>
+<b class="fc"><i>110</i>&nbsp;                break;</b>
+<i>111</i>&nbsp;            }
+<b class="fc"><i>112</i>&nbsp;        }</b>
+<b class="fc"><i>113</i>&nbsp;        return result;</b>
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    /**
+<i>117</i>&nbsp;     * It fills the {@link Game#chosenGodsFromDeck} with the {@link ArrayList&lt;God&gt;} passed as parameter
+<i>118</i>&nbsp;     *
+<i>119</i>&nbsp;     * @param godsChosen the gods chosen to be part of this game
+<i>120</i>&nbsp;     */
+<i>121</i>&nbsp;    public void setChosenGodsFromDeck(ArrayList&lt;God&gt; godsChosen) {
+<b class="fc"><i>122</i>&nbsp;        chosenGodsFromDeck.addAll(godsChosen);</b>
+<b class="fc"><i>123</i>&nbsp;    }</b>
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    /**
+<i>127</i>&nbsp;     * It checks if every {@link Player} has a God
+<i>128</i>&nbsp;     *
+<i>129</i>&nbsp;     * @return true if every player has a God
+<i>130</i>&nbsp;     */
+<i>131</i>&nbsp;    public boolean godsPickedByEveryone() {
+<b class="fc"><i>132</i>&nbsp;        boolean a = true;</b>
+<b class="fc"><i>133</i>&nbsp;        for (Player player : players) {</b>
+<b class="fc"><i>134</i>&nbsp;            if (!player.godAssigned()) {</b>
+<b class="fc"><i>135</i>&nbsp;                a = false;</b>
+<i>136</i>&nbsp;            }
+<b class="fc"><i>137</i>&nbsp;        }</b>
+<b class="fc"><i>138</i>&nbsp;        return a;</b>
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    public List&lt;God&gt; getUnassignedGods() {
+<b class="fc"><i>142</i>&nbsp;        List&lt;God&gt; unassignedGod = new ArrayList&lt;&gt;();</b>
+<i>143</i>&nbsp;
+<b class="fc"><i>144</i>&nbsp;        for(God god: chosenGodsFromDeck)</b>
+<b class="fc"><i>145</i>&nbsp;            if (!god.isAssigned()) {</b>
+<b class="fc"><i>146</i>&nbsp;                unassignedGod.add(god);</b>
+<i>147</i>&nbsp;            }
+<i>148</i>&nbsp;
+<b class="fc"><i>149</i>&nbsp;        return unassignedGod;</b>
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    public void setGodAssigned(God godAssigned) {
+<b class="fc"><i>153</i>&nbsp;        for(God god: chosenGodsFromDeck) {</b>
+<b class="fc"><i>154</i>&nbsp;            if (god.equals(godAssigned)) {</b>
+<b class="fc"><i>155</i>&nbsp;                god.setAssigned(true);</b>
+<i>156</i>&nbsp;            }
+<b class="fc"><i>157</i>&nbsp;        }</b>
+<b class="fc"><i>158</i>&nbsp;    }</b>
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    /**
+<i>162</i>&nbsp;     * It checks if every {@link Player} has placed its workers
+<i>163</i>&nbsp;     *
+<i>164</i>&nbsp;     * @return the boolean
+<i>165</i>&nbsp;     */
+<i>166</i>&nbsp;    public boolean workersPlacedByEveryone() {
+<b class="fc"><i>167</i>&nbsp;        for (Player player : players) {</b>
+<b class="fc"><i>168</i>&nbsp;            for (Worker worker : player.getPlayerWorkers()) {</b>
+<b class="fc"><i>169</i>&nbsp;                if ( !worker.isPlaced() )</b>
+<b class="fc"><i>170</i>&nbsp;                    return false;</b>
+<b class="fc"><i>171</i>&nbsp;            }</b>
+<b class="fc"><i>172</i>&nbsp;        }</b>
+<b class="fc"><i>173</i>&nbsp;        return true;</b>
+<i>174</i>&nbsp;    }
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    /**
+<i>178</i>&nbsp;     * It makes the message available to all the {@link it.polimi.ingsw.server.view.RemoteView}
+<i>179</i>&nbsp;     *
+<i>180</i>&nbsp;     * @param player who the message is intended for
+<i>181</i>&nbsp;     * @param serverMessage the ServerMessage in output
+<i>182</i>&nbsp;     */
+<i>183</i>&nbsp;    public void putInChanges(Player player, ServerMessage serverMessage) {
+<b class="fc"><i>184</i>&nbsp;        serverMessage.setMessageRecipient(player.getPlayerName());</b>
+<b class="fc"><i>185</i>&nbsp;        notify(serverMessage);</b>
+<b class="fc"><i>186</i>&nbsp;    }</b>
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    public void printGameInfo() {
+<b class="fc"><i>193</i>&nbsp;        if (getPlayers().size() == 0) {</b>
+<b class="nc"><i>194</i>&nbsp;            System.out.println(&quot;The game hasn&#39;t started yet&quot;);</b>
+<b class="nc"><i>195</i>&nbsp;            return;</b>
+<i>196</i>&nbsp;        }
+<b class="fc"><i>197</i>&nbsp;        System.out.println(&quot;[GAME INFO]\n&quot; +</b>
+<b class="fc"><i>198</i>&nbsp;                &quot;This is a &quot; + getPlayers().size() + &quot; player match.\n&quot; +</b>
+<b class="fc"><i>199</i>&nbsp;                &quot;PLAYERS:\n&quot; + players.toString());</b>
+<b class="fc"><i>200</i>&nbsp;        gameMap.printBoard();</b>
+<b class="fc"><i>201</i>&nbsp;    }</b>
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;    //  ####    TESTING-ONLY    ####
+<i>217</i>&nbsp;    /*public static void resetInstance() {
+<i>218</i>&nbsp;        gameInstance = null;
+<i>219</i>&nbsp;    }
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;    public boolean checkGodPresence(String godName) {
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;        for (God god : getChosenGodsFromDeck())
+<i>224</i>&nbsp;            if (godName.equals(god.getGodName()))
+<i>225</i>&nbsp;                return true;
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;        return false;
+<i>228</i>&nbsp;    }*/
+<i>229</i>&nbsp;}
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 23:21</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,108 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PickGodRequest</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.network.message.clientrequests</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PickGodRequest (it.polimi.ingsw.network.message.clientrequests)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PickGodRequest</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66,7%
+  </span>
+  <span class="absValue">
+    (2/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/ 5)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.network.message.clientrequests;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.server.model.god.God;
+<i>4</i>&nbsp;import it.polimi.ingsw.network.message.Enum.Dispatcher;
+<i>5</i>&nbsp;import it.polimi.ingsw.network.message.Enum.RequestContent;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;public class PickGodRequest extends Request {
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;    private final God pickedGod;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;    public PickGodRequest(String messageSender, God pickedGod) {
+<i>12</i>&nbsp;
+<b class="fc"><i>13</i>&nbsp;        super(messageSender, Dispatcher.SETUP_GAME, RequestContent.PICK_GOD);</b>
+<b class="fc"><i>14</i>&nbsp;        this.pickedGod = pickedGod;</b>
+<i>15</i>&nbsp;
+<b class="fc"><i>16</i>&nbsp;    }</b>
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    public God getPickedGod() {
+<b class="nc"><i>19</i>&nbsp;        return this.pickedGod;</b>
+<i>20</i>&nbsp;    }
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    public God getGod() {
+<b class="fc"><i>23</i>&nbsp;        return pickedGod;</b>
+<i>24</i>&nbsp;    }
+<i>25</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 23:21</div>
+</div>
+</body>
+</html>

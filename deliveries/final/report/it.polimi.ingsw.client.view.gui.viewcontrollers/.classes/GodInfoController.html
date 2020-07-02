@@ -1,0 +1,115 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GodInfoController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.client.view.gui.viewcontrollers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GodInfoController (it.polimi.ingsw.client.view.gui.viewcontrollers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GodInfoController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.client.view.gui.viewcontrollers;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import javafx.application.Platform;
+<i>4</i>&nbsp;import javafx.fxml.FXML;
+<i>5</i>&nbsp;import javafx.fxml.Initializable;
+<i>6</i>&nbsp;import javafx.scene.layout.AnchorPane;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.net.URL;
+<i>9</i>&nbsp;import java.util.ResourceBundle;
+<i>10</i>&nbsp;
+<b class="nc"><i>11</i>&nbsp;public class GodInfoController implements Initializable {</b>
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;    @FXML
+<i>14</i>&nbsp;    private AnchorPane infoAnchorPane;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;    @Override
+<i>17</i>&nbsp;    public void initialize(URL url, ResourceBundle resourceBundle) {
+<b class="nc"><i>18</i>&nbsp;        System.out.println(&quot;GodInfoController created!&quot;);</b>
+<i>19</i>&nbsp;    }
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    public void setGodInfo(String godName){
+<b class="nc"><i>23</i>&nbsp;        String path = &quot;/imgs/God_info/&quot; + godName + &quot;.jpg&quot;;</b>
+<i>24</i>&nbsp;
+<b class="nc"><i>25</i>&nbsp;        Platform.runLater(() -&gt;</b>
+<b class="nc"><i>26</i>&nbsp;                infoAnchorPane.setStyle(&quot;-fx-background-image: url(&quot;+path+&quot;)&quot;)</b>
+<i>27</i>&nbsp;                );
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 23:21</div>
+</div>
+</body>
+</html>

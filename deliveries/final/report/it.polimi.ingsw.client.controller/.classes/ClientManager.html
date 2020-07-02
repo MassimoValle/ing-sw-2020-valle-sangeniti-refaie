@@ -1,0 +1,987 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ClientManager</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.client.controller</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ClientManager (it.polimi.ingsw.client.controller)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ClientManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 47)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 289)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ClientManager$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 48)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 292)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.client.controller;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.client.model.BabyGame;
+<i>4</i>&nbsp;import it.polimi.ingsw.network.Client;
+<i>5</i>&nbsp;import it.polimi.ingsw.network.message.clientrequests.*;
+<i>6</i>&nbsp;import it.polimi.ingsw.network.message.Enum.ResponseContent;
+<i>7</i>&nbsp;import it.polimi.ingsw.network.message.server.serverresponse.*;
+<i>8</i>&nbsp;import it.polimi.ingsw.network.message.server.ServerMessage;
+<i>9</i>&nbsp;import it.polimi.ingsw.network.message.server.serverrequests.*;
+<i>10</i>&nbsp;import it.polimi.ingsw.network.message.server.updatemessage.*;
+<i>11</i>&nbsp;import it.polimi.ingsw.server.model.god.God;
+<i>12</i>&nbsp;import it.polimi.ingsw.server.model.player.Player;
+<i>13</i>&nbsp;import it.polimi.ingsw.server.model.player.Position;
+<i>14</i>&nbsp;import it.polimi.ingsw.client.view.ClientView;
+<i>15</i>&nbsp;import it.polimi.ingsw.network.message.Enum.Dispatcher;
+<i>16</i>&nbsp;import it.polimi.ingsw.network.message.Enum.RequestContent;
+<i>17</i>&nbsp;import it.polimi.ingsw.network.message.Enum.MessageStatus;
+<i>18</i>&nbsp;import it.polimi.ingsw.server.model.player.Worker;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;import java.io.IOException;
+<i>21</i>&nbsp;import java.text.DateFormat;
+<i>22</i>&nbsp;import java.text.SimpleDateFormat;
+<i>23</i>&nbsp;import java.util.*;
+<i>24</i>&nbsp;import java.util.logging.FileHandler;
+<i>25</i>&nbsp;import java.util.logging.Logger;
+<i>26</i>&nbsp;import java.util.logging.SimpleFormatter;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;/**
+<i>30</i>&nbsp; * The type Client manager.
+<i>31</i>&nbsp; */
+<i>32</i>&nbsp;public class ClientManager {
+<b class="nc"><i>33</i>&nbsp;    public static final Logger LOGGER = Logger.getLogger(&quot;santorini_log&quot;);</b>
+<i>34</i>&nbsp;
+<b class="nc"><i>35</i>&nbsp;    private static ClientView clientView = null;</b>
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    private PossibleClientState clientState;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    // model
+<i>40</i>&nbsp;    private Player me;
+<i>41</i>&nbsp;    private final BabyGame babyGame;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    //Its use is intended to deal with message when the player is not the turn owner
+<i>44</i>&nbsp;    private final OpponentTurnManager opponentTurnManager;
+<i>45</i>&nbsp;    private final ClientBoardUpdater clientBoardUpdater;
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    // variabili di controllo
+<i>48</i>&nbsp;    private Integer workerSelected;
+<b class="nc"><i>49</i>&nbsp;    private boolean myTurn = false;</b>
+<b class="nc"><i>50</i>&nbsp;    private boolean canMoveAgain = false;</b>
+<b class="nc"><i>51</i>&nbsp;    private boolean canBuildAgain = false;</b>
+<b class="nc"><i>52</i>&nbsp;    private boolean playerHasBuilt = false;</b>
+<b class="nc"><i>53</i>&nbsp;    private boolean playerHasMoved = false;</b>
+<b class="nc"><i>54</i>&nbsp;    private boolean powerUsed = false;</b>
+<b class="nc"><i>55</i>&nbsp;    private int workerPlaced = 0;</b>
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;
+<b class="nc"><i>60</i>&nbsp;    ServerMessage currentMessage = null;            //Every message which the client receive from server</b>
+<b class="nc"><i>61</i>&nbsp;    ServerRequest currentServerRequest = null;      //The current request which the client is managing</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /**
+<i>68</i>&nbsp;     * Instantiates a new Client manager.
+<i>69</i>&nbsp;     *
+<i>70</i>&nbsp;     * @param clientView the client view
+<i>71</i>&nbsp;     * @param client the network entity
+<i>72</i>&nbsp;     */
+<b class="nc"><i>73</i>&nbsp;    public ClientManager(ClientView clientView, Client client){</b>
+<i>74</i>&nbsp;
+<b class="nc"><i>75</i>&nbsp;        setClientView(clientView);</b>
+<i>76</i>&nbsp;
+<b class="nc"><i>77</i>&nbsp;        this.opponentTurnManager = new OpponentTurnManager();</b>
+<i>78</i>&nbsp;
+<b class="nc"><i>79</i>&nbsp;        this.babyGame = BabyGame.getInstance();</b>
+<i>80</i>&nbsp;
+<b class="nc"><i>81</i>&nbsp;        this.clientBoardUpdater = new ClientBoardUpdater(babyGame);</b>
+<i>82</i>&nbsp;
+<b class="nc"><i>83</i>&nbsp;        initMessageReceiver(client);</b>
+<i>84</i>&nbsp;
+<b class="nc"><i>85</i>&nbsp;        initLogger();</b>
+<i>86</i>&nbsp;
+<b class="nc"><i>87</i>&nbsp;        clientState = PossibleClientState.LOGIN;</b>
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    private void initLogger(){
+<b class="nc"><i>91</i>&nbsp;        Date date = GregorianCalendar.getInstance().getTime();</b>
+<b class="nc"><i>92</i>&nbsp;        DateFormat dateFormat = new SimpleDateFormat(&quot;dd-mm_HH.mm.ss&quot;);</b>
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;        try {
+<b class="nc"><i>95</i>&nbsp;            FileHandler fileHandler = new FileHandler(&quot;log/santorini_client&quot; + dateFormat.format(date) + &quot;.log&quot;);</b>
+<i>96</i>&nbsp;
+<b class="nc"><i>97</i>&nbsp;            LOGGER.setUseParentHandlers(false);</b>
+<i>98</i>&nbsp;
+<b class="nc"><i>99</i>&nbsp;            fileHandler.setFormatter(new SimpleFormatter());</b>
+<b class="nc"><i>100</i>&nbsp;            LOGGER.addHandler(fileHandler);</b>
+<b class="nc"><i>101</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>102</i>&nbsp;            LOGGER.severe(e.getMessage());</b>
+<b class="nc"><i>103</i>&nbsp;        }</b>
+<i>104</i>&nbsp;    }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    private void initMessageReceiver(Client client) {
+<b class="nc"><i>107</i>&nbsp;        new MessageReceiver(client, this);</b>
+<i>108</i>&nbsp;    }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    private static synchronized void setClientView(ClientView clientView) {
+<b class="nc"><i>111</i>&nbsp;        ClientManager.clientView = clientView;</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    public static synchronized ClientView getClientView() {
+<b class="nc"><i>115</i>&nbsp;        return ClientManager.clientView;</b>
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    /**
+<i>120</i>&nbsp;     * Call the {@link ClientManager#takeMessage(ServerMessage)} and execute the instructions inside the message
+<i>121</i>&nbsp;     *
+<i>122</i>&nbsp;     * @param serverMessage the server message
+<i>123</i>&nbsp;     */
+<i>124</i>&nbsp;    public void handleMessageFromServer(ServerMessage serverMessage){
+<b class="nc"><i>125</i>&nbsp;        takeMessage(serverMessage);</b>
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    //mette il messaggio in arrivo in current message e
+<i>130</i>&nbsp;    // setta il client sul messaggio per poter fare l&#39;azione desiderata sul client
+<i>131</i>&nbsp;    public void takeMessage(ServerMessage updateServerMessage) {
+<b class="nc"><i>132</i>&nbsp;        this.currentMessage = updateServerMessage;</b>
+<b class="nc"><i>133</i>&nbsp;        currentMessage.setClientManager(this);</b>
+<b class="nc"><i>134</i>&nbsp;        currentMessage.update();</b>
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    /**
+<i>142</i>&nbsp;     * Whenever a {@link ServerRequest} is received by the client it will be handled by this method
+<i>143</i>&nbsp;     *
+<i>144</i>&nbsp;     * @param serverRequest the server request
+<i>145</i>&nbsp;     */
+<i>146</i>&nbsp;    public void handleServerRequest(ServerRequest serverRequest) {
+<b class="nc"><i>147</i>&nbsp;        currentServerRequest = serverRequest;</b>
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;
+<b class="nc"><i>150</i>&nbsp;        if(serverRequest instanceof StartTurnServerRequest &amp;&amp; messageForMe(serverRequest) ) {</b>
+<b class="nc"><i>151</i>&nbsp;            startTurn();</b>
+<i>152</i>&nbsp;            return;
+<b class="nc"><i>153</i>&nbsp;        } else if (!messageForMe(serverRequest)) {</b>
+<b class="nc"><i>154</i>&nbsp;            opponentTurnManager.serverRequestNotForYou(serverRequest);</b>
+<i>155</i>&nbsp;            return;
+<i>156</i>&nbsp;        }
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;
+<b class="nc"><i>159</i>&nbsp;        switch (serverRequest.getContent()) {</b>
+<i>160</i>&nbsp;
+<b class="nc"><i>161</i>&nbsp;            case CHOOSE_GODS_SERVER_REQUEST -&gt; {</b>
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;                ChooseGodsServerRequest request;
+<b class="nc"><i>164</i>&nbsp;                    if (serverRequest instanceof ChooseGodsServerRequest) {</b>
+<b class="nc"><i>165</i>&nbsp;                        request = (ChooseGodsServerRequest) serverRequest;</b>
+<i>166</i>&nbsp;                    } else {
+<b class="nc"><i>167</i>&nbsp;                        LOGGER.severe( new ClassCastException().getMessage());</b>
+<i>168</i>&nbsp;                        return;
+<i>169</i>&nbsp;                    }
+<i>170</i>&nbsp;
+<b class="nc"><i>171</i>&nbsp;                chooseGodFromDeck(request);</b>
+<i>172</i>&nbsp;            }
+<i>173</i>&nbsp;
+<b class="nc"><i>174</i>&nbsp;            case PICK_GOD -&gt; {</b>
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;                PickGodServerRequest request;
+<b class="nc"><i>177</i>&nbsp;                if (serverRequest instanceof PickGodServerRequest) {</b>
+<b class="nc"><i>178</i>&nbsp;                    request = (PickGodServerRequest) serverRequest;</b>
+<i>179</i>&nbsp;                } else {
+<b class="nc"><i>180</i>&nbsp;                    LOGGER.severe( new ClassCastException().getMessage());</b>
+<i>181</i>&nbsp;                    return;
+<i>182</i>&nbsp;                }
+<i>183</i>&nbsp;
+<b class="nc"><i>184</i>&nbsp;                pickGod(request);</b>
+<i>185</i>&nbsp;            }
+<i>186</i>&nbsp;
+<b class="nc"><i>187</i>&nbsp;            case PLACE_WORKER -&gt; {</b>
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;                PlaceWorkerServerRequest request;
+<b class="nc"><i>190</i>&nbsp;                if (serverRequest instanceof PlaceWorkerServerRequest) {</b>
+<b class="nc"><i>191</i>&nbsp;                    request = (PlaceWorkerServerRequest) serverRequest;</b>
+<i>192</i>&nbsp;                } else {
+<b class="nc"><i>193</i>&nbsp;                    LOGGER.severe( new ClassCastException().getMessage());</b>
+<i>194</i>&nbsp;                    return;
+<i>195</i>&nbsp;                }
+<i>196</i>&nbsp;
+<b class="nc"><i>197</i>&nbsp;                placeWorker(request);</b>
+<i>198</i>&nbsp;            }
+<i>199</i>&nbsp;
+<b class="nc"><i>200</i>&nbsp;            case START_TURN -&gt; startTurn();</b>
+<i>201</i>&nbsp;
+<b class="nc"><i>202</i>&nbsp;            case SELECT_WORKER -&gt; selectWorker();</b>
+<i>203</i>&nbsp;
+<b class="nc"><i>204</i>&nbsp;            case MOVE_WORKER -&gt; handleMoveWorkerServerRequest();</b>
+<i>205</i>&nbsp;
+<b class="nc"><i>206</i>&nbsp;            case BUILD -&gt; handleBuildServerRequest();</b>
+<i>207</i>&nbsp;
+<b class="nc"><i>208</i>&nbsp;            case END_TURN -&gt; endTurn();</b>
+<i>209</i>&nbsp;        }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    }
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    /**
+<i>214</i>&nbsp;     * handleMoveWorkerServerRequest used to managed the possibility of multiple choices
+<i>215</i>&nbsp;     * when the normal flow is in move phase.
+<i>216</i>&nbsp;     *
+<i>217</i>&nbsp;     */
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    private void handleMoveWorkerServerRequest() {
+<b class="nc"><i>220</i>&nbsp;        if (canMoveAgain &amp;&amp; !clientView.wantMoveAgain()) {</b>
+<b class="nc"><i>221</i>&nbsp;            canMoveAgain = false;</b>
+<b class="nc"><i>222</i>&nbsp;            sendEndMoveRequest();</b>
+<i>223</i>&nbsp;            return;
+<i>224</i>&nbsp;        }
+<i>225</i>&nbsp;
+<b class="nc"><i>226</i>&nbsp;        clientState = PossibleClientState.MOVING_WORKER;</b>
+<i>227</i>&nbsp;
+<b class="nc"><i>228</i>&nbsp;        ArrayList&lt;PossibleClientAction&gt; possibleActionList = (ArrayList&lt;PossibleClientAction&gt;) getPossibleActionBeforeMoving();</b>
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;        PossibleClientAction actionToDo;
+<i>231</i>&nbsp;
+<b class="nc"><i>232</i>&nbsp;        if (possibleActionList.size() &gt; 1) {</b>
+<b class="nc"><i>233</i>&nbsp;            actionToDo = whatToDo(possibleActionList);</b>
+<i>234</i>&nbsp;        } else {
+<b class="nc"><i>235</i>&nbsp;            actionToDo = possibleActionList.get(0);</b>
+<i>236</i>&nbsp;        }
+<i>237</i>&nbsp;
+<b class="nc"><i>238</i>&nbsp;        switch (actionToDo) {</b>
+<b class="nc"><i>239</i>&nbsp;            case SELECT_WORKER -&gt; selectWorker();</b>
+<b class="nc"><i>240</i>&nbsp;            case MOVE -&gt; moveWorker();</b>
+<b class="nc"><i>241</i>&nbsp;            case POWER_BUTTON -&gt; usePowerButton();</b>
+<i>242</i>&nbsp;            default -&gt; {
+<i>243</i>&nbsp;                //can&#39;t happen
+<i>244</i>&nbsp;            }
+<i>245</i>&nbsp;        }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    }
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;    /**
+<i>251</i>&nbsp;     * handleBuildServerRequest used to managed the possibility of multiple choices
+<i>252</i>&nbsp;     * when the normal flow is in build phase.
+<i>253</i>&nbsp;     *
+<i>254</i>&nbsp;     */
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;    private void handleBuildServerRequest() {
+<i>257</i>&nbsp;
+<b class="nc"><i>258</i>&nbsp;        if (canBuildAgain &amp;&amp; !clientView.wantBuildAgain()) {</b>
+<b class="nc"><i>259</i>&nbsp;            canBuildAgain = false;</b>
+<b class="nc"><i>260</i>&nbsp;            sendEndBuildRequest();</b>
+<i>261</i>&nbsp;            return;
+<i>262</i>&nbsp;        }
+<i>263</i>&nbsp;
+<b class="nc"><i>264</i>&nbsp;        clientState = PossibleClientState.BUILDING;</b>
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;        //Prendiamo tutte le azioni disponibili che ha il giocatore
+<b class="nc"><i>267</i>&nbsp;        ArrayList&lt;PossibleClientAction&gt; possibleActionList = (ArrayList&lt;PossibleClientAction&gt;) getPossibleActionBeforeBuilding();</b>
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;        PossibleClientAction actionToDo;
+<i>270</i>&nbsp;
+<b class="nc"><i>271</i>&nbsp;        if (possibleActionList.size() &gt; 1) {</b>
+<b class="nc"><i>272</i>&nbsp;            actionToDo = whatToDo(possibleActionList);</b>
+<i>273</i>&nbsp;        } else {
+<b class="nc"><i>274</i>&nbsp;            actionToDo = possibleActionList.get(0);</b>
+<i>275</i>&nbsp;        }
+<i>276</i>&nbsp;
+<b class="nc"><i>277</i>&nbsp;        switch (actionToDo) {</b>
+<b class="nc"><i>278</i>&nbsp;            case SELECT_WORKER -&gt; selectWorker();</b>
+<b class="nc"><i>279</i>&nbsp;            case POWER_BUTTON -&gt; usePowerButton();</b>
+<b class="nc"><i>280</i>&nbsp;            case BUILD -&gt; build();</b>
+<i>281</i>&nbsp;            default -&gt; {
+<i>282</i>&nbsp;                //can&#39;t happen
+<i>283</i>&nbsp;            }
+<i>284</i>&nbsp;        }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;    }
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    /**
+<i>293</i>&nbsp;     * It handles the {@link ServerResponse} from the Server based on previous {@link Request} by the client
+<i>294</i>&nbsp;     *
+<i>295</i>&nbsp;     * @param serverResponse the server response
+<i>296</i>&nbsp;     */
+<i>297</i>&nbsp;    public void handleServerResponse(ServerResponse serverResponse) {
+<b class="nc"><i>298</i>&nbsp;        MessageStatus responseStatus = serverResponse.getResponseStatus();</b>
+<b class="nc"><i>299</i>&nbsp;        ResponseContent responseContent = serverResponse.getResponseContent();</b>
+<i>300</i>&nbsp;
+<b class="nc"><i>301</i>&nbsp;        if (responseContent == ResponseContent.PLAYER_HAS_LOST &amp;&amp; !myTurn) {</b>
+<b class="nc"><i>302</i>&nbsp;            someoneHasLost((LostServerResponse) serverResponse);</b>
+<i>303</i>&nbsp;            return;
+<b class="nc"><i>304</i>&nbsp;        } else if (responseContent == ResponseContent.DISCONNECT) {</b>
+<b class="nc"><i>305</i>&nbsp;            handlePlayerDisconnected(serverResponse);</b>
+<i>306</i>&nbsp;            return;
+<i>307</i>&nbsp;        }
+<i>308</i>&nbsp;
+<b class="nc"><i>309</i>&nbsp;        if (!myTurn &amp;&amp; responseContent != ResponseContent.LOGIN &amp;&amp; responseContent != ResponseContent.NUM_PLAYER) {</b>
+<b class="nc"><i>310</i>&nbsp;            opponentTurnManager.serverResponseNotForYou(serverResponse);</b>
+<i>311</i>&nbsp;            return;
+<i>312</i>&nbsp;        }
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;
+<b class="nc"><i>315</i>&nbsp;        if(responseContent != null) {</b>
+<i>316</i>&nbsp;
+<b class="nc"><i>317</i>&nbsp;            switch (responseContent){</b>
+<i>318</i>&nbsp;
+<b class="nc"><i>319</i>&nbsp;                case LOGIN -&gt; {</b>
+<i>320</i>&nbsp;
+<b class="nc"><i>321</i>&nbsp;                    if(responseStatus == MessageStatus.OK) {</b>
+<b class="nc"><i>322</i>&nbsp;                        clientView.loginSuccessful();</b>
+<b class="nc"><i>323</i>&nbsp;                        clientState = PossibleClientState.LOGIN_DONE;</b>
+<i>324</i>&nbsp;                    }
+<i>325</i>&nbsp;                    else {
+<b class="nc"><i>326</i>&nbsp;                        clientView.loginError();</b>
+<b class="nc"><i>327</i>&nbsp;                        login();</b>
+<i>328</i>&nbsp;                    }
+<i>329</i>&nbsp;
+<i>330</i>&nbsp;                }
+<i>331</i>&nbsp;
+<b class="nc"><i>332</i>&nbsp;                case NUM_PLAYER                         -&gt; chooseNumPlayers();</b>
+<i>333</i>&nbsp;
+<b class="nc"><i>334</i>&nbsp;                case CHOOSE_GODS                        -&gt; handleChooseGodsServerResponse((ChooseGodsServerResponse) serverResponse);</b>
+<b class="nc"><i>335</i>&nbsp;                case PICK_GOD                           -&gt; handlePickGodServerResponse((PickGodServerResponse) serverResponse);</b>
+<b class="nc"><i>336</i>&nbsp;                case PLACE_WORKER                       -&gt; handlePlaceWorkerServerResponse((PlaceWorkerServerResponse) serverResponse);</b>
+<i>337</i>&nbsp;
+<b class="nc"><i>338</i>&nbsp;                case SELECT_WORKER                      -&gt; handleSelectWorkerServerResponse((SelectWorkerServerResponse) serverResponse);</b>
+<i>339</i>&nbsp;
+<b class="nc"><i>340</i>&nbsp;                case POWER_BUTTON                       -&gt; handlePowerButtonServerResponse((PowerButtonServerResponse) serverResponse);</b>
+<i>341</i>&nbsp;
+<b class="nc"><i>342</i>&nbsp;                case MOVE_WORKER, MOVE_WORKER_AGAIN     -&gt; handleMoveWorkerServerResponse((MoveWorkerServerResponse) serverResponse);</b>
+<b class="nc"><i>343</i>&nbsp;                case END_MOVE                           -&gt; handleEndMoveServerResponse((EndMoveServerResponse) serverResponse);</b>
+<i>344</i>&nbsp;
+<b class="nc"><i>345</i>&nbsp;                case BUILD, BUILD_AGAIN                 -&gt; handleBuildServerResponse((BuildServerResponse) serverResponse);</b>
+<b class="nc"><i>346</i>&nbsp;                case END_BUILD                          -&gt;handleEndBuildServerResponse((EndBuildServerResponse) serverResponse);</b>
+<i>347</i>&nbsp;
+<b class="nc"><i>348</i>&nbsp;                case PLAYER_HAS_WON                     -&gt; playerWon();</b>
+<b class="nc"><i>349</i>&nbsp;                case PLAYER_HAS_LOST                    -&gt; playerLost();</b>
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;                default -&gt; {
+<i>352</i>&nbsp;                    //can&#39;t happen
+<i>353</i>&nbsp;                }
+<i>354</i>&nbsp;            }
+<i>355</i>&nbsp;        }
+<i>356</i>&nbsp;    }
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;    /**
+<i>359</i>&nbsp;     * It manages the disconnection of a player in game
+<i>360</i>&nbsp;     *
+<i>361</i>&nbsp;     * @param serverResponse contains the name of user disconnected
+<i>362</i>&nbsp;     */
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;    private void handlePlayerDisconnected(ServerResponse serverResponse) {
+<i>365</i>&nbsp;
+<b class="nc"><i>366</i>&nbsp;        Player playerDisconnected = babyGame.getPlayerByName(serverResponse.getMessageRecipient());</b>
+<i>367</i>&nbsp;
+<b class="nc"><i>368</i>&nbsp;        if (playerDisconnected != null &amp;&amp; playerDisconnected.isEliminated())</b>
+<i>369</i>&nbsp;            return;
+<i>370</i>&nbsp;
+<b class="nc"><i>371</i>&nbsp;        clientView.playerLeftTheGame(serverResponse.getMessageRecipient());</b>
+<i>372</i>&nbsp;
+<b class="nc"><i>373</i>&nbsp;        clientView.closeClient();</b>
+<i>374</i>&nbsp;
+<i>375</i>&nbsp;
+<i>376</i>&nbsp;    }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;
+<i>379</i>&nbsp;    /**
+<i>380</i>&nbsp;     * Ask a name and send a {@link LoginRequest} to the Server
+<i>381</i>&nbsp;     */
+<i>382</i>&nbsp;    public void login(){
+<i>383</i>&nbsp;
+<b class="nc"><i>384</i>&nbsp;        String username = askUsername();</b>
+<b class="nc"><i>385</i>&nbsp;        me = new Player(username);</b>
+<i>386</i>&nbsp;
+<b class="nc"><i>387</i>&nbsp;        Request request = new LoginRequest(me.getPlayerName());</b>
+<i>388</i>&nbsp;
+<b class="nc"><i>389</i>&nbsp;        Client.sendRequest(request);</b>
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;    }
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;    /**
+<i>394</i>&nbsp;     * Ask a username to the player
+<i>395</i>&nbsp;     *
+<i>396</i>&nbsp;     * @return the username chosen
+<i>397</i>&nbsp;     */
+<i>398</i>&nbsp;    private String askUsername() {
+<i>399</i>&nbsp;
+<b class="nc"><i>400</i>&nbsp;        return clientView.askUserName();</b>
+<i>401</i>&nbsp;
+<i>402</i>&nbsp;    }
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;    private void chooseNumPlayers(){
+<i>405</i>&nbsp;
+<b class="nc"><i>406</i>&nbsp;        clientState = PossibleClientState.SETTING_UP_PLAYERS;</b>
+<i>407</i>&nbsp;
+<b class="nc"><i>408</i>&nbsp;        int num = clientView.askNumbOfPlayer();</b>
+<i>409</i>&nbsp;
+<b class="nc"><i>410</i>&nbsp;        Request request = new SetPlayersRequest(me.getPlayerName(), Dispatcher.SETUP_GAME, RequestContent.NUM_PLAYER, Integer.toString(num));</b>
+<i>411</i>&nbsp;
+<b class="nc"><i>412</i>&nbsp;        Client.sendRequest(request);</b>
+<i>413</i>&nbsp;
+<b class="nc"><i>414</i>&nbsp;        clientState = PossibleClientState.PLAYERS_SET_UP;</b>
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;    }
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;    private void chooseGodFromDeck(ChooseGodsServerRequest serverRequest){
+<i>419</i>&nbsp;
+<b class="nc"><i>420</i>&nbsp;        myTurn = true;</b>
+<i>421</i>&nbsp;
+<b class="nc"><i>422</i>&nbsp;        clientView.youAreTheGodLikePlayer();</b>
+<i>423</i>&nbsp;
+<b class="nc"><i>424</i>&nbsp;        clientState = PossibleClientState.CHOOSING_GODS;</b>
+<i>425</i>&nbsp;
+<b class="nc"><i>426</i>&nbsp;        int howMany = serverRequest.getHowMany();</b>
+<i>427</i>&nbsp;
+<b class="nc"><i>428</i>&nbsp;        clientView.showDeck();</b>
+<i>429</i>&nbsp;
+<b class="nc"><i>430</i>&nbsp;        ArrayList&lt;God&gt; godChosen = clientView.selectGods(howMany);</b>
+<i>431</i>&nbsp;
+<b class="nc"><i>432</i>&nbsp;        Request request =  new ChoseGodsRequest(me.getPlayerName(), godChosen);</b>
+<i>433</i>&nbsp;
+<b class="nc"><i>434</i>&nbsp;        Client.sendRequest(request);</b>
+<i>435</i>&nbsp;    }
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;    private void pickGod(PickGodServerRequest serverRequest) {
+<i>438</i>&nbsp;
+<b class="nc"><i>439</i>&nbsp;        myTurn = true;</b>
+<b class="nc"><i>440</i>&nbsp;        clientState = PossibleClientState.PICKING_UP_GOD;</b>
+<i>441</i>&nbsp;
+<b class="nc"><i>442</i>&nbsp;        ArrayList&lt;God&gt; hand = (ArrayList&lt;God&gt;) serverRequest.getGods();</b>
+<i>443</i>&nbsp;
+<b class="nc"><i>444</i>&nbsp;        God myGod = clientView.pickFromChosenGods(hand);</b>
+<b class="nc"><i>445</i>&nbsp;        me.setPlayerGod(myGod);</b>
+<i>446</i>&nbsp;
+<b class="nc"><i>447</i>&nbsp;        Request request = new PickGodRequest(me.getPlayerName(), myGod);</b>
+<i>448</i>&nbsp;
+<b class="nc"><i>449</i>&nbsp;        Client.sendRequest(request);</b>
+<i>450</i>&nbsp;    }
+<i>451</i>&nbsp;
+<i>452</i>&nbsp;    private void placeWorker(PlaceWorkerServerRequest serverRequest) {
+<i>453</i>&nbsp;
+<b class="nc"><i>454</i>&nbsp;        myTurn = true;</b>
+<i>455</i>&nbsp;
+<b class="nc"><i>456</i>&nbsp;        clientState = PossibleClientState.PLACING_WORKERS;</b>
+<i>457</i>&nbsp;
+<b class="nc"><i>458</i>&nbsp;        clientView.showMap(babyGame.getClientMap());</b>
+<b class="nc"><i>459</i>&nbsp;        Position p = clientView.placeWorker(serverRequest.getWorker().toString());</b>
+<i>460</i>&nbsp;
+<b class="nc"><i>461</i>&nbsp;        Request request = new PlaceWorkerRequest(me.getPlayerName(), serverRequest.getWorker(), p);</b>
+<i>462</i>&nbsp;
+<b class="nc"><i>463</i>&nbsp;        Client.sendRequest(request);</b>
+<i>464</i>&nbsp;
+<i>465</i>&nbsp;    }
+<i>466</i>&nbsp;
+<i>467</i>&nbsp;    private void startTurn() {
+<i>468</i>&nbsp;
+<b class="nc"><i>469</i>&nbsp;        playerHasMoved = false;</b>
+<b class="nc"><i>470</i>&nbsp;        playerHasBuilt = false;</b>
+<b class="nc"><i>471</i>&nbsp;        powerUsed = false;</b>
+<b class="nc"><i>472</i>&nbsp;        clientView.startingTurn();</b>
+<b class="nc"><i>473</i>&nbsp;        this.myTurn = true;</b>
+<i>474</i>&nbsp;
+<b class="nc"><i>475</i>&nbsp;        clientState = PossibleClientState.STARTING_TURN;</b>
+<i>476</i>&nbsp;    }
+<i>477</i>&nbsp;
+<i>478</i>&nbsp;    private void selectWorker(){
+<i>479</i>&nbsp;
+<b class="nc"><i>480</i>&nbsp;        clientState = PossibleClientState.SELECTING_WORKER;</b>
+<i>481</i>&nbsp;
+<b class="nc"><i>482</i>&nbsp;        List&lt;Position&gt; workersPosition = new ArrayList&lt;&gt;();</b>
+<i>483</i>&nbsp;
+<b class="nc"><i>484</i>&nbsp;        for (Worker worker: me.getPlayerWorkers())</b>
+<b class="nc"><i>485</i>&nbsp;            workersPosition.add(worker.getPosition());</b>
+<i>486</i>&nbsp;
+<i>487</i>&nbsp;
+<b class="nc"><i>488</i>&nbsp;        this.workerSelected = clientView.selectWorker(workersPosition);</b>
+<i>489</i>&nbsp;
+<b class="nc"><i>490</i>&nbsp;        Request request = new SelectWorkerRequest(me.getPlayerName(), this.workerSelected);</b>
+<i>491</i>&nbsp;
+<b class="nc"><i>492</i>&nbsp;        Client.sendRequest(request);</b>
+<i>493</i>&nbsp;    }
+<i>494</i>&nbsp;
+<i>495</i>&nbsp;    /**
+<i>496</i>&nbsp;     * It sends a {@link PowerButtonRequest} to the server
+<i>497</i>&nbsp;     */
+<i>498</i>&nbsp;    private void usePowerButton() {
+<i>499</i>&nbsp;
+<b class="nc"><i>500</i>&nbsp;        clientState = PossibleClientState.ACTIVATING_POWER;</b>
+<i>501</i>&nbsp;
+<b class="nc"><i>502</i>&nbsp;        Request request =  new PowerButtonRequest(me.getPlayerName());</b>
+<i>503</i>&nbsp;
+<b class="nc"><i>504</i>&nbsp;        Client.sendRequest(request);</b>
+<i>505</i>&nbsp;    }
+<i>506</i>&nbsp;
+<i>507</i>&nbsp;    private void moveWorker(){
+<i>508</i>&nbsp;
+<b class="nc"><i>509</i>&nbsp;        Position workerPosition = me.getPlayerWorkers().get(workerSelected).getPosition();</b>
+<b class="nc"><i>510</i>&nbsp;        List&lt;Position&gt; nearlyPositionsValid = babyGame.getClientMap().getReachableAdjacentPlaces(workerPosition);</b>
+<i>511</i>&nbsp;
+<b class="nc"><i>512</i>&nbsp;        Position position = clientView.moveWorker(nearlyPositionsValid);</b>
+<i>513</i>&nbsp;
+<b class="nc"><i>514</i>&nbsp;        Request request =  new MoveRequest(me.getPlayerName(), position);</b>
+<i>515</i>&nbsp;
+<b class="nc"><i>516</i>&nbsp;        Client.sendRequest(request);</b>
+<i>517</i>&nbsp;    }
+<i>518</i>&nbsp;
+<i>519</i>&nbsp;    private void sendEndMoveRequest() {
+<i>520</i>&nbsp;
+<b class="nc"><i>521</i>&nbsp;        Request request = new EndMoveRequest(me.getPlayerName());</b>
+<i>522</i>&nbsp;
+<b class="nc"><i>523</i>&nbsp;        Client.sendRequest(request);</b>
+<i>524</i>&nbsp;    }
+<i>525</i>&nbsp;
+<i>526</i>&nbsp;    private void build() {
+<i>527</i>&nbsp;
+<b class="nc"><i>528</i>&nbsp;        Position myWorkerPosition = me.getPlayerWorkers().get(workerSelected).getPosition();</b>
+<b class="nc"><i>529</i>&nbsp;        ArrayList&lt;Position&gt; nearlyPositionsValid = myWorkerPosition.getAdjacentPlaces();</b>
+<b class="nc"><i>530</i>&nbsp;        nearlyPositionsValid.add(myWorkerPosition);</b>
+<i>531</i>&nbsp;
+<i>532</i>&nbsp;
+<b class="nc"><i>533</i>&nbsp;        Position position = clientView.build(nearlyPositionsValid);</b>
+<i>534</i>&nbsp;
+<b class="nc"><i>535</i>&nbsp;        God playerGod = me.getPlayerGod();</b>
+<b class="nc"><i>536</i>&nbsp;        boolean isAtlas = playerGod.is(&quot;Atlas&quot;);</b>
+<i>537</i>&nbsp;
+<i>538</i>&nbsp;        Request request;
+<i>539</i>&nbsp;
+<b class="nc"><i>540</i>&nbsp;        if(powerUsed &amp;&amp; isAtlas) {</b>
+<b class="nc"><i>541</i>&nbsp;            request = new BuildDomeRequest(me.getPlayerName(), position);</b>
+<i>542</i>&nbsp;        } else {
+<b class="nc"><i>543</i>&nbsp;            request = new BuildRequest(me.getPlayerName(), position);</b>
+<i>544</i>&nbsp;        }
+<i>545</i>&nbsp;
+<b class="nc"><i>546</i>&nbsp;        Client.sendRequest(request);</b>
+<i>547</i>&nbsp;    }
+<i>548</i>&nbsp;
+<i>549</i>&nbsp;    private void sendEndBuildRequest() {
+<i>550</i>&nbsp;
+<b class="nc"><i>551</i>&nbsp;        Request request = new EndBuildRequest(me.getPlayerName());</b>
+<i>552</i>&nbsp;
+<b class="nc"><i>553</i>&nbsp;        Client.sendRequest(request);</b>
+<i>554</i>&nbsp;    }
+<i>555</i>&nbsp;
+<i>556</i>&nbsp;    private void endTurn() {
+<b class="nc"><i>557</i>&nbsp;        this.myTurn = false;</b>
+<b class="nc"><i>558</i>&nbsp;        clientView.endTurn();</b>
+<i>559</i>&nbsp;
+<b class="nc"><i>560</i>&nbsp;        Request request = new EndTurnRequest(me.getPlayerName());</b>
+<i>561</i>&nbsp;
+<b class="nc"><i>562</i>&nbsp;        Client.sendRequest(request);</b>
+<i>563</i>&nbsp;    }
+<i>564</i>&nbsp;
+<i>565</i>&nbsp;    /**
+<i>566</i>&nbsp;     * It&#39;s called when the server inform you that you won
+<i>567</i>&nbsp;     *
+<i>568</i>&nbsp;     */
+<i>569</i>&nbsp;    private void playerWon(){
+<b class="nc"><i>570</i>&nbsp;        clientView.youWin();</b>
+<i>571</i>&nbsp;    }
+<i>572</i>&nbsp;
+<i>573</i>&nbsp;    /**
+<i>574</i>&nbsp;     * It&#39;s called when the server inform you that you lost (due to being unable to complete a round)
+<i>575</i>&nbsp;     *
+<i>576</i>&nbsp;     */
+<i>577</i>&nbsp;    private void playerLost() {
+<b class="nc"><i>578</i>&nbsp;        removePlayerFromMatch(me);</b>
+<b class="nc"><i>579</i>&nbsp;        clientView.iLose();</b>
+<i>580</i>&nbsp;
+<i>581</i>&nbsp;        //REMOVE THIS PLAYER FROM THE MATCH
+<i>582</i>&nbsp;        //removePlayerFromMatch(me);
+<i>583</i>&nbsp;    }
+<i>584</i>&nbsp;
+<i>585</i>&nbsp;
+<i>586</i>&nbsp;    /**
+<i>587</i>&nbsp;     * This method is called when someone lose (not this client)
+<i>588</i>&nbsp;     *
+<i>589</i>&nbsp;      * @param serverResponse containing loser info
+<i>590</i>&nbsp;     */
+<i>591</i>&nbsp;    private void someoneHasLost(LostServerResponse serverResponse) {
+<b class="nc"><i>592</i>&nbsp;        clientView.someoneHasLost(serverResponse.getMessageRecipient());</b>
+<b class="nc"><i>593</i>&nbsp;        removePlayerFromMatch(babyGame.getPlayerByName(serverResponse.getMessageRecipient()));</b>
+<i>594</i>&nbsp;    }
+<i>595</i>&nbsp;
+<i>596</i>&nbsp;    private void removePlayerFromMatch(Player playerToRemove) {
+<i>597</i>&nbsp;
+<b class="nc"><i>598</i>&nbsp;        babyGame.getClientMap().removePlayerWorkers(playerToRemove);</b>
+<b class="nc"><i>599</i>&nbsp;        playerToRemove.removeWorkers();</b>
+<b class="nc"><i>600</i>&nbsp;        playerToRemove.setEliminated(true);</b>
+<i>601</i>&nbsp;        //babyGame.getPlayers().remove(playerToRemove);
+<i>602</i>&nbsp;
+<i>603</i>&nbsp;    }
+<i>604</i>&nbsp;
+<i>605</i>&nbsp;
+<i>606</i>&nbsp;
+<i>607</i>&nbsp;    private void handleChooseGodsServerResponse(ChooseGodsServerResponse serverResponse) {
+<i>608</i>&nbsp;
+<b class="nc"><i>609</i>&nbsp;        if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {</b>
+<b class="nc"><i>610</i>&nbsp;            clientView.errorWhileChoosingGods(serverResponse.getGameManagerSays());</b>
+<b class="nc"><i>611</i>&nbsp;            chooseGodFromDeck((ChooseGodsServerRequest) currentServerRequest);</b>
+<i>612</i>&nbsp;            return;
+<i>613</i>&nbsp;        }
+<i>614</i>&nbsp;
+<b class="nc"><i>615</i>&nbsp;        clientView.godsSelectedSuccessfully();</b>
+<b class="nc"><i>616</i>&nbsp;        myTurn = false;</b>
+<b class="nc"><i>617</i>&nbsp;        clientState = PossibleClientState.GODS_CHOSEN;</b>
+<i>618</i>&nbsp;    }
+<i>619</i>&nbsp;
+<i>620</i>&nbsp;    private void handlePickGodServerResponse(PickGodServerResponse serverResponse) {
+<i>621</i>&nbsp;
+<b class="nc"><i>622</i>&nbsp;        if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {</b>
+<b class="nc"><i>623</i>&nbsp;            clientView.errorWhilePickingUpGod(serverResponse.getGameManagerSays());</b>
+<b class="nc"><i>624</i>&nbsp;            pickGod((PickGodServerRequest) currentServerRequest);</b>
+<i>625</i>&nbsp;            return;
+<i>626</i>&nbsp;        }
+<b class="nc"><i>627</i>&nbsp;        clientView.godPickedUpSuccessfully();</b>
+<b class="nc"><i>628</i>&nbsp;        myTurn = false;</b>
+<b class="nc"><i>629</i>&nbsp;        clientState = PossibleClientState.GOD_ASSIGNED;</b>
+<i>630</i>&nbsp;    }
+<i>631</i>&nbsp;
+<i>632</i>&nbsp;    private void handlePlaceWorkerServerResponse(PlaceWorkerServerResponse serverResponse) {
+<i>633</i>&nbsp;
+<b class="nc"><i>634</i>&nbsp;        if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {</b>
+<b class="nc"><i>635</i>&nbsp;            clientView.errorWhilePlacingYourWorker(serverResponse.getGameManagerSays());</b>
+<b class="nc"><i>636</i>&nbsp;            placeWorker((PlaceWorkerServerRequest) currentServerRequest);</b>
+<i>637</i>&nbsp;            return;
+<i>638</i>&nbsp;        }
+<i>639</i>&nbsp;
+<b class="nc"><i>640</i>&nbsp;        clientView.workerPlacedSuccessfully();</b>
+<b class="nc"><i>641</i>&nbsp;        workerPlaced++;</b>
+<i>642</i>&nbsp;
+<b class="nc"><i>643</i>&nbsp;        if(workerPlaced == 2) {</b>
+<b class="nc"><i>644</i>&nbsp;            myTurn = false;</b>
+<b class="nc"><i>645</i>&nbsp;            clientState = PossibleClientState.WORKERS_PLACED;</b>
+<b class="nc"><i>646</i>&nbsp;            clientView.placingPhaseEnding();</b>
+<i>647</i>&nbsp;        }
+<i>648</i>&nbsp;
+<i>649</i>&nbsp;    }
+<i>650</i>&nbsp;
+<i>651</i>&nbsp;    private void handleSelectWorkerServerResponse(SelectWorkerServerResponse serverResponse) {
+<i>652</i>&nbsp;
+<b class="nc"><i>653</i>&nbsp;        if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {</b>
+<b class="nc"><i>654</i>&nbsp;            clientView.errorWhileSelectingWorker(serverResponse.getGameManagerSays());</b>
+<b class="nc"><i>655</i>&nbsp;            selectWorker();</b>
+<i>656</i>&nbsp;            return;
+<i>657</i>&nbsp;        }
+<i>658</i>&nbsp;
+<b class="nc"><i>659</i>&nbsp;        clientView.workerSelectedSuccessfully();</b>
+<i>660</i>&nbsp;
+<b class="nc"><i>661</i>&nbsp;        clientState = PossibleClientState.WORKER_SELECTED;</b>
+<i>662</i>&nbsp;    }
+<i>663</i>&nbsp;
+<i>664</i>&nbsp;    private void handleMoveWorkerServerResponse(MoveWorkerServerResponse serverResponse) {
+<i>665</i>&nbsp;
+<b class="nc"><i>666</i>&nbsp;        if (serverResponse.getResponseContent() == ResponseContent.MOVE_WORKER) {</b>
+<i>667</i>&nbsp;
+<b class="nc"><i>668</i>&nbsp;            if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {</b>
+<b class="nc"><i>669</i>&nbsp;                clientView.errorWhileMovingWorker(serverResponse.getGameManagerSays());</b>
+<b class="nc"><i>670</i>&nbsp;                moveWorker();</b>
+<i>671</i>&nbsp;                return;
+<i>672</i>&nbsp;            }
+<i>673</i>&nbsp;
+<b class="nc"><i>674</i>&nbsp;            clientState = PossibleClientState.WORKER_MOVED;</b>
+<i>675</i>&nbsp;
+<b class="nc"><i>676</i>&nbsp;            this.playerHasMoved = true;</b>
+<b class="nc"><i>677</i>&nbsp;            this.canMoveAgain = false;</b>
+<b class="nc"><i>678</i>&nbsp;            clientView.workerMovedSuccessfully();</b>
+<i>679</i>&nbsp;
+<b class="nc"><i>680</i>&nbsp;        } else if (serverResponse.getResponseContent() == ResponseContent.MOVE_WORKER_AGAIN) {</b>
+<i>681</i>&nbsp;
+<b class="nc"><i>682</i>&nbsp;            clientState = PossibleClientState.WORKER_MOVED;</b>
+<i>683</i>&nbsp;
+<b class="nc"><i>684</i>&nbsp;            this.playerHasMoved = true;</b>
+<b class="nc"><i>685</i>&nbsp;            this.canMoveAgain = true;</b>
+<b class="nc"><i>686</i>&nbsp;            clientView.workerMovedSuccessfully();</b>
+<b class="nc"><i>687</i>&nbsp;            clientView.printCanMoveAgain(serverResponse.getGameManagerSays());</b>
+<i>688</i>&nbsp;
+<i>689</i>&nbsp;        }
+<i>690</i>&nbsp;
+<i>691</i>&nbsp;    }
+<i>692</i>&nbsp;
+<i>693</i>&nbsp;    private void handleEndMoveServerResponse(EndMoveServerResponse serverResponse) {
+<i>694</i>&nbsp;
+<b class="nc"><i>695</i>&nbsp;        if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {</b>
+<b class="nc"><i>696</i>&nbsp;            clientView.endMoveRequestError(serverResponse.getGameManagerSays());</b>
+<i>697</i>&nbsp;            return;
+<i>698</i>&nbsp;        }
+<b class="nc"><i>699</i>&nbsp;        clientView.endMovingPhase(serverResponse.getGameManagerSays());</b>
+<i>700</i>&nbsp;    }
+<i>701</i>&nbsp;
+<i>702</i>&nbsp;    private void handleBuildServerResponse(BuildServerResponse serverResponse) {
+<i>703</i>&nbsp;
+<b class="nc"><i>704</i>&nbsp;        if (serverResponse.getResponseContent() == ResponseContent.BUILD) {</b>
+<i>705</i>&nbsp;
+<b class="nc"><i>706</i>&nbsp;            if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {</b>
+<b class="nc"><i>707</i>&nbsp;                clientView.errorWhileBuilding(serverResponse.getGameManagerSays());</b>
+<b class="nc"><i>708</i>&nbsp;                build();</b>
+<i>709</i>&nbsp;                return;
+<i>710</i>&nbsp;            }
+<i>711</i>&nbsp;
+<b class="nc"><i>712</i>&nbsp;            playerHasBuilt = true;</b>
+<b class="nc"><i>713</i>&nbsp;            this.canBuildAgain = false;</b>
+<b class="nc"><i>714</i>&nbsp;            clientView.builtSuccessfully();</b>
+<i>715</i>&nbsp;
+<b class="nc"><i>716</i>&nbsp;        } else if (serverResponse.getResponseContent() == ResponseContent.BUILD_AGAIN) {</b>
+<i>717</i>&nbsp;
+<b class="nc"><i>718</i>&nbsp;            playerHasBuilt = true;</b>
+<b class="nc"><i>719</i>&nbsp;            clientView.builtSuccessfully();</b>
+<b class="nc"><i>720</i>&nbsp;            this.canBuildAgain = true;</b>
+<b class="nc"><i>721</i>&nbsp;            clientView.printCanBuildAgain(serverResponse.getGameManagerSays());</b>
+<i>722</i>&nbsp;
+<i>723</i>&nbsp;        }
+<i>724</i>&nbsp;
+<i>725</i>&nbsp;    }
+<i>726</i>&nbsp;
+<i>727</i>&nbsp;    private void handleEndBuildServerResponse(EndBuildServerResponse serverResponse) {
+<i>728</i>&nbsp;
+<b class="nc"><i>729</i>&nbsp;        if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {</b>
+<b class="nc"><i>730</i>&nbsp;            clientView.endBuildRequestError(serverResponse.getGameManagerSays());</b>
+<i>731</i>&nbsp;            return;
+<i>732</i>&nbsp;        }
+<b class="nc"><i>733</i>&nbsp;        clientView.endBuildingPhase(serverResponse.getGameManagerSays());</b>
+<i>734</i>&nbsp;    }
+<i>735</i>&nbsp;
+<i>736</i>&nbsp;    /**
+<i>737</i>&nbsp;     * It check if the {@link PowerButtonRequest} previously sent by the player was correct or not
+<i>738</i>&nbsp;     *
+<i>739</i>&nbsp;     * @param serverResponse the server response
+<i>740</i>&nbsp;     */
+<i>741</i>&nbsp;    private void handlePowerButtonServerResponse(PowerButtonServerResponse serverResponse) {
+<i>742</i>&nbsp;
+<b class="nc"><i>743</i>&nbsp;        if (serverResponse.getMessageStatus() == MessageStatus.ERROR) {</b>
+<i>744</i>&nbsp;
+<b class="nc"><i>745</i>&nbsp;            clientView.errorWhileActivatingPower(serverResponse.getGameManagerSays());</b>
+<i>746</i>&nbsp;
+<b class="nc"><i>747</i>&nbsp;            if (clientState == PossibleClientState.MOVING_WORKER) {</b>
+<b class="nc"><i>748</i>&nbsp;                handleMoveWorkerServerRequest();</b>
+<i>749</i>&nbsp;                return;
+<i>750</i>&nbsp;            }
+<i>751</i>&nbsp;
+<i>752</i>&nbsp;
+<b class="nc"><i>753</i>&nbsp;            if (clientState == PossibleClientState.BUILDING) {</b>
+<b class="nc"><i>754</i>&nbsp;                handleBuildServerRequest();</b>
+<i>755</i>&nbsp;                return;
+<i>756</i>&nbsp;            }
+<i>757</i>&nbsp;        }
+<i>758</i>&nbsp;
+<b class="nc"><i>759</i>&nbsp;        powerUsed = true;</b>
+<b class="nc"><i>760</i>&nbsp;        God playerGod = me.getPlayerGod();</b>
+<b class="nc"><i>761</i>&nbsp;        clientView.powerActivated(playerGod);</b>
+<b class="nc"><i>762</i>&nbsp;        clientState = PossibleClientState.POWER_ACTIVATED;</b>
+<i>763</i>&nbsp;
+<i>764</i>&nbsp;    }
+<i>765</i>&nbsp;
+<i>766</i>&nbsp;
+<i>767</i>&nbsp;
+<i>768</i>&nbsp;
+<i>769</i>&nbsp;
+<i>770</i>&nbsp;
+<i>771</i>&nbsp;    /**
+<i>772</i>&nbsp;     * This method provide all the {@link PossibleClientAction Actions} the player can perform when his {@link ClientManager#clientState}
+<i>773</i>&nbsp;     *  is equal to {@link PossibleClientState#MOVING_WORKER} (action not done yet)
+<i>774</i>&nbsp;     *
+<i>775</i>&nbsp;     * @return a {@link List&lt;PossibleClientAction&gt; } containing all the possible actions
+<i>776</i>&nbsp;     */
+<i>777</i>&nbsp;    private List&lt;PossibleClientAction&gt; getPossibleActionBeforeMoving() {
+<b class="nc"><i>778</i>&nbsp;        List&lt;PossibleClientAction&gt; possibleActions = new ArrayList&lt;&gt;(</b>
+<b class="nc"><i>779</i>&nbsp;                List.of(PossibleClientAction.MOVE)</b>
+<i>780</i>&nbsp;        );
+<i>781</i>&nbsp;
+<b class="nc"><i>782</i>&nbsp;        if (!playerHasBuilt &amp;&amp; !playerHasMoved) {</b>
+<b class="nc"><i>783</i>&nbsp;            possibleActions.add(PossibleClientAction.SELECT_WORKER);</b>
+<i>784</i>&nbsp;        }
+<i>785</i>&nbsp;
+<b class="nc"><i>786</i>&nbsp;        if (me.getPlayerGod().getGodPower().canUsePowerBeforeMoving() &amp;&amp; !powerUsed)</b>
+<b class="nc"><i>787</i>&nbsp;            possibleActions.add(PossibleClientAction.POWER_BUTTON);</b>
+<i>788</i>&nbsp;
+<b class="nc"><i>789</i>&nbsp;        return possibleActions;</b>
+<i>790</i>&nbsp;    }
+<i>791</i>&nbsp;
+<i>792</i>&nbsp;    /**
+<i>793</i>&nbsp;     * This method provide all the {@link PossibleClientAction Actions} the player can perform when his {@link ClientManager#clientState}
+<i>794</i>&nbsp;     *  is equal to {@link PossibleClientState#BUILDING} (action not done yet)
+<i>795</i>&nbsp;     *
+<i>796</i>&nbsp;     * @return a {@link List&lt;PossibleClientAction&gt; } containing all the possible actions
+<i>797</i>&nbsp;     */
+<i>798</i>&nbsp;    private List&lt;PossibleClientAction&gt; getPossibleActionBeforeBuilding() {
+<i>799</i>&nbsp;
+<b class="nc"><i>800</i>&nbsp;        List&lt;PossibleClientAction&gt; possibleActions = new ArrayList&lt;&gt;(</b>
+<b class="nc"><i>801</i>&nbsp;                List.of(PossibleClientAction.BUILD)</b>
+<i>802</i>&nbsp;        );
+<i>803</i>&nbsp;
+<b class="nc"><i>804</i>&nbsp;        if (!playerHasMoved) {</b>
+<b class="nc"><i>805</i>&nbsp;            possibleActions.add(PossibleClientAction.SELECT_WORKER);</b>
+<i>806</i>&nbsp;        }
+<i>807</i>&nbsp;
+<b class="nc"><i>808</i>&nbsp;        if (me.getPlayerGod().getGodPower().canUsePowerBeforeBuilding() &amp;&amp; !powerUsed)</b>
+<b class="nc"><i>809</i>&nbsp;            possibleActions.add(PossibleClientAction.POWER_BUTTON);</b>
+<i>810</i>&nbsp;
+<b class="nc"><i>811</i>&nbsp;        return possibleActions;</b>
+<i>812</i>&nbsp;    }
+<i>813</i>&nbsp;
+<i>814</i>&nbsp;    /**
+<i>815</i>&nbsp;     * It asks the {@link PossibleClientAction Action} the player want to perform,
+<i>816</i>&nbsp;     * it is called only when the players has two or more action to choose between
+<i>817</i>&nbsp;     *
+<i>818</i>&nbsp;     * @param possibleActions - {@link List&lt;PossibleClientAction&gt; } containing all the available action
+<i>819</i>&nbsp;     * @return Action - the {@link PossibleClientAction Action} chosen by the player
+<i>820</i>&nbsp;     */
+<i>821</i>&nbsp;    private PossibleClientAction whatToDo(List&lt;PossibleClientAction&gt; possibleActions) {
+<i>822</i>&nbsp;
+<b class="nc"><i>823</i>&nbsp;        return clientView.choseActionToPerform(possibleActions);</b>
+<i>824</i>&nbsp;    }
+<i>825</i>&nbsp;
+<i>826</i>&nbsp;
+<i>827</i>&nbsp;    /**
+<i>828</i>&nbsp;     * Check if the username is the messageRecipient
+<i>829</i>&nbsp;     *
+<i>830</i>&nbsp;     * @return true if the username equals the message recipient false otherwise
+<i>831</i>&nbsp;     */
+<i>832</i>&nbsp;    private boolean messageForMe(ServerMessage serverMessage) {
+<b class="nc"><i>833</i>&nbsp;        return serverMessage.getMessageRecipient().equals(me.getPlayerName());</b>
+<i>834</i>&nbsp;    }
+<i>835</i>&nbsp;
+<i>836</i>&nbsp;
+<i>837</i>&nbsp;
+<i>838</i>&nbsp;
+<i>839</i>&nbsp;
+<i>840</i>&nbsp;    //UPDATER
+<i>841</i>&nbsp;
+<i>842</i>&nbsp;    /**
+<i>843</i>&nbsp;     * Update player info.
+<i>844</i>&nbsp;     *
+<i>845</i>&nbsp;     * @param updatePlayersMessage the update players message
+<i>846</i>&nbsp;     */
+<i>847</i>&nbsp;    public void updatePlayerInfo(UpdatePlayersMessage updatePlayersMessage) {
+<b class="nc"><i>848</i>&nbsp;        ArrayList&lt;UpdatePlayersMessage.ClientPlayer&gt; clientPlayers = (ArrayList&lt;UpdatePlayersMessage.ClientPlayer&gt;) updatePlayersMessage.getClientPlayers();</b>
+<i>849</i>&nbsp;
+<b class="nc"><i>850</i>&nbsp;        for(UpdatePlayersMessage.ClientPlayer clientPlayer : clientPlayers)</b>
+<b class="nc"><i>851</i>&nbsp;            babyGame.addPlayer(clientPlayer);</b>
+<i>852</i>&nbsp;
+<b class="nc"><i>853</i>&nbsp;        Set&lt;Player&gt; players = babyGame.getPlayers();</b>
+<b class="nc"><i>854</i>&nbsp;        updateMyInfo();</b>
+<i>855</i>&nbsp;
+<b class="nc"><i>856</i>&nbsp;        clientView.showAllPlayersInGame(players, me);</b>
+<i>857</i>&nbsp;    }
+<i>858</i>&nbsp;
+<i>859</i>&nbsp;    /**
+<i>860</i>&nbsp;     * Update {@link Player} &#39;me&#39; with the real info
+<i>861</i>&nbsp;     */
+<i>862</i>&nbsp;    private void updateMyInfo() {
+<b class="nc"><i>863</i>&nbsp;        if (babyGame.getPlayerByName(me.getPlayerName()) != null)</b>
+<b class="nc"><i>864</i>&nbsp;            me = babyGame.getPlayerByName(me.getPlayerName());</b>
+<i>865</i>&nbsp;    }
+<i>866</i>&nbsp;
+<i>867</i>&nbsp;    /**
+<i>868</i>&nbsp;     * Board update.
+<i>869</i>&nbsp;     *
+<i>870</i>&nbsp;     * @param updateBoardMessage the update board message
+<i>871</i>&nbsp;     */
+<i>872</i>&nbsp;    public void boardUpdate(UpdateBoardMessage updateBoardMessage) {
+<b class="nc"><i>873</i>&nbsp;        clientBoardUpdater.boardUpdate(updateBoardMessage);</b>
+<b class="nc"><i>874</i>&nbsp;        clientView.showMap(babyGame.getClientMap());</b>
+<i>875</i>&nbsp;    }
+<i>876</i>&nbsp;
+<i>877</i>&nbsp;
+<i>878</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 23:21</div>
+</div>
+</body>
+</html>

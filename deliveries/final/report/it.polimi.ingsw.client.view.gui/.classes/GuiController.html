@@ -1,0 +1,1021 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GuiController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.client.view.gui</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GuiController (it.polimi.ingsw.client.view.gui)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GuiController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 76)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 318)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.client.view.gui;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.client.controller.ClientManager;
+<i>4</i>&nbsp;import it.polimi.ingsw.client.controller.PossibleClientAction;
+<i>5</i>&nbsp;import it.polimi.ingsw.client.model.BabyGame;
+<i>6</i>&nbsp;import it.polimi.ingsw.client.view.ClientView;
+<i>7</i>&nbsp;import it.polimi.ingsw.client.view.gui.viewcontrollers.MainViewController;
+<i>8</i>&nbsp;import it.polimi.ingsw.client.view.gui.viewcontrollers.PickGodController;
+<i>9</i>&nbsp;import it.polimi.ingsw.network.Client;
+<i>10</i>&nbsp;import it.polimi.ingsw.network.message.server.serverresponse.SelectWorkerServerResponse;
+<i>11</i>&nbsp;import it.polimi.ingsw.network.message.server.serverresponse.ServerResponse;
+<i>12</i>&nbsp;import it.polimi.ingsw.server.model.god.Deck;
+<i>13</i>&nbsp;import it.polimi.ingsw.server.model.god.God;
+<i>14</i>&nbsp;import it.polimi.ingsw.server.model.map.GameMap;
+<i>15</i>&nbsp;import it.polimi.ingsw.server.model.player.Player;
+<i>16</i>&nbsp;import it.polimi.ingsw.server.model.player.Position;
+<i>17</i>&nbsp;import it.polimi.ingsw.server.model.player.Worker;
+<i>18</i>&nbsp;import javafx.application.Platform;
+<i>19</i>&nbsp;import javafx.fxml.FXMLLoader;
+<i>20</i>&nbsp;import javafx.scene.control.Alert;
+<i>21</i>&nbsp;import javafx.scene.control.ButtonType;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;import java.io.EOFException;
+<i>24</i>&nbsp;import java.io.IOException;
+<i>25</i>&nbsp;import java.net.ConnectException;
+<i>26</i>&nbsp;import java.net.UnknownHostException;
+<i>27</i>&nbsp;import java.util.ArrayList;
+<i>28</i>&nbsp;import java.util.List;
+<i>29</i>&nbsp;import java.util.Optional;
+<i>30</i>&nbsp;import java.util.Set;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;public class GuiController extends ClientView {
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    private static final String ERROR_DIALOG = &quot;Error dialog&quot;;
+<i>35</i>&nbsp;    private static final String INFORMATION_DIALOG = &quot;Information Dialog&quot;;
+<i>36</i>&nbsp;    private static final String GAME_MANAGER_SAYS = &quot;Game Manager says: &quot;;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    private static final boolean ENA_POPUP = false;
+<b class="nc"><i>40</i>&nbsp;    private Player me = null;</b>
+<b class="nc"><i>41</i>&nbsp;    private Worker selectedWorker = null;</b>
+<b class="nc"><i>42</i>&nbsp;    private Worker opponentWorkerSelected = null;</b>
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    private final ParameterListener parameterListener;
+<i>45</i>&nbsp;    private MainViewController controller;
+<i>46</i>&nbsp;
+<b class="nc"><i>47</i>&nbsp;    public GuiController(){</b>
+<b class="nc"><i>48</i>&nbsp;        parameterListener = ParameterListener.getInstance();</b>
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    // helper
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    private Object getFromUser() {
+<i>56</i>&nbsp;
+<b class="nc"><i>57</i>&nbsp;        while (ParameterListener.getParameter() == null){</b>
+<i>58</i>&nbsp;
+<b class="nc"><i>59</i>&nbsp;            synchronized (parameterListener){</b>
+<i>60</i>&nbsp;                try {
+<b class="nc"><i>61</i>&nbsp;                    parameterListener.wait();</b>
+<b class="nc"><i>62</i>&nbsp;                }catch (InterruptedException e){</b>
+<b class="nc"><i>63</i>&nbsp;                    ClientManager.LOGGER.severe(e.getMessage());</b>
+<b class="nc"><i>64</i>&nbsp;                    Thread.currentThread().interrupt();</b>
+<b class="nc"><i>65</i>&nbsp;                }</b>
+<b class="nc"><i>66</i>&nbsp;            }</b>
+<i>67</i>&nbsp;        }
+<i>68</i>&nbsp;
+<b class="nc"><i>69</i>&nbsp;        return ParameterListener.getParameter();</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    private void waitingOpponents(){
+<b class="nc"><i>73</i>&nbsp;        GUI.setRoot(&quot;waiting&quot;);</b>
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    /**
+<i>77</i>&nbsp;     * Based on the parameter change what to show
+<i>78</i>&nbsp;     *
+<i>79</i>&nbsp;     * @param i 1 for move, 2 for build
+<i>80</i>&nbsp;     */
+<i>81</i>&nbsp;    private void choicePopup(int i) {
+<i>82</i>&nbsp;
+<b class="nc"><i>83</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>84</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);</b>
+<b class="nc"><i>85</i>&nbsp;            alert.setTitle(INFORMATION_DIALOG);</b>
+<i>86</i>&nbsp;
+<b class="nc"><i>87</i>&nbsp;            if (i == 1)</b>
+<b class="nc"><i>88</i>&nbsp;                alert.setHeaderText(&quot;Do you want to move again?&quot;);</b>
+<b class="nc"><i>89</i>&nbsp;            else if (i == 2)</b>
+<b class="nc"><i>90</i>&nbsp;                alert.setHeaderText(&quot;Do you want to build again?&quot;);</b>
+<i>91</i>&nbsp;
+<b class="nc"><i>92</i>&nbsp;            alert.setContentText(&quot;Choose your option.&quot;);</b>
+<i>93</i>&nbsp;
+<b class="nc"><i>94</i>&nbsp;            ButtonType buttonTypeOne = new ButtonType(&quot;Yes&quot;);</b>
+<b class="nc"><i>95</i>&nbsp;            ButtonType buttonTypeTwo = new ButtonType(&quot;No&quot;);</b>
+<i>96</i>&nbsp;
+<b class="nc"><i>97</i>&nbsp;            alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);</b>
+<i>98</i>&nbsp;
+<b class="nc"><i>99</i>&nbsp;            Optional&lt;ButtonType&gt; result = alert.showAndWait();</b>
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;            //setta true se result.get() == buttonTypeOne, altrimenti false
+<b class="nc"><i>102</i>&nbsp;            parameterListener.setParameter(result.orElse(null) == buttonTypeOne);</b>
+<i>103</i>&nbsp;        });
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    private void lose(){
+<b class="nc"><i>108</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>109</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.INFORMATION);</b>
+<b class="nc"><i>110</i>&nbsp;            alert.setTitle(INFORMATION_DIALOG);</b>
+<b class="nc"><i>111</i>&nbsp;            alert.setHeaderText(&quot;YOU LOSE&quot;);</b>
+<b class="nc"><i>112</i>&nbsp;            alert.setContentText(&quot;Click OK to quit&quot;);</b>
+<i>113</i>&nbsp;
+<b class="nc"><i>114</i>&nbsp;            alert.showAndWait();</b>
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;        });
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    // main methods
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    @Override
+<i>125</i>&nbsp;    public String askIpAddress() {
+<i>126</i>&nbsp;
+<b class="nc"><i>127</i>&nbsp;        GUI.setRoot(&quot;askIpAddr&quot;);</b>
+<i>128</i>&nbsp;
+<b class="nc"><i>129</i>&nbsp;        String ret = (String) getFromUser();</b>
+<b class="nc"><i>130</i>&nbsp;        ParameterListener.setToNull();</b>
+<i>131</i>&nbsp;
+<b class="nc"><i>132</i>&nbsp;        return ret;</b>
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    @Override
+<i>136</i>&nbsp;    public String askUserName() {
+<i>137</i>&nbsp;
+<b class="nc"><i>138</i>&nbsp;        GUI.setRoot(&quot;askUsername&quot;);</b>
+<b class="nc"><i>139</i>&nbsp;        String username = &quot;&quot;;</b>
+<i>140</i>&nbsp;        do {
+<b class="nc"><i>141</i>&nbsp;            username = (String) getFromUser();</b>
+<b class="nc"><i>142</i>&nbsp;            ParameterListener.setToNull();</b>
+<i>143</i>&nbsp;
+<b class="nc"><i>144</i>&nbsp;            if (!username.matches(&quot;[a-zA-Z0-9]+&quot;))</b>
+<b class="nc"><i>145</i>&nbsp;                loginError();</b>
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;
+<b class="nc"><i>148</i>&nbsp;        } while (!username.matches(&quot;[a-zA-Z0-9]+&quot;));</b>
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;
+<b class="nc"><i>152</i>&nbsp;        return username;</b>
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    @Override
+<i>156</i>&nbsp;    public void loginError() {
+<i>157</i>&nbsp;
+<b class="nc"><i>158</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>159</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>160</i>&nbsp;            alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>161</i>&nbsp;            alert.setHeaderText(&quot;You cannot choose this username! (use only letters &amp; numbers)&quot;);</b>
+<i>162</i>&nbsp;
+<b class="nc"><i>163</i>&nbsp;            alert.showAndWait();</b>
+<i>164</i>&nbsp;        });
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    }
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    @Override
+<i>169</i>&nbsp;    public void loginSuccessful() {
+<i>170</i>&nbsp;
+<b class="nc"><i>171</i>&nbsp;        waitingOpponents();</b>
+<i>172</i>&nbsp;    }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    @Override
+<i>175</i>&nbsp;    public int askNumbOfPlayer() {
+<i>176</i>&nbsp;
+<b class="nc"><i>177</i>&nbsp;        GUI.setRoot(&quot;askLobbySize&quot;);</b>
+<i>178</i>&nbsp;
+<b class="nc"><i>179</i>&nbsp;        int numbOfPlayers = (int) getFromUser();</b>
+<b class="nc"><i>180</i>&nbsp;        ParameterListener.setToNull();</b>
+<i>181</i>&nbsp;
+<b class="nc"><i>182</i>&nbsp;        waitingOpponents();</b>
+<i>183</i>&nbsp;
+<b class="nc"><i>184</i>&nbsp;        return numbOfPlayers;</b>
+<i>185</i>&nbsp;    }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;    @Override
+<i>188</i>&nbsp;    public void youAreNotTheGodLikePlayer(String godLikePlayer) {
+<i>189</i>&nbsp;        // do nothing in GUI
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;        // se 1o player allora non fare la wait
+<b class="nc"><i>192</i>&nbsp;        waitingOpponents();</b>
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    @Override
+<i>196</i>&nbsp;    public void youAreTheGodLikePlayer() {
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;    @Override
+<i>201</i>&nbsp;    public void showDeck() {
+<b class="nc"><i>202</i>&nbsp;        GUI.setRoot(&quot;showDeck&quot;);</b>
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;    }
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    @Override
+<i>207</i>&nbsp;    public ArrayList&lt;God&gt; selectGods(int howMany) {
+<b class="nc"><i>208</i>&nbsp;        Deck deck = BabyGame.getInstance().getDeck();</b>
+<b class="nc"><i>209</i>&nbsp;        ArrayList&lt;God&gt; godsChosen = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>210</i>&nbsp;        int godsChosenNum = 0;</b>
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;        do {
+<i>213</i>&nbsp;
+<b class="nc"><i>214</i>&nbsp;            God god = deck.getGodByName((String) getFromUser());</b>
+<b class="nc"><i>215</i>&nbsp;            ParameterListener.setToNull();</b>
+<b class="nc"><i>216</i>&nbsp;            godsChosen.add(god);</b>
+<b class="nc"><i>217</i>&nbsp;            godsChosenNum++;</b>
+<i>218</i>&nbsp;
+<b class="nc"><i>219</i>&nbsp;        } while (godsChosenNum &lt; howMany);</b>
+<i>220</i>&nbsp;
+<b class="nc"><i>221</i>&nbsp;        waitingOpponents();</b>
+<i>222</i>&nbsp;
+<b class="nc"><i>223</i>&nbsp;        return godsChosen;</b>
+<i>224</i>&nbsp;    }
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;    @Override
+<i>227</i>&nbsp;    public void errorWhileChoosingGods(String gameManagerSays) {
+<i>228</i>&nbsp;        //if(!ENA_POPUP) return;
+<i>229</i>&nbsp;
+<b class="nc"><i>230</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>231</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>232</i>&nbsp;            alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>233</i>&nbsp;            alert.setHeaderText(&quot;There was a problem with the Gods you selected&quot;);</b>
+<b class="nc"><i>234</i>&nbsp;            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays + &quot;\nPlease select the correct Gods&quot;);</b>
+<i>235</i>&nbsp;
+<b class="nc"><i>236</i>&nbsp;            alert.showAndWait();</b>
+<i>237</i>&nbsp;        });
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;    @Override
+<i>242</i>&nbsp;    public void godsSelectedSuccessfully() {
+<i>243</i>&nbsp;        if(!ENA_POPUP) return;
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;        Platform.runLater(() -&gt; {
+<b class="nc"><i>246</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.INFORMATION);</b>
+<b class="nc"><i>247</i>&nbsp;            alert.setTitle(INFORMATION_DIALOG);</b>
+<b class="nc"><i>248</i>&nbsp;            alert.setHeaderText(&quot;Gods selected successfully&quot;);</b>
+<i>249</i>&nbsp;
+<b class="nc"><i>250</i>&nbsp;            alert.showAndWait();</b>
+<i>251</i>&nbsp;        });
+<i>252</i>&nbsp;    }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;    @Override
+<i>255</i>&nbsp;    public God pickFromChosenGods(ArrayList&lt;God&gt; hand) {
+<i>256</i>&nbsp;
+<b class="nc"><i>257</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>258</i>&nbsp;            GUI.setRoot(&quot;pickGod&quot;);</b>
+<b class="nc"><i>259</i>&nbsp;            FXMLLoader fxmlLoader = GUI.getFXMLLoader();</b>
+<b class="nc"><i>260</i>&nbsp;            PickGodController pickGodController = fxmlLoader.getController();</b>
+<b class="nc"><i>261</i>&nbsp;            pickGodController.setHand(hand);</b>
+<i>262</i>&nbsp;        });
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;
+<b class="nc"><i>265</i>&nbsp;        God ret = null;</b>
+<b class="nc"><i>266</i>&nbsp;        String godName = (String) getFromUser();</b>
+<b class="nc"><i>267</i>&nbsp;        ParameterListener.setToNull();</b>
+<i>268</i>&nbsp;
+<b class="nc"><i>269</i>&nbsp;        for(God god : hand){</b>
+<b class="nc"><i>270</i>&nbsp;            if(god.getGodName().equals(godName))</b>
+<b class="nc"><i>271</i>&nbsp;                ret = god;</b>
+<b class="nc"><i>272</i>&nbsp;        }</b>
+<i>273</i>&nbsp;
+<b class="nc"><i>274</i>&nbsp;        waitingOpponents();</b>
+<i>275</i>&nbsp;
+<b class="nc"><i>276</i>&nbsp;        return ret;</b>
+<i>277</i>&nbsp;    }
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;    @Override
+<i>280</i>&nbsp;    public void errorWhilePickingUpGod(String gameManagerSays) {
+<i>281</i>&nbsp;        //if(!ENA_POPUP) return;
+<i>282</i>&nbsp;
+<b class="nc"><i>283</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>284</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>285</i>&nbsp;            alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>286</i>&nbsp;            alert.setHeaderText(&quot;There was a problem with the God you selected&quot;);</b>
+<b class="nc"><i>287</i>&nbsp;            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays + &quot;\nPlease select the correct God&quot;);</b>
+<i>288</i>&nbsp;
+<b class="nc"><i>289</i>&nbsp;            alert.showAndWait();</b>
+<i>290</i>&nbsp;        });
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    @Override
+<i>295</i>&nbsp;    public void godPickedUpSuccessfully() {
+<i>296</i>&nbsp;        if(!ENA_POPUP) return;
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;        Platform.runLater(() -&gt; {
+<b class="nc"><i>299</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.INFORMATION);</b>
+<b class="nc"><i>300</i>&nbsp;            alert.setTitle(INFORMATION_DIALOG);</b>
+<b class="nc"><i>301</i>&nbsp;            alert.setHeaderText(&quot;God picked successfully&quot;);</b>
+<i>302</i>&nbsp;
+<b class="nc"><i>303</i>&nbsp;            alert.showAndWait();</b>
+<i>304</i>&nbsp;        });
+<i>305</i>&nbsp;    }
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;    @Override
+<i>308</i>&nbsp;    public void showAllPlayersInGame(Set&lt;Player&gt; playerSet, Player user) {
+<i>309</i>&nbsp;
+<b class="nc"><i>310</i>&nbsp;        GUI.setRoot(&quot;mainView&quot;);</b>
+<b class="nc"><i>311</i>&nbsp;        FXMLLoader fxmlLoader = GUI.getFXMLLoader();</b>
+<b class="nc"><i>312</i>&nbsp;        controller = fxmlLoader.getController();</b>
+<b class="nc"><i>313</i>&nbsp;        controller.setPlayers(playerSet);</b>
+<b class="nc"><i>314</i>&nbsp;        this.me = user;</b>
+<b class="nc"><i>315</i>&nbsp;        Platform.runLater(controller::setScene);</b>
+<i>316</i>&nbsp;
+<i>317</i>&nbsp;    }
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;    @Override
+<i>320</i>&nbsp;    public Position placeWorker(String worker) {
+<i>321</i>&nbsp;
+<b class="nc"><i>322</i>&nbsp;        controller.changePhase(&quot;PlaceWorker&quot;);</b>
+<i>323</i>&nbsp;
+<b class="nc"><i>324</i>&nbsp;        ParameterListener.setToNull();</b>
+<i>325</i>&nbsp;
+<b class="nc"><i>326</i>&nbsp;        Position ret = (Position) getFromUser();</b>
+<b class="nc"><i>327</i>&nbsp;        ParameterListener.setToNull();</b>
+<i>328</i>&nbsp;
+<b class="nc"><i>329</i>&nbsp;        return ret;</b>
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;    }
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;    @Override
+<i>334</i>&nbsp;    public void errorWhilePlacingYourWorker(String gameManagerSays) {
+<i>335</i>&nbsp;        //if(!ENA_POPUP) return;
+<i>336</i>&nbsp;
+<b class="nc"><i>337</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>338</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>339</i>&nbsp;            alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>340</i>&nbsp;            alert.setHeaderText(&quot;There was a problem with the worker you wanted to place&quot;);</b>
+<b class="nc"><i>341</i>&nbsp;            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays + &quot;\nPlease try place it again&quot;);</b>
+<i>342</i>&nbsp;
+<b class="nc"><i>343</i>&nbsp;            alert.showAndWait();</b>
+<i>344</i>&nbsp;        });
+<i>345</i>&nbsp;
+<i>346</i>&nbsp;    }
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;    @Override
+<i>349</i>&nbsp;    public void workerPlacedSuccessfully() {
+<i>350</i>&nbsp;        if(!ENA_POPUP) return;
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;        Platform.runLater(() -&gt; {
+<b class="nc"><i>353</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.INFORMATION);</b>
+<b class="nc"><i>354</i>&nbsp;            alert.setTitle(INFORMATION_DIALOG);</b>
+<b class="nc"><i>355</i>&nbsp;            alert.setHeaderText(&quot;Worker placed successfully!&quot;);</b>
+<i>356</i>&nbsp;
+<b class="nc"><i>357</i>&nbsp;            alert.showAndWait();</b>
+<i>358</i>&nbsp;        });
+<i>359</i>&nbsp;    }
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;    @Override
+<i>362</i>&nbsp;    public void placingPhaseEnding() {
+<b class="nc"><i>363</i>&nbsp;        controller.changePhase(&quot;NotYourTurn&quot;);</b>
+<i>364</i>&nbsp;    }
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;    @Override
+<i>367</i>&nbsp;    public void startingTurn() {
+<i>368</i>&nbsp;        //if(!ENA_POPUP) return;
+<i>369</i>&nbsp;
+<b class="nc"><i>370</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>371</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.INFORMATION);</b>
+<b class="nc"><i>372</i>&nbsp;            alert.setTitle(INFORMATION_DIALOG);</b>
+<b class="nc"><i>373</i>&nbsp;            alert.setHeaderText(&quot;It&#39;s your turn!&quot;);</b>
+<i>374</i>&nbsp;
+<b class="nc"><i>375</i>&nbsp;            alert.showAndWait();</b>
+<i>376</i>&nbsp;        });
+<i>377</i>&nbsp;    }
+<i>378</i>&nbsp;
+<i>379</i>&nbsp;    @Override
+<i>380</i>&nbsp;    public int selectWorker(List&lt;Position&gt; workersPositions) {
+<i>381</i>&nbsp;
+<b class="nc"><i>382</i>&nbsp;        controller.changePhase(&quot;SelectWorker&quot;);</b>
+<i>383</i>&nbsp;
+<b class="nc"><i>384</i>&nbsp;        ParameterListener.setToNull();</b>
+<b class="nc"><i>385</i>&nbsp;        boolean again = false;</b>
+<i>386</i>&nbsp;
+<i>387</i>&nbsp;        do {
+<b class="nc"><i>388</i>&nbsp;            ClientManager.LOGGER.info(&quot;Selecting a worker&quot;);</b>
+<i>389</i>&nbsp;
+<b class="nc"><i>390</i>&nbsp;            if(again) {</b>
+<b class="nc"><i>391</i>&nbsp;                ParameterListener.setToNull();</b>
+<b class="nc"><i>392</i>&nbsp;                selectedWorker = null;</b>
+<i>393</i>&nbsp;            }
+<i>394</i>&nbsp;
+<b class="nc"><i>395</i>&nbsp;            if (selectedWorker == null) {</b>
+<i>396</i>&nbsp;
+<b class="nc"><i>397</i>&nbsp;                Position pos = (Position) getFromUser();</b>
+<b class="nc"><i>398</i>&nbsp;                ParameterListener.setToNull();</b>
+<b class="nc"><i>399</i>&nbsp;                selectedWorker = BabyGame.getInstance().getClientMap().getWorkerOnSquare(pos);</b>
+<i>400</i>&nbsp;            }
+<i>401</i>&nbsp;
+<b class="nc"><i>402</i>&nbsp;            again = selectedWorker == null || !selectedWorker.getColor().equals(me.getColor());</b>
+<i>403</i>&nbsp;        }
+<b class="nc"><i>404</i>&nbsp;        while (again);</b>
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;        //da spostare sulla risposta positiva alla select worker
+<b class="nc"><i>407</i>&nbsp;        selectedWorker.selectedOnGUI();</b>
+<i>408</i>&nbsp;
+<b class="nc"><i>409</i>&nbsp;        ParameterListener.setToNull();</b>
+<i>410</i>&nbsp;
+<b class="nc"><i>411</i>&nbsp;        return selectedWorker.getNumber();</b>
+<i>412</i>&nbsp;    }
+<i>413</i>&nbsp;
+<i>414</i>&nbsp;    @Override
+<i>415</i>&nbsp;    public void errorWhileSelectingWorker(String gameManagerSays) {
+<i>416</i>&nbsp;
+<b class="nc"><i>417</i>&nbsp;        if (selectedWorker != null) {</b>
+<b class="nc"><i>418</i>&nbsp;            selectedWorker.deselectedOnGUI();</b>
+<b class="nc"><i>419</i>&nbsp;            selectedWorker = null;</b>
+<i>420</i>&nbsp;        }
+<i>421</i>&nbsp;
+<i>422</i>&nbsp;        //if(!ENA_POPUP) return;
+<i>423</i>&nbsp;
+<b class="nc"><i>424</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>425</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>426</i>&nbsp;            alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>427</i>&nbsp;            alert.setHeaderText(&quot;There was a problem with the worker you selected&quot;);</b>
+<b class="nc"><i>428</i>&nbsp;            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays + &quot;\nPlease select another worker&quot;);</b>
+<i>429</i>&nbsp;
+<b class="nc"><i>430</i>&nbsp;            alert.showAndWait();</b>
+<i>431</i>&nbsp;        });
+<i>432</i>&nbsp;
+<i>433</i>&nbsp;    }
+<i>434</i>&nbsp;
+<i>435</i>&nbsp;    @Override
+<i>436</i>&nbsp;    public void workerSelectedSuccessfully() {
+<i>437</i>&nbsp;        if(!ENA_POPUP) return;
+<i>438</i>&nbsp;
+<i>439</i>&nbsp;        Platform.runLater(() -&gt; {
+<b class="nc"><i>440</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.INFORMATION);</b>
+<b class="nc"><i>441</i>&nbsp;            alert.setTitle(INFORMATION_DIALOG);</b>
+<b class="nc"><i>442</i>&nbsp;            alert.setHeaderText(&quot;Worker selected succesfully!&quot;);</b>
+<i>443</i>&nbsp;
+<b class="nc"><i>444</i>&nbsp;            alert.showAndWait();</b>
+<i>445</i>&nbsp;        });
+<i>446</i>&nbsp;    }
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;    @Override
+<i>449</i>&nbsp;    public PossibleClientAction choseActionToPerform(List&lt;PossibleClientAction&gt; possibleActions) {
+<i>450</i>&nbsp;
+<i>451</i>&nbsp;
+<i>452</i>&nbsp;
+<b class="nc"><i>453</i>&nbsp;        ParameterListener.setToNull();</b>
+<i>454</i>&nbsp;
+<b class="nc"><i>455</i>&nbsp;        if(possibleActions.contains(PossibleClientAction.POWER_BUTTON)){</b>
+<b class="nc"><i>456</i>&nbsp;            controller.enablePowerButton();</b>
+<b class="nc"><i>457</i>&nbsp;            controller.changePhase(&quot;MultipleAction&quot;);</b>
+<i>458</i>&nbsp;        }
+<i>459</i>&nbsp;        else {
+<b class="nc"><i>460</i>&nbsp;            controller.disablePowerButton();</b>
+<b class="nc"><i>461</i>&nbsp;            controller.changePhase(&quot;MoveWorker&quot;);</b>
+<i>462</i>&nbsp;        }
+<i>463</i>&nbsp;
+<i>464</i>&nbsp;
+<b class="nc"><i>465</i>&nbsp;        Object parameter = getFromUser();</b>
+<i>466</i>&nbsp;        // don&#39;t set to null parameterListener
+<i>467</i>&nbsp;
+<b class="nc"><i>468</i>&nbsp;        if(parameter instanceof String){</b>
+<b class="nc"><i>469</i>&nbsp;            if(parameter.equals(&quot;power&quot;)) {</b>
+<b class="nc"><i>470</i>&nbsp;                ParameterListener.setToNull();</b>
+<b class="nc"><i>471</i>&nbsp;                return PossibleClientAction.POWER_BUTTON;</b>
+<i>472</i>&nbsp;            }
+<i>473</i>&nbsp;        }
+<i>474</i>&nbsp;        else
+<b class="nc"><i>475</i>&nbsp;        if(parameter instanceof Position){</b>
+<i>476</i>&nbsp;
+<b class="nc"><i>477</i>&nbsp;            for (Worker worker : me.getPlayerWorkers()){</b>
+<b class="nc"><i>478</i>&nbsp;                if(worker.getPosition().equals(parameter)) {</b>
+<i>479</i>&nbsp;
+<b class="nc"><i>480</i>&nbsp;                    selectedWorker.deselectedOnGUI();</b>
+<i>481</i>&nbsp;
+<b class="nc"><i>482</i>&nbsp;                    selectedWorker = BabyGame.getInstance().getClientMap().getWorkerOnSquare((Position) parameter);</b>
+<i>483</i>&nbsp;
+<b class="nc"><i>484</i>&nbsp;                    ParameterListener.setToNull();</b>
+<b class="nc"><i>485</i>&nbsp;                    return PossibleClientAction.SELECT_WORKER;</b>
+<i>486</i>&nbsp;                }
+<b class="nc"><i>487</i>&nbsp;            }</b>
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;        }
+<i>490</i>&nbsp;
+<b class="nc"><i>491</i>&nbsp;        possibleActions.removeIf(x -&gt; x.equals(PossibleClientAction.POWER_BUTTON));</b>
+<b class="nc"><i>492</i>&nbsp;        possibleActions.removeIf(x -&gt; x.equals(PossibleClientAction.SELECT_WORKER));</b>
+<i>493</i>&nbsp;
+<b class="nc"><i>494</i>&nbsp;        controller.disablePowerButton();</b>
+<i>495</i>&nbsp;
+<b class="nc"><i>496</i>&nbsp;        return possibleActions.get(0);</b>
+<i>497</i>&nbsp;
+<i>498</i>&nbsp;    }
+<i>499</i>&nbsp;
+<i>500</i>&nbsp;    @Override
+<i>501</i>&nbsp;    public void errorWhileActivatingPower(String gameManagerSays) {
+<i>502</i>&nbsp;        //if(!ENA_POPUP) return;
+<i>503</i>&nbsp;
+<b class="nc"><i>504</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>505</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>506</i>&nbsp;            alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>507</i>&nbsp;            alert.setHeaderText(&quot;There was a problem with the power you want to use&quot;);</b>
+<b class="nc"><i>508</i>&nbsp;            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays + &quot;\nPlease do a different action&quot;);</b>
+<i>509</i>&nbsp;
+<b class="nc"><i>510</i>&nbsp;            alert.showAndWait();</b>
+<i>511</i>&nbsp;        });
+<i>512</i>&nbsp;    }
+<i>513</i>&nbsp;
+<i>514</i>&nbsp;    @Override
+<i>515</i>&nbsp;    public void powerActivated(God god) {
+<i>516</i>&nbsp;        //if(!ENA_POPUP) return;
+<i>517</i>&nbsp;
+<b class="nc"><i>518</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>519</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.INFORMATION);</b>
+<b class="nc"><i>520</i>&nbsp;            alert.setTitle(INFORMATION_DIALOG);</b>
+<b class="nc"><i>521</i>&nbsp;            alert.setHeaderText(&quot;Power activated!&quot;);</b>
+<b class="nc"><i>522</i>&nbsp;            alert.setContentText(&quot;Now you can:  &quot; + god.getGodPower().getPowerDescription());</b>
+<i>523</i>&nbsp;
+<b class="nc"><i>524</i>&nbsp;            alert.showAndWait();</b>
+<i>525</i>&nbsp;        });
+<i>526</i>&nbsp;    }
+<i>527</i>&nbsp;
+<i>528</i>&nbsp;    @Override
+<i>529</i>&nbsp;    public Position moveWorker(List&lt;Position&gt; nearlyPosValid) {
+<i>530</i>&nbsp;
+<b class="nc"><i>531</i>&nbsp;        controller.changePhase(&quot;MoveWorker&quot;);</b>
+<i>532</i>&nbsp;
+<i>533</i>&nbsp;        //controller.enablePosition(nearlyPosValid);
+<i>534</i>&nbsp;
+<i>535</i>&nbsp;        //controller.disablePosition();
+<i>536</i>&nbsp;
+<b class="nc"><i>537</i>&nbsp;        Position ret =  (Position) getFromUser();</b>
+<b class="nc"><i>538</i>&nbsp;        ParameterListener.setToNull();</b>
+<i>539</i>&nbsp;
+<b class="nc"><i>540</i>&nbsp;        return  ret;</b>
+<i>541</i>&nbsp;
+<i>542</i>&nbsp;    }
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;    @Override
+<i>545</i>&nbsp;    public void errorWhileMovingWorker(String gameManagerSays) {
+<i>546</i>&nbsp;
+<i>547</i>&nbsp;        //if(!ENA_POPUP) return;
+<i>548</i>&nbsp;
+<b class="nc"><i>549</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>550</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>551</i>&nbsp;            alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>552</i>&nbsp;            alert.setHeaderText(&quot;There was a problem with the move you performed&quot;);</b>
+<b class="nc"><i>553</i>&nbsp;            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays + &quot;\nPlease move again&quot;);</b>
+<i>554</i>&nbsp;
+<b class="nc"><i>555</i>&nbsp;            alert.showAndWait();</b>
+<i>556</i>&nbsp;        });
+<i>557</i>&nbsp;    }
+<i>558</i>&nbsp;
+<i>559</i>&nbsp;    @Override
+<i>560</i>&nbsp;    public boolean wantMoveAgain() {
+<i>561</i>&nbsp;
+<i>562</i>&nbsp;
+<b class="nc"><i>563</i>&nbsp;        ParameterListener.setToNull();</b>
+<b class="nc"><i>564</i>&nbsp;        choicePopup(1);</b>
+<i>565</i>&nbsp;
+<b class="nc"><i>566</i>&nbsp;        boolean ret = (boolean) getFromUser();</b>
+<b class="nc"><i>567</i>&nbsp;        ParameterListener.setToNull();</b>
+<i>568</i>&nbsp;
+<b class="nc"><i>569</i>&nbsp;        return ret;</b>
+<i>570</i>&nbsp;    }
+<i>571</i>&nbsp;
+<i>572</i>&nbsp;    @Override
+<i>573</i>&nbsp;    public void printCanMoveAgain(String gameManagerSays) {
+<i>574</i>&nbsp;        //nothing to show
+<i>575</i>&nbsp;    }
+<i>576</i>&nbsp;
+<i>577</i>&nbsp;    @Override
+<i>578</i>&nbsp;    public void workerMovedSuccessfully() {
+<i>579</i>&nbsp;        //nothing to show
+<i>580</i>&nbsp;    }
+<i>581</i>&nbsp;
+<i>582</i>&nbsp;    @Override
+<i>583</i>&nbsp;    public void endMoveRequestError(String gameManagerSays) {
+<i>584</i>&nbsp;
+<i>585</i>&nbsp;        if(!ENA_POPUP) return;
+<i>586</i>&nbsp;
+<i>587</i>&nbsp;        Platform.runLater(() -&gt; {
+<b class="nc"><i>588</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>589</i>&nbsp;            alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>590</i>&nbsp;            alert.setHeaderText(&quot;End Move Request Error&quot;);</b>
+<b class="nc"><i>591</i>&nbsp;            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays);</b>
+<i>592</i>&nbsp;
+<b class="nc"><i>593</i>&nbsp;            alert.showAndWait();</b>
+<i>594</i>&nbsp;        });
+<i>595</i>&nbsp;
+<i>596</i>&nbsp;    }
+<i>597</i>&nbsp;
+<i>598</i>&nbsp;    @Override
+<i>599</i>&nbsp;    public void endMovingPhase(String gameManagerSays) {
+<i>600</i>&nbsp;        //nothing to show
+<i>601</i>&nbsp;    }
+<i>602</i>&nbsp;
+<i>603</i>&nbsp;    @Override
+<i>604</i>&nbsp;    public Position build(ArrayList&lt;Position&gt; possiblePosToBuild) {
+<i>605</i>&nbsp;
+<b class="nc"><i>606</i>&nbsp;        controller.changePhase(&quot;BuildWorker&quot;);</b>
+<i>607</i>&nbsp;
+<i>608</i>&nbsp;        //controller.enablePosition(possiblePosToBuild);
+<i>609</i>&nbsp;
+<i>610</i>&nbsp;        //controller.disablePosition();
+<i>611</i>&nbsp;
+<b class="nc"><i>612</i>&nbsp;        Position ret =( Position) getFromUser();</b>
+<b class="nc"><i>613</i>&nbsp;        ParameterListener.setToNull();</b>
+<i>614</i>&nbsp;
+<b class="nc"><i>615</i>&nbsp;        return ret;</b>
+<i>616</i>&nbsp;
+<i>617</i>&nbsp;    }
+<i>618</i>&nbsp;
+<i>619</i>&nbsp;    @Override
+<i>620</i>&nbsp;    public boolean wantBuildAgain() {
+<i>621</i>&nbsp;
+<b class="nc"><i>622</i>&nbsp;        ParameterListener.setToNull();</b>
+<b class="nc"><i>623</i>&nbsp;        choicePopup(2);</b>
+<i>624</i>&nbsp;
+<b class="nc"><i>625</i>&nbsp;        boolean ret = (boolean) getFromUser();</b>
+<b class="nc"><i>626</i>&nbsp;        ParameterListener.setToNull();</b>
+<i>627</i>&nbsp;
+<b class="nc"><i>628</i>&nbsp;        return ret;</b>
+<i>629</i>&nbsp;
+<i>630</i>&nbsp;    }
+<i>631</i>&nbsp;
+<i>632</i>&nbsp;    @Override
+<i>633</i>&nbsp;    public void printCanBuildAgain(String gameManagerSays) {
+<i>634</i>&nbsp;        //nothing to show
+<i>635</i>&nbsp;    }
+<i>636</i>&nbsp;
+<i>637</i>&nbsp;    @Override
+<i>638</i>&nbsp;    public void errorWhileBuilding(String gameManagerSays) {
+<i>639</i>&nbsp;
+<i>640</i>&nbsp;        //if(!ENA_POPUP) return;
+<i>641</i>&nbsp;
+<b class="nc"><i>642</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>643</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>644</i>&nbsp;            alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>645</i>&nbsp;            alert.setHeaderText(&quot;There was a problem with the built you performed&quot;);</b>
+<b class="nc"><i>646</i>&nbsp;            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays + &quot;\nPlease build again&quot;);</b>
+<i>647</i>&nbsp;
+<b class="nc"><i>648</i>&nbsp;            alert.showAndWait();</b>
+<i>649</i>&nbsp;        });
+<i>650</i>&nbsp;
+<i>651</i>&nbsp;    }
+<i>652</i>&nbsp;
+<i>653</i>&nbsp;    @Override
+<i>654</i>&nbsp;    public void builtSuccessfully() {
+<i>655</i>&nbsp;
+<i>656</i>&nbsp;        if(!ENA_POPUP) return;
+<i>657</i>&nbsp;
+<i>658</i>&nbsp;        Platform.runLater(() -&gt; {
+<b class="nc"><i>659</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.INFORMATION);</b>
+<b class="nc"><i>660</i>&nbsp;            alert.setTitle(INFORMATION_DIALOG);</b>
+<b class="nc"><i>661</i>&nbsp;            alert.setHeaderText(&quot;Built successfully!&quot;);</b>
+<i>662</i>&nbsp;
+<b class="nc"><i>663</i>&nbsp;            alert.showAndWait();</b>
+<i>664</i>&nbsp;        });
+<i>665</i>&nbsp;
+<i>666</i>&nbsp;    }
+<i>667</i>&nbsp;
+<i>668</i>&nbsp;    @Override
+<i>669</i>&nbsp;    public void endBuildRequestError(String gameManagerSays) {
+<i>670</i>&nbsp;
+<i>671</i>&nbsp;        //if(!ENA_POPUP) return;
+<i>672</i>&nbsp;
+<b class="nc"><i>673</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>674</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>675</i>&nbsp;            alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>676</i>&nbsp;            alert.setHeaderText(&quot;End Build Request Error&quot;);</b>
+<b class="nc"><i>677</i>&nbsp;            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays);</b>
+<i>678</i>&nbsp;
+<b class="nc"><i>679</i>&nbsp;            alert.showAndWait();</b>
+<i>680</i>&nbsp;        });
+<i>681</i>&nbsp;
+<i>682</i>&nbsp;    }
+<i>683</i>&nbsp;
+<i>684</i>&nbsp;    @Override
+<i>685</i>&nbsp;    public void endBuildingPhase(String gameManagerSays) {
+<i>686</i>&nbsp;
+<i>687</i>&nbsp;        if(!ENA_POPUP) return;
+<i>688</i>&nbsp;
+<i>689</i>&nbsp;        Platform.runLater(() -&gt; {
+<b class="nc"><i>690</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>691</i>&nbsp;            alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>692</i>&nbsp;            alert.setHeaderText(&quot;End Building Phase&quot;);</b>
+<b class="nc"><i>693</i>&nbsp;            alert.setContentText(GAME_MANAGER_SAYS + gameManagerSays);</b>
+<i>694</i>&nbsp;
+<b class="nc"><i>695</i>&nbsp;            alert.showAndWait();</b>
+<i>696</i>&nbsp;        });
+<i>697</i>&nbsp;
+<i>698</i>&nbsp;    }
+<i>699</i>&nbsp;
+<i>700</i>&nbsp;    @Override
+<i>701</i>&nbsp;    public void endTurn() {
+<i>702</i>&nbsp;
+<b class="nc"><i>703</i>&nbsp;        selectedWorker.deselectedOnGUI();</b>
+<b class="nc"><i>704</i>&nbsp;        selectedWorker = null;</b>
+<b class="nc"><i>705</i>&nbsp;        controller.disablePowerButton();</b>
+<i>706</i>&nbsp;
+<i>707</i>&nbsp;        if(!ENA_POPUP) return;
+<i>708</i>&nbsp;
+<i>709</i>&nbsp;        Platform.runLater(() -&gt; {
+<b class="nc"><i>710</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.INFORMATION);</b>
+<b class="nc"><i>711</i>&nbsp;            alert.setTitle(INFORMATION_DIALOG);</b>
+<b class="nc"><i>712</i>&nbsp;            alert.setHeaderText(&quot;Ending turn!&quot;);</b>
+<i>713</i>&nbsp;
+<b class="nc"><i>714</i>&nbsp;            alert.showAndWait();</b>
+<i>715</i>&nbsp;        });
+<i>716</i>&nbsp;
+<i>717</i>&nbsp;    }
+<i>718</i>&nbsp;
+<i>719</i>&nbsp;    @Override
+<i>720</i>&nbsp;    public void someoneElseDoingStuff() {
+<i>721</i>&nbsp;        //nothing to show
+<i>722</i>&nbsp;    }
+<i>723</i>&nbsp;
+<i>724</i>&nbsp;    @Override
+<i>725</i>&nbsp;    public void anotherPlayerIsPickingUpGod(String turnOwner) {
+<i>726</i>&nbsp;        //nothing to show
+<i>727</i>&nbsp;    }
+<i>728</i>&nbsp;
+<i>729</i>&nbsp;    @Override
+<i>730</i>&nbsp;    public void anotherPlayerIsPlacingWorker(String turnOwner) {
+<i>731</i>&nbsp;        //nothing to show
+<i>732</i>&nbsp;    }
+<i>733</i>&nbsp;
+<i>734</i>&nbsp;    @Override
+<i>735</i>&nbsp;    public void startingPlayerTurn(String turnOwner) {
+<i>736</i>&nbsp;
+<b class="nc"><i>737</i>&nbsp;        controller.changePhase(&quot;NotYourTurn&quot;);</b>
+<i>738</i>&nbsp;
+<i>739</i>&nbsp;    }
+<i>740</i>&nbsp;
+<i>741</i>&nbsp;    @Override
+<i>742</i>&nbsp;    public void anotherPlayerIsSelectingWorker(String turnOwner) {
+<i>743</i>&nbsp;        //nothing to show
+<i>744</i>&nbsp;    }
+<i>745</i>&nbsp;
+<i>746</i>&nbsp;    @Override
+<i>747</i>&nbsp;    public void anotherPlayerIsMoving(String turnOwner) {
+<i>748</i>&nbsp;        //nothing to show
+<i>749</i>&nbsp;    }
+<i>750</i>&nbsp;
+<i>751</i>&nbsp;    @Override
+<i>752</i>&nbsp;    public void anotherPlayerIsBuilding(String turnOwner) {
+<i>753</i>&nbsp;        //nothing to show
+<i>754</i>&nbsp;    }
+<i>755</i>&nbsp;
+<i>756</i>&nbsp;    @Override
+<i>757</i>&nbsp;    public void anotherPlayerHasSelectedGods(String turnOwner) {
+<i>758</i>&nbsp;        //nothing to show
+<i>759</i>&nbsp;    }
+<i>760</i>&nbsp;
+<i>761</i>&nbsp;    @Override
+<i>762</i>&nbsp;    public void anotherPlayerHasPickedUpGod(String turnOwner) {
+<i>763</i>&nbsp;        //nothing to show
+<i>764</i>&nbsp;    }
+<i>765</i>&nbsp;
+<i>766</i>&nbsp;    @Override
+<i>767</i>&nbsp;    public void anotherPlayerHasPlacedWorker(String turnOwner) {
+<i>768</i>&nbsp;        //nothing to show
+<i>769</i>&nbsp;    }
+<i>770</i>&nbsp;
+<i>771</i>&nbsp;    @Override
+<i>772</i>&nbsp;    public void anotherPlayerHasSelectedWorker(SelectWorkerServerResponse serverResponse) {
+<b class="nc"><i>773</i>&nbsp;        String playerName = serverResponse.getMessageRecipient();</b>
+<i>774</i>&nbsp;
+<b class="nc"><i>775</i>&nbsp;        int indexWorker = serverResponse.getWorkerSelected()-1;</b>
+<i>776</i>&nbsp;
+<b class="nc"><i>777</i>&nbsp;        if(opponentWorkerSelected != null) opponentWorkerSelected.deselectedOnGUI();</b>
+<i>778</i>&nbsp;
+<b class="nc"><i>779</i>&nbsp;        opponentWorkerSelected = BabyGame.getInstance().getPlayerByName(playerName).getPlayerWorkers().get(indexWorker);</b>
+<i>780</i>&nbsp;
+<b class="nc"><i>781</i>&nbsp;        opponentWorkerSelected.selectedOnGUI();</b>
+<i>782</i>&nbsp;    }
+<i>783</i>&nbsp;
+<i>784</i>&nbsp;    @Override
+<i>785</i>&nbsp;    public void anotherPlayerHasMoved(String turnOwner) {
+<i>786</i>&nbsp;        //nothing to show
+<i>787</i>&nbsp;    }
+<i>788</i>&nbsp;
+<i>789</i>&nbsp;    @Override
+<i>790</i>&nbsp;    public void anotherPlayerHasBuilt(String turnOwner) {
+<i>791</i>&nbsp;        //nothing to show
+<i>792</i>&nbsp;    }
+<i>793</i>&nbsp;
+<i>794</i>&nbsp;    @Override
+<i>795</i>&nbsp;    public void anotherPlayerHasEndedHisTurn(String turnOwner) {
+<b class="nc"><i>796</i>&nbsp;        if (opponentWorkerSelected != null)</b>
+<b class="nc"><i>797</i>&nbsp;            opponentWorkerSelected.deselectedOnGUI();</b>
+<i>798</i>&nbsp;
+<b class="nc"><i>799</i>&nbsp;        opponentWorkerSelected = null;</b>
+<i>800</i>&nbsp;    }
+<i>801</i>&nbsp;
+<i>802</i>&nbsp;    @Override
+<i>803</i>&nbsp;    public void youWin() {
+<i>804</i>&nbsp;
+<i>805</i>&nbsp;        //if(!ENA_POPUP) return;
+<i>806</i>&nbsp;
+<b class="nc"><i>807</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>808</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.INFORMATION);</b>
+<b class="nc"><i>809</i>&nbsp;            alert.setTitle(INFORMATION_DIALOG);</b>
+<b class="nc"><i>810</i>&nbsp;            alert.setHeaderText(&quot;YOU WIN&quot;);</b>
+<i>811</i>&nbsp;
+<b class="nc"><i>812</i>&nbsp;            alert.showAndWait();</b>
+<i>813</i>&nbsp;
+<b class="nc"><i>814</i>&nbsp;            Platform.exit();</b>
+<b class="nc"><i>815</i>&nbsp;            System.exit(0);</b>
+<i>816</i>&nbsp;        });
+<i>817</i>&nbsp;
+<i>818</i>&nbsp;    }
+<i>819</i>&nbsp;
+<i>820</i>&nbsp;    @Override
+<i>821</i>&nbsp;    public void iLose() {
+<b class="nc"><i>822</i>&nbsp;        lose();</b>
+<i>823</i>&nbsp;    }
+<i>824</i>&nbsp;
+<i>825</i>&nbsp;    @Override
+<i>826</i>&nbsp;    public void someoneHasLost(String loser) {
+<b class="nc"><i>827</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>828</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>829</i>&nbsp;            alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>830</i>&nbsp;            alert.setHeaderText(loser + &quot; has lost!\n&quot;);</b>
+<i>831</i>&nbsp;
+<b class="nc"><i>832</i>&nbsp;            alert.showAndWait();</b>
+<i>833</i>&nbsp;        });
+<i>834</i>&nbsp;    }
+<i>835</i>&nbsp;
+<i>836</i>&nbsp;    @Override
+<i>837</i>&nbsp;    public void playerLeftTheGame(String user) {
+<i>838</i>&nbsp;        
+<b class="nc"><i>839</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>840</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>841</i>&nbsp;            alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>842</i>&nbsp;            alert.setHeaderText(user + &quot; left the game\n&quot;);</b>
+<i>843</i>&nbsp;
+<b class="nc"><i>844</i>&nbsp;            alert.showAndWait();</b>
+<i>845</i>&nbsp;        });
+<i>846</i>&nbsp;    }
+<i>847</i>&nbsp;
+<i>848</i>&nbsp;    @Override
+<i>849</i>&nbsp;    public void closeClient() {
+<b class="nc"><i>850</i>&nbsp;        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>851</i>&nbsp;            Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>852</i>&nbsp;            alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>853</i>&nbsp;            alert.setHeaderText(&quot;Press ok to quit the game\n&quot;);</b>
+<i>854</i>&nbsp;
+<b class="nc"><i>855</i>&nbsp;            alert.showAndWait();</b>
+<i>856</i>&nbsp;
+<b class="nc"><i>857</i>&nbsp;            Platform.exit();</b>
+<b class="nc"><i>858</i>&nbsp;            System.exit(0);</b>
+<i>859</i>&nbsp;        });
+<i>860</i>&nbsp;
+<i>861</i>&nbsp;    }
+<i>862</i>&nbsp;
+<i>863</i>&nbsp;    @Override
+<i>864</i>&nbsp;    public void youLose(String winner) {
+<i>865</i>&nbsp;
+<i>866</i>&nbsp;        //if(!ENA_POPUP) return;
+<i>867</i>&nbsp;
+<b class="nc"><i>868</i>&nbsp;        lose();</b>
+<i>869</i>&nbsp;
+<i>870</i>&nbsp;    }
+<i>871</i>&nbsp;
+<i>872</i>&nbsp;    @Override
+<i>873</i>&nbsp;    public void debug(ServerResponse serverResponse) {
+<i>874</i>&nbsp;
+<i>875</i>&nbsp;        // do nothing
+<i>876</i>&nbsp;
+<i>877</i>&nbsp;    }
+<i>878</i>&nbsp;
+<i>879</i>&nbsp;    @Override
+<i>880</i>&nbsp;    public void showMap(GameMap clientMap) {
+<i>881</i>&nbsp;
+<i>882</i>&nbsp;        // do nothing
+<i>883</i>&nbsp;
+<i>884</i>&nbsp;    }
+<i>885</i>&nbsp;
+<i>886</i>&nbsp;    @Override
+<i>887</i>&nbsp;    public synchronized void run() {
+<b class="nc"><i>888</i>&nbsp;        String ipAddress = askIpAddress();</b>
+<i>889</i>&nbsp;
+<b class="nc"><i>890</i>&nbsp;        Client client = new Client(ipAddress, 8080, this);</b>
+<i>891</i>&nbsp;
+<i>892</i>&nbsp;        try {
+<b class="nc"><i>893</i>&nbsp;            client.run();</b>
+<b class="nc"><i>894</i>&nbsp;        } catch (EOFException ex) {</b>
+<i>895</i>&nbsp;            //this is thrown when the end of the stream is reached
+<b class="nc"><i>896</i>&nbsp;            Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>897</i>&nbsp;                Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>898</i>&nbsp;                alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>899</i>&nbsp;                alert.setHeaderText(&quot;Server disconnected while sending message to it!&quot;);</b>
+<i>900</i>&nbsp;
+<b class="nc"><i>901</i>&nbsp;                alert.showAndWait();</b>
+<i>902</i>&nbsp;            });
+<i>903</i>&nbsp;
+<b class="nc"><i>904</i>&nbsp;        } catch (UnknownHostException ex) {</b>
+<b class="nc"><i>905</i>&nbsp;            Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>906</i>&nbsp;                Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>907</i>&nbsp;                alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>908</i>&nbsp;                alert.setHeaderText(&quot;Unknown host, please insert again!&quot;);</b>
+<i>909</i>&nbsp;
+<b class="nc"><i>910</i>&nbsp;                alert.showAndWait();</b>
+<i>911</i>&nbsp;            });
+<i>912</i>&nbsp;
+<b class="nc"><i>913</i>&nbsp;            run();</b>
+<i>914</i>&nbsp;
+<b class="nc"><i>915</i>&nbsp;        } catch (ConnectException ex) {</b>
+<b class="nc"><i>916</i>&nbsp;            Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>917</i>&nbsp;                Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>918</i>&nbsp;                alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>919</i>&nbsp;                alert.setHeaderText(&quot;Server refused to connect&quot;);</b>
+<i>920</i>&nbsp;
+<b class="nc"><i>921</i>&nbsp;                alert.showAndWait();</b>
+<i>922</i>&nbsp;            });
+<i>923</i>&nbsp;
+<b class="nc"><i>924</i>&nbsp;            run();</b>
+<i>925</i>&nbsp;
+<b class="nc"><i>926</i>&nbsp;        } catch (IOException ex) {</b>
+<b class="nc"><i>927</i>&nbsp;            Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>928</i>&nbsp;                Alert alert = new Alert(Alert.AlertType.ERROR);</b>
+<b class="nc"><i>929</i>&nbsp;                alert.setTitle(ERROR_DIALOG);</b>
+<b class="nc"><i>930</i>&nbsp;                alert.setHeaderText(&quot;Error server side&quot;);</b>
+<i>931</i>&nbsp;
+<b class="nc"><i>932</i>&nbsp;                alert.showAndWait();</b>
+<i>933</i>&nbsp;            });
+<b class="nc"><i>934</i>&nbsp;            ClientManager.LOGGER.severe(ex.getMessage());</b>
+<b class="nc"><i>935</i>&nbsp;            Thread.currentThread().interrupt();</b>
+<b class="nc"><i>936</i>&nbsp;        }</b>
+<i>937</i>&nbsp;    }
+<i>938</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 23:21</div>
+</div>
+</body>
+</html>

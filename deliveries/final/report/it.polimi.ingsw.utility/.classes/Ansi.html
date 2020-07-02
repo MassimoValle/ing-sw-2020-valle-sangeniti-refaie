@@ -1,0 +1,194 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Ansi</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.utility</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Ansi (it.polimi.ingsw.utility)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Ansi</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 36)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.utility;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.util.ArrayList;
+<i>4</i>&nbsp;import java.util.Collections;
+<i>5</i>&nbsp;import java.util.List;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;/**
+<i>8</i>&nbsp; * Usage:
+<i>9</i>&nbsp; * &lt;li&gt;String msg = Ansi.Red.and(Ansi.BgYellow).format(&quot;Hello %s&quot;, name)&lt;/li&gt;
+<i>10</i>&nbsp; * &lt;li&gt;String msg = Ansi.Blink.colorize(&quot;BOOM!&quot;)&lt;/li&gt;
+<i>11</i>&nbsp; * 
+<i>12</i>&nbsp; * Or, if you are adverse to that, you can use the constants directly:
+<i>13</i>&nbsp; * &lt;li&gt;String msg = new Ansi(Ansi.ITALIC, Ansi.GREEN).format(&quot;Green money&quot;)&lt;/li&gt;
+<i>14</i>&nbsp; * Or, even:
+<i>15</i>&nbsp; * &lt;li&gt;String msg = Ansi.BLUE + &quot;scientific&quot;&lt;/li&gt;
+<i>16</i>&nbsp; * 
+<i>17</i>&nbsp; * NOTE: Nothing stops you from combining multiple FG colors or BG colors, 
+<i>18</i>&nbsp; *       but only the last one will display.
+<i>19</i>&nbsp; * 
+<i>20</i>&nbsp; * @author dain
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; */
+<i>23</i>&nbsp;public final class Ansi {
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;	// Color code strings from:
+<i>26</i>&nbsp;	// http://www.topmudsites.com/forums/mud-coding/413-java-ansi.html
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;	public static final String	SANE				= &quot;\u001B[0m&quot;;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;	public static final String	HIGH_INTENSITY		= &quot;\u001B[1m&quot;;
+<i>31</i>&nbsp;	public static final String	LOW_INTENSITY		= &quot;\u001B[2m&quot;;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;	public static final String	ITALIC				= &quot;\u001B[3m&quot;;
+<i>34</i>&nbsp;	public static final String	UNDERLINE			= &quot;\u001B[4m&quot;;
+<i>35</i>&nbsp;	public static final String	BLINK				= &quot;\u001B[5m&quot;;
+<i>36</i>&nbsp;	public static final String	RAPID_BLINK			= &quot;\u001B[6m&quot;;
+<i>37</i>&nbsp;	public static final String	REVERSE_VIDEO		= &quot;\u001B[7m&quot;;
+<i>38</i>&nbsp;	public static final String	INVISIBLE_TEXT		= &quot;\u001B[8m&quot;;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;	public static final String	BLACK				= &quot;\u001B[30m&quot;;
+<i>41</i>&nbsp;	public static final String	RED					= &quot;\u001B[31m&quot;;
+<i>42</i>&nbsp;	public static final String	GREEN				= &quot;\u001B[32m&quot;;
+<i>43</i>&nbsp;	public static final String	YELLOW				= &quot;\u001B[33m&quot;;
+<i>44</i>&nbsp;	public static final String	BLUE				= &quot;\u001B[34m&quot;;
+<i>45</i>&nbsp;	public static final String	MAGENTA				= &quot;\u001B[35m&quot;;
+<i>46</i>&nbsp;	public static final String	CYAN				= &quot;\u001B[36m&quot;;
+<i>47</i>&nbsp;	public static final String	WHITE				= &quot;\u001B[37m&quot;;
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;	public static final String	BACKGROUND_BLACK	= &quot;\u001B[40m&quot;;
+<i>50</i>&nbsp;	public static final String	BACKGROUND_RED		= &quot;\u001B[41m&quot;;
+<i>51</i>&nbsp;	public static final String	BACKGROUND_GREEN	= &quot;\u001B[42m&quot;;
+<i>52</i>&nbsp;	public static final String	BACKGROUND_YELLOW	= &quot;\u001B[43m&quot;;
+<i>53</i>&nbsp;	public static final String	BACKGROUND_BLUE		= &quot;\u001B[44m&quot;;
+<i>54</i>&nbsp;	public static final String	BACKGROUND_MAGENTA	= &quot;\u001B[45m&quot;;
+<i>55</i>&nbsp;	public static final String	BACKGROUND_CYAN		= &quot;\u001B[46m&quot;;
+<i>56</i>&nbsp;	public static final String	BACKGROUND_WHITE	= &quot;\u001B[47m&quot;;
+<i>57</i>&nbsp;
+<b class="nc"><i>58</i>&nbsp;	public static final Ansi HighIntensity = new Ansi(HIGH_INTENSITY);</b>
+<b class="nc"><i>59</i>&nbsp;	public static final Ansi Bold = HighIntensity;</b>
+<b class="nc"><i>60</i>&nbsp;	public static final Ansi LowIntensity = new Ansi(LOW_INTENSITY);</b>
+<b class="nc"><i>61</i>&nbsp;	public static final Ansi Normal = LowIntensity;</b>
+<i>62</i>&nbsp;	
+<b class="nc"><i>63</i>&nbsp;	public static final Ansi Italic = new Ansi(ITALIC);</b>
+<b class="nc"><i>64</i>&nbsp;	public static final Ansi Underline = new Ansi(UNDERLINE);</b>
+<b class="nc"><i>65</i>&nbsp;	public static final Ansi Blink = new Ansi(BLINK);</b>
+<b class="nc"><i>66</i>&nbsp;	public static final Ansi RapidBlink = new Ansi(RAPID_BLINK);</b>
+<i>67</i>&nbsp;	
+<b class="nc"><i>68</i>&nbsp;	public static final Ansi Black = new Ansi(BLACK);</b>
+<b class="nc"><i>69</i>&nbsp;	public static final Ansi Red = new Ansi(RED);</b>
+<b class="nc"><i>70</i>&nbsp;	public static final Ansi Green = new Ansi(GREEN);</b>
+<b class="nc"><i>71</i>&nbsp;	public static final Ansi Yellow = new Ansi(YELLOW);</b>
+<b class="nc"><i>72</i>&nbsp;	public static final Ansi Blue = new Ansi(BLUE);</b>
+<b class="nc"><i>73</i>&nbsp;	public static final Ansi Magenta = new Ansi(MAGENTA);</b>
+<b class="nc"><i>74</i>&nbsp;	public static final Ansi Cyan = new Ansi(CYAN);</b>
+<b class="nc"><i>75</i>&nbsp;	public static final Ansi White = new Ansi(WHITE);</b>
+<i>76</i>&nbsp;	
+<b class="nc"><i>77</i>&nbsp;	public static final Ansi BgBlack = new Ansi(BACKGROUND_BLACK);</b>
+<b class="nc"><i>78</i>&nbsp;	public static final Ansi BgRed = new Ansi(BACKGROUND_RED);</b>
+<b class="nc"><i>79</i>&nbsp;	public static final Ansi BgGreen = new Ansi(BACKGROUND_GREEN);</b>
+<b class="nc"><i>80</i>&nbsp;	public static final Ansi BgYellow = new Ansi(BACKGROUND_YELLOW);</b>
+<b class="nc"><i>81</i>&nbsp;	public static final Ansi BgBlue = new Ansi(BACKGROUND_BLUE);</b>
+<b class="nc"><i>82</i>&nbsp;	public static final Ansi BgMagenta = new Ansi(BACKGROUND_MAGENTA);</b>
+<b class="nc"><i>83</i>&nbsp;	public static final Ansi BgCyan = new Ansi(BACKGROUND_CYAN);</b>
+<b class="nc"><i>84</i>&nbsp;	public static final Ansi BgWhite = new Ansi(BACKGROUND_WHITE);</b>
+<i>85</i>&nbsp;	
+<i>86</i>&nbsp;	final private String[] codes;
+<i>87</i>&nbsp;	final private String codes_str; 
+<b class="nc"><i>88</i>&nbsp;	public Ansi(String... codes) {</b>
+<b class="nc"><i>89</i>&nbsp;		this.codes = codes;</b>
+<b class="nc"><i>90</i>&nbsp;		String _codes_str = &quot;&quot;;</b>
+<b class="nc"><i>91</i>&nbsp;		for (String code : codes) {</b>
+<b class="nc"><i>92</i>&nbsp;			_codes_str += code;</b>
+<i>93</i>&nbsp;		}
+<b class="nc"><i>94</i>&nbsp;		codes_str = _codes_str;</b>
+<i>95</i>&nbsp;	}
+<i>96</i>&nbsp;	
+<i>97</i>&nbsp;	public Ansi and(Ansi other) {
+<b class="nc"><i>98</i>&nbsp;		List&lt;String&gt; both = new ArrayList&lt;String&gt;();</b>
+<b class="nc"><i>99</i>&nbsp;	    Collections.addAll(both, codes);</b>
+<b class="nc"><i>100</i>&nbsp;	    Collections.addAll(both, other.codes);</b>
+<b class="nc"><i>101</i>&nbsp;		return new Ansi(both.toArray(new String[] {}));</b>
+<i>102</i>&nbsp;	}
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;	public String colorize(String original) {
+<b class="nc"><i>105</i>&nbsp;		return codes_str + original + SANE;</b>
+<i>106</i>&nbsp;	}
+<i>107</i>&nbsp;	
+<i>108</i>&nbsp;	public String format(String template, Object... args) {
+<b class="nc"><i>109</i>&nbsp;		return colorize(String.format(template, args));</b>
+<i>110</i>&nbsp;	}
+<i>111</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 23:21</div>
+</div>
+</body>
+</html>

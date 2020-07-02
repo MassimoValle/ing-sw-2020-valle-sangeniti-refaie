@@ -1,0 +1,180 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CLIclientMap</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.client.model.map</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CLIclientMap (it.polimi.ingsw.client.model.map)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CLIclientMap</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 27)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.client.model.map;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.server.model.action.*;
+<i>4</i>&nbsp;import it.polimi.ingsw.server.model.god.godspower.ApolloPower;
+<i>5</i>&nbsp;import it.polimi.ingsw.server.model.god.godspower.MinotaurPower;
+<i>6</i>&nbsp;import it.polimi.ingsw.server.model.god.godspower.Power;
+<i>7</i>&nbsp;import it.polimi.ingsw.server.model.map.GameMap;
+<i>8</i>&nbsp;import it.polimi.ingsw.server.model.map.Square;
+<i>9</i>&nbsp;import it.polimi.ingsw.server.model.player.Player;
+<i>10</i>&nbsp;import it.polimi.ingsw.server.model.player.Position;
+<i>11</i>&nbsp;import it.polimi.ingsw.server.model.player.Worker;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;/**
+<i>14</i>&nbsp; * The type Cl iclient map.
+<i>15</i>&nbsp; */
+<b class="nc"><i>16</i>&nbsp;public class CLIclientMap extends GameMap {</b>
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    /**
+<i>19</i>&nbsp;     * Place update.
+<i>20</i>&nbsp;     *
+<i>21</i>&nbsp;     * @param player      the player who place this worker
+<i>22</i>&nbsp;     * @param workerIndex the worker index of player&#39;s workers
+<i>23</i>&nbsp;     * @param position    the position where to place the worker
+<i>24</i>&nbsp;     */
+<i>25</i>&nbsp;    public void placeUpdate(Player player, Integer workerIndex, Position position){
+<i>26</i>&nbsp;
+<b class="nc"><i>27</i>&nbsp;        Worker worker = player.getPlayerWorkers().get(workerIndex);</b>
+<i>28</i>&nbsp;
+<b class="nc"><i>29</i>&nbsp;        worker.setPlaced(true);</b>
+<b class="nc"><i>30</i>&nbsp;        worker.setPosition(position);</b>
+<b class="nc"><i>31</i>&nbsp;        Square square = this.getSquare(position);</b>
+<b class="nc"><i>32</i>&nbsp;        square.setWorkerOn(worker);</b>
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    }
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    /**
+<i>37</i>&nbsp;     * Move update.
+<i>38</i>&nbsp;     *
+<i>39</i>&nbsp;     * @param player      the player who move this worker
+<i>40</i>&nbsp;     * @param workerIndex the worker index of player&#39;s workers
+<i>41</i>&nbsp;     * @param position    the position where to move the worker
+<i>42</i>&nbsp;     */
+<i>43</i>&nbsp;    public void moveUpdate(Player player, Integer workerIndex, Position position){
+<i>44</i>&nbsp;
+<b class="nc"><i>45</i>&nbsp;        Worker worker = player.getPlayerWorkers().get(workerIndex);</b>
+<b class="nc"><i>46</i>&nbsp;        Power power = player.getPlayerGod().getGodPower();</b>
+<i>47</i>&nbsp;
+<b class="nc"><i>48</i>&nbsp;        Square startingSquare = getSquare(worker.getPosition());</b>
+<b class="nc"><i>49</i>&nbsp;        Square squareWhereToMove = getSquare(position);</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;        //this handles the apollo swap client side
+<b class="nc"><i>52</i>&nbsp;        if(power instanceof ApolloPower &amp;&amp; squareWhereToMove.hasWorkerOn()) {</b>
+<b class="nc"><i>53</i>&nbsp;            ApolloSwapAction swap = new ApolloSwapAction((ApolloPower) power, worker, position, startingSquare, squareWhereToMove);</b>
+<b class="nc"><i>54</i>&nbsp;            swap.doAction();</b>
+<i>55</i>&nbsp;            return;
+<i>56</i>&nbsp;        }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;        //this handle the minotaur push client side
+<b class="nc"><i>59</i>&nbsp;        if (power instanceof MinotaurPower &amp;&amp; squareWhereToMove.hasWorkerOn()) {</b>
+<b class="nc"><i>60</i>&nbsp;            MinotaurPushAction pushAction = new MinotaurPushAction((MinotaurPower) power, worker, position, startingSquare, squareWhereToMove);</b>
+<b class="nc"><i>61</i>&nbsp;            pushAction.getBackwardInfo(this);</b>
+<b class="nc"><i>62</i>&nbsp;            pushAction.doAction();</b>
+<i>63</i>&nbsp;            return;
+<i>64</i>&nbsp;        }
+<i>65</i>&nbsp;
+<b class="nc"><i>66</i>&nbsp;        MoveAction moveAction = new MoveAction(power, worker, position, startingSquare, squareWhereToMove);</b>
+<b class="nc"><i>67</i>&nbsp;        moveAction.doAction();</b>
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    /**
+<i>72</i>&nbsp;     * Build update.
+<i>73</i>&nbsp;     *
+<i>74</i>&nbsp;     * @param player      the player who build with this worker
+<i>75</i>&nbsp;     * @param workerIndex the worker index of player&#39;s workers
+<i>76</i>&nbsp;     * @param position    the position where to build the worker
+<i>77</i>&nbsp;     * @param domePresent true if it have to create a dome
+<i>78</i>&nbsp;     */
+<i>79</i>&nbsp;    public void buildUpdate(Player player, Integer workerIndex, Position position, boolean domePresent) {
+<i>80</i>&nbsp;
+<b class="nc"><i>81</i>&nbsp;        Square startingSquare = getSquare(player.getPlayerWorkers().get(workerIndex).getPosition());</b>
+<b class="nc"><i>82</i>&nbsp;        Square squareWhereToBuildOn = getSquare(position);</b>
+<i>83</i>&nbsp;
+<b class="nc"><i>84</i>&nbsp;        if (domePresent) {</b>
+<b class="nc"><i>85</i>&nbsp;            BuildDomeAction buildDomeAction = new BuildDomeAction(startingSquare, squareWhereToBuildOn);</b>
+<b class="nc"><i>86</i>&nbsp;            buildDomeAction.doAction();</b>
+<i>87</i>&nbsp;
+<b class="nc"><i>88</i>&nbsp;        } else {</b>
+<b class="nc"><i>89</i>&nbsp;            BuildAction buildAction = new BuildAction(startingSquare, squareWhereToBuildOn);</b>
+<i>90</i>&nbsp;
+<b class="nc"><i>91</i>&nbsp;            buildAction.doAction();</b>
+<i>92</i>&nbsp;        }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 23:21</div>
+</div>
+</body>
+</html>

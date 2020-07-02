@@ -1,0 +1,177 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MoveAction</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.server.model.action</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MoveAction (it.polimi.ingsw.server.model.action)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MoveAction</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (23/ 23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.server.model.action;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.server.model.god.GodsInGame;
+<i>4</i>&nbsp;import it.polimi.ingsw.server.model.god.godspower.Power;
+<i>5</i>&nbsp;import it.polimi.ingsw.server.model.map.GameMap;
+<i>6</i>&nbsp;import it.polimi.ingsw.server.model.map.Square;
+<i>7</i>&nbsp;import it.polimi.ingsw.server.model.player.Player;
+<i>8</i>&nbsp;import it.polimi.ingsw.server.model.player.Position;
+<i>9</i>&nbsp;import it.polimi.ingsw.server.model.player.Worker;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;import java.util.ArrayList;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;/**
+<i>14</i>&nbsp; * The MoveAction update the workers position &amp; the gameMap
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;public class MoveAction implements Action {
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    private final Power godsPowerPerformingAction;
+<i>20</i>&nbsp;    public final Worker playerWorker;
+<i>21</i>&nbsp;    public final Position newPosition;
+<i>22</i>&nbsp;    public final Square oldPositionSquare;
+<i>23</i>&nbsp;    public final Square newPositionSquare;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;
+<b class="fc"><i>27</i>&nbsp;    public MoveAction(Power godsPowerPerformingAction, Worker playerWorker, Position newPosition, Square oldPositionSquare, Square newPositionSquare) {</b>
+<b class="fc"><i>28</i>&nbsp;        this.playerWorker = playerWorker;</b>
+<b class="fc"><i>29</i>&nbsp;        this.newPosition = newPosition;</b>
+<b class="fc"><i>30</i>&nbsp;        this.oldPositionSquare = oldPositionSquare;</b>
+<b class="fc"><i>31</i>&nbsp;        this.newPositionSquare = newPositionSquare;</b>
+<b class="fc"><i>32</i>&nbsp;        this.godsPowerPerformingAction = godsPowerPerformingAction;</b>
+<b class="fc"><i>33</i>&nbsp;    }</b>
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    /**
+<i>36</i>&nbsp;     *This method chek if the {@link Action} is valid
+<i>37</i>&nbsp;     *
+<i>38</i>&nbsp;     * @return true if is valid, false otherwise
+<i>39</i>&nbsp;     */
+<i>40</i>&nbsp;    @Override
+<i>41</i>&nbsp;    public boolean isValid(GameMap map) {
+<i>42</i>&nbsp;
+<b class="fc"><i>43</i>&nbsp;        int heightDifference = map.getDifferenceInAltitude(oldPositionSquare.getPosition(), newPositionSquare.getPosition());</b>
+<b class="fc"><i>44</i>&nbsp;        ArrayList&lt;Position&gt; adjacent = oldPositionSquare.getPosition().getAdjacentPlaces();</b>
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;        //if some God Power is active that prevent you from doing this move
+<b class="fc"><i>47</i>&nbsp;        return checkGodsPowerActive(godsPowerPerformingAction, map) &amp;&amp; !newPositionSquare.hasWorkerOn() &amp;&amp;</b>
+<b class="fc"><i>48</i>&nbsp;                heightDifference &gt;= -1 &amp;&amp; !newPositionSquare.hasDome() &amp;&amp;</b>
+<b class="fc"><i>49</i>&nbsp;                adjacent.contains(newPosition);</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    /**
+<i>55</i>&nbsp;     * Move the selected {@link Worker playerWorker}  by {@link Player player} into the {@link Position newPosition} chose by the player;
+<i>56</i>&nbsp;     * Also update the gamemap by setting {@link Square#hasWorkerOn()}
+<i>57</i>&nbsp;     */
+<i>58</i>&nbsp;    @Override
+<i>59</i>&nbsp;    public void doAction() {
+<i>60</i>&nbsp;
+<b class="fc"><i>61</i>&nbsp;        oldPositionSquare.freeSquare();</b>
+<b class="fc"><i>62</i>&nbsp;        playerWorker.setPosition(newPosition);</b>
+<i>63</i>&nbsp;
+<b class="fc"><i>64</i>&nbsp;        newPositionSquare.setWorkerOn(playerWorker);</b>
+<i>65</i>&nbsp;
+<b class="fc"><i>66</i>&nbsp;    }</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    /**
+<i>71</i>&nbsp;     * Check if this {@link MoveAction} can be prevented from some other players&#39; gods power
+<i>72</i>&nbsp;     *
+<i>73</i>&nbsp;     * @return true if action not permitted, false otherwise
+<i>74</i>&nbsp;     */
+<i>75</i>&nbsp;    boolean checkGodsPowerActive(Power godsPowerPerformingAction, GameMap map) {
+<i>76</i>&nbsp;
+<b class="fc"><i>77</i>&nbsp;        ArrayList&lt;Power&gt; powersInGame = GodsInGame.getIstance().getPowersByMap(map);</b>
+<b class="fc"><i>78</i>&nbsp;        for (Power godPower: powersInGame) {</b>
+<b class="fc"><i>79</i>&nbsp;            if (!godPower.equals(godsPowerPerformingAction) &amp;&amp; godPower.canPreventsFromPerformingAction() &amp;&amp; godPower.checkIfActionNotPermitted(this)) {</b>
+<b class="fc"><i>80</i>&nbsp;                 return false;</b>
+<i>81</i>&nbsp;            }
+<b class="fc"><i>82</i>&nbsp;        }</b>
+<b class="fc"><i>83</i>&nbsp;        return true;</b>
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    /**
+<i>87</i>&nbsp;     * It checks if moving from a lvl2 to lvl3 block
+<i>88</i>&nbsp;     *
+<i>89</i>&nbsp;     * @return true if so, false otherwise
+<i>90</i>&nbsp;     */
+<i>91</i>&nbsp;    public boolean winningMove() {
+<b class="fc"><i>92</i>&nbsp;        return oldPositionSquare.getHeight() == 2 &amp;&amp; newPositionSquare.getHeight() == 3;</b>
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 23:21</div>
+</div>
+</body>
+</html>
