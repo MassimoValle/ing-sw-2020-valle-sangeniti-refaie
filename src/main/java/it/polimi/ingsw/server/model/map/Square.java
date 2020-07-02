@@ -233,9 +233,9 @@ public class Square {
 
         switch (getHeight()) {
             case 0 -> ret = "";
-            case 1 -> ret = "1";
-            case 2 -> ret = "2";
-            case 3 -> ret = "3";
+            case 1 -> ret = "1    ";
+            case 2 -> ret = "2    ";
+            case 3 -> ret = "3    ";
             default -> {
                 //null
             }

@@ -179,20 +179,14 @@ title __GODSPOWER Class Diagram__\n
                 + canUsePowerBeforeBuilding()
                 + canUsePowerBeforeMoving()
                 + checkIfActionNotPermitted()
-                + equals()
-                + getPowerDescription()
-                + hashCode()
                 + isWorkerStuck()
                 + move()
                 + powerMustBeReset()
                 + resetPower()
                 + selectWorker()
                 + setBuildBefore()
-                + setMap()
-                # Power()
                 # athenaPowerActivated()
-                # getPowerSquares()
-                # getPowerType()
+
             }
 
 

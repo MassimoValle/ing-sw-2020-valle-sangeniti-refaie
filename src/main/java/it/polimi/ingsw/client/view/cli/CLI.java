@@ -251,8 +251,9 @@ public class CLI extends ClientView {
     @Override
     public Position placeWorker(String worker) {
         int n = Integer.parseInt(worker) + 1;
+        String nString = n == 1 ? "1st" : "2nd";
         consoleOut.println("Let's place your worker!\nWhere do you want to place it?\n");
-        consoleOut.println("(You are placing your "+ n + "° worker)");
+        consoleOut.println("(You are placing your "+ nString + " worker)");
 
         int row;
         int col;
@@ -464,7 +465,7 @@ public class CLI extends ClientView {
 
     private int doItAgain(String string){
         consoleOut.println("Do you want to " + string + " again?");
-        consoleOut.println("1) sì ");
+        consoleOut.println("1) yes ");
         consoleOut.println("2) no \n");
         int input = -1;
 
@@ -615,7 +616,7 @@ public class CLI extends ClientView {
     @Override
     public void startingPlayerTurn(String turnOwner) {
 
-        consoleOut.println("\nIt's " + turnOwner + "turn!");
+        consoleOut.println("\nIt's " + turnOwner + " turn!");
         consoleOut.println();
     }
 
@@ -671,9 +672,9 @@ public class CLI extends ClientView {
     public void anotherPlayerHasSelectedWorker(SelectWorkerServerResponse serverResponse) {
         String turnOwner = serverResponse.getMessageRecipient();
         int workerIndex = serverResponse.getWorkerSelected();
+        String nString = workerIndex == 1 ? "1st" : "2nd";
 
-
-        consoleOut.println("\n" + turnOwner + " has selected his " + workerIndex +"° worker");
+        consoleOut.println("\n" + turnOwner + " has selected his " + nString +" worker");
         consoleOut.println();
 
     }
