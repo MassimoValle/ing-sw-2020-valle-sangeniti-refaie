@@ -98,11 +98,11 @@ public class Square {
         this.workerOnSquare = worker;
 
             if (GUI) {
-                imgWorker = worker.getImgView();
 
-                Platform.runLater(
-                        () -> stackPane.getChildren().add(imgWorker)
-                );
+                Platform.runLater(() -> {
+                    imgWorker = worker.getImgView();
+                    stackPane.getChildren().add(imgWorker);
+                });
 
             }
     }
@@ -111,18 +111,17 @@ public class Square {
      * Sets the square free from the previously worker placed
      */
     public void freeSquare() {
-        this.workerOnSquare = null;
 
+        if (GUI) {
 
-            if (GUI) {
-
+            Platform.runLater(() -> {
+                getStackPane().getChildren().remove(imgWorker);
                 imgWorker = null;
+            });
 
-            Platform.runLater(() ->
-                getStackPane().getChildren().remove(imgWorker)
-            );
+        }
 
-            }
+        this.workerOnSquare = null;
     }
 
 

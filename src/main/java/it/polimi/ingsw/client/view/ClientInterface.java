@@ -129,6 +129,11 @@ public interface ClientInterface {
     void workerPlacedSuccessfully();
 
     /**
+     * Placing Phase Ending
+     */
+    void placingPhaseEnding();
+
+    /**
      * Starting turn print on screen that is your turn.
      */
     void startingTurn();

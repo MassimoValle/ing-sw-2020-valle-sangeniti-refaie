@@ -575,6 +575,7 @@ public class ClientManager {
      *
      */
     private void playerLost() {
+        removePlayerFromMatch(me);
         clientView.iLose();
 
         //REMOVE THIS PLAYER FROM THE MATCH
@@ -642,6 +643,7 @@ public class ClientManager {
         if(workerPlaced == 2) {
             myTurn = false;
             clientState = PossibleClientState.WORKERS_PLACED;
+            clientView.placingPhaseEnding();
         }
 
     }

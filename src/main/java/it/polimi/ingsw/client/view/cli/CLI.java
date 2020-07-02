@@ -308,6 +308,11 @@ public class CLI extends ClientView {
         consoleOut.println();
     }
 
+    @Override
+    public void placingPhaseEnding() {
+
+    }
+
 
     @Override
     public void startingTurn() {

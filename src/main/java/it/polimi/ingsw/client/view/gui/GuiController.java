@@ -350,6 +350,11 @@ public class GuiController extends ClientView {
     }
 
     @Override
+    public void placingPhaseEnding() {
+        controller.changePhase("NotYourTurn");
+    }
+
+    @Override
     public void startingTurn() {
         //if(!ENA_POPUP) return;
 
