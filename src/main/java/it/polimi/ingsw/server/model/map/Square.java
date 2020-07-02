@@ -224,9 +224,9 @@ public class Square {
 
         if (getHeight() != 0) {
             if (tower.size() == 4) {
-                return "F   ";
+                return "F      ";
             }else if(hasDome()){
-                return "D   ";
+                return "D      ";
             }
         }
 

@@ -214,11 +214,11 @@ public class GameMap {
      */
     public void printBoard() {
        String string = "";
-        string = string.concat("\t0"+"       1"+"       2"+"       3"+"       4");
+        string = string.concat("       0"+"       1"+"       2"+"       3"+"       4");
         string = string.concat("\n_________________________________________\n");
         for (int i=0; i<ROWS; i++) {
             for ( int j=0; j<COLUMNS; j++) {
-                string = string.concat("|"+ board[i][j].toString() + "\t");
+                string = string.concat("|"+ board[i][j].toString() + "");
             }
             string = string.concat("|" + "  " + i +"\n");
            string = string.concat("_________________________________________\n");
