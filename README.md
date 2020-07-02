@@ -1,6 +1,6 @@
 # Santorini GC54
 
-![alt text](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/src/main/Resources/imgs/santorini-logo.png)
+![alt text](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/master/src/main/Resources/imgs/santorini-logo.png)
 
 Santorini project of group GC54 (Massimo Valle, Simone Sangeniti, Magdy Refaie)
 
@@ -16,10 +16,11 @@ The following documentation contains documents and charts used for the design of
 #### UML
 
 
-* [Initial UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Initial/PNG/UML_Santorini_initial.png)
+* [Initial UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/master/deliveries/UML/Initial/PNG/UML_Santorini_initial.png)
 
 * [Final Client UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/master/deliveries/UML/Final/Client/UML_Client_Summary.png)   [[Advanced]](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/master/deliveries/UML/Final/Client/UML_Client_Detail.png)
-* [Final Server UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/tree/master/deliveries/UML/Final/Server/UML_Server_Summary.png)   [[Advanced]](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/tree/master/deliveries/UML/Final/Server)
+* [Final Server UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/tree/master/deliveries/UML/Final/Server)  
+
 
 #### JavaDoc
 The major part of Server code is documented by JavaDoc, expecially Model and Controller packages.
@@ -60,9 +61,9 @@ The following jars have been used for the delivery of the project, therefore the
 First of all, you have to start the server using the command below and then you could start one of the client's interfaces.
 
 
-* [Cli JAR](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/tree/master/deliveries/CLI-jar)
-* [Gui JAR](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/tree/master/deliveries/GUI-jar)
-* [Server JAR](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/tree/master/deliveries/SERVER-jar)
+* [Cli JAR](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/master/deliveries/final/CLI-jar)
+* [Gui JAR](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/master/deliveries/final/GUI-jar)
+* [Server JAR](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/master/deliveries/final/SERVER-jar)
 
 ### Client
 
@@ -74,6 +75,9 @@ For a better command line gaming experience you need to launch the client with a
 ```
 java -jar CLI.jar
 ```
+
+Cli tested on the new Windows Terminal on Windows, the default Terminal on macOS and ZSH on linux;
+
 
 #### GUI
 You have to type the following command which launches the GUI:
@@ -100,6 +104,6 @@ java -jar server.jar
 
 ## Authors
 
-* **Massimo Valle** - *Developer* - [Github](https://github.com/MassimoValle)
-* **Simone Sangeniti** - *Developer* - [Github](https://github.com/Sn4k3ss)
-* **Magdy Refaie** - *Developer* - [Github](https://github.com/magfly)
+* **Massimo Valle** - *student* - [Github](https://github.com/MassimoValle)
+* **Simone Sangeniti** - *student* - [Github](https://github.com/Sn4k3ss)
+* **Magdy Refaie** - *student* - [Github](https://github.com/magfly)
