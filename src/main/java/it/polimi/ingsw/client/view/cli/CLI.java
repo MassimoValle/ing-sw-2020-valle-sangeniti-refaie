@@ -52,14 +52,21 @@ public class CLI extends ClientView {
     public String askUserName() {
 
         String username = "";
-        consoleOut.print("\nEnter your username: ");
 
         //Setto il nome utente
         do {
+            consoleOut.print("\nEnter your username (use only letters & numbers) ");
+            consoleOut.print(">>>");
+
             if (consoleIn.hasNextLine()) {
                 username = consoleIn.nextLine();
             }
-        } while (username == null);
+
+            if (username.equals(""))
+                consoleOut.println("Please insert a valid username!");
+
+
+        } while (!username.matches("[a-zA-Z0-9]+"));
 
         return username;
     }
@@ -80,12 +87,39 @@ public class CLI extends ClientView {
 
     @Override
     public int askNumbOfPlayer() {
-        int input;
+        int input = 0;
+
+        /*
         do{
             consoleOut.println("How many opponents do you want?");
             consoleOut.print("[MIN: 2, MAX: 3]: ");
             input = Integer.parseInt(consoleIn.nextLine());
         }while (input != 2 && input != 3);
+         */
+
+        do {
+            consoleOut.println("How many opponents do you want?");
+            consoleOut.print("[MIN: 2, MAX: 3]: ");
+            consoleOut.print(">>>");
+
+            if (consoleIn.hasNextLine()) {
+                String entered = consoleIn.nextLine();
+
+                try {
+                    input = Integer.parseInt(entered);
+
+                    if (input < 2 || input > 3) {
+                        consoleOut.println("You can create a 2 or 3-players lobby");
+                    }
+
+                } catch (NumberFormatException e) {
+                    consoleOut.println(SantoriniStream.INSERT_A_NUMBER);
+                }
+
+                consoleOut.println();
+            }
+
+        }while (input < 2 || input > 3);
 
         return input;
     }

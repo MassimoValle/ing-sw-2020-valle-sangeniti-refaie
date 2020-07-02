@@ -136,9 +136,18 @@ public class GuiController extends ClientView {
     public String askUserName() {
 
         GUI.setRoot("askUsername");
+        String username = "";
+        do {
+            username = (String) getFromUser();
+            ParameterListener.setToNull();
 
-        String username = (String) getFromUser();
-        ParameterListener.setToNull();
+            if (!username.matches("[a-zA-Z0-9]+"))
+                loginError();
+
+
+        } while (!username.matches("[a-zA-Z0-9]+"));
+
+
 
         return username;
     }
@@ -149,7 +158,7 @@ public class GuiController extends ClientView {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(ERROR_DIALOG);
-            alert.setHeaderText("You cannot choose this username!");
+            alert.setHeaderText("You cannot choose this username! (use only letters & numbers)");
 
             alert.showAndWait();
         });

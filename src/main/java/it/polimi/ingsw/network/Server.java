@@ -264,7 +264,7 @@ public class Server {
     // Check if there is a client with same name
     public synchronized void login(String username, Connection connection) {
         //UserName taken
-        if( clientsConnected.containsKey(username) || username.equals("") ) {
+        if( clientsConnected.containsKey(username) || !username.matches("[a-zA-Z0-9]+") ) {
             connection.sendMessage(
                     new ServerResponse(ResponseContent.LOGIN, MessageStatus.ERROR, "Username taken")
             );

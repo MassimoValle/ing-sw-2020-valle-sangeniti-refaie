@@ -49,7 +49,7 @@ public class ChronusPowerTest {
 
 
     @Test
-    public void ChronusPowerTest(){
+    public void ChronusSimplePowerTest(){
 
         setupUtility.selectWorker(pl1, 1);
         setupUtility.move(pl1,0,3);
@@ -57,9 +57,6 @@ public class ChronusPowerTest {
 
 
         assertEquals(player1, setupUtility.getWinner());
-
-
-
     }
 
     @Test
@@ -81,11 +78,6 @@ public class ChronusPowerTest {
         setupUtility.build(pl2, 4,4);
 
         assertEquals(player1, setupUtility.getWinner());
-
-
-        //assertEquals(ActionOutcome.WINNING_MOVE, setupUtility.getOutcome());
-
-
 
     }
 
