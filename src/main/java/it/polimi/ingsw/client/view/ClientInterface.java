@@ -382,7 +382,7 @@ public interface ClientInterface {
     void youWin();
 
     /**
-     * Lose.
+     * If lose because I'm stuck but the game continue in 3 players's game.
      */
     void iLose();
 
@@ -406,7 +406,7 @@ public interface ClientInterface {
     void closeClient();
 
     /**
-     * You lose.
+     * You lose if someone win the game.
      *
      * @param winner the winner name
      */

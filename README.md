@@ -18,7 +18,8 @@ The follow documentation contains documents and charts used for the design of th
 
 * [Initial UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Initial/PNG/UML_Santorini_initial.png)
 
-* [Final UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/final/PNG/UML_Santorini_final.png)
+* [Final Client UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Final/PNG/UML_Client_Summary.png)
+* [Final Server UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Final/PNG/UML_Server_Summary.png)
 
 #### JavaDoc
 The major part of Server code is documented by JavaDoc, expecially Model and Controller packages.
