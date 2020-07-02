@@ -18,8 +18,8 @@ The following documentation contains documents and charts used for the design of
 
 * [Initial UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Initial/PNG/UML_Santorini_initial.png)
 
-* [Final Client UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Final/PNG/UML_Client_Summary.png)
-* [Final Server UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Final/PNG/UML_Server_Summary.png)
+* [Final Client UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Final/PNG/UML_Client_Summary.png)   [[Advanced]](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Final/PNG/UML_Client_Detail.png)
+* [Final Server UML](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Final/PNG/UML_Server_Summary.png)   [[Advanced]](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/blob/MVC_client/deliveries/UML/Final/PNG/UML_Server_Detail.png)
 
 #### JavaDoc
 The major part of Server code is documented by JavaDoc, expecially Model and Controller packages.
@@ -58,6 +58,11 @@ The following jars have been used for the delivery of the project, therefore the
 ## JAR Execution
 
 First of all, you have to start the server using the command below and then you could start one of the client's interfaces.
+
+
+* [Cli JAR](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/tree/master/deliveries/CLI-jar)
+* [Gui JAR](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/tree/master/deliveries/GUI-jar)
+* [Server JAR](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/tree/master/deliveries/SERVER-jar)
 
 ### Client
 
