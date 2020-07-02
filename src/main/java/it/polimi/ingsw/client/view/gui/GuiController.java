@@ -838,8 +838,17 @@ public class GuiController extends ClientView {
 
     @Override
     public void closeClient() {
-        Platform.exit();
-        System.exit(0);
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(ERROR_DIALOG);
+            alert.setHeaderText("Press ok to quit the game\n");
+
+            alert.showAndWait();
+
+            Platform.exit();
+            System.exit(0);
+        });
+
     }
 
     @Override

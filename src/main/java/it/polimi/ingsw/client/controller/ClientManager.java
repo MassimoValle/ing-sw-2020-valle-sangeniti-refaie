@@ -370,8 +370,8 @@ public class ClientManager {
 
         clientView.playerLeftTheGame(serverResponse.getMessageRecipient());
 
-        if (babyGame.getPlayers().size() < 3)
-            clientView.closeClient();
+        clientView.closeClient();
+
 
     }
 

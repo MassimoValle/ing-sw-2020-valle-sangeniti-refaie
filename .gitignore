@@ -34,7 +34,6 @@ Thumbs.db
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 *.zip
@@ -160,9 +159,5 @@ buildNumber.properties
 .project
 
 ing-sw-2020-valle-sangeniti-refaie.iml
-
-deliveries/SERVER-jar
-deliveries/CLI-jar
-deliveries/GUI-jar
 
 *.lck
