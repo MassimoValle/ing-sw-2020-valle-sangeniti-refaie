@@ -756,7 +756,7 @@ public class CLI extends ClientView {
 
     private void welcomeToSantorini() {
 
-        String santorini = "Welcome to Santorini! \nThe most incredible board game ever created!\n\n\nI know it could look like shit but I'm okay with that!";
+        String santorini = "Welcome to Santorini! \nThe most incredible board game ever created!\n\n";
         consoleOut.println(santorini);
 
     }

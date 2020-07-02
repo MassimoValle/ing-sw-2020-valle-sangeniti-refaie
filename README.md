@@ -11,7 +11,7 @@ The project's goal is to implement Santorini's game using the Model View Control
 
 ### Documentation
 
-The follow documentation contains documents and charts used for the design of the game.
+The following documentation contains documents and charts used for the design of the game.
 
 #### UML
 
@@ -61,7 +61,7 @@ First of all, you have to start the server using the command below and then you 
 
 ### Client
 
-The client is run by choosing the interface to play with, the possible choices are from the CLI or GUI. The following sections describe how to run the client in one way or another.
+The client is run by choosing the interface to play with, you can choose between CLI or GUI. The following sections describe how to run the client in one way or another.
 
 #### CLI
 For a better command line gaming experience you need to launch the client with a terminal that supports UTF-8 encoding and ANSI escapes. To launch the client in CLI mode, type the following command:
