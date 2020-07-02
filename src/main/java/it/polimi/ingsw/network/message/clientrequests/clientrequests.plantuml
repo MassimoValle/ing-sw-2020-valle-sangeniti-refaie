@@ -1,0 +1,232 @@
+@startuml
+
+title __CLIENTREQUESTS's Class Diagram__\n
+
+  namespace  {
+    namespace t.polimi.ingsw.network {
+      namespace message {
+        namespace clientrequests {
+          class it.polimi.ingsw.network.message.clientrequests.BuildDomeRequest {
+              + BuildDomeRequest()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.network {
+      namespace message {
+        namespace clientrequests {
+          class it.polimi.ingsw.network.message.clientrequests.BuildRequest {
+              + BuildRequest()
+              + getPositionWhereToBuild()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.network {
+      namespace message {
+        namespace clientrequests {
+          class it.polimi.ingsw.network.message.clientrequests.ChoseGodsRequest {
+              - chosenGod : ArrayList<God>
+              + ChoseGodsRequest()
+              + getChosenGods()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.network {
+      namespace message {
+        namespace clientrequests {
+          class it.polimi.ingsw.network.message.clientrequests.EndBuildRequest {
+              + EndBuildRequest()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.network {
+      namespace message {
+        namespace clientrequests {
+          class it.polimi.ingsw.network.message.clientrequests.EndMoveRequest {
+              + EndMoveRequest()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.network {
+      namespace message {
+        namespace clientrequests {
+          class it.polimi.ingsw.network.message.clientrequests.EndTurnRequest {
+              + EndTurnRequest()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.network {
+      namespace message {
+        namespace clientrequests {
+          class it.polimi.ingsw.network.message.clientrequests.LoginRequest {
+              + LoginRequest()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.network {
+      namespace message {
+        namespace clientrequests {
+          class it.polimi.ingsw.network.message.clientrequests.MoveRequest {
+              + MoveRequest()
+              + getSenderMovePosition()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.network {
+      namespace message {
+        namespace clientrequests {
+          class it.polimi.ingsw.network.message.clientrequests.PickGodRequest {
+              + PickGodRequest()
+              + getGod()
+              + getPickedGod()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.network {
+      namespace message {
+        namespace clientrequests {
+          class it.polimi.ingsw.network.message.clientrequests.PlaceWorkerRequest {
+              - workerToPlace : Integer
+              + PlaceWorkerRequest()
+              + getPositionToPlaceWorker()
+              + getWorkerToPlace()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.network {
+      namespace message {
+        namespace clientrequests {
+          class it.polimi.ingsw.network.message.clientrequests.PowerButtonRequest {
+              + PowerButtonRequest()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.network {
+      namespace message {
+        namespace clientrequests {
+          class it.polimi.ingsw.network.message.clientrequests.Request {
+              + Request()
+              + Request()
+              + getMessageDispatcher()
+              + getRequestContent()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.network {
+      namespace message {
+        namespace clientrequests {
+          class it.polimi.ingsw.network.message.clientrequests.SelectWorkerRequest {
+              - workerToSelect : Integer
+              + SelectWorkerRequest()
+              + getWorkerToSelect()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.network {
+      namespace message {
+        namespace clientrequests {
+          class it.polimi.ingsw.network.message.clientrequests.SetPlayersRequest {
+              - howMany : String
+              + SetPlayersRequest()
+              + getHowMany()
+          }
+        }
+      }
+    }
+  }
+  
+
+  it.polimi.ingsw.network.message.clientrequests.BuildDomeRequest -up-|> it.polimi.ingsw.network.message.clientrequests.BuildRequest
+  it.polimi.ingsw.network.message.clientrequests.BuildRequest -up-|> it.polimi.ingsw.network.message.clientrequests.Request
+  it.polimi.ingsw.network.message.clientrequests.BuildRequest o-- it.polimi.ingsw.server.model.player.Position : positionWhereToBuildOn
+  it.polimi.ingsw.network.message.clientrequests.ChoseGodsRequest -up-|> it.polimi.ingsw.network.message.clientrequests.Request
+  it.polimi.ingsw.network.message.clientrequests.EndBuildRequest -up-|> it.polimi.ingsw.network.message.clientrequests.Request
+  it.polimi.ingsw.network.message.clientrequests.EndMoveRequest -up-|> it.polimi.ingsw.network.message.clientrequests.Request
+  it.polimi.ingsw.network.message.clientrequests.EndTurnRequest -up-|> it.polimi.ingsw.network.message.clientrequests.Request
+  it.polimi.ingsw.network.message.clientrequests.LoginRequest -up-|> it.polimi.ingsw.network.message.clientrequests.Request
+  it.polimi.ingsw.network.message.clientrequests.MoveRequest -up-|> it.polimi.ingsw.network.message.clientrequests.Request
+  it.polimi.ingsw.network.message.clientrequests.MoveRequest o-- it.polimi.ingsw.server.model.player.Position : senderMovePosition
+  it.polimi.ingsw.network.message.clientrequests.PickGodRequest -up-|> it.polimi.ingsw.network.message.clientrequests.Request
+  it.polimi.ingsw.network.message.clientrequests.PickGodRequest o-- it.polimi.ingsw.server.model.god.God : pickedGod
+  it.polimi.ingsw.network.message.clientrequests.PlaceWorkerRequest -up-|> it.polimi.ingsw.network.message.clientrequests.Request
+  it.polimi.ingsw.network.message.clientrequests.PlaceWorkerRequest o-- it.polimi.ingsw.server.model.player.Position : positionToPlaceWorker
+  it.polimi.ingsw.network.message.clientrequests.PowerButtonRequest -up-|> it.polimi.ingsw.network.message.clientrequests.Request
+  it.polimi.ingsw.network.message.clientrequests.Request -up-|> it.polimi.ingsw.network.message.Message
+  it.polimi.ingsw.network.message.clientrequests.Request o-- it.polimi.ingsw.network.message.Enum.Dispatcher : messageDispatcher
+  it.polimi.ingsw.network.message.clientrequests.Request o-- it.polimi.ingsw.network.message.Enum.RequestContent : requestContent
+  it.polimi.ingsw.network.message.clientrequests.SelectWorkerRequest -up-|> it.polimi.ingsw.network.message.clientrequests.Request
+  it.polimi.ingsw.network.message.clientrequests.SetPlayersRequest -up-|> it.polimi.ingsw.network.message.clientrequests.Request
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

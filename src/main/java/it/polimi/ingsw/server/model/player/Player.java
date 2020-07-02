@@ -22,9 +22,9 @@ public class Player {
 
     /**
      *
-     *      Create a player with the name specified by input user
-     *      <p></p>
-     *      The for loop is used to assign a distinctive number to workers
+     * Create a player with the name specified by input user
+     * <p></p>
+     * The for loop is used to assign a distinctive number to workers
      *
      * @param playerName the player name
      */

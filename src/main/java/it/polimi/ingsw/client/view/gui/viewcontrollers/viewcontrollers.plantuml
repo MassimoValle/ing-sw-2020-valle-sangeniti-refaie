@@ -1,0 +1,184 @@
+@startuml
+
+title __VIEWCONTROLLERS's Class Diagram__\n
+
+  namespace  {
+    namespace t.polimi.ingsw.client {
+      namespace view {
+        namespace gui {
+          namespace viewcontrollers {
+            class it.polimi.ingsw.client.view.gui.viewcontrollers.AskIpAddressController {
+                - txtFieldIP : TextField
+                + initialize()
+                ~ getIpEvent()
+            }
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.client {
+      namespace view {
+        namespace gui {
+          namespace viewcontrollers {
+            class it.polimi.ingsw.client.view.gui.viewcontrollers.AskLobbySizeController {
+                - choiceBox : ChoiceBox<String>
+                + initialize()
+                ~ getLobbySizeEvent()
+            }
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.client {
+      namespace view {
+        namespace gui {
+          namespace viewcontrollers {
+            class it.polimi.ingsw.client.view.gui.viewcontrollers.AskUsernameController {
+                - getUsernameButton : Button
+                - txtFieldUsername : TextField
+                + initialize()
+                ~ getUsernameEvent()
+            }
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.client {
+      namespace view {
+        namespace gui {
+          namespace viewcontrollers {
+            class it.polimi.ingsw.client.view.gui.viewcontrollers.GodInfoController {
+                - infoAnchorPane : AnchorPane
+                + initialize()
+                + setGodInfo()
+            }
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.client {
+      namespace view {
+        namespace gui {
+          namespace viewcontrollers {
+            class it.polimi.ingsw.client.view.gui.viewcontrollers.MainViewController {
+                - boardStackPane : StackPane
+                - gamePhase : Label
+                - gridPane : GridPane
+                - parameter : Object
+                - players : Set<Player>
+                - powerButton : Button
+                - topLayer : AnchorPane
+                - vbox1 : VBox
+                - vbox2 : VBox
+                - vbox3 : VBox
+                + changePhase()
+                + disablePowerButton()
+                + enablePowerButton()
+                + getNodeByRowColumnIndex()
+                + initialize()
+                + setPlayers()
+                + setScene()
+                ~ powerEvent()
+                - setupImageView()
+            }
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.client {
+      namespace view {
+        namespace gui {
+          namespace viewcontrollers {
+            class it.polimi.ingsw.client.view.gui.viewcontrollers.PickGodController {
+                - godsFlowPane : FlowPane
+                - hand : ArrayList<God>
+                - pickGodAnchorPane : AnchorPane
+                + initialize()
+                + setHand()
+                - setScene()
+            }
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.client {
+      namespace view {
+        namespace gui {
+          namespace viewcontrollers {
+            class it.polimi.ingsw.client.view.gui.viewcontrollers.ShowDeckController {
+                - godsFlowPane : FlowPane
+                - parameter : String
+                - showDeckAnchorPane : AnchorPane
+                + initialize()
+            }
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.client {
+      namespace view {
+        namespace gui {
+          namespace viewcontrollers {
+            class it.polimi.ingsw.client.view.gui.viewcontrollers.WelcomeController {
+                + initialize()
+                ~ newGameEvent()
+            }
+          }
+        }
+      }
+    }
+  }
+  
+
+  it.polimi.ingsw.client.view.gui.viewcontrollers.AskIpAddressController .up.|> javafx.fxml.Initializable
+  it.polimi.ingsw.client.view.gui.viewcontrollers.AskIpAddressController o-- it.polimi.ingsw.client.view.gui.ParameterListener : parameterListener
+  it.polimi.ingsw.client.view.gui.viewcontrollers.AskLobbySizeController .up.|> javafx.fxml.Initializable
+  it.polimi.ingsw.client.view.gui.viewcontrollers.AskLobbySizeController o-- it.polimi.ingsw.client.view.gui.ParameterListener : parameterListener
+  it.polimi.ingsw.client.view.gui.viewcontrollers.AskUsernameController .up.|> javafx.fxml.Initializable
+  it.polimi.ingsw.client.view.gui.viewcontrollers.AskUsernameController o-- it.polimi.ingsw.client.view.gui.ParameterListener : parameterListener
+  it.polimi.ingsw.client.view.gui.viewcontrollers.GodInfoController .up.|> javafx.fxml.Initializable
+  it.polimi.ingsw.client.view.gui.viewcontrollers.MainViewController .up.|> javafx.fxml.Initializable
+  it.polimi.ingsw.client.view.gui.viewcontrollers.MainViewController o-- it.polimi.ingsw.client.model.map.GUImap : guiMap
+  it.polimi.ingsw.client.view.gui.viewcontrollers.MainViewController o-- it.polimi.ingsw.client.view.gui.ParameterListener : parameterListener
+  it.polimi.ingsw.client.view.gui.viewcontrollers.PickGodController .up.|> javafx.fxml.Initializable
+  it.polimi.ingsw.client.view.gui.viewcontrollers.ShowDeckController .up.|> javafx.fxml.Initializable
+  it.polimi.ingsw.client.view.gui.viewcontrollers.ShowDeckController o-- it.polimi.ingsw.client.view.gui.ParameterListener : parameterListener
+  it.polimi.ingsw.client.view.gui.viewcontrollers.WelcomeController .up.|> javafx.fxml.Initializable
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

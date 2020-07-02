@@ -1,0 +1,148 @@
+@startuml
+
+title __GUI's Class Diagram__\n
+
+  namespace  {
+    namespace t.polimi.ingsw.client {
+      namespace view {
+        namespace gui {
+          class it.polimi.ingsw.client.view.gui.GUI {
+              {static} - clientView : ClientView
+              {static} - loader : FXMLLoader
+              {static} - mystage : Stage
+              {static} - scene : Scene
+              {static} + getFXMLLoader()
+              {static} + getStage()
+              {static} + setRoot()
+              + start()
+              {static} + startGame()
+              {static} - loadFXML()
+              {static} - setClientView()
+              {static} - setStage()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.client {
+      namespace view {
+        namespace gui {
+          class it.polimi.ingsw.client.view.gui.GuiController {
+              {static} - ENA_POPUP : boolean
+              {static} - ERROR_DIALOG : String
+              {static} - GAME_MANAGER_SAYS : String
+              {static} - INFORMATION_DIALOG : String
+              + GuiController()
+              + anotherPlayerHasBuilt()
+              + anotherPlayerHasEndedHisTurn()
+              + anotherPlayerHasMoved()
+              + anotherPlayerHasPickedUpGod()
+              + anotherPlayerHasPlacedWorker()
+              + anotherPlayerHasSelectedGods()
+              + anotherPlayerHasSelectedWorker()
+              + anotherPlayerIsBuilding()
+              + anotherPlayerIsMoving()
+              + anotherPlayerIsPickingUpGod()
+              + anotherPlayerIsPlacingWorker()
+              + anotherPlayerIsSelectingWorker()
+              + askIpAddress()
+              + askNumbOfPlayer()
+              + askUserName()
+              + build()
+              + builtSuccessfully()
+              + choseActionToPerform()
+              + closeClient()
+              + debug()
+              + endBuildRequestError()
+              + endBuildingPhase()
+              + endMoveRequestError()
+              + endMovingPhase()
+              + endTurn()
+              + errorWhileActivatingPower()
+              + errorWhileBuilding()
+              + errorWhileChoosingGods()
+              + errorWhileMovingWorker()
+              + errorWhilePickingUpGod()
+              + errorWhilePlacingYourWorker()
+              + errorWhileSelectingWorker()
+              + godPickedUpSuccessfully()
+              + godsSelectedSuccessfully()
+              + iLose()
+              + loginError()
+              + loginSuccessful()
+              + moveWorker()
+              + pickFromChosenGods()
+              + placeWorker()
+              + placingPhaseEnding()
+              + playerLeftTheGame()
+              + powerActivated()
+              + printCanBuildAgain()
+              + printCanMoveAgain()
+              + run()
+              + selectGods()
+              + selectWorker()
+              + showAllPlayersInGame()
+              + showDeck()
+              + showMap()
+              + someoneElseDoingStuff()
+              + someoneHasLost()
+              + startingPlayerTurn()
+              + startingTurn()
+              + wantBuildAgain()
+              + wantMoveAgain()
+              + workerMovedSuccessfully()
+              + workerPlacedSuccessfully()
+              + workerSelectedSuccessfully()
+              + youAreNotTheGodLikePlayer()
+              + youAreTheGodLikePlayer()
+              + youLose()
+              + youWin()
+              - choicePopup()
+              - getFromUser()
+              - lose()
+              - waitingOpponents()
+          }
+        }
+      }
+    }
+  }
+  
+
+  namespace  {
+    namespace t.polimi.ingsw.client {
+      namespace view {
+        namespace gui {
+          class it.polimi.ingsw.client.view.gui.ParameterListener {
+              {static} - instance : ParameterListener
+              {static} - parameter : Object
+              {static} + getInstance()
+              {static} + getParameter()
+              + setParameter()
+              {static} + setToNull()
+          }
+        }
+      }
+    }
+  }
+  
+
+  it.polimi.ingsw.client.view.gui.GUI -up-|> javafx.application.Application
+  it.polimi.ingsw.client.view.gui.GuiController -up-|> it.polimi.ingsw.client.view.ClientView
+  it.polimi.ingsw.client.view.gui.GuiController o-- it.polimi.ingsw.client.view.gui.viewcontrollers.MainViewController : controller
+  it.polimi.ingsw.client.view.gui.GuiController o-- it.polimi.ingsw.server.model.player.Player : me
+  it.polimi.ingsw.client.view.gui.GuiController o-- it.polimi.ingsw.server.model.player.Worker : opponentWorkerSelected
+  it.polimi.ingsw.client.view.gui.GuiController o-- it.polimi.ingsw.client.view.gui.ParameterListener : parameterListener
+  it.polimi.ingsw.client.view.gui.GuiController o-- it.polimi.ingsw.server.model.player.Worker : selectedWorker
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

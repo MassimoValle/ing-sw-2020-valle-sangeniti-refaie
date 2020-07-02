@@ -121,7 +121,7 @@ public class ActionManager {
      *
      * @param request the request sent by the client
      */
-    void handleSelectWorkerAction(SelectWorkerRequest request) {
+    private void handleSelectWorkerAction(SelectWorkerRequest request) {
 
         RequestContent requestContent = RequestContent.SELECT_WORKER;
 
@@ -155,7 +155,7 @@ public class ActionManager {
      *
      * @param request the request sent by the client
      */
-    void handleMoveAction(MoveRequest request) {
+    private void handleMoveAction(MoveRequest request) {
         ResponseContent responseContent = ResponseContent.MOVE_WORKER;
 
         if (wrongRequest(RequestContent.MOVE)) {
@@ -211,7 +211,7 @@ public class ActionManager {
      *
      *  in case of SOME GOD'S POWERS it can be called also when the {@link PossibleGameState#WORKER_SELECTED}
      */
-    void handleBuildAction(BuildRequest request) {
+    private void handleBuildAction(BuildRequest request) {
         ResponseContent responseContent = ResponseContent.BUILD;
         Worker activeWorker = turnManager.getActiveWorker();
 
