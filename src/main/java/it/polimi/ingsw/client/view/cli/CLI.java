@@ -732,21 +732,21 @@ public class CLI extends ClientView {
     @Override
     public void youWin() {
         consoleOut.println("\t#############");
-        consoleOut.println("\t\tYOU WIN");
+        consoleOut.println("\t   YOU WIN");
         consoleOut.println("\t#############");
     }
 
     @Override
     public void iLose() {
         consoleOut.println("\t#############");
-        consoleOut.println("\t\tYOU LOST");
+        consoleOut.println("\t   YOU LOST");
         consoleOut.println("\t#############");
     }
 
     @Override
     public void youLose(String winner) {
         consoleOut.println("\t#############");
-        consoleOut.println("\t\tYOU LOSE");
+        consoleOut.println("\t   YOU LOSE");
         consoleOut.println("\t#############");
         consoleOut.println("Restart the client to play again");
     }

@@ -197,7 +197,6 @@ public class GameMap {
     }
 
     /**
-     * TODO DA TROVARE UN NOME DECENTE
      * It check if there are at least 2 buildable squares and 1 square with the same height
      *
      * @param square the square

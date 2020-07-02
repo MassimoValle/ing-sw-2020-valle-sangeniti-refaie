@@ -54,8 +54,6 @@ public class Server {
     // if there is an exception by client connection
     public void clientConnectionException(Connection c) {
 
-        //TODO da scollegare anche gli altri client in gioco facenti parte della stessa partita, max, ancora, roba tua con ste cazzo di hash map
-
         if (connections.contains(c) && !rooms.containsKey(searchConnectionInRooms(c))) {
 
             clientsConnected.remove(c.getName());
@@ -264,7 +262,7 @@ public class Server {
     // Check if there is a client with same name
     public synchronized void login(String username, Connection connection) {
         //UserName taken
-        if( clientsConnected.containsKey(username) || !username.matches("[a-zA-Z0-9]+") ) {
+        if( clientsConnected.containsKey(username) || !username.matches("[a-zA-Z0-9]+") || username.length() > 8 ) {
             connection.sendMessage(
                     new ServerResponse(ResponseContent.LOGIN, MessageStatus.ERROR, "Username taken")
             );
