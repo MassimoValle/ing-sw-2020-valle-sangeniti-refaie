@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 
 
+/**
+ * This is the main class for the game, that contains ALL the information about the game status.
+ */
 public class Game extends Observable<Message> {
 
 
@@ -114,7 +117,7 @@ public class Game extends Observable<Message> {
     }
 
     /**
-     * It fills the {@link Game#chosenGodsFromDeck} with the {@link ArrayList<God>} passed as parameter
+     * It fills the {@link Game#chosenGodsFromDeck} with the Gods passed as parameter
      *
      * @param godsChosen the gods chosen to be part of this game
      */

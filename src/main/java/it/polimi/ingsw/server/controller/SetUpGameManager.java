@@ -56,7 +56,7 @@ public class SetUpGameManager {
 
 
     /**
-     * Notify the godlike {@link Player} that he has to chose the {@link java.util.ArrayList<God> } he wants to be part of the game
+     * Notify the godlike {@link Player} that he has to chose the Gods he wants to be part of the game
      *
      * @param godLikePlayer the god like {@link Player}
      */
@@ -126,6 +126,8 @@ public class SetUpGameManager {
      * Handles the {@link Request} sent by the client
      *
      * @param request the request
+     *
+     * @return true if setup is completed
      */
     public boolean handleMessage(Request request) {
 

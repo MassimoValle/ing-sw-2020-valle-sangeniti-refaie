@@ -11,6 +11,9 @@ import it.polimi.ingsw.server.model.player.Worker;
 
 import java.util.ArrayList;
 
+/**
+ * This class is used to implement the MinotaurPush which allow the player to push every other worker one square away
+ */
 public class MinotaurPushAction extends MoveAction {
 
     private final MinotaurPower minotaurPower;

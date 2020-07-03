@@ -5,6 +5,9 @@ import it.polimi.ingsw.network.message.Enum.MessageStatus;
 import it.polimi.ingsw.network.message.Enum.ResponseContent;
 import it.polimi.ingsw.network.message.server.ServerMessage;
 
+/**
+ * The serverResponse is used to respond whenever a {@link it.polimi.ingsw.network.message.clientrequests.Request } is sent by the client
+ */
 public class ServerResponse extends ServerMessage {
 
     private final String gameManagerSays;

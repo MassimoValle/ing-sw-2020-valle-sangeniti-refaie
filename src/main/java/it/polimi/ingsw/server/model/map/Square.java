@@ -12,6 +12,9 @@ import javafx.scene.layout.StackPane;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents the single Square which fill the GameMap
+ */
 public class Square {
 
     protected final int row;
@@ -125,11 +128,11 @@ public class Square {
     }
 
 
-
     /**
      * Add a {@link Block} to the {@link #tower}
      *
      * @param dome true if the block we want to add is a {@link Dome}
+     * @throws DomePresentException the dome present exception
      */
     public void addBlock(boolean dome) throws DomePresentException {
 

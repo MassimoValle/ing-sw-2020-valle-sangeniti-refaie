@@ -11,7 +11,7 @@ import it.polimi.ingsw.server.model.player.Worker;
 import java.util.ArrayList;
 
 /**
- * The MoveAction update the workers position & the gameMap
+ * The MoveAction update the workers position and the gameMap
  */
 public class MoveAction implements Action {
 

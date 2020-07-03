@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This static class is used to store the information about every match's God's power in game
+ */
 public class GodsInGame {
 
     private static GodsInGame istance = null; // riferimento all' istanza
@@ -23,7 +26,12 @@ public class GodsInGame {
         return istance;
     }
 
-    // aggiunge il god al game
+    /**
+     * Add a God to the Game given as parameter
+     *
+     * @param game the game to which add the God
+     * @param god the god to be added to the game
+     */
     public void addGodToGame(Game game, God god){
 
         if(godsInGame.containsKey(game)) {  // se il game è già registrato nell'HashMap...
@@ -37,7 +45,12 @@ public class GodsInGame {
         }
     }
 
-    // ritorna la lista di poteri relativa al game
+    /**
+     * It gets the powers in the given Game
+     *
+     * @param game the game we want the powers from
+     * @return a list containing all the powers
+     */
     public ArrayList<Power> getPowers(Game game){
 
         ArrayList<Power> powers = new ArrayList<>();
@@ -49,6 +62,12 @@ public class GodsInGame {
         return powers;
     }
 
+    /**
+     * It gets the powers in the game based on which {@link GameMap} you give in
+     *
+     * @param map the game's gameMap you want information from
+     * @return a list containing all the powers
+     */
     public ArrayList<Power> getPowersByMap(GameMap map) {
 
         for(Map.Entry<Game, ArrayList<God>> entry : godsInGame.entrySet()) {

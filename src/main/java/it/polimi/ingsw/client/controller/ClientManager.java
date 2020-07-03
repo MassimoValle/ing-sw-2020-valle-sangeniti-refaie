@@ -401,6 +401,10 @@ public class ClientManager {
 
     }
 
+    /**
+     * Ask the lobby size
+     *
+     */
     private void chooseNumPlayers(){
 
         clientState = PossibleClientState.SETTING_UP_PLAYERS;
@@ -415,6 +419,11 @@ public class ClientManager {
 
     }
 
+    /**
+     * Ask the gods that has to be part of the game
+     *
+     * @param serverRequest server's infos about how many gods has to be chosen
+     */
     private void chooseGodFromDeck(ChooseGodsServerRequest serverRequest){
 
         myTurn = true;
@@ -434,6 +443,11 @@ public class ClientManager {
         Client.sendRequest(request);
     }
 
+    /**
+     * Ask to pick a god
+     *
+     * @param serverRequest server's info about gods available
+     */
     private void pickGod(PickGodServerRequest serverRequest) {
 
         myTurn = true;
@@ -449,6 +463,11 @@ public class ClientManager {
         Client.sendRequest(request);
     }
 
+    /**
+     * Ask to place the worker
+     *
+     * @param serverRequest contains info about the worker you are going to place
+     */
     private void placeWorker(PlaceWorkerServerRequest serverRequest) {
 
         myTurn = true;
@@ -464,6 +483,9 @@ public class ClientManager {
 
     }
 
+    /**
+     * It starts this player turn
+     */
     private void startTurn() {
 
         playerHasMoved = false;
@@ -475,6 +497,10 @@ public class ClientManager {
         clientState = PossibleClientState.STARTING_TURN;
     }
 
+    /**
+     * selectWorker used to manage the {@link SelectWorkerServerRequest}
+     *
+     */
     private void selectWorker(){
 
         clientState = PossibleClientState.SELECTING_WORKER;
@@ -593,6 +619,11 @@ public class ClientManager {
         removePlayerFromMatch(babyGame.getPlayerByName(serverResponse.getMessageRecipient()));
     }
 
+    /**
+     * If one player lose than it gets removed
+     *
+     * @param playerToRemove player to be removed
+     */
     private void removePlayerFromMatch(Player playerToRemove) {
 
         babyGame.getClientMap().removePlayerWorkers(playerToRemove);

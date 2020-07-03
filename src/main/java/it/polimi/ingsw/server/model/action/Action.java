@@ -11,6 +11,7 @@ public interface Action {
     /**
      * It checks if the {@link Action} is legitimate
      *
+     * @param map the map where the check has to take place
      * @return the boolean
      */
     boolean isValid(GameMap map);

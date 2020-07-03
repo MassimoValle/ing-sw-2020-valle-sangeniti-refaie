@@ -8,6 +8,9 @@ import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.network.message.clientrequests.Request;
 
 
+/**
+ * The master controller which allow every communication between every different controllers in the mvC pattern
+ */
 public class MasterController {
 
     private SetUpGameManager setUpGameManager;
@@ -30,13 +33,18 @@ public class MasterController {
 
     }
 
-    public void init(Player activePlayer) {
+    /**
+     * It is called whenever a new {@link Game} is about to start
+     *
+     * @param godLikePlayer the godlike player
+     */
+    public void init(Player godLikePlayer) {
 
         this.turnManager = new TurnManager(gameInstance.getPlayers());
 
         this.messageManager = new OutgoingMessageManager(gameInstance, turnManager);
 
-        this.setUpGameManager = new SetUpGameManager(gameInstance, activePlayer, messageManager);
+        this.setUpGameManager = new SetUpGameManager(gameInstance, godLikePlayer, messageManager);
 
 
         this.actionManager = new ActionManager(gameInstance, turnManager, messageManager);
@@ -49,12 +57,18 @@ public class MasterController {
     }
 
 
-
-    // inizio e fine
+    /**
+     * This method is called when the setup phase is done
+     */
     public void startFirstRound() {
         actionManager.startNextRound(true);
     }
 
+    /**
+     * Client connection exception handles the disconnection of any player
+     *
+     * @param userDisconnected the user disconnected
+     */
     public void clientConnectionException(String userDisconnected) {
 
         Player playerDisconnected = gameInstance.searchPlayerByName(userDisconnected);
@@ -66,6 +80,9 @@ public class MasterController {
        }
     }
 
+    /**
+     * The game is over
+     */
     public void gameOver() {
 
         server.cleanLobby(this);

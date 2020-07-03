@@ -23,7 +23,7 @@ public class Player {
     /**
      *
      * Create a player with the name specified by input user
-     * <p></p>
+     *
      * The for loop is used to assign a distinctive number to workers
      *
      * @param playerName the player name
@@ -37,7 +37,7 @@ public class Player {
 
     /**
      * Gets player god.
-     * <p></p>
+     *
      * @return the god card chosen by the player among those available
      */
     public God getPlayerGod() {
@@ -67,7 +67,7 @@ public class Player {
 
     /**
      * Gets player name.
-     * <p></p>
+     *
      * @return the name chosen by the player at game start
      */
     public String getPlayerName() {return playerName; }
@@ -75,18 +75,18 @@ public class Player {
 
     /**
      * Gets player workers.
-     * <p></p>
+     *
      * This list contains 2 elements as 2 is the number of workers per player.
-     * <p></p>
+     *
      * @return the list of workers assigned to the player.
      */
     public List<Worker> getPlayerWorkers() { return playerWorkers; }
 
     /**
      * Add new {@link Worker} to {@link Player this player}
-     * <p></p>
+     *
      * Probably this method will never be used but just in case just leave it here
-     * <p></p>
+     *
      * @return the worker
      */
     public Worker addNewWorker() {

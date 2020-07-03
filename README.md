@@ -25,6 +25,12 @@ The following documentation contains documents and charts used for the design of
 #### JavaDoc
 The major part of Server code is documented by JavaDoc, expecially Model and Controller packages.
 
+* [ZIP](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/tree/master/deliveries/final/JavaDoc/javadpc.zip)
+
+#### Coverage report
+
+* [ZIP](https://github.com/MassimoValle/ing-sw-2020-valle-sangeniti-refaie/tree/master/deliveries/final/report/report.zip)
+
 #### Libraries and Plugin
 Library/Plugin | Description |
 --- | --- |

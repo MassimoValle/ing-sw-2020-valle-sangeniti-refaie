@@ -19,7 +19,8 @@ import it.polimi.ingsw.network.message.Enum.ResponseContent;
 import it.polimi.ingsw.network.message.clientrequests.*;
 
 /**
- * The ActionManager handles every request sent by a client to perform an action
+ * The ActionManager handles every request sent by a client to perform an action, and it's basically the main controller during the game.
+ * It is used also to keep track of round evolution;
  */
 public class ActionManager {
 
@@ -205,7 +206,7 @@ public class ActionManager {
 
     /**
      * It handle the {@link BuildRequest} by a player that can be sent to Server after the {@link MoveRequest}
-     * It's called only in {@link PossibleGameState#WORKER_SELECTED} whe the player have to move the previously selected worker
+     * It's called only in {@link PossibleGameState#WORKER_SELECTED} wheN the player has to move the previously selected worker
      *
      * @param request the request sent by the client
      *
@@ -255,7 +256,11 @@ public class ActionManager {
         nextPhase();
     }
 
-
+    /**
+     * It handle the {@link EndBuildRequest} by a player
+     * It's called only in {@link PossibleGameState#BUILT} when the player may build again or go to the next phase
+     *
+     */
     private void handleEndBuildAction() {
 
         if (wrongRequest(RequestContent.END_BUILD)) {
@@ -268,6 +273,11 @@ public class ActionManager {
     }
 
 
+    /**
+     * It handle the {@link EndTurnRequest} by a player
+     * It's called only in {@link PossibleGameState#PLAYER_TURN_ENDING} when the player has no other option than passing the turn
+     *
+     */
     private void handleEndTurnAction() {
 
         ResponseContent responseContent = ResponseContent.END_TURN;
@@ -289,7 +299,11 @@ public class ActionManager {
     }
 
 
-
+    /**
+     * It handle the case whether a player lose during the game
+     *
+     * @param nextPlayer the player who is unable to complete a full round, so gets eliminated
+     */
     private void playerHasLost(Player nextPlayer) {
 
         gameInstance.getGameMap().removePlayerWorkers(nextPlayer);
@@ -388,13 +402,19 @@ public class ActionManager {
         }
     }
 
+    /**
+     * It updates the server
+     */
     private void gameEndingPhase() {
         gameState = PossibleGameState.GAME_OVER;
 
-        //MasterController.gameOver();
-
     }
 
+    /**
+     * it checks if the last action performed by any player is a match-winner
+     *
+     * @return true if match-winner, false otherwise
+     */
     private boolean winningMove() {
 
         if (actionOutcome == ActionOutcome.WINNING_MOVE || playerHasWonAfterMoving(activePlayer)) {
@@ -457,6 +477,9 @@ public class ActionManager {
         }
     }
 
+    /**
+     * It updates the server
+     */
     private void built() {
 
         if (actionOutcome == ActionOutcome.DONE && gameState == PossibleGameState.BUILD_BEFORE ) {
@@ -486,6 +509,11 @@ public class ActionManager {
 
     }
 
+    /**
+     * Start next round.
+     *
+     * @param firstRound first round
+     */
     protected void startNextRound(boolean firstRound) {
 
         if (firstRound) { //scelta implementativa, il giocatore ad iniziare sarà sempre il successivo al godlikePlayer (cioè il player #0)

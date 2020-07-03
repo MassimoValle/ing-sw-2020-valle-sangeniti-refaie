@@ -38,6 +38,8 @@ public class OutgoingMessageManager {
     /**
      * Build the a {@link ServerResponse} with {@link MessageStatus#ERROR}
      *
+     * @param player          the player
+     * @param responseContent the response content
      * @param gameManagerSays the message from the {@link ActionManager}
      */
     public void buildNegativeResponse(Player player, ResponseContent responseContent, String gameManagerSays) {
@@ -51,6 +53,8 @@ public class OutgoingMessageManager {
     /**
      * Build the a {@link ServerResponse} with {@link MessageStatus#OK}
      *
+     * @param player          the player
+     * @param responseContent the response content
      * @param gameManagerSays the message from the {@link ActionManager}
      */
     public void buildPositiveResponse(Player player, ResponseContent responseContent, String gameManagerSays) {

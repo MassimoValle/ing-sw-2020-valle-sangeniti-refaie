@@ -7,6 +7,9 @@ import it.polimi.ingsw.server.model.player.Worker;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents the map used in the game, a 5x5 board filled with multiple {@link Square}
+ */
 public class GameMap {
 
     protected final int COLUMNS = 5;
@@ -286,7 +289,7 @@ public class GameMap {
     /**
      * It checks if starting from the position given you can only move up
      *
-     * @param reachables       {@link List<Position>} MUST NOT BE EMPTY
+     * @param reachables       positions
      * @param startingPosition the starting {@link Position}
      *
      * @return true if the worker can only move up, false otherwise;

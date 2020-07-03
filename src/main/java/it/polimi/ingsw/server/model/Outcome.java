@@ -9,7 +9,7 @@ import it.polimi.ingsw.server.model.player.*;
 import java.util.List;
 
 /**
- * La classe outcome dovrà avere al suo interno tutte le informazioni necessarie per capire se il player ha vinto o no
+ * This class is used to check if any player has won the game
  */
 public class Outcome {
 

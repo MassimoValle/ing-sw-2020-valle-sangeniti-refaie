@@ -7,6 +7,9 @@ import javafx.scene.image.ImageView;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Thi class represent the God card containing ALL the information about every God
+ */
 public class God implements Serializable {
 
     private final String godName;

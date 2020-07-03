@@ -8,6 +8,9 @@ import it.polimi.ingsw.server.model.player.Worker;
 
 import java.util.ArrayList;
 
+/**
+ * This class is used to implement the ApolloSwap which allow the player to swap worker's places
+ */
 public class ApolloSwapAction extends MoveAction {
 
     private final ApolloPower apolloPower;
