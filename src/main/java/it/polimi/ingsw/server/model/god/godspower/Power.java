@@ -19,6 +19,7 @@ public abstract class Power implements Serializable, GodsChecker {
     protected String powerDescription;
     protected PowerType powerType;
     protected transient GameMap map;
+    protected boolean inGame;
 
 
     protected Power(String powerType, String powerDescription) {
@@ -44,6 +45,10 @@ public abstract class Power implements Serializable, GodsChecker {
         } else
             return ActionOutcome.NOT_DONE;
 
+    }
+
+    public void setInGame(boolean inGame) {
+        this.inGame = inGame;
     }
 
     public void setMap(GameMap gameMap) {

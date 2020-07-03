@@ -19,6 +19,12 @@ public class God implements Serializable {
     //if one God is assigned to one player
     private boolean assigned;
 
+
+
+    private boolean inGame = false;
+
+
+
     //GUI
     transient private ImageView imgView;
 
@@ -38,12 +44,21 @@ public class God implements Serializable {
         return imgView;
     }
 
+    public boolean isInGame() {
+        return inGame;
+    }
+
+    public void setInGame(boolean inGame) {
+        this.inGame = inGame;
+        this.godPower.setInGame(inGame);
+    }
 
     public  boolean isAssigned() {
         return assigned;
     }
 
     public  void setAssigned(boolean assigned) {
+        setInGame(true);
         this.assigned = assigned;
     }
 

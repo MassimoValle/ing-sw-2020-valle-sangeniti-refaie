@@ -66,7 +66,7 @@ public class Outcome {
         if( chronusIsPresent() && gameMap.hasAtLeastFiveFullTower() ) {
 
             for (Player pl: playersInGame) {
-                if (pl.getPlayerGod().is("Chronus"))
+                if (pl.getPlayerGod().is("Chronus") && !pl.isEliminated())
                     winner = pl;
             }
 
@@ -78,9 +78,20 @@ public class Outcome {
     }
 
     private boolean heraIsPresent() {
+
+        Player HeraPlayer = null;
+
         for(Power power : powersInGame ) {
-            if (power instanceof HeraPower)
-                return true;
+
+            if (power instanceof HeraPower) {
+
+                for (Player player : playersInGame) {
+
+                    if (player.getPlayerGod().is("Hera") && !player.isEliminated())
+                        return true;
+                }
+            }
+
         }
         return false;
     }

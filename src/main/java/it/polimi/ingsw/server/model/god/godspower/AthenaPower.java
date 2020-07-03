@@ -40,4 +40,12 @@ public class AthenaPower extends Power {
     public boolean hasGoneUp() {
         return goneUp;
     }
+
+    @Override
+    public void setInGame(boolean inGame) {
+        if (!inGame && goneUp)
+            goneUp = false;
+        else
+            super.setInGame(inGame);
+    }
 }

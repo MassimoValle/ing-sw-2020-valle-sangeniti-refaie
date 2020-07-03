@@ -604,6 +604,8 @@ public class ClientManager {
         removePlayerFromMatch(me);
         clientView.iLose();
 
+        myTurn = false;
+
         //REMOVE THIS PLAYER FROM THE MATCH
         //removePlayerFromMatch(me);
     }

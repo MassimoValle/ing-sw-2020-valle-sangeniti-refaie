@@ -79,10 +79,51 @@ public class ThreePlayersMatchTest {
         setupUtility.selectWorker(pl3, 1);
         Assert.assertTrue(setupUtility.w2pl3.isSelected());
 
-
-
-
     }
 
+    @Test
+    public void athenaLeaves() throws DomePresentException {
+
+        setupUtility.setup3players(masterController, 2, 0, 1, false);
+
+        masterController.getGameInstance().getGameMap().getSquare(1,0).addBlock(false);
+
+
+        setupUtility.selectWorker(pl1, 0);
+        setupUtility.move(pl1, 1,0);
+        setupUtility.build(pl1,0,0);
+        setupUtility.endTurn(pl1);
+
+        setupUtility.selectWorker(pl2, 0);
+        setupUtility.move(pl2, 4,1);
+        setupUtility.build(pl2,4,0);
+        setupUtility.endTurn(pl2);
+
+        setupUtility.selectWorker(pl3, 0);
+        setupUtility.move(pl3, 3,2);
+        setupUtility.endMove(pl3);
+
+
+        //faccio perdere il giocatore con athena
+        masterController.getGameInstance().getGameMap().getSquare(0,0).addBlock(true);
+        masterController.getGameInstance().getGameMap().getSquare(0,1).addBlock(true);
+        masterController.getGameInstance().getGameMap().getSquare(1,1).addBlock(true);
+        masterController.getGameInstance().getGameMap().getSquare(2,1).addBlock(true);
+        masterController.getGameInstance().getGameMap().getSquare(2,0).addBlock(true);
+        masterController.getGameInstance().getGameMap().getSquare(0,3).addBlock(true);
+        masterController.getGameInstance().getGameMap().getSquare(1,3).addBlock(true);
+        masterController.getGameInstance().getGameMap().getSquare(1,4).addBlock(true);
+
+        setupUtility.build(pl3,4,2);
+
+
+        setupUtility.endTurn(pl3);
+
+        setupUtility.selectWorker(pl2, 0);
+        setupUtility.move(pl2, 4,0);
+        setupUtility.build(pl2,4,1);
+        setupUtility.endTurn(pl2);
+
+    }
 
 }

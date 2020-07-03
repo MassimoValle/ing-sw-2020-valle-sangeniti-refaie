@@ -186,6 +186,7 @@ public class Player {
     }
 
     public void setEliminated(boolean eliminated) {
+        this.playerGod.setInGame(false);
         this.eliminated = eliminated;
     }
 }
