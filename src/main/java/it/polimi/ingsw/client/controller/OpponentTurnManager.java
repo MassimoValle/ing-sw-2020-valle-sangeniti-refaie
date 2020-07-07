@@ -36,7 +36,7 @@ public class OpponentTurnManager {
             case MOVE_WORKER                -> ClientManager.getClientView().anotherPlayerIsMoving(turnOwner);
             case BUILD                      -> ClientManager.getClientView().anotherPlayerIsBuilding(turnOwner);
             case END_TURN                   -> {}
-            default                         -> ClientManager.LOGGER.severe(new IllegalStateException("Invalid serverRequest content in serverRequestNotForYou()").getMessage());
+            default                         -> ClientManager.LOGGER.info(new IllegalStateException("Invalid serverRequest content in serverRequestNotForYou()").getMessage());
         }
     }
 
@@ -64,7 +64,7 @@ public class OpponentTurnManager {
             case END_TURN                   -> ClientManager.getClientView().anotherPlayerHasEndedHisTurn(turnOwner);
             case PLAYER_HAS_WON             -> ClientManager.getClientView().youLose(turnOwner);
             case MOVE_WORKER_AGAIN, BUILD_AGAIN -> { }
-            default                         -> ClientManager.LOGGER.severe(new IllegalStateException("Invalid serverResponse content in serverResponseNotForYou()").getMessage());
+            default                         -> ClientManager.LOGGER.info(new IllegalStateException("Invalid serverResponse content in serverResponseNotForYou()").getMessage());
         }
     }
 
